@@ -3,10 +3,107 @@
 <head>
   <meta charset="UTF-8">
   <title>AutoIQ</title>
-  ...
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .tabs { display: flex; margin-bottom: 20px; }
+    .tab { margin-right: 10px; padding: 10px; cursor: pointer; border: 1px solid #ccc; background: #f0f0f0; }
+    .tab.active { background: #fff; font-weight: bold; border-bottom: none; }
+    .content { border: 1px solid #ccc; padding: 20px; display: none; }
+    .content.active { display: block; }
+    .split { display: flex; gap: 20px; }
+    .split > div { flex: 1; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #ccc; padding: 5px; text-align: left; }
+  </style>
 </head>
 <body>
-  <!-- contenido HTML completo aquí -->
+  <div class="tabs">
+    <div class="tab" id="tab-Inputs" onclick="showTab('Inputs')">Inputs</div>
+    <div class="tab" id="tab-Cabecera" onclick="showTab('Cabecera')">Cabecera</div>
+    <div class="tab" id="tab-Historico" onclick="showTab('Historico')">Histórico</div>
+    <div class="tab" id="tab-BasePropia" onclick="showTab('BasePropia')">Base Propia</div>
+  </div>
+
+  <div class="content" id="content-Inputs">
+    <h2>Carga de archivos</h2>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+      <label>Modo combinatorio:</label><br />
+      <input type="file" name="archivoVehiculos" required /> Vehículos<br />
+      <input type="file" name="archivoCP" required /> Códigos Postales<br /><br />
+      <label>Modo taxativo (1 solo archivo):</label><br />
+      <input type="file" name="archivoUnico" /><br /><br />
+      <input type="submit" value="Subir y Procesar" />
+    </form>
+  </div>
+
+  <div class="content" id="content-Cabecera">
+    <h2>Datos del Asegurado</h2>
+    <form id="formCabecera">
+      <label>Nombre para la Cotización:</label><br>
+      <input type="text" name="nombreCotizacion" required><br><br>
+      <label>Edad:</label><br>
+      <input type="number" id="edad" name="edad" onchange="syncEdadFecha()" value="40"><br><br>
+      <label>Fecha de Nacimiento:</label><br>
+      <input type="date" id="fechaNacimiento" name="fechaNacimiento" onchange="syncFechaEdad()"><br><br>
+      <label>Género:</label><br>
+      <select name="genero">
+        <option value="Masculino" selected>Masculino</option>
+        <option value="Femenino">Femenino</option>
+      </select><br><br>
+      <label>Estado Civil:</label><br>
+      <select name="estadoCivil">
+        <option value="Soltero">Soltero</option>
+        <option value="Casado" selected>Casado</option>
+      </select><br><br>
+      <label>Medio de Pago:</label><br>
+      <select name="medioPago">
+        <option value="Débito en Tarjeta" selected>Débito en Tarjeta</option>
+        <option value="Débito en Cuenta">Débito en Cuenta</option>
+        <option value="Pago Fácil">Pago Fácil</option>
+      </select><br><br>
+      <input type="submit" value="Guardar Cabecera">
+    </form>
+  </div>
+
+  <div class="content" id="content-Historico">
+    <h2>Historial de archivos generados</h2>
+    <button onclick="cargarHistorial()">🔁 Refrescar historial</button>
+    <table border="1" cellpadding="8" cellspacing="0">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Archivo</th>
+          <th>Fecha</th>
+          <th>Registros</th>
+          <th>Descargar</th>
+        </tr>
+      </thead>
+      <tbody id="tabla-historico-body"></tbody>
+    </table>
+  </div>
+
+  <div class="content" id="content-BasePropia">
+    <h2>Base de datos propia (tipos de vehículo conocidos)</h2>
+    <table border="1" cellpadding="8" cellspacing="0">
+      <thead>
+        <tr>
+          <th>InfoAutoCod</th>
+          <th>Marca</th>
+          <th>Modelo</th>
+          <th>Tipo</th>
+          <th>Puertas</th>
+          <th>Ocupantes</th>
+          <th>Peso</th>
+          <th>Combustible</th>
+          <th>Motorización</th>
+          <th>Rivadavia</th>
+          <th>Fecha Alta</th>
+        </tr>
+      </thead>
+      <tbody id="tabla-basepropia-body"></tbody>
+    </table>
+  </div>
+
   <script>
     function showTab(tabId) {
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -14,7 +111,77 @@
       document.getElementById('tab-' + tabId).classList.add('active');
       document.getElementById('content-' + tabId).classList.add('active');
     }
-    ...
+
+    function syncEdadFecha() {
+      const edad = parseInt(document.getElementById('edad').value);
+      const fecha = document.getElementById('fechaNacimiento');
+      if (!isNaN(edad)) {
+        const hoy = new Date();
+        const nacimiento = new Date(hoy.getFullYear() - edad, hoy.getMonth(), hoy.getDate());
+        fecha.value = nacimiento.toISOString().split('T')[0];
+      }
+    }
+
+    function syncFechaEdad() {
+      const fechaValor = document.getElementById('fechaNacimiento').value;
+      if (fechaValor) {
+        const hoy = new Date();
+        const fechaNac = new Date(fechaValor);
+        let edad = hoy.getFullYear() - fechaNac.getFullYear();
+        const m = hoy.getMonth() - fechaNac.getMonth();
+        if (m < 0 || (m === 0 && hoy.getDate() < fechaNac.getDate())) edad--;
+        document.getElementById('edad').value = edad;
+      }
+    }
+
+    async function cargarHistorial() {
+      const tbody = document.getElementById('tabla-historico-body');
+      tbody.innerHTML = '';
+      try {
+        const res = await fetch('/historial');
+        const data = await res.json();
+        data.forEach(item => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${item.id}</td>
+            <td>${item.nombre_archivo}</td>
+            <td>${new Date(item.fecha).toLocaleString()}</td>
+            <td>${item.cantidad_registros}</td>
+            <td><a href="/descargas/${item.nombre_archivo}" download>⬇️</a></td>`;
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        console.error('Error al cargar historial:', err);
+      }
+    }
+
+    async function cargarBasePropia() {
+      const tbody = document.getElementById('tabla-basepropia-body');
+      tbody.innerHTML = '';
+      try {
+        const res = await fetch('/basepropia');
+        const data = await res.json();
+        data.forEach(item => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${item.infoautocod}</td>
+            <td>${item.Marca}</td>
+            <td>${item.Modelo}</td>
+            <td>${item.tipo_vehiculo}</td>
+            <td>${item.puertas || ''}</td>
+            <td>${item.ocupantes || ''}</td>
+            <td>${item.peso || ''}</td>
+            <td>${item.combustible || ''}</td>
+            <td>${item.motorizacion || ''}</td>
+            <td>${item.Tipo_Vehiculo_Rivadavia || ''}</td>
+            <td>${item.fecha}</td>`;
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        console.error('Error al cargar base propia:', err);
+      }
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
       showTab('Inputs');
       syncEdadFecha();
