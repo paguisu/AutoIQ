@@ -1,23 +1,13 @@
+function validarColumnas(tipo, columnas) {
+  const columnasNecesarias = {
+    combinatoriaVehiculos: ["marca", "modelo", "codigo_infoauto"],
+    combinatoriaCP: ["codigo_postal", "localidad"],
+    taxativa: ["marca", "modelo", "codigo_infoauto", "codigo_postal", "localidad"]
+  };
 
-const validarColumnas = (tipo, encabezados) => {
-    const columnasEsperadas = {
-        combinatoriaVehiculos: ["anio", "Marca", "Modelo", "infoautocod", "cerokm", "uso", "tipo_vehiculo"],
-        combinatoriaCP: ["Provincia", "Localidad", "CP"],
-        taxativa: ["anio", "Marca", "Modelo", "infoautocod", "cerokm", "Provincia", "Localidad", "CP", "uso", "tipo_vehiculo"]
-    };
-
-    const faltantes = (esperadas) => esperadas.filter(col => !encabezados.includes(col));
-
-    if (tipo === "combinatoriaVehiculos") {
-        return faltantes(columnasEsperadas.combinatoriaVehiculos);
-    }
-    if (tipo === "combinatoriaCP") {
-        return faltantes(columnasEsperadas.combinatoriaCP);
-    }
-    if (tipo === "taxativa") {
-        return faltantes(columnasEsperadas.taxativa);
-    }
-    return ["Tipo de validación desconocido"];
-};
+  const requeridas = columnasNecesarias[tipo] || [];
+  const faltantes = requeridas.filter(col => !columnas.includes(col));
+  return faltantes;
+}
 
 module.exports = validarColumnas;

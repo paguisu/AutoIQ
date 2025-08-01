@@ -1,29 +1,29 @@
 const xlsx = require('xlsx');
 const fs = require('fs');
-const path = require('path');
 
-function combinarArchivos(vehiculosPath, cpPath, destinoPath) {
-  const wbVeh = xlsx.readFile(vehiculosPath);
-  const wbCP = xlsx.readFile(cpPath);
-  const wsVeh = wbVeh.Sheets[wbVeh.SheetNames[0]];
-  const wsCP = wbCP.Sheets[wbCP.SheetNames[0]];
+function combinarArchivos(pathVehiculos, pathCP, pathSalida) {
+  const wbVeh = xlsx.readFile(pathVehiculos);
+  const wbCP = xlsx.readFile(pathCP);
 
-  const vehiculos = xlsx.utils.sheet_to_json(wsVeh);
-  const codigosPostales = xlsx.utils.sheet_to_json(wsCP);
-  const resultado = [];
+  const hojaVeh = wbVeh.SheetNames[0];
+  const hojaCP = wbCP.SheetNames[0];
 
-  for (let vehiculo of vehiculos) {
-    for (let cp of codigosPostales) {
-      resultado.push({ ...vehiculo, ...cp });
-    }
-  }
+  const registrosVeh = xlsx.utils.sheet_to_json(wbVeh.Sheets[hojaVeh]);
+  const registrosCP = xlsx.utils.sheet_to_json(wbCP.Sheets[hojaCP]);
 
-  const wsFinal = xlsx.utils.json_to_sheet(resultado);
-  const wbFinal = xlsx.utils.book_new();
-  xlsx.utils.book_append_sheet(wbFinal, wsFinal, "Combinado");
-  xlsx.writeFile(wbFinal, destinoPath);
+  const combinados = [];
+  registrosVeh.forEach(v => {
+    registrosCP.forEach(cp => {
+      combinados.push({ ...v, ...cp });
+    });
+  });
 
-  return resultado.length;
+  const wbNuevo = xlsx.utils.book_new();
+  const wsNuevo = xlsx.utils.json_to_sheet(combinados);
+  xlsx.utils.book_append_sheet(wbNuevo, wsNuevo, 'Combinado');
+  xlsx.writeFile(wbNuevo, pathSalida);
+
+  return combinados.length;
 }
 
-module.exports = combinarArchivos;
+module.exports = combinarArchivos
