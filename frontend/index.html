@@ -21,6 +21,9 @@
     input, select { margin: 5px 0; padding: 6px; width: 100%; }
     label { font-weight: bold; margin-top: 10px; display: block; }
     .form-group { margin-bottom: 15px; }
+    #resultadoCarga { background: #f4f4f4; padding: 15px; margin-top: 20px; border-radius: 5px; }
+    .success { color: green; }
+    .error { color: red; }
   </style>
 </head>
 <body>
@@ -32,8 +35,8 @@
   </div>
 
   <div id="inputs" class="tab-content active">
-    <h2>Subir archivos</h2>
-    <form action="/upload" method="post" enctype="multipart/form-data">
+    <h2>Carga de archivos</h2>
+    <form id="formUpload" action="/upload" method="post" enctype="multipart/form-data">
       <label>Archivo de Vehículos:</label>
       <input type="file" name="archivoVehiculos" />
       <label>Archivo de Códigos Postales:</label>
@@ -41,8 +44,9 @@
       <label>Archivo Único (modo taxativo):</label>
       <input type="file" name="archivoUnico" />
       <br /><br />
-      <input type="submit" value="Procesar" />
+      <input type="submit" value="Subir y Procesar" />
     </form>
+    <div id="resultadoCarga"></div>
   </div>
 
   <div id="cabecera" class="tab-content">
@@ -53,12 +57,12 @@
         <input type="text" name="nombreCotizacion" />
       </div>
       <div class="form-group">
-        <label>Fecha de Nacimiento</label>
-        <input type="date" name="fechaNacimiento" />
+        <label>Edad</label>
+        <input type="number" name="edad" id="edad" />
       </div>
       <div class="form-group">
-        <label>Edad</label>
-        <input type="number" name="edad" />
+        <label>Fecha de Nacimiento</label>
+        <input type="date" name="fechaNacimiento" id="fechaNacimiento" readonly />
       </div>
       <div class="form-group">
         <label>Género</label>
@@ -104,7 +108,6 @@
       btn.addEventListener("click", () => {
         tabButtons.forEach(b => b.classList.remove("active"));
         contents.forEach(c => c.classList.remove("active"));
-
         btn.classList.add("active");
         document.getElementById(btn.dataset.tab).classList.add("active");
       });
@@ -121,6 +124,59 @@
           document.getElementById("tablaHistorico").appendChild(tabla);
         });
     };
+
+    document.getElementById("formUpload").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      const res = await fetch("/upload", { method: "POST", body: formData });
+      const resultado = await res.json();
+
+      const div = document.getElementById("resultadoCarga");
+      div.innerHTML = "";
+
+      if (resultado.mensajes.length > 0) {
+        resultado.mensajes.forEach(m => {
+          const p = document.createElement("p");
+          p.className = "success";
+          p.textContent = `✅ ${m}`;
+          div.appendChild(p);
+        });
+      }
+      if (resultado.errores.length > 0) {
+        resultado.errores.forEach(err => {
+          const p = document.createElement("p");
+          p.className = "error";
+          p.textContent = `❌ ${err}`;
+          div.appendChild(p);
+        });
+      }
+      if (resultado.descarga) {
+        const a = document.createElement("a");
+        a.href = resultado.descarga;
+        a.textContent = "⬇️ Descargar archivo combinado";
+        a.download = "archivo_combinado.xlsx";
+        a.style.display = "inline-block";
+        a.style.marginTop = "10px";
+        div.appendChild(a);
+      }
+    });
+
+    document.getElementById("formCabecera").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      const asegurado = {};
+      formData.forEach((value, key) => { asegurado[key] = value; });
+      alert("Cabecera guardada en memoria (por ahora no se guarda en base de datos)");
+    });
+
+    document.getElementById("edad").addEventListener("input", function () {
+      const edad = parseInt(this.value);
+      if (!isNaN(edad)) {
+        const hoy = new Date();
+        const nacimiento = new Date(hoy.getFullYear() - edad, hoy.getMonth(), hoy.getDate());
+        document.getElementById("fechaNacimiento").value = nacimiento.toISOString().split('T')[0];
+      }
+    });
   </script>
 </body>
 </html>
