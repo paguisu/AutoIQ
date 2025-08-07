@@ -1,0 +1,8 @@
+# Ignorar archivos temporales y generados automáticamente
+data/archivos_subidos/
+data/combinados/
+frontend/descargas/
+
+# Ignorar archivos del sistema
+*.log
+*.tmp
