@@ -32,6 +32,7 @@
     <button class="tab-button" data-tab="cabecera">Cabecera</button>
     <button class="tab-button" data-tab="historico">Histórico</button>
     <button class="tab-button" data-tab="base">Base Propia</button>
+    <button class="tab-button" data-tab="procesos">Procesos en curso</button>
   </div>
 
   <div id="inputs" class="tab-content active">
@@ -116,6 +117,9 @@
       if (tabId === "historico") {
         cargarHistorico();
       }
+      if (tabId === "procesos") {
+        cargarProcesos();
+      }
     });
   });
 
@@ -132,6 +136,7 @@
             <td>${r.id}</td>
             <td><a href="/descargas/${r.nombre_archivo}" download>${r.nombre_archivo}</a></td>
             <td>${r.fecha}</td>
+            <td><button onclick="ejecutarProceso(${r.id})">▶ Ejecutar</button></td>
             <td>${r.cantidad_registros}</td>
           </tr>`).join('');
 
@@ -196,6 +201,40 @@
     }
   });
 
+  
+  async function cargarProcesos() {
+    try {
+      const res = await fetch('/procesos-en-curso');
+      const data = await res.json();
+
+      const tabla = document.createElement('table');
+      tabla.border = '1';
+      tabla.innerHTML = `<tr><th>ID</th><th>Nombre</th><th>Estado</th><th>Fecha</th><th>Acciones</th></tr>` +
+        data.map(r =>
+          `<tr>
+            <td>${r.id}</td>
+            <td>${r.nombre}</td>
+            <td>${r.estado}</td>
+            <td>${r.fecha}</td>
+            <td><button onclick="ejecutarProceso(${r.id})">▶ Ejecutar</button></td>
+          </tr>`).join('');
+
+      const contenedor = document.getElementById("tablaProcesos");
+      contenedor.innerHTML = '';
+      contenedor.appendChild(tabla);
+    } catch (err) {
+      console.error("Error cargando procesos en curso:", err);
+    }
+  }
+
+
+  
+  function ejecutarProceso(id) {
+    console.log("Ejecutar proceso ID:", id);
+    alert("Se ejecutaría el proceso ID: " + id);
+  }
+
+
   // Cargar histórico inicialmente
   window.onload = () => {
     cargarHistorico();
@@ -203,5 +242,10 @@
 </script>
 
   
+
+  <div id="procesos" class="tab-content">
+    <h2>Procesos en curso</h2>
+    <div id="tablaProcesos"></div>
+  </div>
 </body>
 </html>

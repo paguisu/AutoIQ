@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Test Crear Proceso</title>
+</head>
+<body>
+  <h2>Test de /crear-proceso</h2>
+  <form id="formulario" enctype="multipart/form-data" method="POST" action="http://localhost:3000/crear-proceso">
+    <label>Nombre del proceso:</label><br>
+    <input type="text" name="nombre" value="Proceso Test"><br><br>
+
+    <label>Cabecera (pegá el JSON):</label><br>
+    <textarea name="cabecera" rows="10" cols="50">
+{
+  "nombre": "Cabecera Test",
+  "dni": "12345678",
+  "edad": 40,
+  "fecha_nacimiento": "1984-01-01",
+  "genero": "Masculino",
+  "estado_civil": "Soltero",
+  "medio_pago": "Débito en Cuenta",
+  "uso": "Particular",
+  "aseguradoras": ["siapi"]
+}
+    </textarea><br><br>
+
+    <label>Archivo combinatorio (.xlsx):</label><br>
+    <input type="file" name="archivoCombinatorio"><br><br>
+
+    <button type="submit">Crear Proceso</button>
+  </form>
+</body>
+</html>

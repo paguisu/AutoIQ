@@ -1,0 +1,16 @@
+{
+  "nombre": "Cabecera Test",
+  "fecha_creacion": "2025-08-07T19:41:34.583Z",
+  "datos": {
+    "dni": "12345678",
+    "edad": 40,
+    "fecha_nacimiento": "1984-01-01",
+    "genero": "Masculino",
+    "estado_civil": "Soltero",
+    "medio_pago": "Débito en Cuenta",
+    "uso": "Particular",
+    "aseguradoras": [
+      "siapi"
+    ]
+  }
+}

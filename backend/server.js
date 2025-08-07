@@ -1,15 +1,26 @@
+// ============================
+// 📁 server.js – AutoIQ
+// ============================
+
+// 📦 Dependencias principales
 const express = require('express');
 const multer = require('multer');
 const xlsx = require('xlsx');
 const path = require('path');
 const fs = require('fs');
+
+// 🛠 Utilidades internas
 const validarColumnas = require('./utils/validarColumnas');
 const combinarArchivos = require('../scripts/combinador');
 const db = require('./config/db');
+const crearProcesoRouter = require('./scripts/crearProcesoRouter');
+const ejecutarProcesoCotizacion = require('./scripts/ejecutarProceso');
 
+// 🚀 Inicialización
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// 📁 Configuración de carpeta para archivos subidos
 const rutaSubidos = path.join(__dirname, '../data/archivos_subidos');
 
 const storage = multer.diskStorage({
@@ -20,22 +31,30 @@ const storage = multer.diskStorage({
     cb(null, Date.now() + '-' + file.originalname);
   }
 });
-
 const upload = multer({ storage: storage });
+
+// 📂 Middlewares para servir archivos estáticos
 app.use(express.static('frontend'));
 app.use('/descargas', express.static(path.join(__dirname, '../frontend/descargas')));
 app.use(express.json());
 
+// ============================
+// 📍 Rutas del sistema
+// ============================
+
+// 🏠 Ruta principal: devuelve index.html
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
 
+// 📤 Ruta para subir y procesar archivos (modo combinatorio)
 app.post('/upload', upload.fields([
   { name: 'archivoVehiculos', maxCount: 1 },
   { name: 'archivoCP', maxCount: 1 },
   { name: 'archivoUnico', maxCount: 1 }
 ]), async (req, res) => {
   let resultado = { errores: [], mensajes: [], descarga: null };
+
   try {
     if (req.files.archivoVehiculos && req.files.archivoCP) {
       const fileVeh = req.files.archivoVehiculos[0];
@@ -105,6 +124,7 @@ app.post('/upload', upload.fields([
   res.json(resultado);
 });
 
+// 📜 Ruta para obtener historial de combinaciones
 app.get('/historial', async (req, res) => {
   try {
     const [rows] = await db.execute(
@@ -117,6 +137,25 @@ app.get('/historial', async (req, res) => {
   }
 });
 
+// 📌 Ruta para crear procesos de cotización (usa crearProcesoRouter)
+app.use('/', crearProcesoRouter);
+
+// ▶ Ruta para ejecutar un proceso por ID
+app.post('/ejecutar-proceso/:id', async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const resultado = await ejecutarProcesoCotizacion(id);
+    res.json(resultado);
+  } catch (err) {
+    console.error(`Error al ejecutar proceso ${id}:`, err.message);
+    res.status(500).json({ error: `No se pudo ejecutar el proceso ${id}` });
+  }
+});
+
+// ============================
+// 🚀 Inicio del servidor
+// ============================
 app.listen(PORT, () => {
   // console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
