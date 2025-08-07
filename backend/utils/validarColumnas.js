@@ -1,8 +1,3 @@
-// validarColumnas.js con logs de depuración
-function normalizar(nombre) {
-  return nombre.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").trim();
-}
-
 function validarColumnas(tipo, columnas) {
   const columnasNecesarias = {
     combinatoriaVehiculos: ["anio", "marca", "modelo", "codigo_infoauto", "suma", "cerokm"],
@@ -11,21 +6,17 @@ function validarColumnas(tipo, columnas) {
   };
 
   const requeridas = columnasNecesarias[tipo] || [];
-  const normalizadas = columnas.map(normalizar);
 
-  console.log("\n▶️ Columnas originales:", columnas);
+  console.log("▶️ Columnas originales:", columnas);
+
+  const normalizadas = columnas.map(c => c.toLowerCase().trim());
   console.log("🧽 Columnas normalizadas:", normalizadas);
   console.log("✅ Requeridas:", requeridas);
 
-  const faltantes = [];
-  requeridas.forEach(col => {
-    const colNorm = normalizar(col);
-    if (normalizadas.includes(colNorm)) {
-      console.log(`✔️ OK: ${col}`);
-    } else {
-      console.log(`❌ Falta: ${col}`);
-      faltantes.push(col);
-    }
+  const faltantes = requeridas.filter(col => {
+    const existe = normalizadas.includes(col.toLowerCase());
+    console.log(existe ? `✔️ OK: ${col}` : `❌ Falta: ${col}`);
+    return !existe;
   });
 
   return faltantes;

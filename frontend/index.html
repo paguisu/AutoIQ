@@ -99,84 +99,109 @@
     <h2>Base Propia</h2>
     <p>En construcción...</p>
   </div>
+<script>
+  const tabButtons = document.querySelectorAll(".tab-button");
+  const contents = document.querySelectorAll(".tab-content");
 
-  <script>
-    const tabButtons = document.querySelectorAll(".tab-button");
-    const contents = document.querySelectorAll(".tab-content");
+  tabButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      tabButtons.forEach(b => b.classList.remove("active"));
+      contents.forEach(c => c.classList.remove("active"));
 
-    tabButtons.forEach(btn => {
-      btn.addEventListener("click", () => {
-        tabButtons.forEach(b => b.classList.remove("active"));
-        contents.forEach(c => c.classList.remove("active"));
-        btn.classList.add("active");
-        document.getElementById(btn.dataset.tab).classList.add("active");
+      btn.classList.add("active");
+      const tabId = btn.dataset.tab;
+      document.getElementById(tabId).classList.add("active");
+
+      // Si clickeamos en la pestaña Histórico, recargar datos
+      if (tabId === "historico") {
+        cargarHistorico();
+      }
+    });
+  });
+
+  async function cargarHistorico() {
+    try {
+      const res = await fetch('/historial');
+      const data = await res.json();
+
+      const tabla = document.createElement('table');
+      tabla.border = '1';
+      tabla.innerHTML = `<tr><th>ID</th><th>Archivo</th><th>Fecha</th><th>Registros</th></tr>` +
+        data.map(r =>
+          `<tr>
+            <td>${r.id}</td>
+            <td><a href="/descargas/${r.nombre_archivo}" download>${r.nombre_archivo}</a></td>
+            <td>${r.fecha}</td>
+            <td>${r.cantidad_registros}</td>
+          </tr>`).join('');
+
+      const contenedor = document.getElementById("tablaHistorico");
+      contenedor.innerHTML = '';  // Limpiar antes de agregar nueva tabla
+      contenedor.appendChild(tabla);
+    } catch (err) {
+      console.error("Error cargando historial:", err);
+    }
+  }
+
+  document.getElementById("formUpload").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    const res = await fetch("/upload", { method: "POST", body: formData });
+    const resultado = await res.json();
+
+    const div = document.getElementById("resultadoCarga");
+    div.innerHTML = "";
+
+    if (resultado.mensajes.length > 0) {
+      resultado.mensajes.forEach(m => {
+        const p = document.createElement("p");
+        p.className = "success";
+        p.textContent = `✅ ${m}`;
+        div.appendChild(p);
       });
-    });
+    }
+    if (resultado.errores.length > 0) {
+      resultado.errores.forEach(err => {
+        const p = document.createElement("p");
+        p.className = "error";
+        p.textContent = `❌ ${err}`;
+        div.appendChild(p);
+      });
+    }
+    if (resultado.descarga) {
+      const a = document.createElement("a");
+      a.href = resultado.descarga;
+      a.textContent = "⬇️ Descargar archivo combinado";
+      a.download = "archivo_combinado.xlsx";
+      a.style.display = "inline-block";
+      a.style.marginTop = "10px";
+      div.appendChild(a);
+    }
+  });
 
-    window.onload = () => {
-      fetch('/historial')
-        .then(res => res.json())
-        .then(data => {
-          const tabla = document.createElement('table');
-          tabla.border = '1';
-          tabla.innerHTML = `<tr><th>ID</th><th>Archivo</th><th>Fecha</th><th>Registros</th></tr>` +
-            data.map(r => `<tr><td>${r.id}</td><td>${r.nombre_archivo}</td><td>${r.fecha}</td><td>${r.cantidad_registros}</td></tr>`).join('');
-          document.getElementById("tablaHistorico").appendChild(tabla);
-        });
-    };
+  document.getElementById("formCabecera").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    const asegurado = {};
+    formData.forEach((value, key) => { asegurado[key] = value; });
+    alert("Cabecera guardada en memoria (por ahora no se guarda en base de datos)");
+  });
 
-    document.getElementById("formUpload").addEventListener("submit", async function (e) {
-      e.preventDefault();
-      const formData = new FormData(this);
-      const res = await fetch("/upload", { method: "POST", body: formData });
-      const resultado = await res.json();
+  document.getElementById("edad").addEventListener("input", function () {
+    const edad = parseInt(this.value);
+    if (!isNaN(edad)) {
+      const hoy = new Date();
+      const nacimiento = new Date(hoy.getFullYear() - edad, hoy.getMonth(), hoy.getDate());
+      document.getElementById("fechaNacimiento").value = nacimiento.toISOString().split('T')[0];
+    }
+  });
 
-      const div = document.getElementById("resultadoCarga");
-      div.innerHTML = "";
+  // Cargar histórico inicialmente
+  window.onload = () => {
+    cargarHistorico();
+  };
+</script>
 
-      if (resultado.mensajes.length > 0) {
-        resultado.mensajes.forEach(m => {
-          const p = document.createElement("p");
-          p.className = "success";
-          p.textContent = `✅ ${m}`;
-          div.appendChild(p);
-        });
-      }
-      if (resultado.errores.length > 0) {
-        resultado.errores.forEach(err => {
-          const p = document.createElement("p");
-          p.className = "error";
-          p.textContent = `❌ ${err}`;
-          div.appendChild(p);
-        });
-      }
-      if (resultado.descarga) {
-        const a = document.createElement("a");
-        a.href = resultado.descarga;
-        a.textContent = "⬇️ Descargar archivo combinado";
-        a.download = "archivo_combinado.xlsx";
-        a.style.display = "inline-block";
-        a.style.marginTop = "10px";
-        div.appendChild(a);
-      }
-    });
-
-    document.getElementById("formCabecera").addEventListener("submit", function (e) {
-      e.preventDefault();
-      const formData = new FormData(this);
-      const asegurado = {};
-      formData.forEach((value, key) => { asegurado[key] = value; });
-      alert("Cabecera guardada en memoria (por ahora no se guarda en base de datos)");
-    });
-
-    document.getElementById("edad").addEventListener("input", function () {
-      const edad = parseInt(this.value);
-      if (!isNaN(edad)) {
-        const hoy = new Date();
-        const nacimiento = new Date(hoy.getFullYear() - edad, hoy.getMonth(), hoy.getDate());
-        document.getElementById("fechaNacimiento").value = nacimiento.toISOString().split('T')[0];
-      }
-    });
-  </script>
+  
 </body>
 </html>
