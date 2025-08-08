@@ -9,12 +9,14 @@ const xlsx = require('xlsx');
 const path = require('path');
 const fs = require('fs');
 
-// 🛠 Utilidades internas
+// 💠 Utilidades internas
 const validarColumnas = require('./utils/validarColumnas');
 const combinarArchivos = require('../scripts/combinador');
 const db = require('./config/db');
 const crearProcesoRouter = require('./scripts/crearProcesoRouter');
 const ejecutarProcesoCotizacion = require('./scripts/ejecutarProceso');
+const inferirTipoVehiculo = require('./scripts/inferirTipoVehiculo');
+const baseVehiculosRouter = require('./scripts/baseVehiculosRouter');
 
 // 🚀 Inicialización
 const app = express();
@@ -47,6 +49,9 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
 
+// 📄 Rutas para ABM base interna de vehículos
+app.use('/', baseVehiculosRouter);
+
 // 📤 Ruta para subir y procesar archivos (modo combinatorio o taxativo)
 app.post('/upload', upload.fields([
   { name: 'archivoVehiculos', maxCount: 1 },
@@ -57,7 +62,6 @@ app.post('/upload', upload.fields([
 
   try {
     if (req.files.archivoVehiculos && req.files.archivoCP) {
-      // 🧩 Modo combinatorio
       const fileVeh = req.files.archivoVehiculos[0];
       const fileCP = req.files.archivoCP[0];
 
@@ -85,11 +89,11 @@ app.post('/upload', upload.fields([
         if (faltanVeh.length > 0) resultado.errores.push(`Vehículos: ${faltanVeh.join(", ")}`);
         if (faltanCP.length > 0) resultado.errores.push(`Códigos postales: ${faltanCP.join(", ")}`);
       } else {
-        const rowsVeh = rowsVehOriginal.map(row => ({
+        const rowsVeh = await Promise.all(rowsVehOriginal.map(async row => ({
           ...row,
           uso: row.uso || "Particular",
-          tipo_vehiculo: row.tipo_vehiculo || "Sedán"
-        }));
+          tipo_vehiculo: row.tipo_vehiculo || await inferirTipoVehiculo(row.infoautocod, row.Marca, row.Modelo)
+        })));
 
         resultado.mensajes.push(`Vehículos: ${rowsVeh.length} registros válidos`);
         resultado.mensajes.push(`Códigos postales: ${rowsCP.length} registros válidos`);
@@ -116,7 +120,6 @@ app.post('/upload', upload.fields([
         );
       }
     } else if (req.files.archivoUnico) {
-      // 📦 Modo taxativo (un solo archivo cargado)
       const fileUnico = req.files.archivoUnico[0];
 
       const wb = xlsx.readFile(fileUnico.path);
@@ -125,27 +128,43 @@ app.post('/upload', upload.fields([
       if (!hoja) {
         resultado.errores.push("El archivo taxativo no contiene datos.");
       } else {
-        const registros = xlsx.utils.sheet_to_json(wb.Sheets[hoja], { defval: '' });
+        let registros = xlsx.utils.sheet_to_json(wb.Sheets[hoja], { defval: '' });
+        registros = await Promise.all(registros.map(async row => ({
+          ...row,
+          uso: row.uso || "Particular",
+          tipo_vehiculo: row.tipo_vehiculo || await inferirTipoVehiculo(row.infoautocod, row.Marca, row.Modelo)
+        })));
+
         const columnas = Object.keys(registros[0] || {});
+        const faltan = validarColumnas("taxativa", columnas);
 
         resultado.mensajes.push(`Columnas detectadas: ${columnas.join(", ")}`);
-        resultado.mensajes.push(`Archivo taxativo: ${registros.length} registros válidos`);
 
-        const nombreArchivo = `combinado-${Date.now()}.xlsx`;
-        const rutaDestino = path.join(__dirname, '../data/combinados', nombreArchivo);
-        const rutaPublica = path.join(__dirname, '../frontend/descargas', nombreArchivo);
+        if (faltan.length > 0) {
+          resultado.errores.push(`Faltan columnas requeridas: ${faltan.join(", ")}`);
+        } else {
+          resultado.mensajes.push(`Archivo taxativo: ${registros.length} registros válidos`);
 
-        fs.copyFileSync(fileUnico.path, rutaDestino);
-        fs.copyFileSync(fileUnico.path, rutaPublica);
+          const nombreArchivo = `taxativo-${Date.now()}.xlsx`;
+          const rutaDestino = path.join(__dirname, '../data/combinados', nombreArchivo);
+          const rutaPublica = path.join(__dirname, '../frontend/descargas', nombreArchivo);
 
-        resultado.mensajes.push(`Archivo taxativo cargado correctamente.`);
-        resultado.descarga = `/descargas/${nombreArchivo}`;
+          const wsNew = xlsx.utils.json_to_sheet(registros);
+          const wbNew = xlsx.utils.book_new();
+          xlsx.utils.book_append_sheet(wbNew, wsNew, "Sheet1");
 
-        const fecha = new Date();
-        await db.execute(
-          'INSERT INTO historial_combinaciones (nombre_archivo, fecha, cantidad_registros) VALUES (?, ?, ?)',
-          [nombreArchivo, fecha, registros.length]
-        );
+          xlsx.writeFile(wbNew, rutaDestino);
+          fs.copyFileSync(rutaDestino, rutaPublica);
+
+          resultado.mensajes.push("Archivo taxativo ajustado generado.");
+          resultado.descarga = `/descargas/${nombreArchivo}`;
+
+          const fecha = new Date();
+          await db.execute(
+            'INSERT INTO historial_combinaciones (nombre_archivo, fecha, cantidad_registros) VALUES (?, ?, ?)',
+            [nombreArchivo, fecha, registros.length]
+          );
+        }
       }
     } else {
       resultado.errores.push("No se detectaron archivos válidos.");
