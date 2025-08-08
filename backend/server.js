@@ -47,7 +47,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
 
-// 📤 Ruta para subir y procesar archivos (modo combinatorio)
+// 📤 Ruta para subir y procesar archivos (modo combinatorio o taxativo)
 app.post('/upload', upload.fields([
   { name: 'archivoVehiculos', maxCount: 1 },
   { name: 'archivoCP', maxCount: 1 },
@@ -57,6 +57,7 @@ app.post('/upload', upload.fields([
 
   try {
     if (req.files.archivoVehiculos && req.files.archivoCP) {
+      // 🧩 Modo combinatorio
       const fileVeh = req.files.archivoVehiculos[0];
       const fileCP = req.files.archivoCP[0];
 
@@ -114,6 +115,38 @@ app.post('/upload', upload.fields([
           [nombreArchivo, fecha, totalCombinaciones]
         );
       }
+    } else if (req.files.archivoUnico) {
+      // 📦 Modo taxativo (un solo archivo cargado)
+      const fileUnico = req.files.archivoUnico[0];
+
+      const wb = xlsx.readFile(fileUnico.path);
+      const hoja = wb.SheetNames.find(name => xlsx.utils.sheet_to_json(wb.Sheets[name], { defval: '' }).length > 0);
+
+      if (!hoja) {
+        resultado.errores.push("El archivo taxativo no contiene datos.");
+      } else {
+        const registros = xlsx.utils.sheet_to_json(wb.Sheets[hoja], { defval: '' });
+        const columnas = Object.keys(registros[0] || {});
+
+        resultado.mensajes.push(`Columnas detectadas: ${columnas.join(", ")}`);
+        resultado.mensajes.push(`Archivo taxativo: ${registros.length} registros válidos`);
+
+        const nombreArchivo = `combinado-${Date.now()}.xlsx`;
+        const rutaDestino = path.join(__dirname, '../data/combinados', nombreArchivo);
+        const rutaPublica = path.join(__dirname, '../frontend/descargas', nombreArchivo);
+
+        fs.copyFileSync(fileUnico.path, rutaDestino);
+        fs.copyFileSync(fileUnico.path, rutaPublica);
+
+        resultado.mensajes.push(`Archivo taxativo cargado correctamente.`);
+        resultado.descarga = `/descargas/${nombreArchivo}`;
+
+        const fecha = new Date();
+        await db.execute(
+          'INSERT INTO historial_combinaciones (nombre_archivo, fecha, cantidad_registros) VALUES (?, ?, ?)',
+          [nombreArchivo, fecha, registros.length]
+        );
+      }
     } else {
       resultado.errores.push("No se detectaron archivos válidos.");
     }
@@ -159,3 +192,5 @@ app.post('/ejecutar-proceso/:id', async (req, res) => {
 app.listen(PORT, () => {
   // console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
+
+// ⚠️ IMPORTANTE: si se reinicia el entorno, SIEMPRE se debe partir del código que está en GitHub o consultarme antes de modificar archivos existentes. Esto asegura continuidad y evita regresiones accidentales.
