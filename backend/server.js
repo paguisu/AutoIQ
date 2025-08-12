@@ -17,13 +17,25 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // ============================
-// Configuración de Multer (carga de archivos)
+// Configuración de Multer (carga de archivos con filtros)
 // ============================
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, path.join(__dirname, '../data/archivos_subidos')),
   filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
 });
-const upload = multer({ storage });
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 20 * 1024 * 1024 }, // 20 MB
+  fileFilter: (req, file, cb) => {
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (ext === '.xlsx' || ext === '.xls') {
+      cb(null, true);
+    } else {
+      cb(new Error('Solo se permiten archivos Excel (.xlsx o .xls)'));
+    }
+  }
+});
 
 // ============================
 // Servir frontend estático
@@ -48,7 +60,6 @@ app.post('/upload', upload.fields([
       const fileVeh = req.files.archivoVehiculos[0];
       const fileCP = req.files.archivoCP[0];
 
-      // Leer y convertir a JSON
       const wbVeh = xlsx.readFile(fileVeh.path);
       const hojaVeh = wbVeh.SheetNames[0];
       let rowsVeh = xlsx.utils.sheet_to_json(wbVeh.Sheets[hojaVeh]);
@@ -57,7 +68,13 @@ app.post('/upload', upload.fields([
       const hojaCP = wbCP.SheetNames[0];
       const rowsCP = xlsx.utils.sheet_to_json(wbCP.Sheets[hojaCP]);
 
-      // Completar valores por defecto si faltan
+      // Control de combinaciones para evitar saturar RAM
+      const totalCombinaciones = rowsVeh.length * rowsCP.length;
+      if (totalCombinaciones > 5_000_000) {
+        throw new Error(`Demasiadas combinaciones: ${totalCombinaciones}. Reduce el tamaño de los archivos.`);
+      }
+
+      // Completar valores por defecto
       let completadosUso = 0, completadosTipo = 0;
       rowsVeh = rowsVeh.map(r => {
         if (!r.uso) { r.uso = "Particular"; completadosUso++; }
@@ -65,30 +82,26 @@ app.post('/upload', upload.fields([
         return r;
       });
 
-      // Validar columnas requeridas
+      // Validar columnas
       const columnasVeh = Object.keys(rowsVeh[0] || {});
       const columnasCP = Object.keys(rowsCP[0] || {});
       const faltanVeh = validarColumnas("combinatoriaVehiculos", columnasVeh);
       const faltanCP = validarColumnas("combinatoriaCP", columnasCP);
 
-      // Reportar columnas encontradas
       mensaje += `<li>Columnas archivo vehículos: ${columnasVeh.join(", ")}</li>`;
       mensaje += `<li>Columnas archivo códigos postales: ${columnasCP.join(", ")}</li>`;
 
-      // Si faltan columnas, mostrar error
       if (faltanVeh.length || faltanCP.length) {
         mensaje += `<li style="color:red;">Error: Faltan columnas.</li>`;
         if (faltanVeh.length) mensaje += `<li>Vehículos: ${faltanVeh.join(", ")}</li>`;
         if (faltanCP.length) mensaje += `<li>Códigos postales: ${faltanCP.join(", ")}</li>`;
       } else {
-        // Guardar archivo de vehículos ajustado
         const vehPathFinal = fileVeh.path.replace(/\.xlsx$/i, '-ajustado.xlsx');
         const wsVeh = xlsx.utils.json_to_sheet(rowsVeh);
         const wbVehNuevo = xlsx.utils.book_new();
         xlsx.utils.book_append_sheet(wbVehNuevo, wsVeh, "Sheet1");
         xlsx.writeFile(wbVehNuevo, vehPathFinal);
 
-        // Generar archivo combinado
         const nombreArchivo = `combinado-${Date.now()}.xlsx`;
         const rutaDestino = path.join(__dirname, '../data/combinados', nombreArchivo);
         const rutaPublica = path.join(__dirname, '../frontend/descargas', nombreArchivo);
@@ -96,13 +109,11 @@ app.post('/upload', upload.fields([
         const total = combinarArchivos(vehPathFinal, fileCP.path, rutaDestino);
         fs.copyFileSync(rutaDestino, rutaPublica);
 
-        // Registrar en historial
         await db.execute(
           'INSERT INTO historial_combinaciones (nombre_archivo, fecha, cantidad_registros) VALUES (?, ?, ?)',
           [nombreArchivo, new Date(), total]
         );
 
-        // Mensajes finales
         mensaje += `<li>Archivo combinado generado con ${total} registros.</li>`;
         mensaje += `<li><a href="/descargas/${nombreArchivo}" download>⬇️ Descargar archivo combinado</a></li>`;
         if (completadosUso || completadosTipo) {
@@ -116,12 +127,10 @@ app.post('/upload', upload.fields([
     } else if (req.files.archivoUnico) {
       const fileUnico = req.files.archivoUnico[0];
 
-      // Leer y convertir a JSON
       const wb = xlsx.readFile(fileUnico.path);
       const hoja = wb.SheetNames[0];
       let rows = xlsx.utils.sheet_to_json(wb.Sheets[hoja]);
 
-      // Completar valores por defecto si faltan
       let completadosUso = 0, completadosTipo = 0;
       rows = rows.map(r => {
         if (!r.uso) { r.uso = "Particular"; completadosUso++; }
@@ -129,7 +138,6 @@ app.post('/upload', upload.fields([
         return r;
       });
 
-      // Validar columnas requeridas
       const columnas = Object.keys(rows[0] || {});
       const faltan = validarColumnas("taxativa", columnas);
 
@@ -138,7 +146,6 @@ app.post('/upload', upload.fields([
       if (faltan.length) {
         mensaje += `<li style="color:red;">Error: Faltan columnas: ${faltan.join(", ")}</li>`;
       } else {
-        // Guardar archivo taxativo ajustado
         const nombreArchivo = `taxativo-${Date.now()}.xlsx`;
         const rutaDestino = path.join(__dirname, '../data/combinados', nombreArchivo);
         const rutaPublica = path.join(__dirname, '../frontend/descargas', nombreArchivo);
@@ -150,13 +157,11 @@ app.post('/upload', upload.fields([
 
         fs.copyFileSync(rutaDestino, rutaPublica);
 
-        // Registrar en historial
         await db.execute(
           'INSERT INTO historial_combinaciones (nombre_archivo, fecha, cantidad_registros) VALUES (?, ?, ?)',
           [nombreArchivo, new Date(), rows.length]
         );
 
-        // Mensajes finales
         mensaje += `<li>Archivo taxativo generado con ${rows.length} registros.</li>`;
         mensaje += `<li><a href="/descargas/${nombreArchivo}" download>⬇️ Descargar archivo taxativo</a></li>`;
         if (completadosUso || completadosTipo) {
@@ -164,9 +169,6 @@ app.post('/upload', upload.fields([
         }
       }
 
-    // -------------------------------------------------
-    // SIN ARCHIVOS VÁLIDOS
-    // -------------------------------------------------
     } else {
       mensaje += `<li style="color:red;">No se detectaron archivos válidos.</li>`;
     }
