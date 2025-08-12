@@ -2,7 +2,7 @@ function validarColumnas(tipo, columnas) {
   const columnasNecesarias = {
     combinatoriaVehiculos: ["anio", "marca", "modelo", "codigo_infoauto", "suma", "cerokm"],
     combinatoriaCP: ["cp", "localidad", "provincia"],
-    taxativa: ["marca", "modelo", "codigo_infoauto", "anio", "codigo_postal", "localidad", "provincia"]
+    taxativa: ["marca", "modelo", "codigo_infoauto", "anio", "cp", "localidad", "provincia"]
   };
 
   const requeridas = columnasNecesarias[tipo] || [];

@@ -1,197 +1,192 @@
 // ============================
-// 📁 server.js – AutoIQ
+// Importación de módulos
 // ============================
-
-// 📦 Dependencias principales
 const express = require('express');
 const multer = require('multer');
 const xlsx = require('xlsx');
 const path = require('path');
 const fs = require('fs');
-
-// 🛠 Utilidades internas
 const validarColumnas = require('./utils/validarColumnas');
 const combinarArchivos = require('./scripts/combinador');
-
 const db = require('./config/db');
-const crearProcesoRouter = require('./scripts/crearProcesoRouter');
-const ejecutarProcesoCotizacion = require('./scripts/ejecutarProceso');
 
-// 🚀 Inicialización
+// ============================
+// Configuración de servidor
+// ============================
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// 📁 Configuración de carpeta para archivos subidos
-const rutaSubidos = path.join(__dirname, '../data/archivos_subidos');
-
+// ============================
+// Configuración de Multer (carga de archivos)
+// ============================
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, rutaSubidos);
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname);
-  }
+  destination: (req, file, cb) => cb(null, path.join(__dirname, '../data/archivos_subidos')),
+  filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
 });
-const upload = multer({ storage: storage });
-
-// 📂 Middlewares para servir archivos estáticos
-app.use(express.static('frontend'));
-app.use('/descargas', express.static(path.join(__dirname, '../frontend/descargas')));
-app.use(express.json());
+const upload = multer({ storage });
 
 // ============================
-// 📍 Rutas del sistema
+// Servir frontend estático
 // ============================
+app.use(express.static(path.join(__dirname, '../frontend')));
 
-// 🏠 Ruta principal: devuelve index.html
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/index.html'));
-});
-
-// 📤 Ruta para subir y procesar archivos (modo combinatorio o taxativo)
+// ============================
+// Endpoint principal de carga y procesamiento de archivos
+// ============================
 app.post('/upload', upload.fields([
   { name: 'archivoVehiculos', maxCount: 1 },
   { name: 'archivoCP', maxCount: 1 },
   { name: 'archivoUnico', maxCount: 1 }
 ]), async (req, res) => {
-  let resultado = { errores: [], mensajes: [], descarga: null };
-
+  let mensaje = '<h2>Resultado de la carga</h2><ul>';
   try {
+
+    // -------------------------------------------------
+    // MODO COMBINATORIO: archivoVehiculos + archivoCP
+    // -------------------------------------------------
     if (req.files.archivoVehiculos && req.files.archivoCP) {
-      // 🧩 Modo combinatorio
       const fileVeh = req.files.archivoVehiculos[0];
       const fileCP = req.files.archivoCP[0];
 
+      // Leer y convertir a JSON
       const wbVeh = xlsx.readFile(fileVeh.path);
-      const vehHojaNombre = wbVeh.SheetNames.find(name => xlsx.utils.sheet_to_json(wbVeh.Sheets[name], { defval: '' }).length > 0);
+      const hojaVeh = wbVeh.SheetNames[0];
+      let rowsVeh = xlsx.utils.sheet_to_json(wbVeh.Sheets[hojaVeh]);
+
       const wbCP = xlsx.readFile(fileCP.path);
-      const cpHojaNombre = wbCP.SheetNames.find(name => xlsx.utils.sheet_to_json(wbCP.Sheets[name], { defval: '' }).length > 0);
+      const hojaCP = wbCP.SheetNames[0];
+      const rowsCP = xlsx.utils.sheet_to_json(wbCP.Sheets[hojaCP]);
 
-      if (!vehHojaNombre) throw new Error("El archivo de vehículos no contiene datos");
-      if (!cpHojaNombre) throw new Error("El archivo de códigos postales no contiene datos");
+      // Completar valores por defecto si faltan
+      let completadosUso = 0, completadosTipo = 0;
+      rowsVeh = rowsVeh.map(r => {
+        if (!r.uso) { r.uso = "Particular"; completadosUso++; }
+        if (!r.tipo_vehiculo) { r.tipo_vehiculo = "Sedán"; completadosTipo++; }
+        return r;
+      });
 
-      const rowsVehOriginal = xlsx.utils.sheet_to_json(wbVeh.Sheets[vehHojaNombre], { defval: '' });
-      const rowsCP = xlsx.utils.sheet_to_json(wbCP.Sheets[cpHojaNombre], { defval: '' });
-
-      const columnasVeh = Object.keys(rowsVehOriginal[0] || {});
+      // Validar columnas requeridas
+      const columnasVeh = Object.keys(rowsVeh[0] || {});
       const columnasCP = Object.keys(rowsCP[0] || {});
-
       const faltanVeh = validarColumnas("combinatoriaVehiculos", columnasVeh);
       const faltanCP = validarColumnas("combinatoriaCP", columnasCP);
 
-      resultado.mensajes.push(`Columnas detectadas en archivo de vehículos: ${columnasVeh.join(", ")}`);
-      resultado.mensajes.push(`Columnas detectadas en archivo de códigos postales: ${columnasCP.join(", ")}`);
+      // Reportar columnas encontradas
+      mensaje += `<li>Columnas archivo vehículos: ${columnasVeh.join(", ")}</li>`;
+      mensaje += `<li>Columnas archivo códigos postales: ${columnasCP.join(", ")}</li>`;
 
-      if (faltanVeh.length > 0 || faltanCP.length > 0) {
-        if (faltanVeh.length > 0) resultado.errores.push(`Vehículos: ${faltanVeh.join(", ")}`);
-        if (faltanCP.length > 0) resultado.errores.push(`Códigos postales: ${faltanCP.join(", ")}`);
+      // Si faltan columnas, mostrar error
+      if (faltanVeh.length || faltanCP.length) {
+        mensaje += `<li style="color:red;">Error: Faltan columnas.</li>`;
+        if (faltanVeh.length) mensaje += `<li>Vehículos: ${faltanVeh.join(", ")}</li>`;
+        if (faltanCP.length) mensaje += `<li>Códigos postales: ${faltanCP.join(", ")}</li>`;
       } else {
-        const rowsVeh = rowsVehOriginal.map(row => ({
-          ...row,
-          uso: row.uso || "Particular",
-          tipo_vehiculo: row.tipo_vehiculo || "Sedán"
-        }));
+        // Guardar archivo de vehículos ajustado
+        const vehPathFinal = fileVeh.path.replace(/\.xlsx$/i, '-ajustado.xlsx');
+        const wsVeh = xlsx.utils.json_to_sheet(rowsVeh);
+        const wbVehNuevo = xlsx.utils.book_new();
+        xlsx.utils.book_append_sheet(wbVehNuevo, wsVeh, "Sheet1");
+        xlsx.writeFile(wbVehNuevo, vehPathFinal);
 
-        resultado.mensajes.push(`Vehículos: ${rowsVeh.length} registros válidos`);
-        resultado.mensajes.push(`Códigos postales: ${rowsCP.length} registros válidos`);
-
-        const wsVehNew = xlsx.utils.json_to_sheet(rowsVeh);
-        const wbVehNew = xlsx.utils.book_new();
-        xlsx.utils.book_append_sheet(wbVehNew, wsVehNew, "Sheet1");
-        const vehPathFinal = fileVeh.path.replace(".xlsx", "-ajustado.xlsx");
-        xlsx.writeFile(wbVehNew, vehPathFinal);
-
+        // Generar archivo combinado
         const nombreArchivo = `combinado-${Date.now()}.xlsx`;
         const rutaDestino = path.join(__dirname, '../data/combinados', nombreArchivo);
         const rutaPublica = path.join(__dirname, '../frontend/descargas', nombreArchivo);
-        const totalCombinaciones = combinarArchivos(vehPathFinal, fileCP.path, rutaDestino);
 
+        const total = combinarArchivos(vehPathFinal, fileCP.path, rutaDestino);
         fs.copyFileSync(rutaDestino, rutaPublica);
-        resultado.mensajes.push(`Archivo combinado generado con ${totalCombinaciones} registros.`);
-        resultado.descarga = `/descargas/${nombreArchivo}`;
 
-        const fecha = new Date();
+        // Registrar en historial
         await db.execute(
           'INSERT INTO historial_combinaciones (nombre_archivo, fecha, cantidad_registros) VALUES (?, ?, ?)',
-          [nombreArchivo, fecha, totalCombinaciones]
+          [nombreArchivo, new Date(), total]
         );
+
+        // Mensajes finales
+        mensaje += `<li>Archivo combinado generado con ${total} registros.</li>`;
+        mensaje += `<li><a href="/descargas/${nombreArchivo}" download>⬇️ Descargar archivo combinado</a></li>`;
+        if (completadosUso || completadosTipo) {
+          mensaje += `<li>Se completaron ${completadosUso} "uso" y ${completadosTipo} "tipo_vehiculo".</li>`;
+        }
       }
+
+    // -------------------------------------------------
+    // MODO TAXATIVO: archivoUnico
+    // -------------------------------------------------
     } else if (req.files.archivoUnico) {
-      // 📦 Modo taxativo (un solo archivo cargado)
       const fileUnico = req.files.archivoUnico[0];
 
+      // Leer y convertir a JSON
       const wb = xlsx.readFile(fileUnico.path);
-      const hoja = wb.SheetNames.find(name => xlsx.utils.sheet_to_json(wb.Sheets[name], { defval: '' }).length > 0);
+      const hoja = wb.SheetNames[0];
+      let rows = xlsx.utils.sheet_to_json(wb.Sheets[hoja]);
 
-      if (!hoja) {
-        resultado.errores.push("El archivo taxativo no contiene datos.");
+      // Completar valores por defecto si faltan
+      let completadosUso = 0, completadosTipo = 0;
+      rows = rows.map(r => {
+        if (!r.uso) { r.uso = "Particular"; completadosUso++; }
+        if (!r.tipo_vehiculo) { r.tipo_vehiculo = "Sedán"; completadosTipo++; }
+        return r;
+      });
+
+      // Validar columnas requeridas
+      const columnas = Object.keys(rows[0] || {});
+      const faltan = validarColumnas("taxativa", columnas);
+
+      mensaje += `<li>Columnas archivo único: ${columnas.join(", ")}</li>`;
+
+      if (faltan.length) {
+        mensaje += `<li style="color:red;">Error: Faltan columnas: ${faltan.join(", ")}</li>`;
       } else {
-        const registros = xlsx.utils.sheet_to_json(wb.Sheets[hoja], { defval: '' });
-        const columnas = Object.keys(registros[0] || {});
-
-        resultado.mensajes.push(`Columnas detectadas: ${columnas.join(", ")}`);
-        resultado.mensajes.push(`Archivo taxativo: ${registros.length} registros válidos`);
-
-        const nombreArchivo = `combinado-${Date.now()}.xlsx`;
+        // Guardar archivo taxativo ajustado
+        const nombreArchivo = `taxativo-${Date.now()}.xlsx`;
         const rutaDestino = path.join(__dirname, '../data/combinados', nombreArchivo);
         const rutaPublica = path.join(__dirname, '../frontend/descargas', nombreArchivo);
 
-        fs.copyFileSync(fileUnico.path, rutaDestino);
-        fs.copyFileSync(fileUnico.path, rutaPublica);
+        const ws = xlsx.utils.json_to_sheet(rows);
+        const wbNuevo = xlsx.utils.book_new();
+        xlsx.utils.book_append_sheet(wbNuevo, ws, "Sheet1");
+        xlsx.writeFile(wbNuevo, rutaDestino);
 
-        resultado.mensajes.push(`Archivo taxativo cargado correctamente.`);
-        resultado.descarga = `/descargas/${nombreArchivo}`;
+        fs.copyFileSync(rutaDestino, rutaPublica);
 
-        const fecha = new Date();
+        // Registrar en historial
         await db.execute(
           'INSERT INTO historial_combinaciones (nombre_archivo, fecha, cantidad_registros) VALUES (?, ?, ?)',
-          [nombreArchivo, fecha, registros.length]
+          [nombreArchivo, new Date(), rows.length]
         );
+
+        // Mensajes finales
+        mensaje += `<li>Archivo taxativo generado con ${rows.length} registros.</li>`;
+        mensaje += `<li><a href="/descargas/${nombreArchivo}" download>⬇️ Descargar archivo taxativo</a></li>`;
+        if (completadosUso || completadosTipo) {
+          mensaje += `<li>Se completaron ${completadosUso} "uso" y ${completadosTipo} "tipo_vehiculo".</li>`;
+        }
       }
+
+    // -------------------------------------------------
+    // SIN ARCHIVOS VÁLIDOS
+    // -------------------------------------------------
     } else {
-      resultado.errores.push("No se detectaron archivos válidos.");
+      mensaje += `<li style="color:red;">No se detectaron archivos válidos.</li>`;
     }
-  } catch (error) {
-    resultado.errores.push(`Error al procesar archivos: ${error.message}`);
-  }
 
-  res.json(resultado);
-});
-
-// 📜 Ruta para obtener historial de combinaciones
-app.get('/historial', async (req, res) => {
-  try {
-    const [rows] = await db.execute(
-      'SELECT id, nombre_archivo, DATE_FORMAT(fecha, "%Y-%m-%d %H:%i:%s") AS fecha, cantidad_registros FROM historial_combinaciones ORDER BY fecha DESC'
-    );
-    res.json(rows);
-  } catch (error) {
-    console.error('Error al obtener historial:', error);
-    res.status(500).json({ error: 'Error al obtener historial' });
-  }
-});
-
-// 📌 Ruta para crear procesos de cotización (usa crearProcesoRouter)
-app.use('/', crearProcesoRouter);
-
-// ▶ Ruta para ejecutar un proceso por ID
-app.post('/ejecutar-proceso/:id', async (req, res) => {
-  const id = req.params.id;
-
-  try {
-    const resultado = await ejecutarProcesoCotizacion(id);
-    res.json(resultado);
   } catch (err) {
-    console.error(`Error al ejecutar proceso ${id}:`, err.message);
-    res.status(500).json({ error: `No se pudo ejecutar el proceso ${id}` });
+    mensaje += `<li style="color:red;">Error: ${err.message}</li>`;
   }
+  mensaje += '</ul><a href="/">Volver</a>';
+  res.send(mensaje);
 });
 
 // ============================
-// 🚀 Inicio del servidor
+// Endpoint para ver historial
 // ============================
-app.listen(PORT, () => {
-  // console.log(`Servidor corriendo en http://localhost:${PORT}`);
+app.get('/historial', async (req, res) => {
+  const [rows] = await db.execute('SELECT * FROM historial_combinaciones ORDER BY fecha DESC');
+  res.json(rows);
 });
 
-// ⚠️ IMPORTANTE: si se reinicia el entorno, SIEMPRE se debe partir del código que está en GitHub o consultarme antes de modificar archivos existentes. Esto asegura continuidad y evita regresiones accidentales.
+// ============================
+// Iniciar servidor
+// ============================
+app.listen(PORT, () => console.log(`Servidor escuchando en puerto ${PORT}`));
