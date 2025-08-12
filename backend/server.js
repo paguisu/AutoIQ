@@ -11,7 +11,8 @@ const fs = require('fs');
 
 // 🛠 Utilidades internas
 const validarColumnas = require('./utils/validarColumnas');
-const combinarArchivos = require('../scripts/combinador');
+const combinarArchivos = require('./scripts/combinador');
+
 const db = require('./config/db');
 const crearProcesoRouter = require('./scripts/crearProcesoRouter');
 const ejecutarProcesoCotizacion = require('./scripts/ejecutarProceso');

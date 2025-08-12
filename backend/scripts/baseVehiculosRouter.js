@@ -1,18 +1,16 @@
-// ================================
-// 📁 baseVehiculosRouter.js
-// ================================
+// baseVehiculosRouter.js completo, actualizado desde GitHub y ampliado para Base Autos
 
 const express = require('express');
 const router = express.Router();
-const xlsx = require('xlsx');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const xlsx = require('xlsx');
 const db = require('../config/db');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, '../../data/archivos_subidos'));
+    cb(null, path.join(__dirname, '../data/archivos_subidos'));
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + '-' + file.originalname);
@@ -20,7 +18,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// 📥 GET: descargar base de datos en Excel
+// 🔽 Descargar base completa en Excel
 router.get('/base-vehiculos', async (req, res) => {
   try {
     const [rows] = await db.execute('SELECT * FROM datos_vehiculos_propios');
@@ -28,9 +26,8 @@ router.get('/base-vehiculos', async (req, res) => {
     const ws = xlsx.utils.json_to_sheet(rows);
     xlsx.utils.book_append_sheet(wb, ws, 'Base');
 
-    const filePath = path.join(__dirname, '../../data/combinados/base_vehiculos.xlsx');
+    const filePath = path.join(__dirname, '../data/combinados/base_vehiculos.xlsx');
     xlsx.writeFile(wb, filePath);
-
     res.download(filePath);
   } catch (err) {
     console.error('Error al generar archivo:', err);
@@ -38,17 +35,16 @@ router.get('/base-vehiculos', async (req, res) => {
   }
 });
 
-// 📤 POST: subir base en Excel y actualizar registros
+// 🔼 Subir base por Excel y actualizar registros
 router.post('/base-vehiculos', upload.single('archivoBase'), async (req, res) => {
   try {
     const wb = xlsx.readFile(req.file.path);
     const hoja = wb.SheetNames[0];
     const registros = xlsx.utils.sheet_to_json(wb.Sheets[hoja], { defval: '' });
-
     let insertados = 0;
+
     for (const reg of registros) {
       if (!reg.infoautocod || !reg.tipo_vehiculo) continue;
-
       const [existe] = await db.execute(
         'SELECT id FROM datos_vehiculos_propios WHERE infoautocod = ? LIMIT 1',
         [reg.infoautocod]
@@ -75,100 +71,77 @@ router.post('/base-vehiculos', upload.single('archivoBase'), async (req, res) =>
   }
 });
 
-// 🔍 GET: buscar por infoautocod o por marca+modelo
+// 🔍 Buscar por infoautocod o marca + modelo
 router.get('/buscar-vehiculo', async (req, res) => {
   const { infoautocod, marca, modelo } = req.query;
-
   try {
-    let query = 'SELECT * FROM datos_vehiculos_propios WHERE ';
-    let params = [];
-
+    let result = [];
     if (infoautocod) {
-      query += 'infoautocod = ?';
-      params.push(infoautocod);
+      [result] = await db.execute('SELECT * FROM datos_vehiculos_propios WHERE infoautocod = ?', [infoautocod]);
     } else if (marca && modelo) {
-      query += 'LOWER(marca) = ? AND LOWER(modelo) = ?';
-      params.push(marca.toLowerCase(), modelo.toLowerCase());
-    } else {
-      return res.status(400).send('Faltan parámetros de búsqueda');
+      [result] = await db.execute('SELECT * FROM datos_vehiculos_propios WHERE marca = ? AND modelo = ?', [marca, modelo]);
     }
-
-    const [rows] = await db.execute(query, params);
-    res.json(rows);
+    res.json(result);
   } catch (err) {
-    console.error('Error al buscar registro:', err);
-    res.status(500).send('Error al buscar registro');
+    console.error('Error en búsqueda:', err);
+    res.status(500).send('Error en búsqueda');
   }
 });
 
-// 🗑️ DELETE: eliminar por infoautocod
+// 🗑️ Eliminar por infoautocod
 router.delete('/base-vehiculos/:infoautocod', async (req, res) => {
+  const { infoautocod } = req.params;
   try {
-    const { infoautocod } = req.params;
-    const [rows] = await db.execute('DELETE FROM datos_vehiculos_propios WHERE infoautocod = ?', [infoautocod]);
-    res.send(`🗑️ Registros eliminados: ${rows.affectedRows}`);
+    await db.execute('DELETE FROM datos_vehiculos_propios WHERE infoautocod = ?', [infoautocod]);
+    res.send('Registro eliminado correctamente');
   } catch (err) {
     console.error('Error al eliminar:', err);
-    res.status(500).send('Error al eliminar registro');
+    res.status(500).send('Error al eliminar el registro');
   }
 });
 
-// ✏️ PUT: editar por infoautocod
+// ✏️ Editar registro existente
 router.put('/base-vehiculos/:infoautocod', async (req, res) => {
   const { infoautocod } = req.params;
   const { marca, modelo, tipo_vehiculo } = req.body;
-
-  if (!marca || !modelo || !tipo_vehiculo) return res.status(400).send('Faltan campos obligatorios');
-
   try {
-    // Validar duplicados por marca + modelo
-    const [existente] = await db.execute(
-      'SELECT id FROM datos_vehiculos_propios WHERE LOWER(marca) = ? AND LOWER(modelo) = ? AND infoautocod != ?',
-      [marca.toLowerCase(), modelo.toLowerCase(), infoautocod]
+    const [duplicado] = await db.execute(
+      'SELECT * FROM datos_vehiculos_propios WHERE marca = ? AND modelo = ? AND infoautocod != ?',
+      [marca, modelo, infoautocod]
     );
-
-    if (existente.length > 0) return res.status(400).send('Ya existe un registro con esa marca y modelo');
+    if (duplicado.length > 0) return res.status(400).send('Ya existe otro registro con esa marca y modelo');
 
     await db.execute(
       'UPDATE datos_vehiculos_propios SET marca = ?, modelo = ?, tipo_vehiculo = ?, fuente = ?, fecha_alta = NOW() WHERE infoautocod = ?',
       [marca, modelo, tipo_vehiculo, 'manual', infoautocod]
     );
-
-    res.send('✏️ Registro actualizado correctamente');
+    res.send('Registro actualizado');
   } catch (err) {
-    console.error('Error al editar:', err);
-    res.status(500).send('Error al editar registro');
+    console.error('Error al actualizar:', err);
+    res.status(500).send('Error al actualizar el registro');
   }
 });
 
-// ➕ POST: alta manual de un nuevo registro
+// ➕ Agregar nuevo registro
 router.post('/base-vehiculos/manual', async (req, res) => {
   const { infoautocod, marca, modelo, tipo_vehiculo } = req.body;
-
-  if (!infoautocod || !marca || !modelo || !tipo_vehiculo) return res.status(400).send('Faltan campos obligatorios');
-
   try {
-    // Validar que no exista infoautocod
-    const [existCod] = await db.execute('SELECT id FROM datos_vehiculos_propios WHERE infoautocod = ?', [infoautocod]);
-    if (existCod.length > 0) return res.status(400).send('Ya existe un registro con ese infoautocod');
+    const [existeCod] = await db.execute('SELECT id FROM datos_vehiculos_propios WHERE infoautocod = ?', [infoautocod]);
+    if (existeCod.length > 0) return res.status(400).send('Ya existe un registro con ese infoautocod');
 
-    // Validar duplicado por marca + modelo
-    const [existMarcaModelo] = await db.execute(
-      'SELECT id FROM datos_vehiculos_propios WHERE LOWER(marca) = ? AND LOWER(modelo) = ?',
-      [marca.toLowerCase(), modelo.toLowerCase()]
-    );
-    if (existMarcaModelo.length > 0) return res.status(400).send('Ya existe un registro con esa marca y modelo');
+    const [existeMM] = await db.execute('SELECT id FROM datos_vehiculos_propios WHERE marca = ? AND modelo = ?', [marca, modelo]);
+    if (existeMM.length > 0) return res.status(400).send('Ya existe un registro con esa marca y modelo');
 
     await db.execute(
       'INSERT INTO datos_vehiculos_propios (infoautocod, marca, modelo, tipo_vehiculo, fuente, fecha_alta) VALUES (?, ?, ?, ?, ?, NOW())',
       [infoautocod, marca, modelo, tipo_vehiculo, 'manual']
     );
-
-    res.send('✅ Registro agregado exitosamente');
+    res.send('Registro agregado exitosamente');
   } catch (err) {
-    console.error('Error al agregar registro:', err);
-    res.status(500).send('Error al agregar registro');
+    console.error('Error al agregar:', err);
+    res.status(500).send('Error al agregar el registro');
   }
 });
 
 module.exports = router;
+

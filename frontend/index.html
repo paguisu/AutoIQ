@@ -46,6 +46,7 @@
       <input type="file" name="archivoUnico" />
       <br /><br />
       <input type="submit" value="Subir y Procesar" />
+      <button type="button" onclick="limpiarArchivos()">🧹 Limpiar archivos</button>
     </form>
     <div id="resultadoCarga"></div>
   </div>
@@ -247,5 +248,12 @@
     <h2>Procesos en curso</h2>
     <div id="tablaProcesos"></div>
   </div>
+  <script>
+  function limpiarArchivos() {
+    document.querySelector('input[name="archivoVehiculos"]').value = "";
+    document.querySelector('input[name="archivoCP"]').value = "";
+    document.querySelector('input[name="archivoUnico"]').value = "";
+  }
+</script>
 </body>
 </html>
