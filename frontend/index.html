@@ -149,41 +149,60 @@
     }
   }
 
+  // ⬇️⬇️ CAMBIO: submit robusto (acepta HTML o JSON) ⬇️⬇️
   document.getElementById("formUpload").addEventListener("submit", async function (e) {
     e.preventDefault();
     const formData = new FormData(this);
-    const res = await fetch("/upload", { method: "POST", body: formData });
-    const resultado = await res.json();
-
     const div = document.getElementById("resultadoCarga");
-    div.innerHTML = "";
+    div.innerHTML = "Procesando…";
 
-    if (resultado.mensajes.length > 0) {
-      resultado.mensajes.forEach(m => {
-        const p = document.createElement("p");
-        p.className = "success";
-        p.textContent = `✅ ${m}`;
-        div.appendChild(p);
-      });
-    }
-    if (resultado.errores.length > 0) {
-      resultado.errores.forEach(err => {
-        const p = document.createElement("p");
-        p.className = "error";
-        p.textContent = `❌ ${err}`;
-        div.appendChild(p);
-      });
-    }
-    if (resultado.descarga) {
-      const a = document.createElement("a");
-      a.href = resultado.descarga;
-      a.textContent = "⬇️ Descargar archivo combinado";
-      a.download = "archivo_combinado.xlsx";
-      a.style.display = "inline-block";
-      a.style.marginTop = "10px";
-      div.appendChild(a);
+    try {
+      const res = await fetch("/upload", { method: "POST", body: formData });
+      const ct = (res.headers.get("content-type") || "").toLowerCase();
+
+      if (ct.includes("application/json")) {
+        const resultado = await res.json();
+        div.innerHTML = "";
+        if (resultado.mensajes && resultado.mensajes.length > 0) {
+          resultado.mensajes.forEach(m => {
+            const p = document.createElement("p");
+            p.className = "success";
+            p.textContent = `✅ ${m}`;
+            div.appendChild(p);
+          });
+        }
+        if (resultado.errores && resultado.errores.length > 0) {
+          resultado.errores.forEach(err => {
+            const p = document.createElement("p");
+            p.className = "error";
+            p.textContent = `❌ ${err}`;
+            div.appendChild(p);
+          });
+        }
+        if (resultado.descarga) {
+          const a = document.createElement("a");
+          a.href = resultado.descarga;
+          a.textContent = "⬇️ Descargar archivo combinado";
+          a.download = "archivo_combinado.xlsx";
+          a.style.display = "inline-block";
+          a.style.marginTop = "10px";
+          div.appendChild(a);
+        }
+      } else {
+        // El backend actual responde HTML: lo muestro dentro del resumen
+        const html = await res.text();
+        const bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+        div.innerHTML = bodyMatch ? bodyMatch[1] : html;
+      }
+
+      // Refrescar histórico después de subir
+      try { await cargarHistorico(); } catch {}
+    } catch (err) {
+      console.error("Error subiendo:", err);
+      div.innerHTML = `<p class="error">❌ Error al procesar los archivos.</p>`;
     }
   });
+  // ⬆️⬆️ FIN CAMBIO ⬆️⬆️
 
   document.getElementById("formCabecera").addEventListener("submit", function (e) {
     e.preventDefault();

@@ -1,194 +1,132 @@
-// ============================
-// Importación de módulos
-// ============================
 const express = require('express');
 const multer = require('multer');
-const xlsx = require('xlsx');
 const path = require('path');
 const fs = require('fs');
-const validarColumnas = require('./utils/validarColumnas');
-const combinarArchivos = require('./scripts/combinador');
 const db = require('./config/db');
 
-// ============================
-// Configuración de servidor
-// ============================
+// Procesadores (módulos separados)
+const procesarCombinatorio = require('./scripts/procesarCombinatorio');
+const procesarTaxativo = require('./scripts/procesarTaxativo');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ============================
-// Configuración de Multer (carga de archivos con filtros)
-// ============================
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, path.join(__dirname, '../data/archivos_subidos')),
-  filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
-});
-
-const upload = multer({
-  storage,
-  limits: { fileSize: 20 * 1024 * 1024 }, // 20 MB
-  fileFilter: (req, file, cb) => {
-    const ext = path.extname(file.originalname).toLowerCase();
-    if (ext === '.xlsx' || ext === '.xls') {
-      cb(null, true);
-    } else {
-      cb(new Error('Solo se permiten archivos Excel (.xlsx o .xls)'));
-    }
-  }
-});
-
-// ============================
-// Servir frontend estático
-// ============================
+// Static del frontend
 app.use(express.static(path.join(__dirname, '../frontend')));
 
-// ============================
-// Endpoint principal de carga y procesamiento de archivos
-// ============================
-app.post('/upload', upload.fields([
-  { name: 'archivoVehiculos', maxCount: 1 },
-  { name: 'archivoCP', maxCount: 1 },
-  { name: 'archivoUnico', maxCount: 1 }
-]), async (req, res) => {
-  let mensaje = '<h2>Resultado de la carga</h2><ul>';
-  try {
+// Storage para uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, '../data/archivos_subidos/'));
+  },
+  filename: (req, file, cb) => {
+    const safe = file.originalname.replace(/\s+/g, '_');
+    cb(null, `${Date.now()}-${safe}`);
+  },
+});
+const upload = multer({ storage });
 
-    // -------------------------------------------------
-    // MODO COMBINATORIO: archivoVehiculos + archivoCP
-    // -------------------------------------------------
-    if (req.files.archivoVehiculos && req.files.archivoCP) {
-      const fileVeh = req.files.archivoVehiculos[0];
-      const fileCP = req.files.archivoCP[0];
+// Home
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/index.html'));
+});
 
-      const wbVeh = xlsx.readFile(fileVeh.path);
-      const hojaVeh = wbVeh.SheetNames[0];
-      let rowsVeh = xlsx.utils.sheet_to_json(wbVeh.Sheets[hojaVeh]);
+// Upload + proceso (combinatorio o taxativo)
+app.post(
+  '/upload',
+  upload.fields([
+    { name: 'archivoVehiculos', maxCount: 1 },
+    { name: 'archivoCP', maxCount: 1 },
+    { name: 'archivoUnico', maxCount: 1 },
+  ]),
+  async (req, res) => {
+    let html = '<h2>Resultado de la carga</h2><ul style="line-height:1.6">';
+    try {
+      const tieneCombinatorio = req.files?.archivoVehiculos && req.files?.archivoCP;
+      const tieneTaxativo = req.files?.archivoUnico;
 
-      const wbCP = xlsx.readFile(fileCP.path);
-      const hojaCP = wbCP.SheetNames[0];
-      const rowsCP = xlsx.utils.sheet_to_json(wbCP.Sheets[hojaCP]);
-
-      // Control de combinaciones para evitar saturar RAM
-      const totalCombinaciones = rowsVeh.length * rowsCP.length;
-      if (totalCombinaciones > 5_000_000) {
-        throw new Error(`Demasiadas combinaciones: ${totalCombinaciones}. Reduce el tamaño de los archivos.`);
+      if (!tieneCombinatorio && !tieneTaxativo) {
+        html += '<li style="color:red;">⚠️ No se detectaron archivos válidos.</li>';
+        html += '</ul><a href="/" style="display:inline-block;margin-top:20px;">🔙 Volver al inicio</a>';
+        return res.send(wrap(html));
       }
 
-      // Completar valores por defecto
-      let completadosUso = 0, completadosTipo = 0;
-      rowsVeh = rowsVeh.map(r => {
-        if (!r.uso) { r.uso = "Particular"; completadosUso++; }
-        if (!r.tipo_vehiculo) { r.tipo_vehiculo = "Sedán"; completadosTipo++; }
-        return r;
-      });
+      let resultado;
 
-      // Validar columnas
-      const columnasVeh = Object.keys(rowsVeh[0] || {});
-      const columnasCP = Object.keys(rowsCP[0] || {});
-      const faltanVeh = validarColumnas("combinatoriaVehiculos", columnasVeh);
-      const faltanCP = validarColumnas("combinatoriaCP", columnasCP);
+      if (tieneCombinatorio) {
+        const fileVeh = req.files.archivoVehiculos[0];
+        const fileCP  = req.files.archivoCP[0];
+        console.log('📄 Vehículos subido:', fileVeh.originalname, '->', fileVeh.path);
+        console.log('📄 CP subido:', fileCP.originalname, '->', fileCP.path);
 
-      mensaje += `<li>Columnas archivo vehículos: ${columnasVeh.join(", ")}</li>`;
-      mensaje += `<li>Columnas archivo códigos postales: ${columnasCP.join(", ")}</li>`;
+        resultado = await procesarCombinatorio.procesar({
+          rutaVehiculos: fileVeh.path,
+          rutaCodigosPostales: fileCP.path,
+          opciones: {},
+        });
 
-      if (faltanVeh.length || faltanCP.length) {
-        mensaje += `<li style="color:red;">Error: Faltan columnas.</li>`;
-        if (faltanVeh.length) mensaje += `<li>Vehículos: ${faltanVeh.join(", ")}</li>`;
-        if (faltanCP.length) mensaje += `<li>Códigos postales: ${faltanCP.join(", ")}</li>`;
-      } else {
-        const vehPathFinal = fileVeh.path.replace(/\.xlsx$/i, '-ajustado.xlsx');
-        const wsVeh = xlsx.utils.json_to_sheet(rowsVeh);
-        const wbVehNuevo = xlsx.utils.book_new();
-        xlsx.utils.book_append_sheet(wbVehNuevo, wsVeh, "Sheet1");
-        xlsx.writeFile(wbVehNuevo, vehPathFinal);
-
-        const nombreArchivo = `combinado-${Date.now()}.xlsx`;
-        const rutaDestino = path.join(__dirname, '../data/combinados', nombreArchivo);
-        const rutaPublica = path.join(__dirname, '../frontend/descargas', nombreArchivo);
-
-        const total = combinarArchivos(vehPathFinal, fileCP.path, rutaDestino);
-        fs.copyFileSync(rutaDestino, rutaPublica);
-
-        await db.execute(
-          'INSERT INTO historial_combinaciones (nombre_archivo, fecha, cantidad_registros) VALUES (?, ?, ?)',
-          [nombreArchivo, new Date(), total]
-        );
-
-        mensaje += `<li>Archivo combinado generado con ${total} registros.</li>`;
-        mensaje += `<li><a href="/descargas/${nombreArchivo}" download>⬇️ Descargar archivo combinado</a></li>`;
-        if (completadosUso || completadosTipo) {
-          mensaje += `<li>Se completaron ${completadosUso} "uso" y ${completadosTipo} "tipo_vehiculo".</li>`;
+        html += `<li>✅ Modo: <strong>Combinatorio</strong></li>`;
+        if (resultado.detalles?.completadosUso || resultado.detalles?.completadosTipo) {
+          html += `<li style="color:orange;">⚠️ Se completaron automáticamente ${resultado.detalles.completadosUso || 0} campos "uso" y ${resultado.detalles.completadosTipo || 0} campos "tipo_vehiculo".</li>`;
         }
-      }
-
-    // -------------------------------------------------
-    // MODO TAXATIVO: archivoUnico
-    // -------------------------------------------------
-    } else if (req.files.archivoUnico) {
-      const fileUnico = req.files.archivoUnico[0];
-
-      const wb = xlsx.readFile(fileUnico.path);
-      const hoja = wb.SheetNames[0];
-      let rows = xlsx.utils.sheet_to_json(wb.Sheets[hoja]);
-
-      let completadosUso = 0, completadosTipo = 0;
-      rows = rows.map(r => {
-        if (!r.uso) { r.uso = "Particular"; completadosUso++; }
-        if (!r.tipo_vehiculo) { r.tipo_vehiculo = "Sedán"; completadosTipo++; }
-        return r;
-      });
-
-      const columnas = Object.keys(rows[0] || {});
-      const faltan = validarColumnas("taxativa", columnas);
-
-      mensaje += `<li>Columnas archivo único: ${columnas.join(", ")}</li>`;
-
-      if (faltan.length) {
-        mensaje += `<li style="color:red;">Error: Faltan columnas: ${faltan.join(", ")}</li>`;
       } else {
-        const nombreArchivo = `taxativo-${Date.now()}.xlsx`;
-        const rutaDestino = path.join(__dirname, '../data/combinados', nombreArchivo);
-        const rutaPublica = path.join(__dirname, '../frontend/descargas', nombreArchivo);
-
-        const ws = xlsx.utils.json_to_sheet(rows);
-        const wbNuevo = xlsx.utils.book_new();
-        xlsx.utils.book_append_sheet(wbNuevo, ws, "Sheet1");
-        xlsx.writeFile(wbNuevo, rutaDestino);
-
-        fs.copyFileSync(rutaDestino, rutaPublica);
-
-        await db.execute(
-          'INSERT INTO historial_combinaciones (nombre_archivo, fecha, cantidad_registros) VALUES (?, ?, ?)',
-          [nombreArchivo, new Date(), rows.length]
-        );
-
-        mensaje += `<li>Archivo taxativo generado con ${rows.length} registros.</li>`;
-        mensaje += `<li><a href="/descargas/${nombreArchivo}" download>⬇️ Descargar archivo taxativo</a></li>`;
-        if (completadosUso || completadosTipo) {
-          mensaje += `<li>Se completaron ${completadosUso} "uso" y ${completadosTipo} "tipo_vehiculo".</li>`;
-        }
+        // Taxativo
+        const rutaUnico = req.files.archivoUnico[0].path;
+        resultado = await procesarTaxativo.procesar({
+          rutaArchivo: rutaUnico,
+          opciones: {},
+        });
+        html += `<li>✅ Modo: <strong>Taxativo</strong></li>`;
       }
 
-    } else {
-      mensaje += `<li style="color:red;">No se detectaron archivos válidos.</li>`;
+      // Copia a carpeta pública de descargas
+      const rutaPublica = path.join(__dirname, '../frontend/descargas', resultado.salida.archivoNombre);
+      fs.copyFileSync(resultado.salida.archivoRuta, rutaPublica);
+
+      // Persistir en historial
+      const fecha = new Date();
+      await db.execute(
+        'INSERT INTO historial_combinaciones (nombre_archivo, fecha, cantidad_registros) VALUES (?, ?, ?)',
+        [resultado.salida.archivoNombre, fecha, resultado.salida.filas || 0]
+      );
+
+      // Mensaje al usuario
+      html += `<li>📄 Archivo generado: <strong>${resultado.salida.archivoNombre}</strong></li>`;
+      if (resultado.salida.filas != null) {
+        html += `<li>🧮 Registros: <strong>${resultado.salida.filas}</strong></li>`;
+      }
+      if (resultado.salida.columnas != null) {
+        html += `<li>🔢 Columnas: <strong>${resultado.salida.columnas}</strong></li>`;
+      }
+      html += `<li><a href="/descargas/${resultado.salida.archivoNombre}" download style="display:inline-block;margin-top:10px;">⬇️ Descargar</a></li>`;
+    } catch (err) {
+      console.error('Error en /upload:', err);
+      html += `<li style="color:red;">❌ Error al procesar archivos: ${err.message}</li>`;
     }
 
-  } catch (err) {
-    mensaje += `<li style="color:red;">Error: ${err.message}</li>`;
+    html += '</ul><a href="/" style="display:inline-block;margin-top:20px;">🔙 Volver al inicio</a>';
+    res.send(wrap(html));
   }
-  mensaje += '</ul><a href="/">Volver</a>';
-  res.send(mensaje);
-});
+);
 
-// ============================
-// Endpoint para ver historial
-// ============================
+// Historial
 app.get('/historial', async (req, res) => {
-  const [rows] = await db.execute('SELECT * FROM historial_combinaciones ORDER BY fecha DESC');
-  res.json(rows);
+  try {
+    const [rows] = await db.execute(
+      'SELECT id, nombre_archivo, DATE_FORMAT(fecha, "%Y-%m-%d %H:%i:%s") AS fecha, cantidad_registros FROM historial_combinaciones ORDER BY fecha DESC'
+    );
+    res.json(rows);
+  } catch (error) {
+    console.error('Error al obtener historial:', error);
+    res.status(500).json({ error: 'Error al obtener historial' });
+  }
 });
 
-// ============================
-// Iniciar servidor
-// ============================
-app.listen(PORT, () => console.log(`Servidor escuchando en puerto ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en http://localhost:${PORT}`);
+});
+
+// Helpers
+function wrap(inner) {
+  return `<html><body style="font-family:Arial,sans-serif;margin:24px;">${inner}</body></html>`;
+}
