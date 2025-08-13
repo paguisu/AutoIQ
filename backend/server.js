@@ -63,15 +63,29 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
 
+// Reemplazar función leerHoja por esta versión
 function leerHoja(ruta) {
   const wb = xlsx.readFile(ruta);
+
+  // Elegir la primera hoja con contenido
   const hoja = wb.SheetNames.find((name) => {
-    const datos = xlsx.utils.sheet_to_json(wb.Sheets[name]);
-    return datos.length > 0;
+    const ws = wb.Sheets[name];
+    const rowsA1 = xlsx.utils.sheet_to_json(ws, { header: 1, blankrows: false, defval: null });
+    return rowsA1 && rowsA1.length > 0;
   });
   if (!hoja) throw new Error('El archivo no contiene hojas con datos');
-  const rows = xlsx.utils.sheet_to_json(wb.Sheets[hoja]);
-  const cols = Object.keys(rows[0] || {});
+
+  const ws = wb.Sheets[hoja];
+
+  // 1) Tomamos los ENCABEZADOS directamente (no desde la primera fila de datos)
+  const rowsA1 = xlsx.utils.sheet_to_json(ws, { header: 1, blankrows: false, defval: null });
+  // Buscamos la primera fila que tenga al menos una celda no vacía como encabezado
+  const headerRow = rowsA1.find(r => Array.isArray(r) && r.some(v => (v !== null && String(v).trim() !== '')));
+  const cols = (headerRow || []).map(v => String(v ?? '').trim()).filter(Boolean);
+
+  // 2) Cargamos las filas como objetos manteniendo columnas aunque estén vacías
+  const rows = xlsx.utils.sheet_to_json(ws, { defval: null, blankrows: false });
+
   return { rows, cols, hoja };
 }
 
