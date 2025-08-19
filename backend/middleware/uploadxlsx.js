@@ -1,49 +1,64 @@
-// backend/middleware/uploadXlsx.js
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const XLSX = require('xlsx');
 
-const UPLOAD_DIR = path.join(__dirname, '../../data/archivos_subidos');
-fs.mkdirSync(UPLOAD_DIR, { recursive: true });
-
+// Configuración de Multer para aceptar solo .xls y .xlsx y guardar en la carpeta temporal
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, UPLOAD_DIR),
-  filename: (req, file, cb) => {
-    const safe = file.originalname.replace(/\s+/g, '_');
-    cb(null, `${Date.now()}-${safe}`);
-  },
+    destination: (req, file, cb) => {
+        const uploadPath = path.join(__dirname, '../../data/archivos_subidos');
+        if (!fs.existsSync(uploadPath)) {
+            fs.mkdirSync(uploadPath, { recursive: true });
+        }
+        cb(null, uploadPath);
+    },
+    filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, uniqueSuffix + path.extname(file.originalname));
+    }
 });
 
-const limits = {
-  fileSize: parseInt(process.env.MAX_UPLOAD_MB || '25', 10) * 1024 * 1024, // 25MB por defecto
-  files: 3,
-};
-
+// Filtro para validar extensión
 const fileFilter = (req, file, cb) => {
-  const ext = path.extname(file.originalname).toLowerCase();
-  if (ext === '.xlsx') return cb(null, true);
-  return cb(new multer.MulterError('LIMIT_UNEXPECTED_FILE', `Formato inválido: ${ext}. Solo se aceptan archivos .xlsx`));
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (ext === '.xlsx' || ext === '.xls') {
+        cb(null, true);
+    } else {
+        cb(new Error('Solo se permiten archivos con extensión .xls o .xlsx'), false);
+    }
 };
 
-// Exporto el instance Multer (lo usaremos con .fields([...]) en server.js)
-const uploadXlsx = multer({ storage, fileFilter, limits });
+const upload = multer({
+    storage: storage,
+    fileFilter: fileFilter,
+    limits: { fileSize: 10 * 1024 * 1024 } // 10 MB
+});
 
-// Handler de errores presentable en HTML
-function wrap(inner) {
-  return `<html><body style="font-family:Arial,sans-serif;margin:24px;">${inner}</body></html>`;
-}
-function multerErrorHandler(err, req, res, next) {
-  if (err instanceof multer.MulterError) {
-    const maxMb = Math.round(limits.fileSize / (1024 * 1024));
-    let msg = 'Error al subir archivos.';
-    if (err.code === 'LIMIT_FILE_SIZE') msg = `El archivo supera el límite de ${maxMb} MB.`;
-    else if (err.code === 'LIMIT_UNEXPECTED_FILE') msg = err.message || 'Archivo no permitido.';
-    const html = `<h2>Resultado de la carga</h2><ul style="line-height:1.6">
-      <li style="color:red;">❌ ${msg}</li>
-    </ul><a href="/" style="display:inline-block;margin-top:20px;">🔙 Volver al inicio</a>`;
-    return res.status(400).send(wrap(html));
-  }
-  next(err);
+// Función para leer y procesar el archivo, asegurando que 'suma' siempre esté presente
+function leerArchivoXLSX(filePath) {
+    const workbook = XLSX.readFile(filePath);
+    const sheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[sheetName];
+
+    // Leemos todas las filas como arrays para capturar encabezados reales, aunque estén vacíos
+    const rawData = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
+    const headers = rawData[0].map(h => (h || "").toString().trim());
+
+    // Asegurar que 'suma' esté presente en los encabezados
+    if (!headers.includes("suma")) {
+        headers.push("suma");
+    }
+
+    // Convertir las filas a objetos usando los encabezados asegurados
+    const data = rawData.slice(1).map(row => {
+        const obj = {};
+        headers.forEach((col, idx) => {
+            obj[col] = row[idx] !== undefined ? row[idx] : "";
+        });
+        return obj;
+    });
+
+    return { headers, data };
 }
 
-module.exports = { uploadXlsx, multerErrorHandler, UPLOAD_DIR };
+module.exports = { upload, leerArchivoXLSX };

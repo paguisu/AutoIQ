@@ -1,192 +1,240 @@
 // backend/server.js
 const express = require('express');
+const multer = require('multer');
+const xlsx = require('xlsx');
 const path = require('path');
 const fs = require('fs');
-const xlsx = require('xlsx');
-
-const db = require('./config/db');
-const combinarArchivos = require('./scripts/combinador');
 const validarColumnas = require('./utils/validarColumnas');
 
-const multer = require('multer');
-
-// ==== CONFIGURACIÓN MULTER ====
-const UPLOAD_DIR = path.join(__dirname, '../data/archivos_subidos');
-fs.mkdirSync(UPLOAD_DIR, { recursive: true });
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, UPLOAD_DIR),
-  filename: (req, file, cb) => {
-    const safe = file.originalname.replace(/\s+/g, '_');
-    cb(null, `${Date.now()}-${safe}`);
-  },
-});
-
-const limits = {
-  fileSize: parseInt(process.env.MAX_UPLOAD_MB || '25', 10) * 1024 * 1024,
-  files: 3,
-};
-
-const fileFilter = (req, file, cb) => {
-  const ext = path.extname(file.originalname).toLowerCase();
-  if (ext === '.xlsx') return cb(null, true);
-  return cb(new multer.MulterError('LIMIT_UNEXPECTED_FILE', `Formato inválido: ${ext}. Solo se aceptan archivos .xlsx`));
-};
-
-const uploadXlsx = multer({ storage, fileFilter, limits });
-
-function wrap(inner) {
-  return `<html><body style="font-family:Arial,sans-serif;margin:24px;">${inner}</body></html>`;
+// ⚠️ Ajustá esta ruta si tu combinador está en otro lugar.
+// En tu repo aparece bajo backend/scripts en algunas ramas.
+// Si estuviera en la raíz, usar: require('../combinador')
+let combinarArchivos;
+try {
+  combinarArchivos = require('./scripts/combinador');
+} catch {
+  combinarArchivos = require('../scripts/combinador');
 }
+const db = require('./config/db');
 
-function multerErrorHandler(err, req, res, next) {
-  if (err instanceof multer.MulterError) {
-    const maxMb = Math.round(limits.fileSize / (1024 * 1024));
-    let msg = 'Error al subir archivos.';
-    if (err.code === 'LIMIT_FILE_SIZE') msg = `El archivo supera el límite de ${maxMb} MB.`;
-    else if (err.code === 'LIMIT_UNEXPECTED_FILE') msg = err.message || 'Archivo no permitido.';
-    const html = `<h2>Resultado de la carga</h2><ul style="line-height:1.6">
-      <li style="color:red;">❌ ${msg}</li>
-    </ul><a href="/" style="display:inline-block;margin-top:20px;">🔙 Volver al inicio</a>`;
-    return res.status(400).send(wrap(html));
-  }
-  next(err);
-}
-
-// ==== EXPRESS ====
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Asegurar carpetas necesarias
+const dirSubidos = path.join(__dirname, '../data/archivos_subidos');
+const dirCombinados = path.join(__dirname, '../data/combinados');
+const dirDescargas = path.join(__dirname, '../frontend/descargas');
+[dirSubidos, dirCombinados, dirDescargas].forEach((d) => {
+  if (!fs.existsSync(d)) fs.mkdirSync(d, { recursive: true });
+});
+
+// Multer storage + fileFilter con extensiones válidas
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, dirSubidos),
+  filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname),
+});
+
+const extensionesValidas = ['.xlsx', '.csv'];
+const upload = multer({
+  storage,
+  fileFilter: (req, file, cb) => {
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (!extensionesValidas.includes(ext)) {
+      return cb(
+        new multer.MulterError(
+          'LIMIT_UNEXPECTED_FILE',
+          `Extensión no permitida (${ext}). Solo .xlsx / .csv`
+        )
+      );
+    }
+    cb(null, true);
+  },
+  limits: {
+    // opcional: 25 MB
+    fileSize: 25 * 1024 * 1024,
+  },
+});
+
+// Servir frontend
 app.use(express.static(path.join(__dirname, '../frontend')));
 
+// Home
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
 
-// Reemplazar función leerHoja por esta versión
-function leerHoja(ruta) {
-  const wb = xlsx.readFile(ruta);
-
-  // Elegir la primera hoja con contenido
-  const hoja = wb.SheetNames.find((name) => {
-    const ws = wb.Sheets[name];
-    const rowsA1 = xlsx.utils.sheet_to_json(ws, { header: 1, blankrows: false, defval: null });
-    return rowsA1 && rowsA1.length > 0;
-  });
-  if (!hoja) throw new Error('El archivo no contiene hojas con datos');
-
-  const ws = wb.Sheets[hoja];
-
-  // 1) Tomamos los ENCABEZADOS directamente (no desde la primera fila de datos)
-  const rowsA1 = xlsx.utils.sheet_to_json(ws, { header: 1, blankrows: false, defval: null });
-  // Buscamos la primera fila que tenga al menos una celda no vacía como encabezado
-  const headerRow = rowsA1.find(r => Array.isArray(r) && r.some(v => (v !== null && String(v).trim() !== '')));
-  const cols = (headerRow || []).map(v => String(v ?? '').trim()).filter(Boolean);
-
-  // 2) Cargamos las filas como objetos manteniendo columnas aunque estén vacías
-  const rows = xlsx.utils.sheet_to_json(ws, { defval: null, blankrows: false });
-
-  return { rows, cols, hoja };
+// Helper para encontrar archivos por varios posibles names
+function pickFile(filesArray, possibleNames) {
+  if (!Array.isArray(filesArray)) return undefined;
+  return filesArray.find((f) =>
+    possibleNames.map((s) => s.toLowerCase()).includes(f.fieldname.toLowerCase())
+  );
 }
 
-app.post(
-  '/upload',
-  uploadXlsx.fields([
-    { name: 'archivoVehiculos', maxCount: 1 },
-    { name: 'archivoCP', maxCount: 1 },
-    { name: 'archivoUnico', maxCount: 1 },
-  ]),
-  async (req, res) => {
-    let html = '<h2>Resultado de la carga</h2><ul style="line-height:1.6">';
-    try {
-      const tieneCombinatorio = req.files?.archivoVehiculos && req.files?.archivoCP;
-      const tieneTaxativo = req.files?.archivoUnico;
+// Upload: aceptar cualquier campo y mapearlo a lo que el server necesita
+app.post('/upload', upload.any(), async (req, res) => {
+  let mensaje = '<h2>Resultado de la carga</h2><ul>';
 
-      if (!tieneCombinatorio && !tieneTaxativo) {
-        html += '<li style="color:red;">⚠️ No se detectaron archivos válidos.</li>';
-        return res.send(wrap(html));
-      }
+  try {
+    const files = req.files || [];
 
-      if (tieneCombinatorio) {
-        const vehRuta = req.files.archivoVehiculos[0].path;
-        const cpRuta = req.files.archivoCP[0].path;
+    // Mapear nombres alternativos
+    const fileVeh = pickFile(files, ['archivoVehiculos', 'archivoVehiculo', 'vehiculos', 'vehiculo']);
+    const fileCP = pickFile(files, ['archivoCP', 'codigosPostales', 'codigoPostal', 'cp']);
+    const fileUnico = pickFile(files, ['archivoUnico', 'taxativo']);
 
-        const veh = leerHoja(vehRuta);
-        const cp = leerHoja(cpRuta);
+    // --- Flujo combinatorio (2 archivos) ---
+    if (fileVeh && fileCP) {
+      // Abrir libros y detectar primera hoja con datos
+      const wbVeh = xlsx.readFile(fileVeh.path);
+      const vehHojaNombre =
+        wbVeh.SheetNames.find((name) => {
+          const datos = xlsx.utils.sheet_to_json(wbVeh.Sheets[name]);
+          return datos.length > 0;
+        }) || wbVeh.SheetNames[0];
 
-        const faltanVeh = validarColumnas('combinatoriaVehiculos', veh.cols);
-        const faltanCP = validarColumnas('combinatoriaCP', cp.cols);
+      const wbCP = xlsx.readFile(fileCP.path);
+      const cpHojaNombre =
+        wbCP.SheetNames.find((name) => {
+          const datos = xlsx.utils.sheet_to_json(wbCP.Sheets[name]);
+          return datos.length > 0;
+        }) || wbCP.SheetNames[0];
 
-        if (faltanVeh.length || faltanCP.length) {
-          html += '<li style="color:red;">❌ Faltan columnas requeridas:</li><ul>';
-          if (faltanVeh.length) html += `<li>Vehículos: ${faltanVeh.join(', ')}</li>`;
-          if (faltanCP.length) html += `<li>Códigos postales: ${faltanCP.join(', ')}</li>`;
-          html += '</ul><li>👉 El nombre del archivo es libre; lo importante son los encabezados internos.</li>';
-          return res.send(wrap(html));
+      if (!vehHojaNombre) throw new Error('El archivo de vehículos no contiene hojas con datos');
+      if (!cpHojaNombre) throw new Error('El archivo de códigos postales no contiene hojas con datos');
+
+      let rowsVeh = xlsx.utils.sheet_to_json(wbVeh.Sheets[vehHojaNombre]);
+      const rowsCP = xlsx.utils.sheet_to_json(wbCP.Sheets[cpHojaNombre]);
+
+      // Completar por defecto ciertos campos
+      let completadosUso = 0;
+      let completadosTipo = 0;
+      rowsVeh = rowsVeh.map((row) => {
+        const r = { ...row };
+        if (!r.uso) {
+          r.uso = 'Particular';
+          completadosUso++;
+        }
+        if (!r.tipo_vehiculo) {
+          r.tipo_vehiculo = 'Sedán';
+          completadosTipo++;
+        }
+        return r;
+      });
+
+      const columnasVeh = Object.keys(rowsVeh[0] || {});
+      const columnasCP = Object.keys(rowsCP[0] || {});
+
+      const faltanVeh = validarColumnas('combinatoriaVehiculos', columnasVeh);
+      const faltanCP = validarColumnas('combinatoriaCP', columnasCP);
+
+      mensaje += `<li><strong>Columnas detectadas en archivo de vehículos:</strong> ${columnasVeh.join(', ') || '(ninguna)'}</li>`;
+      mensaje += `<li><strong>Columnas detectadas en archivo de códigos postales:</strong> ${columnasCP.join(', ') || '(ninguna)'}</li>`;
+
+      if (faltanVeh.length > 0 || faltanCP.length > 0) {
+        mensaje += '<li style="color:red;">❌ Error: Faltan columnas requeridas:</li><ul>';
+        if (faltanVeh.length > 0) mensaje += `<li>Vehículos: ${faltanVeh.join(', ')}</li>`;
+        if (faltanCP.length > 0) mensaje += `<li>Códigos postales: ${faltanCP.join(', ')}</li>`;
+        mensaje += '</ul>';
+      } else {
+        mensaje += `<li>✅ Vehículos: ${rowsVeh.length} registros válidos</li>`;
+        mensaje += `<li>✅ Códigos postales: ${rowsCP.length} registros válidos</li>`;
+
+        if (completadosUso > 0 || completadosTipo > 0) {
+          mensaje += `<li style="color:orange;">⚠️ Se completaron automáticamente ${completadosUso} "uso" y ${completadosTipo} "tipo_vehiculo".</li>`;
         }
 
-        let completadosUso = 0;
-        let completadosTipo = 0;
-        let completadosSuma = 0;
-
-        const vehRowsAjustadas = veh.rows.map((r) => {
-          const row = { ...r };
-          if (!row.uso) { row.uso = 'Particular'; completadosUso++; }
-          if (!row.tipo_vehiculo) { row.tipo_vehiculo = 'Sedán'; completadosTipo++; }
-          if (!row.suma) { row.suma = 0; completadosSuma++; }
-          return row;
-        });
-
+        // Guardar versión ajustada del archivo de vehículos
+        const wsVehNew = xlsx.utils.json_to_sheet(rowsVeh);
         const wbVehNew = xlsx.utils.book_new();
-        const wsVehNew = xlsx.utils.json_to_sheet(vehRowsAjustadas);
         xlsx.utils.book_append_sheet(wbVehNew, wsVehNew, 'Sheet1');
-        const vehAjustado = vehRuta.replace(/\.xlsx$/i, '-ajustado.xlsx');
-        xlsx.writeFile(wbVehNew, vehAjustado);
+        const vehPathFinal = fileVeh.path.replace(/\.xlsx$/i, '-ajustado.xlsx');
+        xlsx.writeFile(wbVehNew, vehPathFinal);
 
+        // Combinar y publicar
         const nombreArchivo = `combinado-${Date.now()}.xlsx`;
-        const rutaDestino = path.join(__dirname, '../data/combinados', nombreArchivo);
-        const rutaPublica = path.join(__dirname, '../frontend/descargas', nombreArchivo);
+        const rutaDestino = path.join(dirCombinados, nombreArchivo);
+        const rutaPublica = path.join(dirDescargas, nombreArchivo);
 
-        const total = combinarArchivos(vehAjustado, cpRuta, rutaDestino);
+        const totalCombinaciones = combinarArchivos(vehPathFinal, fileCP.path, rutaDestino);
         fs.copyFileSync(rutaDestino, rutaPublica);
 
+        mensaje += `<li>📄 Archivo combinado generado con <strong>${totalCombinaciones}</strong> registros.</li>`;
+        mensaje += `<li><a href="/descargas/${nombreArchivo}" download style="display:inline-block;margin-top:10px;">⬇️ Descargar archivo combinado</a></li>`;
+
+        // Guardar historial
         const fecha = new Date();
-        await db.execute(
-          'INSERT INTO historial_combinaciones (nombre_archivo, fecha, cantidad_registros) VALUES (?, ?, ?)',
-          [nombreArchivo, fecha, total]
-        );
-
-        html += `<li>✅ Modo: <strong>Combinatorio</strong></li>`;
-        html += `<li>📄 Archivo generado: <strong>${nombreArchivo}</strong></li>`;
-        html += `<li>🧮 Registros: <strong>${total}</strong></li>`;
-        if (completadosUso || completadosTipo || completadosSuma) {
-          html += `<li style="color:orange;">⚠️ Completados por defecto → Uso: ${completadosUso}, Tipo: ${completadosTipo}, Suma: ${completadosSuma}.</li>`;
+        try {
+          await db.execute(
+            'INSERT INTO historial_combinaciones (nombre_archivo, fecha, cantidad_registros) VALUES (?, ?, ?)',
+            [nombreArchivo, fecha, totalCombinaciones]
+          );
+        } catch (e) {
+          console.error('No se pudo guardar historial:', e.message);
+          mensaje += `<li style="color:#b8860b;">ℹ️ Nota: no se guardó en historial (${e.message})</li>`;
         }
-        html += `<li><a href="/descargas/${nombreArchivo}" download>⬇️ Descargar</a></li>`;
-      } else {
-        const unico = req.files.archivoUnico[0];
-        const uno = leerHoja(unico.path);
-        const faltanUnico = validarColumnas('taxativa', uno.cols);
-
-        if (faltanUnico.length) {
-          html += '<li style="color:red;">❌ Faltan columnas requeridas en el archivo único:</li>';
-          html += `<ul><li>${faltanUnico.join(', ')}</li></ul>`;
-          return res.send(wrap(html));
-        }
-
-        html += `<li>✅ Modo: <strong>Taxativo</strong>.</li>`;
-        html += `<li>📄 Archivo recibido: <strong>${path.basename(unico.path)}</strong></li>`;
       }
-    } catch (err) {
-      console.error('Error en /upload:', err);
-      html += `<li style="color:red;">❌ Error al procesar: ${err.message}</li>`;
+
+      // --- Flujo taxativo (1 archivo) ---
+    } else if (fileUnico) {
+      const wb = xlsx.readFile(fileUnico.path);
+      const hoja =
+        wb.SheetNames.find((n) => xlsx.utils.sheet_to_json(wb.Sheets[n]).length > 0) ||
+        wb.SheetNames[0];
+      if (!hoja) throw new Error('El archivo no contiene hojas con datos');
+
+      const rows = xlsx.utils.sheet_to_json(wb.Sheets[hoja]);
+      const columnas = Object.keys(rows[0] || {});
+      const faltan = validarColumnas('taxativa', columnas);
+
+      mensaje += `<li><strong>Columnas detectadas:</strong> ${columnas.join(', ') || '(ninguna)'}</li>`;
+
+      if (faltan.length > 0) {
+        mensaje += `<li style="color:red;">❌ Faltan columnas requeridas (taxativo): ${faltan.join(', ')}</li>`;
+      } else {
+        // ✅ Generar archivo normalizado, copiar a descargas y guardar en historial
+        const nombreArchivo = `taxativo-${Date.now()}.xlsx`;
+        const rutaDestino = path.join(dirCombinados, nombreArchivo);
+        const rutaPublica = path.join(dirDescargas, nombreArchivo);
+
+        const ws = xlsx.utils.json_to_sheet(rows);
+        const wbOut = xlsx.utils.book_new();
+        xlsx.utils.book_append_sheet(wbOut, ws, 'Sheet1');
+        xlsx.writeFile(wbOut, rutaDestino);
+        fs.copyFileSync(rutaDestino, rutaPublica);
+
+        // Guardar historial (cantidad de filas del archivo único)
+        const fecha = new Date();
+        try {
+          await db.execute(
+            'INSERT INTO historial_combinaciones (nombre_archivo, fecha, cantidad_registros) VALUES (?, ?, ?)',
+            [nombreArchivo, fecha, rows.length]
+          );
+        } catch (e) {
+          console.error('No se pudo guardar historial (taxativo):', e.message);
+          mensaje += `<li style="color:#b8860b;">ℹ️ Nota: no se guardó en historial (taxativo) (${e.message})</li>`;
+        }
+
+        mensaje += `<li>✅ Archivo válido para modo taxativo con ${rows.length} registros.</li>`;
+        mensaje += `<li><a href="/descargas/${nombreArchivo}" download style="display:inline-block;margin-top:10px;">⬇️ Descargar archivo taxativo</a></li>`;
+      }
+
+    } else {
+      mensaje += '<li style="color:red;">⚠️ No se detectaron archivos válidos o faltan campos requeridos.</li>';
     }
-
-    html += '</ul>';
-    res.send(wrap(html));
+  } catch (error) {
+    const msg =
+      error instanceof multer.MulterError && error.field
+        ? `Error de carga en "${error.field}": ${error.message}`
+        : error.message;
+    mensaje += `<li style="color:red;">❌ Error al procesar archivos: ${msg}</li>`;
   }
-);
 
+  mensaje += '</ul><a href="/" style="display:inline-block;margin-top:20px;">🔙 Volver al inicio</a>';
+  res.send(`<html><body style="font-family:Arial,sans-serif;">${mensaje}</body></html>`);
+});
+
+// Historial
 app.get('/historial', async (req, res) => {
   try {
     const [rows] = await db.execute(
@@ -198,8 +246,6 @@ app.get('/historial', async (req, res) => {
     res.status(500).json({ error: 'Error al obtener historial' });
   }
 });
-
-app.use(multerErrorHandler);
 
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
