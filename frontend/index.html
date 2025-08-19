@@ -41,6 +41,7 @@
       <label>Archivo de Vehículos:</label>
       <input type="file" name="archivoVehiculos" />
       <label>Archivo de Códigos Postales:</label>
+      <!-- 👇 CAMBIO: el name debe ser archivoCP para que Multer lo tome -->
       <input type="file" name="archivoCP" />
       <label>Archivo Único (modo taxativo):</label>
       <input type="file" name="archivoUnico" />
@@ -114,7 +115,6 @@
       const tabId = btn.dataset.tab;
       document.getElementById(tabId).classList.add("active");
 
-      // Si clickeamos en la pestaña Histórico, recargar datos
       if (tabId === "historico") {
         cargarHistorico();
       }
@@ -142,14 +142,14 @@
           </tr>`).join('');
 
       const contenedor = document.getElementById("tablaHistorico");
-      contenedor.innerHTML = '';  // Limpiar antes de agregar nueva tabla
+      contenedor.innerHTML = '';
       contenedor.appendChild(tabla);
     } catch (err) {
       console.error("Error cargando historial:", err);
     }
   }
 
-  // ⬇️⬇️ CAMBIO: submit robusto (acepta HTML o JSON) ⬇️⬇️
+  // Submit robusto (acepta HTML o JSON)
   document.getElementById("formUpload").addEventListener("submit", async function (e) {
     e.preventDefault();
     const formData = new FormData(this);
@@ -189,20 +189,17 @@
           div.appendChild(a);
         }
       } else {
-        // El backend actual responde HTML: lo muestro dentro del resumen
         const html = await res.text();
         const bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
         div.innerHTML = bodyMatch ? bodyMatch[1] : html;
       }
 
-      // Refrescar histórico después de subir
       try { await cargarHistorico(); } catch {}
     } catch (err) {
       console.error("Error subiendo:", err);
       div.innerHTML = `<p class="error">❌ Error al procesar los archivos.</p>`;
     }
   });
-  // ⬆️⬆️ FIN CAMBIO ⬆️⬆️
 
   document.getElementById("formCabecera").addEventListener("submit", function (e) {
     e.preventDefault();
@@ -221,7 +218,6 @@
     }
   });
 
-  
   async function cargarProcesos() {
     try {
       const res = await fetch('/procesos-en-curso');
@@ -247,21 +243,15 @@
     }
   }
 
-
-  
   function ejecutarProceso(id) {
     console.log("Ejecutar proceso ID:", id);
     alert("Se ejecutaría el proceso ID: " + id);
   }
 
-
-  // Cargar histórico inicialmente
   window.onload = () => {
     cargarHistorico();
   };
 </script>
-
-  
 
   <div id="procesos" class="tab-content">
     <h2>Procesos en curso</h2>
