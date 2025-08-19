@@ -3,6 +3,10 @@ data/archivos_subidos/
 data/combinados/
 frontend/descargas/
 
+node_modules/
+.vscode/
+
 # Ignorar archivos del sistema
 *.log
 *.tmp
+*.zip
