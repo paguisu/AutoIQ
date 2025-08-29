@@ -58,6 +58,10 @@ const upload = multer({
 // Servir frontend
 app.use(express.static(path.join(__dirname, '../frontend')));
 
+// Montar router DNRPA (agregado sin tocar el resto)
+const dnrpaRouter = require('./routes/dnrpa');
+app.use('/dnrpa', dnrpaRouter);
+
 // Home
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/index.html'));
