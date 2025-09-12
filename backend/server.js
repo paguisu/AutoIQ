@@ -15,6 +15,7 @@ try {
 } catch {
   combinarArchivos = require('../scripts/combinador');
 }
+
 const db = require('./config/db');
 
 const app = express();
@@ -59,8 +60,12 @@ const upload = multer({
 app.use(express.static(path.join(__dirname, '../frontend')));
 
 // Montar router DNRPA (agregado sin tocar el resto)
-const dnrpaRouter = require('./routes/dnrpa');
-app.use('/dnrpa', dnrpaRouter);
+try {
+  const dnrpaRouter = require('./routes/dnrpa');
+  app.use('/dnrpa', dnrpaRouter);
+} catch (e) {
+  console.warn('DNRPA router no disponible (ok si no existe en esta rama):', e.message);
+}
 
 // Home
 app.get('/', (req, res) => {
@@ -93,33 +98,33 @@ app.post('/upload', upload.any(), async (req, res) => {
       const wbVeh = xlsx.readFile(fileVeh.path);
       const vehHojaNombre =
         wbVeh.SheetNames.find((name) => {
-          const datos = xlsx.utils.sheet_to_json(wbVeh.Sheets[name]);
-          return datos.length > 0;
+          const datos = xlsx.utils.sheet_to_json(wbVeh.Sheets[name], { defval: '' });
+          return Array.isArray(datos) && datos.length > 0;
         }) || wbVeh.SheetNames[0];
 
       const wbCP = xlsx.readFile(fileCP.path);
       const cpHojaNombre =
         wbCP.SheetNames.find((name) => {
-          const datos = xlsx.utils.sheet_to_json(wbCP.Sheets[name]);
-          return datos.length > 0;
+          const datos = xlsx.utils.sheet_to_json(wbCP.Sheets[name], { defval: '' });
+          return Array.isArray(datos) && datos.length > 0;
         }) || wbCP.SheetNames[0];
 
       if (!vehHojaNombre) throw new Error('El archivo de vehículos no contiene hojas con datos');
       if (!cpHojaNombre) throw new Error('El archivo de códigos postales no contiene hojas con datos');
 
-      let rowsVeh = xlsx.utils.sheet_to_json(wbVeh.Sheets[vehHojaNombre]);
-      const rowsCP = xlsx.utils.sheet_to_json(wbCP.Sheets[cpHojaNombre]);
+      let rowsVeh = xlsx.utils.sheet_to_json(wbVeh.Sheets[vehHojaNombre], { defval: '' });
+      const rowsCP = xlsx.utils.sheet_to_json(wbCP.Sheets[cpHojaNombre], { defval: '' });
 
       // Completar por defecto ciertos campos
       let completadosUso = 0;
       let completadosTipo = 0;
       rowsVeh = rowsVeh.map((row) => {
         const r = { ...row };
-        if (!r.uso) {
+        if (r.uso == null || r.uso === '') {
           r.uso = 'Particular';
           completadosUso++;
         }
-        if (!r.tipo_vehiculo) {
+        if (r.tipo_vehiculo == null || r.tipo_vehiculo === '') {
           r.tipo_vehiculo = 'Sedán';
           completadosTipo++;
         }
@@ -163,15 +168,18 @@ app.post('/upload', upload.any(), async (req, res) => {
         const totalCombinaciones = combinarArchivos(vehPathFinal, fileCP.path, rutaDestino);
         fs.copyFileSync(rutaDestino, rutaPublica);
 
+        // Ruta RELATIVA estable (para DB): no depende de disco/unidad
+        const rutaRelativa = path.join('data', 'combinados', nombreArchivo).replace(/\\/g, '/');
+
         mensaje += `<li>📄 Archivo combinado generado con <strong>${totalCombinaciones}</strong> registros.</li>`;
         mensaje += `<li><a href="/descargas/${nombreArchivo}" download style="display:inline-block;margin-top:10px;">⬇️ Descargar archivo combinado</a></li>`;
 
-        // Guardar historial
+        // Guardar historial con RUTA (fix esquema actual)
         const fecha = new Date();
         try {
           await db.execute(
-            'INSERT INTO historial_combinaciones (nombre_archivo, fecha, cantidad_registros) VALUES (?, ?, ?)',
-            [nombreArchivo, fecha, totalCombinaciones]
+            'INSERT INTO historial_combinaciones (nombre_archivo, ruta, fecha, cantidad_registros) VALUES (?, ?, ?, ?)',
+            [nombreArchivo, rutaRelativa, fecha, totalCombinaciones]
           );
         } catch (e) {
           console.error('No se pudo guardar historial:', e.message);
@@ -183,11 +191,11 @@ app.post('/upload', upload.any(), async (req, res) => {
     } else if (fileUnico) {
       const wb = xlsx.readFile(fileUnico.path);
       const hoja =
-        wb.SheetNames.find((n) => xlsx.utils.sheet_to_json(wb.Sheets[n]).length > 0) ||
+        wb.SheetNames.find((n) => xlsx.utils.sheet_to_json(wb.Sheets[n], { defval: '' }).length > 0) ||
         wb.SheetNames[0];
       if (!hoja) throw new Error('El archivo no contiene hojas con datos');
 
-      const rows = xlsx.utils.sheet_to_json(wb.Sheets[hoja]);
+      const rows = xlsx.utils.sheet_to_json(wb.Sheets[hoja], { defval: '' });
       const columnas = Object.keys(rows[0] || {});
       const faltan = validarColumnas('taxativa', columnas);
 
@@ -207,12 +215,15 @@ app.post('/upload', upload.any(), async (req, res) => {
         xlsx.writeFile(wbOut, rutaDestino);
         fs.copyFileSync(rutaDestino, rutaPublica);
 
+        // Ruta RELATIVA para DB
+        const rutaRelativa = path.join('data', 'combinados', nombreArchivo).replace(/\\/g, '/');
+
         // Guardar historial (cantidad de filas del archivo único)
         const fecha = new Date();
         try {
           await db.execute(
-            'INSERT INTO historial_combinaciones (nombre_archivo, fecha, cantidad_registros) VALUES (?, ?, ?)',
-            [nombreArchivo, fecha, rows.length]
+            'INSERT INTO historial_combinaciones (nombre_archivo, ruta, fecha, cantidad_registros) VALUES (?, ?, ?, ?)',
+            [nombreArchivo, rutaRelativa, fecha, rows.length]
           );
         } catch (e) {
           console.error('No se pudo guardar historial (taxativo):', e.message);
@@ -242,7 +253,7 @@ app.post('/upload', upload.any(), async (req, res) => {
 app.get('/historial', async (req, res) => {
   try {
     const [rows] = await db.execute(
-      'SELECT id, nombre_archivo, DATE_FORMAT(fecha, "%Y-%m-%d %H:%i:%s") AS fecha, cantidad_registros FROM historial_combinaciones ORDER BY fecha DESC'
+      'SELECT id, nombre_archivo, ruta, DATE_FORMAT(fecha, "%Y-%m-%d %H:%i:%s") AS fecha, cantidad_registros FROM historial_combinaciones ORDER BY fecha DESC'
     );
     res.json(rows);
   } catch (error) {
