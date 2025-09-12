@@ -1,12 +1,22 @@
 # Ignorar archivos temporales y generados automáticamente
 data/archivos_subidos/
 data/combinados/
+data/procesos/
 frontend/descargas/
 
+# Documentación de Web Services (pesado / no código)
+web_services/
+web_servicies/
+
+# Node y herramientas
 node_modules/
 .vscode/
 
-# Ignorar archivos del sistema
+# Logs y temporales
 *.log
 *.tmp
 *.zip
+
+# Archivos binarios comunes (evitar que se suban por error)
+*.xlsx
+*.png

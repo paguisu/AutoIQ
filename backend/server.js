@@ -5,10 +5,9 @@ const xlsx = require('xlsx');
 const path = require('path');
 const fs = require('fs');
 const validarColumnas = require('./utils/validarColumnas');
+const serveIndex = require('serve-index'); // ✅ nuevo
 
-// ⚠️ Ajustá esta ruta si tu combinador está en otro lugar.
-// En tu repo aparece bajo backend/scripts en algunas ramas.
-// Si estuviera en la raíz, usar: require('../combinador')
+// Combinador (ruta robusta)
 let combinarArchivos;
 try {
   combinarArchivos = require('./scripts/combinador');
@@ -16,10 +15,15 @@ try {
   combinarArchivos = require('../scripts/combinador');
 }
 
+// DB (mysql2/promise pool)
 const db = require('./config/db');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Middlewares básicos
+app.use(express.json({ limit: '2mb' }));
+app.use(express.urlencoded({ extended: true }));
 
 // Asegurar carpetas necesarias
 const dirSubidos = path.join(__dirname, '../data/archivos_subidos');
@@ -50,16 +54,20 @@ const upload = multer({
     }
     cb(null, true);
   },
-  limits: {
-    // opcional: 25 MB
-    fileSize: 25 * 1024 * 1024,
-  },
+  limits: { fileSize: 25 * 1024 * 1024 },
 });
 
 // Servir frontend
 app.use(express.static(path.join(__dirname, '../frontend')));
 
-// Montar router DNRPA (agregado sin tocar el resto)
+// ✅ Exponer /data y listar directorios (solo lectura)
+const dataRoot = path.join(__dirname, '../data');
+app.use('/data',
+  express.static(dataRoot, { extensions: ['html'] }),
+  serveIndex(dataRoot, { icons: true, view: 'details', template: undefined })
+);
+
+// Router DNRPA (si existe)
 try {
   const dnrpaRouter = require('./routes/dnrpa');
   app.use('/dnrpa', dnrpaRouter);
@@ -80,21 +88,19 @@ function pickFile(filesArray, possibleNames) {
   );
 }
 
-// Upload: aceptar cualquier campo y mapearlo a lo que el server necesita
+// Upload (combinatorio / taxativo)
 app.post('/upload', upload.any(), async (req, res) => {
   let mensaje = '<h2>Resultado de la carga</h2><ul>';
 
   try {
     const files = req.files || [];
 
-    // Mapear nombres alternativos
     const fileVeh = pickFile(files, ['archivoVehiculos', 'archivoVehiculo', 'vehiculos', 'vehiculo']);
     const fileCP = pickFile(files, ['archivoCP', 'codigosPostales', 'codigoPostal', 'cp']);
     const fileUnico = pickFile(files, ['archivoUnico', 'taxativo']);
 
     // --- Flujo combinatorio (2 archivos) ---
     if (fileVeh && fileCP) {
-      // Abrir libros y detectar primera hoja con datos
       const wbVeh = xlsx.readFile(fileVeh.path);
       const vehHojaNombre =
         wbVeh.SheetNames.find((name) => {
@@ -115,7 +121,6 @@ app.post('/upload', upload.any(), async (req, res) => {
       let rowsVeh = xlsx.utils.sheet_to_json(wbVeh.Sheets[vehHojaNombre], { defval: '' });
       const rowsCP = xlsx.utils.sheet_to_json(wbCP.Sheets[cpHojaNombre], { defval: '' });
 
-      // Completar por defecto ciertos campos
       let completadosUso = 0;
       let completadosTipo = 0;
       rowsVeh = rowsVeh.map((row) => {
@@ -133,7 +138,6 @@ app.post('/upload', upload.any(), async (req, res) => {
 
       const columnasVeh = Object.keys(rowsVeh[0] || {});
       const columnasCP = Object.keys(rowsCP[0] || {});
-
       const faltanVeh = validarColumnas('combinatoriaVehiculos', columnasVeh);
       const faltanCP = validarColumnas('combinatoriaCP', columnasCP);
 
@@ -153,14 +157,12 @@ app.post('/upload', upload.any(), async (req, res) => {
           mensaje += `<li style="color:orange;">⚠️ Se completaron automáticamente ${completadosUso} "uso" y ${completadosTipo} "tipo_vehiculo".</li>`;
         }
 
-        // Guardar versión ajustada del archivo de vehículos
         const wsVehNew = xlsx.utils.json_to_sheet(rowsVeh);
         const wbVehNew = xlsx.utils.book_new();
         xlsx.utils.book_append_sheet(wbVehNew, wsVehNew, 'Sheet1');
         const vehPathFinal = fileVeh.path.replace(/\.xlsx$/i, '-ajustado.xlsx');
         xlsx.writeFile(wbVehNew, vehPathFinal);
 
-        // Combinar y publicar
         const nombreArchivo = `combinado-${Date.now()}.xlsx`;
         const rutaDestino = path.join(dirCombinados, nombreArchivo);
         const rutaPublica = path.join(dirDescargas, nombreArchivo);
@@ -168,13 +170,11 @@ app.post('/upload', upload.any(), async (req, res) => {
         const totalCombinaciones = combinarArchivos(vehPathFinal, fileCP.path, rutaDestino);
         fs.copyFileSync(rutaDestino, rutaPublica);
 
-        // Ruta RELATIVA estable (para DB): no depende de disco/unidad
         const rutaRelativa = path.join('data', 'combinados', nombreArchivo).replace(/\\/g, '/');
 
         mensaje += `<li>📄 Archivo combinado generado con <strong>${totalCombinaciones}</strong> registros.</li>`;
         mensaje += `<li><a href="/descargas/${nombreArchivo}" download style="display:inline-block;margin-top:10px;">⬇️ Descargar archivo combinado</a></li>`;
 
-        // Guardar historial con RUTA (fix esquema actual)
         const fecha = new Date();
         try {
           await db.execute(
@@ -204,7 +204,6 @@ app.post('/upload', upload.any(), async (req, res) => {
       if (faltan.length > 0) {
         mensaje += `<li style="color:red;">❌ Faltan columnas requeridas (taxativo): ${faltan.join(', ')}</li>`;
       } else {
-        // ✅ Generar archivo normalizado, copiar a descargas y guardar en historial
         const nombreArchivo = `taxativo-${Date.now()}.xlsx`;
         const rutaDestino = path.join(dirCombinados, nombreArchivo);
         const rutaPublica = path.join(dirDescargas, nombreArchivo);
@@ -215,10 +214,8 @@ app.post('/upload', upload.any(), async (req, res) => {
         xlsx.writeFile(wbOut, rutaDestino);
         fs.copyFileSync(rutaDestino, rutaPublica);
 
-        // Ruta RELATIVA para DB
         const rutaRelativa = path.join('data', 'combinados', nombreArchivo).replace(/\\/g, '/');
 
-        // Guardar historial (cantidad de filas del archivo único)
         const fecha = new Date();
         try {
           await db.execute(
@@ -261,6 +258,10 @@ app.get('/historial', async (req, res) => {
     res.status(500).json({ error: 'Error al obtener historial' });
   }
 });
+
+// Router de cotización (cabecera + archivo + aseguradoras + listar/estado)
+const cotizacionRouter = require('./routes/cotizacion');
+app.use('/cotizacion', cotizacionRouter);
 
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);

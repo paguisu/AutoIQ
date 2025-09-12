@@ -4,6 +4,9 @@ const fs = require('fs');
 const validarColumnas = require('../utils/validarColumnas');
 const db = require('../db'); // Conexión a la base de datos
 
+const { registrarCombinacion } = require('../utils/historialCombinaciones');
+
+
 // Lee encabezados reales desde la primera fila
 function leerEncabezados(sheet) {
   const headerRow = xlsx.utils.sheet_to_json(sheet, { header: 1 })[0] || [];

@@ -1,10 +1,30 @@
+// backend/scripts/procesarCombinatorio.js
 const xlsx = require('xlsx');
 const path = require('path');
 const fs = require('fs');
+
 const validarColumnas = require('../utils/validarColumnas');
 const combinarArchivos = require('./combinador');
+const { registrarCombinacion } = require('../utils/historialCombinaciones');
 
-// Lee encabezados “reales” desde la fila 1 de la hoja (en lugar de inferir por la 1ª fila de datos)
+// Detectar pool de DB de forma robusta (soporta export default o { pool })
+let pool = null;
+(function detectarPool() {
+  try {
+    const dbA = require('../config/db');
+    pool = dbA.pool || dbA;
+  } catch (e1) {
+    try {
+      const dbB = require('../db');
+      pool = dbB.pool || dbB;
+    } catch (e2) {
+      // Si no hay pool, registraremos el historial en modo best effort (log y seguimos)
+      console.warn('[procesarCombinatorio] No se pudo cargar pool desde ../config/db ni ../db; el historial se intentará omitir.');
+    }
+  }
+})();
+
+// Lee encabezados “reales” desde la fila 1 de la hoja
 function leerEncabezados(sheet) {
   const headerRow = xlsx.utils.sheet_to_json(sheet, { header: 1 })[0] || [];
   // normalizamos a minúsculas y sin espacios extras
@@ -38,7 +58,7 @@ async function procesar({ rutaVehiculos, rutaCodigosPostales, opciones = {} }) {
   const { sheet: sheetCP, datos: rowsCP } =
     leerPrimeraHojaConDatos(rutaCodigosPostales);
 
-  // 2) Encabezados reales (desde la fila 1, no desde la primera fila de datos)
+  // 2) Encabezados reales (desde la fila 1)
   const columnasVeh = leerEncabezados(sheetVeh);
   const columnasCP = leerEncabezados(sheetCP);
 
@@ -90,14 +110,34 @@ async function procesar({ rutaVehiculos, rutaCodigosPostales, opciones = {} }) {
 
   const totalCombinaciones = combinarArchivos(vehPathFinal, rutaCodigosPostales, rutaDestino);
 
-  // 7) Resultado estandarizado
+  // 6.1) Registrar en historial (best effort: no romper el flujo si falla el INSERT)
+  try {
+    if (pool && registrarCombinacion) {
+      // Guardamos ruta RELATIVA para no atarnos a la unidad/local (útil en despliegue)
+      const rutaRelativa = path.join('data', 'combinados', archivoNombre).replace(/\\/g, '/');
+      await registrarCombinacion({
+        pool,
+        nombreArchivo: archivoNombre,
+        ruta: rutaRelativa,
+        fecha: new Date(),
+        cantidadRegistros: Number.isFinite(totalCombinaciones) ? totalCombinaciones : 0,
+      });
+    } else {
+      console.warn('[procesarCombinatorio] Historial no registrado: pool o registrarCombinacion no disponibles.');
+    }
+  } catch (e) {
+    console.error('[procesarCombinatorio] No se pudo guardar historial:', e?.message || e);
+    // No lanzamos para no afectar la descarga del archivo combinado
+  }
+
+  // 7) Resultado estandarizado (compatibilidad con frontend actual)
   return {
     ok: true,
     mensaje: 'Combinación realizada con éxito',
     detalles: { completadosUso, completadosTipo },
     salida: {
       archivoNombre,
-      archivoRuta: rutaDestino,
+      archivoRuta: rutaDestino,  // absoluta en backend (para usar internamente)
       filas: totalCombinaciones,
       columnas: null,
     },
