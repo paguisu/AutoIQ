@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AutoIQ</title>
   <style>
+    /* ====== Estilos base existentes ====== */
     body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
     .tabs { display: flex; background: #001470; }
     .tab-button {
@@ -24,6 +25,28 @@
     #resultadoCarga { background: #f4f4f4; padding: 15px; margin-top: 20px; border-radius: 5px; }
     .success { color: green; }
     .error { color: red; }
+
+    /* ====== Estilos específicos para la pestaña Procesos (tomados de procesos.html y escopados) ====== */
+    #procesos { background: #f6f7fb; color: #222; }
+    #procesos .card{background:#fff;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,.06);padding:14px 14px}
+    #procesos .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
+    #procesos select,#procesos input,#procesos button{height:36px;border:1px solid #d0d7de;border-radius:8px;padding:0 10px;background:#fff}
+    #procesos button{background:#0f62fe;color:#fff;border:none;cursor:pointer}
+    #procesos button.secondary{background:#fff;color:#0f62fe;border:1px solid #0f62fe}
+    #procesos button:disabled{opacity:.6;cursor:not-allowed}
+    #procesos table{width:100%;border-collapse:separate;border-spacing:0;background:#fff}
+    #procesos th,#procesos td{padding:10px 8px;border-bottom:1px solid #eee;font-size:14px;vertical-align:top}
+    #procesos th{background:#fafbff;text-align:left;position:sticky;top:0;z-index:1}
+    #procesos .pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px}
+    #procesos .ok{background:#e8f5e9;color:#1b5e20}
+    #procesos .warn{background:#fff3e0;color:#e65100}
+    #procesos .err{background:#ffebee;color:#b71c1c}
+    #procesos .muted{color:#6b7280}
+    #procesos .row{display:flex;gap:8px;align-items:center}
+    #procesos .pagination{display:flex;gap:8px;align-items:center;justify-content:flex-end;margin-top:10px}
+    #procesos .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+    #procesos .nowrap{white-space:nowrap}
+    #procesos .table-shell{overflow:auto; max-height: 65vh; border:1px solid #eee; border-radius:10px}
   </style>
 </head>
 <body>
@@ -35,13 +58,13 @@
     <button class="tab-button" data-tab="procesos">Procesos en curso</button>
   </div>
 
+  <!-- ====== TAB: Inputs ====== -->
   <div id="inputs" class="tab-content active">
     <h2>Carga de archivos</h2>
     <form id="formUpload" action="/upload" method="post" enctype="multipart/form-data">
       <label>Archivo de Vehículos:</label>
       <input type="file" name="archivoVehiculos" />
       <label>Archivo de Códigos Postales:</label>
-      <!-- 👇 CAMBIO: el name debe ser archivoCP para que Multer lo tome -->
       <input type="file" name="archivoCP" />
       <label>Archivo Único (modo taxativo):</label>
       <input type="file" name="archivoUnico" />
@@ -52,6 +75,7 @@
     <div id="resultadoCarga"></div>
   </div>
 
+  <!-- ====== TAB: Cabecera ====== -->
   <div id="cabecera" class="tab-content">
     <h2>Datos del Asegurado</h2>
     <form id="formCabecera">
@@ -93,176 +117,306 @@
     </form>
   </div>
 
+  <!-- ====== TAB: Histórico ====== -->
   <div id="historico" class="tab-content">
     <h2>Histórico de Combinaciones</h2>
     <div id="tablaHistorico"></div>
   </div>
 
+  <!-- ====== TAB: Base Propia ====== -->
   <div id="base" class="tab-content">
     <h2>Base Propia</h2>
     <p>En construcción...</p>
   </div>
-<script>
-  const tabButtons = document.querySelectorAll(".tab-button");
-  const contents = document.querySelectorAll(".tab-content");
 
-  tabButtons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      tabButtons.forEach(b => b.classList.remove("active"));
-      contents.forEach(c => c.classList.remove("active"));
+  <!-- ====== TAB: Procesos (integración de procesos.html) ====== -->
+  <div id="procesos" class="tab-content">
+    <h2>Procesos de Cotización</h2>
 
-      btn.classList.add("active");
-      const tabId = btn.dataset.tab;
-      document.getElementById(tabId).classList.add("active");
+    <div class="card">
+      <div class="controls">
+        <label>Estado:
+          <select id="proc-estado">
+            <option value="">Todos</option>
+            <option value="en curso">En curso</option>
+            <option value="completado">Completado</option>
+            <option value="con errores">Con errores</option>
+          </select>
+        </label>
+        <label>Por página:
+          <select id="proc-limit">
+            <option value="10">10</option>
+            <option value="20" selected>20</option>
+            <option value="50">50</option>
+          </select>
+        </label>
+        <button id="proc-buscar">🔍 Buscar</button>
+        <span id="proc-meta" class="muted"></span>
+      </div>
 
-      if (tabId === "historico") {
-        cargarHistorico();
+      <div class="table-shell">
+        <table id="proc-tabla">
+          <thead>
+            <tr>
+              <th class="nowrap">ID</th>
+              <th>Nombre</th>
+              <th>Cabecera</th>
+              <th>Estado</th>
+              <th class="nowrap">Inicio</th>
+              <th class="nowrap">Fin</th>
+              <th class="nowrap">Registros</th>
+              <th class="nowrap">Exitosas</th>
+              <th class="nowrap">Con error</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="proc-tbody">
+            <tr><td colspan="10" class="muted">Cargá para ver resultados…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pagination">
+        <button id="proc-prev">&lt; Anterior</button>
+        <span id="proc-pageinfo" class="muted">Página 1 — 20 por página</span>
+        <button id="proc-next">Siguiente &gt;</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ====== Tabs ====== */
+    const tabButtons = document.querySelectorAll(".tab-button");
+    const contents = document.querySelectorAll(".tab-content");
+    tabButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        tabButtons.forEach(b => b.classList.remove("active"));
+        contents.forEach(c => c.classList.remove("active"));
+        btn.classList.add("active");
+        const tabId = btn.dataset.tab;
+        document.getElementById(tabId).classList.add("active");
+        if (tabId === "historico") cargarHistorico();
+        if (tabId === "procesos") proc_cargar();  // auto-carga al entrar
+      });
+    });
+
+    /* ====== Histórico (igual que venías usando) ====== */
+    async function cargarHistorico() {
+      try {
+        const res = await fetch('/historial');
+        const data = await res.json();
+
+        const tabla = document.createElement('table');
+        tabla.border = '1';
+        tabla.innerHTML = `<tr><th>ID</th><th>Archivo</th><th>Fecha</th><th>Registros</th></tr>` +
+          data.map(r =>
+            `<tr>
+              <td>${r.id}</td>
+              <td><a href="/descargas/${r.nombre_archivo}" download>${r.nombre_archivo}</a></td>
+              <td>${r.fecha}</td>
+              <td><button onclick="ejecutarProceso(${r.id})">▶ Ejecutar</button></td>
+              <td>${r.cantidad_registros}</td>
+            </tr>`).join('');
+
+        const contenedor = document.getElementById("tablaHistorico");
+        contenedor.innerHTML = '';
+        contenedor.appendChild(tabla);
+      } catch (err) {
+        console.error("Error cargando historial:", err);
       }
-      if (tabId === "procesos") {
-        cargarProcesos();
+    }
+
+    /* ====== Upload ====== */
+    document.getElementById("formUpload").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      const div = document.getElementById("resultadoCarga");
+      div.innerHTML = "Procesando…";
+
+      try {
+        const res = await fetch("/upload", { method: "POST", body: formData });
+        const ct = (res.headers.get("content-type") || "").toLowerCase();
+
+        if (ct.includes("application/json")) {
+          const resultado = await res.json();
+          div.innerHTML = "";
+          if (resultado.mensajes && resultado.mensajes.length > 0) {
+            resultado.mensajes.forEach(m => {
+              const p = document.createElement("p");
+              p.className = "success";
+              p.textContent = `✅ ${m}`;
+              div.appendChild(p);
+            });
+          }
+          if (resultado.errores && resultado.errores.length > 0) {
+            resultado.errores.forEach(err => {
+              const p = document.createElement("p");
+              p.className = "error";
+              p.textContent = `❌ ${err}`;
+              div.appendChild(p);
+            });
+          }
+          if (resultado.descarga) {
+            const a = document.createElement("a");
+            a.href = resultado.descarga;
+            a.textContent = "⬇️ Descargar archivo combinado";
+            a.download = "archivo_combinado.xlsx";
+            a.style.display = "inline-block";
+            a.style.marginTop = "10px";
+            div.appendChild(a);
+          }
+        } else {
+          const html = await res.text();
+          const bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+          div.innerHTML = bodyMatch ? bodyMatch[1] : html;
+        }
+
+        try { await cargarHistorico(); } catch {}
+      } catch (err) {
+        console.error("Error subiendo:", err);
+        div.innerHTML = `<p class="error">❌ Error al procesar los archivos.</p>`;
       }
     });
-  });
 
-  async function cargarHistorico() {
-    try {
-      const res = await fetch('/historial');
-      const data = await res.json();
-
-      const tabla = document.createElement('table');
-      tabla.border = '1';
-      tabla.innerHTML = `<tr><th>ID</th><th>Archivo</th><th>Fecha</th><th>Registros</th></tr>` +
-        data.map(r =>
-          `<tr>
-            <td>${r.id}</td>
-            <td><a href="/descargas/${r.nombre_archivo}" download>${r.nombre_archivo}</a></td>
-            <td>${r.fecha}</td>
-            <td><button onclick="ejecutarProceso(${r.id})">▶ Ejecutar</button></td>
-            <td>${r.cantidad_registros}</td>
-          </tr>`).join('');
-
-      const contenedor = document.getElementById("tablaHistorico");
-      contenedor.innerHTML = '';
-      contenedor.appendChild(tabla);
-    } catch (err) {
-      console.error("Error cargando historial:", err);
-    }
-  }
-
-  // Submit robusto (acepta HTML o JSON)
-  document.getElementById("formUpload").addEventListener("submit", async function (e) {
-    e.preventDefault();
-    const formData = new FormData(this);
-    const div = document.getElementById("resultadoCarga");
-    div.innerHTML = "Procesando…";
-
-    try {
-      const res = await fetch("/upload", { method: "POST", body: formData });
-      const ct = (res.headers.get("content-type") || "").toLowerCase();
-
-      if (ct.includes("application/json")) {
-        const resultado = await res.json();
-        div.innerHTML = "";
-        if (resultado.mensajes && resultado.mensajes.length > 0) {
-          resultado.mensajes.forEach(m => {
-            const p = document.createElement("p");
-            p.className = "success";
-            p.textContent = `✅ ${m}`;
-            div.appendChild(p);
-          });
-        }
-        if (resultado.errores && resultado.errores.length > 0) {
-          resultado.errores.forEach(err => {
-            const p = document.createElement("p");
-            p.className = "error";
-            p.textContent = `❌ ${err}`;
-            div.appendChild(p);
-          });
-        }
-        if (resultado.descarga) {
-          const a = document.createElement("a");
-          a.href = resultado.descarga;
-          a.textContent = "⬇️ Descargar archivo combinado";
-          a.download = "archivo_combinado.xlsx";
-          a.style.display = "inline-block";
-          a.style.marginTop = "10px";
-          div.appendChild(a);
-        }
-      } else {
-        const html = await res.text();
-        const bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
-        div.innerHTML = bodyMatch ? bodyMatch[1] : html;
+    /* ====== Cabecera: cálculo cruzado Edad/Fecha ====== */
+    document.getElementById("formCabecera").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      const asegurado = {};
+      formData.forEach((value, key) => { asegurado[key] = value; });
+      alert("Cabecera guardada en memoria (por ahora no se guarda en base de datos)");
+    });
+    document.getElementById("edad").addEventListener("input", function () {
+      const edad = parseInt(this.value);
+      if (!isNaN(edad)) {
+        const hoy = new Date();
+        const nacimiento = new Date(hoy.getFullYear() - edad, hoy.getMonth(), hoy.getDate());
+        document.getElementById("fechaNacimiento").value = nacimiento.toISOString().split('T')[0];
       }
+    });
 
-      try { await cargarHistorico(); } catch {}
-    } catch (err) {
-      console.error("Error subiendo:", err);
-      div.innerHTML = `<p class="error">❌ Error al procesar los archivos.</p>`;
+    /* ====== PROCESOS (clonado/adaptado de procesos.html) ====== */
+    const procEstadoEl = document.getElementById('proc-estado');
+    const procLimitEl  = document.getElementById('proc-limit');
+    const procBtn      = document.getElementById('proc-buscar');
+    const procMeta     = document.getElementById('proc-meta');
+    const procTbody    = document.getElementById('proc-tbody');
+    const prevBtn      = document.getElementById('proc-prev');
+    const nextBtn      = document.getElementById('proc-next');
+    const pageInfo     = document.getElementById('proc-pageinfo');
+
+    let procOffset = 0;
+    let procTotal  = 0;
+
+    function pill(estado){
+      const s = String(estado||'').toLowerCase();
+      if(s.includes('curso')) return `<span class="pill warn">En curso</span>`;
+      if(s.includes('error')) return `<span class="pill err">Con errores</span>`;
+      if(s.includes('complet')) return `<span class="pill ok">Completado</span>`;
+      return `<span class="pill">${estado||''}</span>`;
     }
-  });
-
-  document.getElementById("formCabecera").addEventListener("submit", function (e) {
-    e.preventDefault();
-    const formData = new FormData(this);
-    const asegurado = {};
-    formData.forEach((value, key) => { asegurado[key] = value; });
-    alert("Cabecera guardada en memoria (por ahora no se guarda en base de datos)");
-  });
-
-  document.getElementById("edad").addEventListener("input", function () {
-    const edad = parseInt(this.value);
-    if (!isNaN(edad)) {
-      const hoy = new Date();
-      const nacimiento = new Date(hoy.getFullYear() - edad, hoy.getMonth(), hoy.getDate());
-      document.getElementById("fechaNacimiento").value = nacimiento.toISOString().split('T')[0];
+    function fmt(val){
+      if(!val) return '<span class="muted">—</span>';
+      return String(val).replace('T',' ').replace('Z','');
     }
-  });
 
-  async function cargarProcesos() {
-    try {
-      const res = await fetch('/procesos-en-curso');
-      const data = await res.json();
+    async function proc_cargar(){
+      const limit = Number(procLimitEl.value)||20;
+      const estado = procEstadoEl.value;
+      const params = new URLSearchParams({ limit: String(limit), offset: String(procOffset) });
+      if(estado) params.set('estado', estado);
 
-      const tabla = document.createElement('table');
-      tabla.border = '1';
-      tabla.innerHTML = `<tr><th>ID</th><th>Nombre</th><th>Estado</th><th>Fecha</th><th>Acciones</th></tr>` +
-        data.map(r =>
-          `<tr>
-            <td>${r.id}</td>
-            <td>${r.nombre}</td>
-            <td>${r.estado}</td>
-            <td>${r.fecha}</td>
-            <td><button onclick="ejecutarProceso(${r.id})">▶ Ejecutar</button></td>
-          </tr>`).join('');
+      procBtn.disabled = true;
+      prevBtn.disabled = true;
+      nextBtn.disabled = true;
+      procMeta.textContent = 'Cargando…';
+      procTbody.innerHTML = `<tr><td colspan="10" class="muted">Cargando…</td></tr>`;
 
-      const contenedor = document.getElementById("tablaProcesos");
-      contenedor.innerHTML = '';
-      contenedor.appendChild(tabla);
-    } catch (err) {
-      console.error("Error cargando procesos en curso:", err);
+      try {
+        const resp = await fetch(`/cotizacion/listar?${params.toString()}`);
+        if(!resp.ok){
+          const err = await resp.text();
+          throw new Error(err || ('HTTP ' + resp.status));
+        }
+        const data = await resp.json();
+        procTotal = data.total ?? 0;
+        const items = Array.isArray(data.items) ? data.items : [];
+
+        if(items.length === 0){
+          procTbody.innerHTML = `<tr><td colspan="10" class="muted">Sin resultados</td></tr>`;
+        } else {
+          const frag = document.createDocumentFragment();
+          for(const it of items){
+            const tr = document.createElement('tr');
+            const acc = `
+              <div class="row">
+                <a class="btn" href="/cotizacion/estado/${it.id}" target="_blank"><button class="secondary">Ver estado</button></a>
+                <a class="btn" href="/data/procesos/proceso-${it.id}/" target="_blank"><button>📁 Abrir carpeta</button></a>
+              </div>
+            `;
+            tr.innerHTML = `
+              <td class="mono">${it.id}</td>
+              <td>${it.nombre || ''}</td>
+              <td>${it.nombre_cabecera || ''}</td>
+              <td>${pill(it.estado || '')}</td>
+              <td class="nowrap mono">${fmt(it.fecha_inicio)}</td>
+              <td class="nowrap mono">${fmt(it.fecha_fin)}</td>
+              <td class="mono">${it.registros_procesados ?? ''}</td>
+              <td class="mono">${it.cotizaciones_exitosas ?? ''}</td>
+              <td class="mono">${it.cotizaciones_con_error ?? ''}</td>
+              <td>${acc}</td>
+            `;
+            frag.appendChild(tr);
+          }
+          procTbody.innerHTML = '';
+          procTbody.appendChild(frag);
+        }
+
+        const desde = Math.min(procTotal, procOffset + 1);
+        const hasta = Math.min(procTotal, procOffset + limit);
+        procMeta.textContent = `Mostrando ${desde || 0}–${hasta || 0} de ${procTotal}`;
+        pageInfo.textContent = `Página ${Math.floor(procOffset/limit)+1} — ${limit} por página`;
+
+        prevBtn.disabled = (procOffset <= 0);
+        nextBtn.disabled = (procOffset + limit >= procTotal);
+      } catch (e) {
+        console.error('[Procesos] Error:', e);
+        procTbody.innerHTML = `<tr><td colspan="10" class="muted">Error al cargar</td></tr>`;
+        procMeta.textContent = 'Error';
+      } finally {
+        procBtn.disabled = false;
+      }
     }
-  }
 
-  function ejecutarProceso(id) {
-    console.log("Ejecutar proceso ID:", id);
-    alert("Se ejecutaría el proceso ID: " + id);
-  }
+    document.getElementById('proc-buscar').addEventListener('click', ()=>{
+      procOffset = 0;
+      proc_cargar();
+    });
+    document.getElementById('proc-prev').addEventListener('click', ()=>{
+      const limit = Number(procLimitEl.value)||20;
+      procOffset = Math.max(0, procOffset - limit);
+      proc_cargar();
+    });
+    document.getElementById('proc-next').addEventListener('click', ()=>{
+      const limit = Number(procLimitEl.value)||20;
+      procOffset = procOffset + limit;
+      proc_cargar();
+    });
 
-  window.onload = () => {
-    cargarHistorico();
-  };
-</script>
+    // Al cargar página, precarga Histórico para que esté listo
+    window.onload = () => {
+      cargarHistorico();
+    };
 
-  <div id="procesos" class="tab-content">
-    <h2>Procesos en curso</h2>
-    <div id="tablaProcesos"></div>
-  </div>
-  <script>
-  function limpiarArchivos() {
-    document.querySelector('input[name="archivoVehiculos"]').value = "";
-    document.querySelector('input[name="archivoCP"]').value = "";
-    document.querySelector('input[name="archivoUnico"]').value = "";
-  }
-</script>
+    /* Utilidad */
+    function limpiarArchivos() {
+      document.querySelector('input[name="archivoVehiculos"]').value = "";
+      document.querySelector('input[name="archivoCP"]').value = "";
+      document.querySelector('input[name="archivoUnico"]').value = "";
+    }
+    window.ejecutarProceso = function(id){
+      alert("Se ejecutaría el proceso ID: " + id);
+    };
+  </script>
 </body>
 </html>
