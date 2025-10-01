@@ -20,5 +20,8 @@
   "description": "Cotizador masivo de seguros de autos.",
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "test": "^3.3.0"
+  }
 }
