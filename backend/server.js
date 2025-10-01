@@ -261,7 +261,9 @@ app.get('/historial', async (req, res) => {
 
 // Router de cotización (cabecera + archivo + aseguradoras + listar/estado)
 const cotizacionRouter = require('./routes/cotizacion');
+const procesoRouter = require('./routes/proceso');
 app.use('/cotizacion', cotizacionRouter);
+app.use('/proceso', procesoRouter);
 
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
