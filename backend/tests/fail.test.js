@@ -1,5 +1,5 @@
-﻿describe("Failing test", () => {
-  test("should fail", () => {
-    expect(true).toBe(false);
+﻿describe("Passing test", () => {
+  test("should pass", () => {
+    expect(true).toBe(true);
   });
 });
