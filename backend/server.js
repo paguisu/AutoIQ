@@ -1,11 +1,10 @@
-// backend/server.js
 const express = require('express');
 const multer = require('multer');
 const xlsx = require('xlsx');
 const path = require('path');
 const fs = require('fs');
 const validarColumnas = require('./utils/validarColumnas');
-const serveIndex = require('serve-index'); // ✅ nuevo
+const serveIndex = require('serve-index'); // ✅ agregado
 
 // Combinador (ruta robusta)
 let combinarArchivos;
@@ -60,11 +59,12 @@ const upload = multer({
 // Servir frontend
 app.use(express.static(path.join(__dirname, '../frontend')));
 
-// ✅ Exponer /data y listar directorios (solo lectura)
+// ✅ Exponer /data y listar directorios
 const dataRoot = path.join(__dirname, '../data');
-app.use('/data',
+app.use(
+  '/data',
   express.static(dataRoot, { extensions: ['html'] }),
-  serveIndex(dataRoot, { icons: true, view: 'details', template: undefined })
+  serveIndex(dataRoot, { icons: true, view: 'details' })
 );
 
 // Router DNRPA (si existe)
@@ -259,12 +259,22 @@ app.get('/historial', async (req, res) => {
   }
 });
 
-// Router de cotización (cabecera + archivo + aseguradoras + listar/estado)
+// Router de cotización
 const cotizacionRouter = require('./routes/cotizacion');
 const procesoRouter = require('./routes/proceso');
 app.use('/cotizacion', cotizacionRouter);
 app.use('/proceso', procesoRouter);
 
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
+// ✅ NUEVO endpoint de health
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: "ok" });
 });
+
+// ✅ Proteger el app.listen y exportar app
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Servidor corriendo en http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
