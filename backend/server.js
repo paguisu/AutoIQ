@@ -1,4 +1,3 @@
-// backend/server.js
 const express = require('express');
 const multer = require('multer');
 const xlsx = require('xlsx');
@@ -62,7 +61,8 @@ app.use(express.static(path.join(__dirname, '../frontend')));
 
 // ✅ Exponer /data y listar directorios (solo lectura)
 const dataRoot = path.join(__dirname, '../data');
-app.use('/data',
+app.use(
+  '/data',
   express.static(dataRoot, { extensions: ['html'] }),
   serveIndex(dataRoot, { icons: true, view: 'details', template: undefined })
 );
@@ -78,6 +78,11 @@ try {
 // Home
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/index.html'));
+});
+
+// ✅ NUEVO: endpoint de healthcheck
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
 });
 
 // Helper para encontrar archivos por varios posibles names
@@ -265,6 +270,11 @@ const procesoRouter = require('./routes/proceso');
 app.use('/cotizacion', cotizacionRouter);
 app.use('/proceso', procesoRouter);
 
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
-});
+// ✅ Cambiado: proteger app.listen y exportar app
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Servidor corriendo en http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
