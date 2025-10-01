@@ -277,4 +277,8 @@ if (require.main === module) {
   });
 }
 
+//registro la ruta de atm
+const atmRouter = require('./routes/atm');
+app.use('/atm', atmRouter);
+
 module.exports = app;
