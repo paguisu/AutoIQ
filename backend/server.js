@@ -4,7 +4,7 @@ const xlsx = require('xlsx');
 const path = require('path');
 const fs = require('fs');
 const validarColumnas = require('./utils/validarColumnas');
-const serveIndex = require('serve-index'); // ✅ nuevo
+const serveIndex = require('serve-index'); // ✅ agregado
 
 // Combinador (ruta robusta)
 let combinarArchivos;
@@ -59,12 +59,12 @@ const upload = multer({
 // Servir frontend
 app.use(express.static(path.join(__dirname, '../frontend')));
 
-// ✅ Exponer /data y listar directorios (solo lectura)
+// ✅ Exponer /data y listar directorios
 const dataRoot = path.join(__dirname, '../data');
 app.use(
   '/data',
   express.static(dataRoot, { extensions: ['html'] }),
-  serveIndex(dataRoot, { icons: true, view: 'details', template: undefined })
+  serveIndex(dataRoot, { icons: true, view: 'details' })
 );
 
 // Router DNRPA (si existe)
@@ -78,11 +78,6 @@ try {
 // Home
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/index.html'));
-});
-
-// ✅ NUEVO: endpoint de healthcheck
-app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'ok' });
 });
 
 // Helper para encontrar archivos por varios posibles names
@@ -264,13 +259,18 @@ app.get('/historial', async (req, res) => {
   }
 });
 
-// Router de cotización (cabecera + archivo + aseguradoras + listar/estado)
+// Router de cotización
 const cotizacionRouter = require('./routes/cotizacion');
 const procesoRouter = require('./routes/proceso');
 app.use('/cotizacion', cotizacionRouter);
 app.use('/proceso', procesoRouter);
 
-// ✅ Cambiado: proteger app.listen y exportar app
+// ✅ NUEVO endpoint de health
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
+// ✅ Proteger el app.listen y exportar app
 if (require.main === module) {
   app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
