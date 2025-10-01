@@ -1,0 +1,44 @@
+﻿name: AutoIQ CI
+
+on:
+  push:
+    branches: [ master, main, develop ]
+  pull_request:
+    branches: [ master, main, develop ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 18 LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: "npm"
+
+      - name: Install dependencies
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm i
+          fi
+
+      - name: Lint (if script exists)
+        run: |
+          if npm run | grep -q " lint"; then
+            npm run lint
+          else
+            echo "No lint script defined, skipping."
+          fi
+
+      - name: Run tests (if script exists)
+        run: |
+          if npm run | grep -q " test"; then
+            npm test
+          else
+            echo "No test script defined, skipping."
+          fi
