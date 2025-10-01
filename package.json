@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "backend/server.js",
   "scripts": {
-    "start": "node backend/server.js"
+    "start": "node backend/server.js",
+    "test": "jest --passWithNoTests"
   },
   "dependencies": {
     "axios": "^1.9.0",
@@ -22,6 +23,6 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "test": "^3.3.0"
+    "jest": "^29.7.0"
   }
 }
