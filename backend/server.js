@@ -1,10 +1,10 @@
-const express = require('express');
+﻿const express = require('express');
 const multer = require('multer');
 const xlsx = require('xlsx');
 const path = require('path');
 const fs = require('fs');
 const validarColumnas = require('./utils/validarColumnas');
-const serveIndex = require('serve-index'); // ✅ agregado
+const serveIndex = require('serve-index'); // âœ… agregado
 
 // Combinador (ruta robusta)
 let combinarArchivos;
@@ -20,7 +20,7 @@ const db = require('./config/db');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middlewares básicos
+// Middlewares bÃ¡sicos
 app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true }));
 
@@ -32,7 +32,7 @@ const dirDescargas = path.join(__dirname, '../frontend/descargas');
   if (!fs.existsSync(d)) fs.mkdirSync(d, { recursive: true });
 });
 
-// Multer storage + fileFilter con extensiones válidas
+// Multer storage + fileFilter con extensiones vÃ¡lidas
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, dirSubidos),
   filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname),
@@ -47,7 +47,7 @@ const upload = multer({
       return cb(
         new multer.MulterError(
           'LIMIT_UNEXPECTED_FILE',
-          `Extensión no permitida (${ext}). Solo .xlsx / .csv`
+          `ExtensiÃ³n no permitida (${ext}). Solo .xlsx / .csv`
         )
       );
     }
@@ -59,7 +59,7 @@ const upload = multer({
 // Servir frontend
 app.use(express.static(path.join(__dirname, '../frontend')));
 
-// ✅ Exponer /data y listar directorios
+// âœ… Exponer /data y listar directorios
 const dataRoot = path.join(__dirname, '../data');
 app.use(
   '/data',
@@ -115,8 +115,8 @@ app.post('/upload', upload.any(), async (req, res) => {
           return Array.isArray(datos) && datos.length > 0;
         }) || wbCP.SheetNames[0];
 
-      if (!vehHojaNombre) throw new Error('El archivo de vehículos no contiene hojas con datos');
-      if (!cpHojaNombre) throw new Error('El archivo de códigos postales no contiene hojas con datos');
+      if (!vehHojaNombre) throw new Error('El archivo de vehÃ­culos no contiene hojas con datos');
+      if (!cpHojaNombre) throw new Error('El archivo de cÃ³digos postales no contiene hojas con datos');
 
       let rowsVeh = xlsx.utils.sheet_to_json(wbVeh.Sheets[vehHojaNombre], { defval: '' });
       const rowsCP = xlsx.utils.sheet_to_json(wbCP.Sheets[cpHojaNombre], { defval: '' });
@@ -130,7 +130,7 @@ app.post('/upload', upload.any(), async (req, res) => {
           completadosUso++;
         }
         if (r.tipo_vehiculo == null || r.tipo_vehiculo === '') {
-          r.tipo_vehiculo = 'Sedán';
+          r.tipo_vehiculo = 'SedÃ¡n';
           completadosTipo++;
         }
         return r;
@@ -141,20 +141,20 @@ app.post('/upload', upload.any(), async (req, res) => {
       const faltanVeh = validarColumnas('combinatoriaVehiculos', columnasVeh);
       const faltanCP = validarColumnas('combinatoriaCP', columnasCP);
 
-      mensaje += `<li><strong>Columnas detectadas en archivo de vehículos:</strong> ${columnasVeh.join(', ') || '(ninguna)'}</li>`;
-      mensaje += `<li><strong>Columnas detectadas en archivo de códigos postales:</strong> ${columnasCP.join(', ') || '(ninguna)'}</li>`;
+      mensaje += `<li><strong>Columnas detectadas en archivo de vehÃ­culos:</strong> ${columnasVeh.join(', ') || '(ninguna)'}</li>`;
+      mensaje += `<li><strong>Columnas detectadas en archivo de cÃ³digos postales:</strong> ${columnasCP.join(', ') || '(ninguna)'}</li>`;
 
       if (faltanVeh.length > 0 || faltanCP.length > 0) {
-        mensaje += '<li style="color:red;">❌ Error: Faltan columnas requeridas:</li><ul>';
-        if (faltanVeh.length > 0) mensaje += `<li>Vehículos: ${faltanVeh.join(', ')}</li>`;
-        if (faltanCP.length > 0) mensaje += `<li>Códigos postales: ${faltanCP.join(', ')}</li>`;
+        mensaje += '<li style="color:red;">âŒ Error: Faltan columnas requeridas:</li><ul>';
+        if (faltanVeh.length > 0) mensaje += `<li>VehÃ­culos: ${faltanVeh.join(', ')}</li>`;
+        if (faltanCP.length > 0) mensaje += `<li>CÃ³digos postales: ${faltanCP.join(', ')}</li>`;
         mensaje += '</ul>';
       } else {
-        mensaje += `<li>✅ Vehículos: ${rowsVeh.length} registros válidos</li>`;
-        mensaje += `<li>✅ Códigos postales: ${rowsCP.length} registros válidos</li>`;
+        mensaje += `<li>âœ… VehÃ­culos: ${rowsVeh.length} registros vÃ¡lidos</li>`;
+        mensaje += `<li>âœ… CÃ³digos postales: ${rowsCP.length} registros vÃ¡lidos</li>`;
 
         if (completadosUso > 0 || completadosTipo > 0) {
-          mensaje += `<li style="color:orange;">⚠️ Se completaron automáticamente ${completadosUso} "uso" y ${completadosTipo} "tipo_vehiculo".</li>`;
+          mensaje += `<li style="color:orange;">âš ï¸ Se completaron automÃ¡ticamente ${completadosUso} "uso" y ${completadosTipo} "tipo_vehiculo".</li>`;
         }
 
         const wsVehNew = xlsx.utils.json_to_sheet(rowsVeh);
@@ -172,8 +172,8 @@ app.post('/upload', upload.any(), async (req, res) => {
 
         const rutaRelativa = path.join('data', 'combinados', nombreArchivo).replace(/\\/g, '/');
 
-        mensaje += `<li>📄 Archivo combinado generado con <strong>${totalCombinaciones}</strong> registros.</li>`;
-        mensaje += `<li><a href="/descargas/${nombreArchivo}" download style="display:inline-block;margin-top:10px;">⬇️ Descargar archivo combinado</a></li>`;
+        mensaje += `<li>ðŸ“„ Archivo combinado generado con <strong>${totalCombinaciones}</strong> registros.</li>`;
+        mensaje += `<li><a href="/descargas/${nombreArchivo}" download style="display:inline-block;margin-top:10px;">â¬‡ï¸ Descargar archivo combinado</a></li>`;
 
         const fecha = new Date();
         try {
@@ -183,7 +183,7 @@ app.post('/upload', upload.any(), async (req, res) => {
           );
         } catch (e) {
           console.error('No se pudo guardar historial:', e.message);
-          mensaje += `<li style="color:#b8860b;">ℹ️ Nota: no se guardó en historial (${e.message})</li>`;
+          mensaje += `<li style="color:#b8860b;">â„¹ï¸ Nota: no se guardÃ³ en historial (${e.message})</li>`;
         }
       }
 
@@ -202,7 +202,7 @@ app.post('/upload', upload.any(), async (req, res) => {
       mensaje += `<li><strong>Columnas detectadas:</strong> ${columnas.join(', ') || '(ninguna)'}</li>`;
 
       if (faltan.length > 0) {
-        mensaje += `<li style="color:red;">❌ Faltan columnas requeridas (taxativo): ${faltan.join(', ')}</li>`;
+        mensaje += `<li style="color:red;">âŒ Faltan columnas requeridas (taxativo): ${faltan.join(', ')}</li>`;
       } else {
         const nombreArchivo = `taxativo-${Date.now()}.xlsx`;
         const rutaDestino = path.join(dirCombinados, nombreArchivo);
@@ -224,25 +224,25 @@ app.post('/upload', upload.any(), async (req, res) => {
           );
         } catch (e) {
           console.error('No se pudo guardar historial (taxativo):', e.message);
-          mensaje += `<li style="color:#b8860b;">ℹ️ Nota: no se guardó en historial (taxativo) (${e.message})</li>`;
+          mensaje += `<li style="color:#b8860b;">â„¹ï¸ Nota: no se guardÃ³ en historial (taxativo) (${e.message})</li>`;
         }
 
-        mensaje += `<li>✅ Archivo válido para modo taxativo con ${rows.length} registros.</li>`;
-        mensaje += `<li><a href="/descargas/${nombreArchivo}" download style="display:inline-block;margin-top:10px;">⬇️ Descargar archivo taxativo</a></li>`;
+        mensaje += `<li>âœ… Archivo vÃ¡lido para modo taxativo con ${rows.length} registros.</li>`;
+        mensaje += `<li><a href="/descargas/${nombreArchivo}" download style="display:inline-block;margin-top:10px;">â¬‡ï¸ Descargar archivo taxativo</a></li>`;
       }
 
     } else {
-      mensaje += '<li style="color:red;">⚠️ No se detectaron archivos válidos o faltan campos requeridos.</li>';
+      mensaje += '<li style="color:red;">âš ï¸ No se detectaron archivos vÃ¡lidos o faltan campos requeridos.</li>';
     }
   } catch (error) {
     const msg =
       error instanceof multer.MulterError && error.field
         ? `Error de carga en "${error.field}": ${error.message}`
         : error.message;
-    mensaje += `<li style="color:red;">❌ Error al procesar archivos: ${msg}</li>`;
+    mensaje += `<li style="color:red;">âŒ Error al procesar archivos: ${msg}</li>`;
   }
 
-  mensaje += '</ul><a href="/" style="display:inline-block;margin-top:20px;">🔙 Volver al inicio</a>';
+  mensaje += '</ul><a href="/" style="display:inline-block;margin-top:20px;">ðŸ”™ Volver al inicio</a>';
   res.send(`<html><body style="font-family:Arial,sans-serif;">${mensaje}</body></html>`);
 });
 
@@ -259,18 +259,18 @@ app.get('/historial', async (req, res) => {
   }
 });
 
-// Router de cotización
+// Router de cotizaciÃ³n
 const cotizacionRouter = require('./routes/cotizacion');
 const procesoRouter = require('./routes/proceso');
 app.use('/cotizacion', cotizacionRouter);
 app.use('/proceso', procesoRouter);
 
-// ✅ NUEVO endpoint de health
+// âœ… NUEVO endpoint de health
 app.get('/health', (req, res) => {
   res.status(200).json({ status: "ok" });
 });
 
-// ✅ Proteger el app.listen y exportar app
+// âœ… Proteger el app.listen y exportar app
 if (require.main === module) {
   app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
@@ -278,7 +278,7 @@ if (require.main === module) {
 }
 
 //registro la ruta de atm
-const atmRouter = require('./routes/atm');
+const atmRouter = require('./services/atm/atm');
 app.use('/atm', atmRouter);
 
 module.exports = app;

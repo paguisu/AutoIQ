@@ -1,5 +1,5 @@
-const express = require("express");
-const atmService = require("../services/atm");
+﻿const express = require("express");
+const atmService = require("../atm"); // usa services/atm/index.js
 const router = express.Router();
 
 router.post("/cotizar", async (req, res) => {
