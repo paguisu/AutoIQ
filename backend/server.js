@@ -282,3 +282,7 @@ const atmRouter = require('./services/atm/atm');
 app.use('/atm', atmRouter);
 
 module.exports = app;
+
+const atmSoapDemo = require('./routes/atm_soap_demo');
+app.use('/atm', atmSoapDemo);
+
