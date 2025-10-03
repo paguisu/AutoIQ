@@ -1,0 +1,13 @@
+{
+  "aseguradora": "ATM",
+  "ambiente": "DEV",
+  "base_url": "https://wsatm-dev.atmseguros.com.ar",
+  "credenciales": {
+    "Usa": "PNONCECOM",
+    "Password": "s91101",
+    "Vendedor": "0067804766"
+  },
+  "seccion": 3,
+  "rate_limit": { "min_interval_ms": 800, "concurrency": 1 },
+  "local_endpoint": "http://127.0.0.1:3000/atm/cotizar-soap-demo"
+}
