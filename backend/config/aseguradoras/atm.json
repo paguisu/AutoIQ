@@ -8,6 +8,13 @@
     "Vendedor": "0067804766"
   },
   "seccion": 3,
-  "rate_limit": { "min_interval_ms": 800, "concurrency": 1 },
+  "rate_limit": { "min_interval_ms": 200, "concurrency": 1 },
+  "auto_rate": {
+    "enabled": true,
+    "target_rps": 1.0,
+    "warmup": 2,
+    "min_interval_floor_ms": 50,
+    "use_percentile": 0.9
+  },
   "local_endpoint": "http://127.0.0.1:3000/atm/cotizar-soap-demo"
 }

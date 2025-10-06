@@ -1,0 +1,33 @@
+{
+  "$schema": "https://auto-iq.local/schemas/mapping.schema.json",
+  "aseguradora": "ATM",
+  "requiredFields": [
+    "tau_codia",
+    "anio",
+    "codigo_postal"
+  ],
+  "fields": {
+    "tau_codia": {
+      "sourceColumn": "codigo_infoauto",
+      "type": "string"
+    },
+    "anio": {
+      "sourceColumn": "anio",
+      "type": "number"
+    },
+    "codigo_postal": {
+      "sourceColumn": "CP",
+      "type": "string"
+    },
+    "uso": {
+      "sourceColumn": "uso",
+      "type": "string",
+      "optional": true
+    },
+    "provincia": {
+      "sourceColumn": "provincia",
+      "type": "string",
+      "optional": true
+    }
+  }
+}
