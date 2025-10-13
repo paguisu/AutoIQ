@@ -5,6 +5,9 @@ const path = require('path');
 const fs = require('fs');
 const validarColumnas = require('./utils/validarColumnas');
 const serveIndex = require('serve-index'); // ✅ agregado
+const procesoAtmRouter = require('./routes/proceso_atm');
+
+
 
 // Combinador (ruta robusta)
 let combinarArchivos;
@@ -282,6 +285,9 @@ app.get('/atm/marcas', async (req, res) => {
   }
 });
 // 🔹🔹🔹 FIN agregado 🔹🔹🔹
+
+app.use('/proceso/atm', procesoAtmRouter);  // agregamos nuevas rutas bajo
+
 
 // ✅ Proteger el app.listen y exportar app
 if (require.main === module) {

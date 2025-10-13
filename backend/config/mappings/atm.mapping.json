@@ -7,27 +7,16 @@
     "codigo_postal"
   ],
   "fields": {
-    "tau_codia": {
-      "sourceColumn": "codigo_infoauto",
-      "type": "string"
-    },
-    "anio": {
-      "sourceColumn": "anio",
-      "type": "number"
-    },
-    "codigo_postal": {
-      "sourceColumn": "CP",
-      "type": "string"
-    },
-    "uso": {
-      "sourceColumn": "uso",
-      "type": "string",
-      "optional": true
-    },
-    "provincia": {
-      "sourceColumn": "provincia",
-      "type": "string",
-      "optional": true
-    }
-  }
+  "tau_codia":      { "sourceColumn": "infoautocod",  "type": "string", "required": true,  "trim": true },
+  "anio":           { "sourceColumn": "anio",         "type": "number", "required": true },
+  "codigo_postal":  { "sourceColumn": "CP",           "type": "string", "required": true },
+  "uso":            { "sourceColumn": "uso",          "type": "string", "required": false, "default": "Particular" },
+  "tipo_vehiculo":  { "sourceColumn": "tipo_vehiculo","type": "string", "required": false },
+  "provincia":      { "sourceColumn": "Provincia",    "type": "string", "required": false },
+  "localidad":      { "sourceColumn": "Localidad",    "type": "string", "required": false },
+  "marca":          { "sourceColumn": "Marca",        "type": "string", "required": false },
+  "modelo":         { "sourceColumn": "Modelo",       "type": "string", "required": false },
+  "cerokm":         { "sourceColumn": "cerokm",       "type": "string", "required": false }
+}
+
 }

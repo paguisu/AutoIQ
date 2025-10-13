@@ -1,26 +1,13 @@
 /**
- * AutoIQ — Export Excel de cotizaciones ATM por proceso_id (v2.1)
- * ---------------------------------------------------------------
- * Genera un .xlsx con:
- *  - Resumen (con total real: OK + Error)
- *  - OK (aseguradora, datos vehículo/ubicación, cabecera, fecha/hora, operación, productos por columna, links RR)
- *  - Errores (intento de cotización, tipo/desc de error y links RR)
- *
- * Este export ignora el status almacenado en DB y clasifica por el valor real
- * de response_json.raw.statusSuccess (TRUE => OK, FALSE => Error).
- *
- * Requisitos: npm i mysql2 xlsx
+ * AutoIQ — Export Excel de cotizaciones ATM por proceso_id (v2.2)
+ * ----------------------------------------------------------------
+ * Cambios respecto a tu v2.1:
+ *  - Lee cabecera.json (si existe) y completa persona/estado_civil/edad/sexo si el request no los trae.
+ *  - Fallback de localidad/provincia desde request (si no hay cp_map.json).
+ *  - Soporta mapping con campos bajo "fields" o al tope (para resolver links RR).
  *
  * Uso:
- *  node backend/scripts/export_atm_excel.js --proceso-id=8 --out="D:/AutoIQ/data/atm/res/proceso_8.xlsx"
- *    (si omitís --out, lo guarda en carpeta_resultados del proceso)
- *
- * Opcional: mapa de CP → localidad/provincia
- *  backend/config/geo/cp_map.json con estructura:
- *   {
- *     "1000": {"localidad":"CABA","provincia":"CABA"},
- *     "5000": {"localidad":"Córdoba","provincia":"Córdoba"}
- *   }
+ *   node backend/scripts/export_atm_excel.js --proceso-id=8 --out="D:/AutoIQ/data/atm/res/proceso_8.xlsx"
  */
 
 const fs = require("fs");
@@ -93,7 +80,7 @@ function firstNumber(...vals) {
 // intenta extraer suma asegurada / combustible / tipo de vehículo y coberturas del response (robusto a nombres)
 function extractFromResponse(resp) {
   const flat = toFlat(resp || {});
-  // suma asegurada: busca claves que contengan "suma" y "asegur"
+  // suma asegurada
   const sumaKey = Object.keys(flat).find(k => /suma/i.test(k) && /asegur/i.test(k));
   const sumaAsegurada = sumaKey ? flat[sumaKey] : "";
 
@@ -108,7 +95,7 @@ function extractFromResponse(resp) {
   // operación ATM
   const operacion = (resp && (resp.operacion || (resp.raw && resp.raw.operacion))) || "";
 
-  // coberturas (productos) — preferimos "codigo"; si no hay, armamos por nombre normalizado
+  // coberturas (productos)
   let productos = {};
   const cob = (resp && (resp.coberturas || resp.Coberturas)) || [];
   if (Array.isArray(cob)) {
@@ -129,16 +116,25 @@ function extractFromResponse(resp) {
   return { sumaAsegurada, combustible, tipoVehiculo, operacion, productos, flat, statusSuccess, statusMsg };
 }
 
+// mapping: soportar forma { "fields": {tau_codia:{sourceColumn:...}, ...} } o { tau_codia:{sourceColumn:...} }
+function getFieldDef(mapping, field) {
+  if (!mapping) return null;
+  if (mapping.fields && mapping.fields[field]) return mapping.fields[field];
+  if (mapping[field]) return mapping[field];
+  return null;
+}
+function getByMap(row, mapping, field) {
+  const def = getFieldDef(mapping, field);
+  const sc = def?.sourceColumn;
+  return sc ? row[sc] : null;
+}
+
 // construye key única de una fila del XLSX para ubicar archivo RR
 function buildKeyFromRowObj(row, mapping) {
   const tau = getByMap(row, mapping, "tau_codia");
   const anio = getByMap(row, mapping, "anio");
   const cp = getByMap(row, mapping, "codigo_postal");
   return [safeStr(tau), safeStr(anio), safeStr(cp)].join("|");
-}
-function getByMap(row, mapping, field) {
-  const sc = mapping?.fields?.[field]?.sourceColumn;
-  return sc ? row[sc] : null;
 }
 
 function loadCpMap() {
@@ -221,6 +217,15 @@ async function main() {
 
     // cp map opcional
     const cpMap = loadCpMap();
+
+    // cabecera.json (para persona/estadoCivil/edad/genero)
+    let cabecera = null;
+    try {
+      const cabPath = path.join(resultDir || "", "cabecera.json");
+      if (cabPath && fs.existsSync(cabPath)) {
+        cabecera = JSON.parse(fs.readFileSync(cabPath, "utf8"));
+      }
+    } catch {}
 
     // OUT path
     if (!outPath) {
@@ -310,19 +315,22 @@ async function main() {
       const fecha = fmtDate(fh);
       const hora  = fmtTime(fh);
 
-      // localidad/provincia por CP
-      let loc = "", prov = "";
+      // CP / localidad / provincia
       const cp = r.codigo_postal || req.codigo_postal || req.CodigoPostal || "";
+      let loc = "", prov = "";
       if (cpMap && cp && cpMap[cp]) {
         loc = cpMap[cp].localidad || "";
         prov = cpMap[cp].provincia || "";
       }
+      // fallback desde request/xlsx
+      if (!loc)  loc  = firstString(req.localidad,  req.Localidad);
+      if (!prov) prov = firstString(req.provincia,  req.Provincia);
 
-      // tipo_vehiculo por Seccion (3=Auto, 4=Moto) o de request
+      // tipo_vehiculo por Seccion o de request
       const seccion = firstString(req.Seccion, req.seccion);
       const tipoVeh = tipoVehiculo || (seccion === "4" ? "Moto" : seccion === "3" ? "Auto" : firstString(req.tipo_vehiculo, req.tipo));
 
-      // localizar archivo RR por key (para hiperlinks)
+      // RR: localizar por key (tau_codia|anio|cp)
       let filaIdx = "";
       if (mapping && xrows.length) {
         const key = [safeStr(req.tau_codia || r.cod_infoauto), safeStr(req.anio || r.anio), safeStr(cp)].join("|");
@@ -332,10 +340,16 @@ async function main() {
       const reqPath = baseName ? path.join(rrDir, `${baseName}_request.json`) : "";
       const resPath = baseName ? path.join(rrDir, `${baseName}_response.json`) : "";
 
+      // Cabecera (fallback si request no lo trae)
+      const personaVal      = firstString(req.persona,      cabecera?.tipoPersona, cabecera?.persona);
+      const estadoCivilVal  = firstString(req.estado_civil, cabecera?.estadoCivil);
+      const edadVal         = firstString(req.edad,         cabecera?.edad);
+      const sexoVal         = firstString(req.sexo,         cabecera?.sexo, cabecera?.genero);
+
       const rowArr = [
-        "ATM",                         // aseguradora
-        r.id,                          // id AutoIQ
-        safeStr(operacion),            // operacion ATM
+        "ATM",
+        r.id,
+        safeStr(operacion),
         safeStr(r.patente),
         safeStr(r.cod_infoauto || req.tau_codia),
         safeStr(r.marca || req.marca),
@@ -346,20 +360,18 @@ async function main() {
         safeStr(tipoVeh),
         safeStr(combustible),
         safeStr(sumaAsegurada),
-        safeStr(req.persona),
-        safeStr(req.estado_civil),
-        safeStr(req.edad),
-        safeStr(req.sexo),
+        safeStr(personaVal),
+        safeStr(estadoCivilVal),
+        safeStr(edadVal),
+        safeStr(sexoVal),
         safeNum(r.ms_duracion),
         safeStr(fecha), safeStr(hora),
-        reqPath,                       // hiperlinks luego
+        reqPath,
         resPath
       ];
 
       // productos por columna
-      for (const col of productosCols) {
-        rowArr.push(productos[col] ?? "");
-      }
+      for (const col of productosCols) rowArr.push(productos[col] ?? "");
 
       okAoA.push(rowArr);
     }
@@ -410,6 +422,8 @@ async function main() {
         loc = cpMap[cp].localidad || "";
         prov = cpMap[cp].provincia || "";
       }
+      if (!loc)  loc  = firstString(req.localidad,  req.Localidad);
+      if (!prov) prov = firstString(req.provincia,  req.Provincia);
 
       const seccion = firstString(req.Seccion, req.seccion);
       const tipoVeh = tipoVehiculo || (seccion === "4" ? "Moto" : seccion === "3" ? "Auto" : firstString(req.tipo_vehiculo, req.tipo));
@@ -424,6 +438,12 @@ async function main() {
       const reqPath = baseName ? path.join(rrDir, `${baseName}_request.json`) : "";
       const resPath = baseName ? path.join(rrDir, `${baseName}_response.json`) : "";
 
+      // Cabecera (fallback)
+      const personaVal      = firstString(req.persona,      cabecera?.tipoPersona, cabecera?.persona);
+      const estadoCivilVal  = firstString(req.estado_civil, cabecera?.estadoCivil);
+      const edadVal         = firstString(req.edad,         cabecera?.edad);
+      const sexoVal         = firstString(req.sexo,         cabecera?.sexo, cabecera?.genero);
+
       const tipoErr = tipoErrorDesdeMensaje(r.error_msg || statusMsg);
 
       const rowArr = [
@@ -434,7 +454,7 @@ async function main() {
         safeNum(r.anio || req.anio),
         safeStr(cp), safeStr(loc), safeStr(prov),
         safeStr(tipoVeh), safeStr(combustible), safeStr(sumaAsegurada),
-        safeStr(req.persona), safeStr(req.estado_civil), safeStr(req.edad), safeStr(req.sexo),
+        safeStr(personaVal), safeStr(estadoCivilVal), safeStr(edadVal), safeStr(sexoVal),
         tipoErr, safeStr(r.error_msg || statusMsg || ""),
         safeNum(r.ms_duracion),
         safeStr(fecha), safeStr(hora),
