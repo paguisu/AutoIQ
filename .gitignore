@@ -35,3 +35,6 @@ web_servicies/
 # Binarios comunes que no queremos en el repo
 *.zip
 *.xlsx
+
+# Presentaciones
+*.pptx
