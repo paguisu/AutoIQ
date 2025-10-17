@@ -1,5 +1,7 @@
 // backend/services/atm/client.js
 const axios = require("axios");
+const fs = require("fs");
+const path = require("path");
 
 // Intentamos usar fast-xml-parser (debería estar ya en tu proyecto)
 // Si no está, instalalo: npm i fast-xml-parser
@@ -147,16 +149,83 @@ async function xmlToJson(xml, pathSegments = []) {
  */
 function pickEnv() {
   return {
-    ATM_BASE_URL: process.env.ATM_BASE_URL, // ej: https://wsatm.atmseguros.com.ar  (sin /index.php/soap)
+    ATM_BASE_URL: process.env.ATM_BASE_URL, // ej: https://wsatm.atmseguros.com.ar
     ATM_USER: process.env.ATM_USER,
     ATM_PASS: process.env.ATM_PASS,
     ATM_VENDEDOR: process.env.ATM_VENDEDOR,
   };
 }
 
+/* ======================= NUEVO: fechas / offset ======================= */
+
+/** Devuelve offset de vigencia en días (prioriza env sobre archivo JSON).
+ *  - ENV: ATM_VIGENCIA_OFFSET_DAYS
+ *  - Archivo: backend/config/aseguradoras/atm.json → { "vigencia_offset_days": N }
+ *  - Default: 0
+ */
+function getVigenciaOffsetDays() {
+  // 1) ENV
+  const envVal = process.env.ATM_VIGENCIA_OFFSET_DAYS;
+  if (envVal != null && envVal !== "") {
+    const n = Number(envVal);
+    if (Number.isFinite(n)) return n;
+  }
+
+  // 2) Archivo JSON (si existe)
+  try {
+    const p = path.join(process.cwd(), "backend", "config", "aseguradoras", "atm.json");
+    if (fs.existsSync(p)) {
+      const js = JSON.parse(fs.readFileSync(p, "utf8"));
+      const n = Number(js?.vigencia_offset_days);
+      if (Number.isFinite(n)) return n;
+    }
+  } catch {}
+
+  // 3) Default
+  return 0;
+}
+
+/** Formatea fecha con offset en ddMMyyyy */
+function formatDDMMYYYY(date = new Date(), offsetDays = 0) {
+  const d = new Date(date);
+  if (offsetDays) d.setDate(d.getDate() + offsetDays);
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const yyyy = String(d.getFullYear());
+  return `${dd}${mm}${yyyy}`;
+}
+
+/** Pisa TODAS las fechas típicas del request de ATM y agrega `fecha` (minúscula).
+ *  - Campos tocados: Fecha, VigenciaDesde, FechaDesde, FechaCotizacion, fecha_vigencia y fecha
+ *  - Formato: ddMMyyyy
+ *  - Devuelve un NUEVO objeto (no muta el original).
+ */
+function normalizeVigenciaDates(reqObj, offsetDays = 0) {
+  const out = { ...(reqObj || {}) };
+  const ddmmyyyy = formatDDMMYYYY(new Date(), offsetDays);
+
+  const fields = [
+    "Fecha",
+    "VigenciaDesde",
+    "FechaDesde",
+    "FechaCotizacion",
+    "fecha_vigencia",
+    "fecha" // clave que ATM menciona en el PDF
+  ];
+  for (const f of fields) out[f] = ddmmyyyy;
+  return out;
+}
+
+/* ===================================================================== */
+
 module.exports = {
   buildAxios,
   buildSoapEnvelope,
   xmlToJson,
   pickEnv,
+
+  // nuevos helpers exportados
+  getVigenciaOffsetDays,
+  formatDDMMYYYY,
+  normalizeVigenciaDates,
 };

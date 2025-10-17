@@ -1,0 +1,216 @@
+﻿// backend/services/atm/atm.js
+const express = require("express");
+const router = express.Router();
+
+const fs = require("fs");
+const path = require("path");
+
+// Core ATM (index.js en ESTA carpeta)
+const atmService = require("./index");
+
+const {
+  buildAxios,
+  buildSoapEnvelope,
+  xmlToJson,
+  pickEnv,
+  getVigenciaOffsetDays,
+  normalizeVigenciaDates,
+  formatDDMMYYYY,
+} = require("./client");
+
+// ---- util: elegir función de cotización disponible en el core ----
+function pickCotizarFn(svc) {
+  if (!svc) return null;
+  const candidates = [
+    "cotizar",
+    "cotizarSoapDemo",
+    "cotizarSOAP",
+    "cotizarWs",
+    "cotizarWS",
+    "cotizarSoap",
+    "quote",
+  ];
+  for (const name of candidates) {
+    if (typeof svc[name] === "function") return svc[name].bind(svc);
+  }
+  return null;
+}
+
+function ensureDir(p) {
+  if (!fs.existsSync(p)) fs.mkdirSync(p, { recursive: true });
+}
+
+// POST /atm/cotizar
+router.post("/cotizar", async (req, res) => {
+  try {
+    const svc = typeof atmService === "function" ? atmService() : atmService;
+
+    // Normalizar fechas (ddMMyyyy) y asegurar `fecha` (minúscula)
+    const offset = getVigenciaOffsetDays();
+    const bodyNorm = normalizeVigenciaDates(req.body || {}, offset);
+
+    const fn = pickCotizarFn(svc);
+    if (!fn) {
+      const keys = Object.keys(svc || {});
+      console.error("[ATM] No encontré función de cotización en el core. Claves exportadas:", keys);
+      return res.status(500).json({
+        ok: false,
+        error: "Core ATM no expone función de cotización conocida",
+        exportedKeys: keys,
+      });
+    }
+
+    const result = await fn(bodyNorm);
+
+    if (result && result.ok) {
+      return res.status(200).json(result.data ?? result);
+    }
+
+    if (result && (result.error || result.raw)) {
+      return res.status(502).json({
+        ok: false,
+        error: result.error || "Error en core ATM",
+        raw: result.raw ?? null,
+      });
+    }
+
+    return res.status(500).json({ ok: false, error: "Error de cotización" });
+  } catch (err) {
+    console.error("[ATM][cotizar] error:", err);
+    return res.status(500).json({ ok: false, error: err.message || String(err) });
+  }
+});
+
+// ===== MARCAS (SOAP: ws_au_marcas) =====
+async function fetchMarcas() {
+  const { ATM_BASE_URL, ATM_USER, ATM_PASS, ATM_VENDEDOR } = pickEnv();
+
+  const ddmmyyyy = formatDDMMYYYY(new Date(), getVigenciaOffsetDays());
+
+  const docIn = `
+<doc_in>
+  <auto>
+    <usuario>
+      <usa>${ATM_USER}</usa>
+      <pass>${ATM_PASS}</pass>
+      <fecha>${ddmmyyyy}</fecha>
+      <vendedor>${ATM_VENDEDOR}</vendedor>
+      <origen>WS</origen>
+    </usuario>
+  </auto>
+</doc_in>`.trim();
+
+  const soapBody = `
+    <ws_au_marcas xmlns="http://tempuri.org/">
+      <doc_in><![CDATA[${docIn}]]></doc_in>
+    </ws_au_marcas>
+  `.trim();
+
+  const envelope = buildSoapEnvelope(soapBody);
+
+  const base = (process.env.ATM_BASE_URL || "https://wsatm.atmseguros.com.ar").replace(/\/+$/, "");
+  const baseURL = /\/index\.php\/soap$/i.test(base) ? base : `${base}/index.php/soap`;
+
+  const axios = buildAxios({ baseURL });
+
+  const res = await axios.post("", envelope, {
+    headers: {
+      "Content-Type": "text/xml; charset=UTF-8",
+      "SOAPAction": "http://tempuri.org/ws_au_marcas",
+    },
+    validateStatus: () => true,
+  });
+
+  // Capturamos el cuerpo SOAP crudo para debug (y guardamos a archivo por si hace falta)
+  const soapRaw = String(res.data ?? "");
+  let httpRawPath = null;
+  try {
+    const dbgDir = path.join(process.cwd(), "data", "atm", "debug");
+    ensureDir(dbgDir);
+    const ts = new Date().toISOString().replace(/[:.]/g, "-");
+    httpRawPath = path.join(dbgDir, `marcas_${ts}.xml`);
+    fs.writeFileSync(httpRawPath, soapRaw, "utf8");
+  } catch {}
+
+  // 1er parseo: Envelope → Body → ws_au_marcasResponse → ws_au_marcasResult
+  const parsed = await xmlToJson(soapRaw, [
+    "ws_au_marcasResponse",
+    "ws_au_marcasResult",
+  ]);
+
+  if (!parsed.ok) {
+    return {
+      ok: false,
+      error: parsed.fault || `Respuesta inválida (HTTP ${res.status})`,
+      raw: {
+        http_raw_path: httpRawPath,
+        soapRawSnippet: soapRaw.slice(0, 1200)
+      },
+    };
+  }
+
+  // Si data es string/CDATA, 2do parseo buscando <auto>…</auto>
+  let root = parsed.data;
+  if (typeof root === "string") {
+    const inner = await xmlToJson(root, ["auto"]);
+    if (inner.ok) {
+      root = inner.data || {};
+    } else {
+      return {
+        ok: true,
+        marcas: [],
+        raw: {
+          http_raw_path: httpRawPath,
+          soapRawSnippet: soapRaw.slice(0, 1200),
+          doc_out: root
+        }
+      };
+    }
+  } else {
+    root = root?.auto || root || {};
+  }
+
+  const candidatos = [
+    root?.marcas?.marca,
+    root?.marca,
+  ].filter(Boolean);
+
+  const lista = Array.isArray(candidatos[0])
+    ? candidatos[0]
+    : candidatos[0]
+    ? [candidatos[0]]
+    : [];
+
+  const marcas = lista.map((m) => ({
+    codigo: Number(m.codigo ?? m.cod ?? m.id ?? 0),
+    descripcion: String(m.descripcion ?? m.desc ?? m.nombre ?? "").trim(),
+    raw: m,
+  }));
+
+  return {
+    ok: true,
+    marcas,
+    raw: {
+      http_raw_path: httpRawPath,
+      soapRawSnippet: soapRaw.slice(0, 1200)
+    }
+  };
+}
+
+// GET /atm/marcas
+router.get("/marcas", async (req, res) => {
+  try {
+    const r = await fetchMarcas();
+    if (!r.ok) return res.status(502).json({ ok: false, error: r.error, raw: r.raw });
+    if ((req.query.raw === "1" || req.query.raw === "true") && r.raw) {
+      return res.json({ ok: true, count: r.marcas.length, marcas: r.marcas, raw: r.raw });
+    }
+    return res.json({ ok: true, count: r.marcas.length, marcas: r.marcas });
+  } catch (e) {
+    console.error("[ATM][marcas] error:", e);
+    return res.status(500).json({ ok: false, error: e.message || String(e) });
+  }
+});
+
+module.exports = router;
+module.exports.fetchMarcas = fetchMarcas;

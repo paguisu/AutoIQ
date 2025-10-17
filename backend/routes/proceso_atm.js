@@ -31,6 +31,49 @@ async function rutaDesdeHistorial(id) {
   return path.isAbsolute(rutaRel) ? rutaRel : path.join(process.cwd(), rutaRel);
 }
 
+// Resuelve id de aseguradora por nombre o código; si no existe, la crea.
+async function resolveAseguradoraId(nombreOCode) {
+  if (!nombreOCode) throw new Error('Nombre/código de aseguradora vacío');
+  const val = String(nombreOCode).trim();
+
+  // 1) buscar por nombre o codigo (case-insensitive)
+  const [found] = await db.execute(
+    `SELECT id FROM aseguradoras
+      WHERE LOWER(nombre) = LOWER(?) OR LOWER(codigo) = LOWER(?)
+      LIMIT 1`,
+    [val, val]
+  );
+  if (found.length) return found[0].id;
+
+  // 2) crear (usa mismo valor como nombre y codigo si no hay uno estándar)
+  const [ins] = await db.execute(
+    `INSERT INTO aseguradoras (nombre, codigo, estado)
+       VALUES (?, ?, 'activa')`,
+    [val, val]
+  );
+  return ins.insertId;
+}
+
+// Inserta asociaciones proceso ↔ aseguradoras (por nombre); usa prioridad incremental
+async function registrarCompanias(procesoId, companias = []) {
+  if (!Array.isArray(companias) || !companias.length) return;
+
+  let prio = 1;
+  for (const cia of companias) {
+    try {
+      const aseguradoraId = await resolveAseguradoraId(cia);
+      await db.execute(
+        `INSERT INTO procesos_cotizacion_aseguradoras
+           (proceso_id, aseguradora_id, prioridad, estado, creado_en, actualizado_en)
+         VALUES (?, ?, ?, 'pendiente', NOW(), NOW())`,
+        [procesoId, aseguradoraId, prio++]
+      );
+    } catch (e) {
+      console.warn(`No se pudo registrar companias en procesos_cotizacion_aseguradoras: ${e.message}`);
+    }
+  }
+}
+
 // ---------- POST /proceso/atm/crear ----------
 // Body JSON: { historial_id?: number, ruta?: string, nombre?: string, cabecera?: {...}, companias?: string[] }
 router.post('/crear', express.json(), async (req, res) => {
@@ -93,19 +136,9 @@ router.post('/crear', express.json(), async (req, res) => {
     );
     const procesoId = r.insertId;
 
-    // 6) (Opcional) Registrar compañías si existe la tabla
+    // 6) Registrar compañías (por nombre → aseguradora_id)
     if (Array.isArray(companias) && companias.length) {
-      try {
-        for (const cia of companias) {
-          await db.execute(
-            `INSERT INTO procesos_cotizacion_aseguradoras (proceso_id, aseguradora)
-             VALUES (?, ?)`,
-            [procesoId, cia]
-          );
-        }
-      } catch (e) {
-        console.warn('No se pudo registrar companias en procesos_cotizacion_aseguradoras:', e.message);
-      }
+      await registrarCompanias(procesoId, companias);
     }
 
     return res.json({
@@ -156,7 +189,7 @@ router.post('/ejecutar', express.json(), async (req, res) => {
     await execFileAsync('node', ['backend/scripts/export_atm_excel.js', `--proceso-id=${procesoId}`, `--out=${excelPath}`], { cwd: process.cwd(), env: childEnv });
 
     // Marcar finalizado
-    await db.execute(`UPDATE procesos_cotizacion SET estado='completado', fecha_fin=NOW() WHERE id=?`, [procesoId]);
+    await db.execute(`UPDATE procesos_cotizacion SET estado='completado', fecha_fin=NOW() WHERE id=?`, [procesoId]);     
 
     return res.json({
       ok: true,
@@ -168,5 +201,34 @@ router.post('/ejecutar', express.json(), async (req, res) => {
     return res.status(500).json({ ok:false, error: e.message });
   }
 });
+
+// ... arriba del archivo (no tocar)
+
+// Inserta asociaciones proceso ↔ aseguradoras (por nombre); usa prioridad incremental
+async function registrarCompanias(procesoId, companias = []) {
+  if (!Array.isArray(companias) || !companias.length) return;
+
+  let prio = 1;
+  for (const cia of companias) {
+    try {
+      const aseguradoraId = await resolveAseguradoraId(cia);
+
+      // 👇 LOG 1: ver qué aseguradora se resolvió
+      console.log('[DEBUG][registrarCompanias] proceso', procesoId, 'cia', cia, '→ aseguradora_id', aseguradoraId, 'prio', prio);
+
+      // 👇 LOG 2: confirmar que INSERT usa aseguradora_id, no "aseguradora"
+      console.log('[DEBUG][SQL] INSERT procesos_cotizacion_aseguradoras (proceso_id, aseguradora_id, prioridad, estado) ...');
+
+      await db.execute(
+        `INSERT INTO procesos_cotizacion_aseguradoras
+           (proceso_id, aseguradora_id, prioridad, estado, creado_en, actualizado_en)
+         VALUES (?, ?, ?, 'pendiente', NOW(), NOW())`,
+        [procesoId, aseguradoraId, prio++]
+      );
+    } catch (e) {
+      console.warn(`No se pudo registrar companias en procesos_cotizacion_aseguradoras: ${e.message}`);
+    }
+  }
+}
 
 module.exports = router;
