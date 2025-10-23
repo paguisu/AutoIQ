@@ -1,231 +1,190 @@
 // backend/services/atm/client.js
-const axios = require("axios");
+const axiosBase = require("axios");
+const { parseStringPromise } = require("xml2js");
 const fs = require("fs");
 const path = require("path");
 
-// Intentamos usar fast-xml-parser (debería estar ya en tu proyecto)
-// Si no está, instalalo: npm i fast-xml-parser
-let fxp;
-try {
-  fxp = require("fast-xml-parser");
-} catch (_) {
-  fxp = null;
+function pad2(n){return String(n).padStart(2,"0");}
+function formatDDMMYYYY(d){const dt=d instanceof Date?d:new Date(d);return `${pad2(dt.getDate())}${pad2(dt.getMonth()+1)}${dt.getFullYear()}`;}
+function formatDDMMYYYYSlash(d){const dt=d instanceof Date?d:new Date(d);return `${pad2(dt.getDate())}/${pad2(dt.getMonth()+1)}/${dt.getFullYear()}`;}
+
+function getVigenciaOffsetDays(){const v=Number(process.env.ATM_VIGENCIA_OFFSET_DAYS);return Number.isFinite(v)?v:0;}
+
+function normalizeVigenciaDates(bodyRaw, offsetDays=getVigenciaOffsetDays()){
+  const body={...(bodyRaw||{})};
+  const base=new Date(); if(offsetDays) base.setDate(base.getDate()+offsetDays);
+  const todaySlash=formatDDMMYYYYSlash(base); const todayPlain=formatDDMMYYYY(base);
+  const toSlash=(s)=>{
+    if(!s) return todaySlash;
+    const str=String(s).trim();
+    if(/^\d{2}\/\d{2}\/\d{4}$/.test(str)) return str;
+    if(/^\d{8}$/.test(str)) return `${str.slice(0,2)}/${str.slice(2,4)}/${str.slice(4,8)}`;
+    const dt=new Date(str); return isNaN(dt)?todaySlash:formatDDMMYYYYSlash(dt);
+  };
+  const fields=["Fecha","fecha","VigenciaDesde","FechaDesde","FechaCotizacion","fecha_vigencia"];
+  const bodySlash={...body};
+  for(const f of fields){ bodySlash[f]=toSlash(bodySlash[f]); }
+  const bodyPlain={...bodySlash};
+  for(const f of fields){
+    const s=bodySlash[f];
+    if(s && /^\d{2}\/\d{2}\/\d{4}$/.test(s)) bodyPlain[f]=s.replace(/\//g,"");
+    else if(!s) bodyPlain[f]=todayPlain;
+  }
+  return { bodySlash, bodyPlain };
 }
 
-/**
- * Crea un cliente Axios con baseURL y headers listos para ATM.
- * - validateStatus: true → tratamos 4xx/5xx como “respuesta” (no throw)
- * - logs mínimos de request/response (método, URL, status)
- */
-function buildAxios({ baseURL, apiKey, timeoutMs = 10000 }) {
-  const instance = axios.create({
-    baseURL,
-    timeout: timeoutMs,
-    headers: {
-      "Content-Type": "application/json",
-      ...(apiKey ? { "x-api-key": apiKey } : {}),
-    },
-    validateStatus: () => true,
-  });
-
-  instance.interceptors.request.use((cfg) => {
-    try {
-      const u = (cfg.baseURL || "") + (cfg.url || "");
-      console.log("[ATM][REQ]", (cfg.method || "GET").toUpperCase(), u);
-    } catch {}
-    return cfg;
-  });
-
-  instance.interceptors.response.use((res) => {
-    try {
-      console.log("[ATM][RES]", res.status, res.config?.url || "");
-    } catch {}
-    return res;
-  });
-
-  return instance;
-}
-
-/**
- * Envoltorio SOAP estándar (Envelope/Body) con namespaces clásicos.
- * Pone el XML que vos le pases dentro del <soap:Body>…</soap:Body>.
- */
-function buildSoapEnvelope(innerXml) {
+function buildSoapEnvelope(innerXml){
   return `<?xml version="1.0" encoding="UTF-8"?>
-<soap:Envelope
-  xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <soap:Body>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+  <SOAP-ENV:Body>
     ${innerXml}
-  </soap:Body>
-</soap:Envelope>`.trim();
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>`;
 }
 
-/**
- * Parsea una respuesta XML de SOAP a JSON y devuelve un objeto
- * con forma { ok, data, raw, fault }.
- *
- * - xml: string recibido del servidor
- * - pathSegments: array de “claves” para entrar al nodo útil dentro del Envelope.
- *   Ej: ["AUTOS_Cotizar_PHPResponse", "AUTOS_Cotizar_PHPResult", "auto"]
- *
- * Nota: ATM a veces usa prefijos (ns1:, soap:, etc.). Usamos fast-xml-parser
- * con ignoreNameSpace=true para aplanar esos prefijos.
- */
-async function xmlToJson(xml, pathSegments = []) {
-  if (!fxp) {
-    return {
-      ok: false,
-      fault:
-        "Falta dependencia 'fast-xml-parser'. Instalar con: npm i fast-xml-parser",
-      raw: xml,
-    };
-  }
-
-  // Config estándar para SOAP
-  const parser = new fxp.XMLParser({
-    ignoreAttributes: false,
-    attributeNamePrefix: "@",
-    allowBooleanAttributes: true,
-    trimValues: true,
-    parseTagValue: true,
-    parseAttributeValue: true,
-    ignoreDeclaration: true,
-    // Clave: ignora namespaces (ns1:, soap:)
-    ignoreNameSpace: true,
-  });
-
-  try {
-    const obj = parser.parse(xml);
-
-    // Buscamos “Envelope → Body”
-    let cursor =
-      obj?.Envelope?.Body ??
-      obj?.["SOAP-ENV:Envelope"]?.["SOAP-ENV:Body"] ??
-      obj?.["soap:Envelope"]?.["soap:Body"] ??
-      obj;
-
-    // Bajamos por las claves indicadas
-    for (const k of pathSegments) {
-      if (cursor && typeof cursor === "object") {
-        // Buscamos clave exacta o variaciones comunes
-        const key =
-          Object.keys(cursor).find(
-            (kk) => kk === k || kk.endsWith(":" + k) || kk.endsWith(k)
-          ) || k;
-        cursor = cursor[key];
-      }
-    }
-
-    // Si vino Fault estándar
-    const fault =
-      cursor?.Fault ||
-      obj?.Envelope?.Body?.Fault ||
-      obj?.["SOAP-ENV:Envelope"]?.["SOAP-ENV:Body"]?.Fault ||
-      null;
-
-    if (fault) {
-      return {
-        ok: false,
-        fault:
-          fault.faultstring ||
-          fault["faultstring"] ||
-          fault.faultcode ||
-          "SOAP Fault",
-        raw: obj,
-      };
-    }
-
-    return { ok: true, data: cursor, raw: obj };
-  } catch (e) {
-    return { ok: false, fault: e.message || String(e), raw: xml };
-  }
+function buildAxios({ baseURL }){
+  return axiosBase.create({ baseURL, timeout: 30000, validateStatus: ()=>true });
 }
 
-/**
- * Lee credenciales/URLs desde variables de entorno.
- * (Las definís en tu .env y process.env las expone aquí)
- */
-function pickEnv() {
+async function xmlToJson(xml, pathTags=[]){
+  try{
+    const parsed=await parseStringPromise(xml,{ explicitArray:false, trim:true });
+    const fault=parsed?.["SOAP-ENV:Envelope"]?.["SOAP-ENV:Body"]?.["SOAP-ENV:Fault"];
+    if(fault){ const s=(fault?.faultstring||"Fault").toString(); return { ok:false, fault:`Fault/${s}` }; }
+    let node=parsed?.["SOAP-ENV:Envelope"]?.["SOAP-ENV:Body"];
+    for(const t of pathTags){ node=node?.[t]; if(!node) break; }
+    return { ok:true, data: node };
+  }catch(e){ return { ok:false, fault:e.message||"xml parse error" }; }
+}
+
+function pickEnv(){
+  const base=(process.env.ATM_BASE_URL || "https://wsatm.atmseguros.com.ar").replace(/\/+$/,"");
+  // lista de endpoints candidatos (hay instalaciones con distintos sufijos)
+  const endpoints=[
+    process.env.ATM_SOAP_URL || `${base}/index.php/soap`,
+    `${base}/index.php/soap/auto`,
+    `${base}/index.php/soap/au`,
+    `${base}/soap`
+  ];
   return {
-    ATM_BASE_URL: process.env.ATM_BASE_URL, // ej: https://wsatm.atmseguros.com.ar
-    ATM_USER: process.env.ATM_USER,
-    ATM_PASS: process.env.ATM_PASS,
-    ATM_VENDEDOR: process.env.ATM_VENDEDOR,
+    endpoints,
+    ATM_USER: process.env.ATM_USER || "PNONCECOM",
+    ATM_PASS: process.env.ATM_PASS || "s91101",
+    ATM_VENDEDOR: process.env.ATM_VENDEDOR || "0067804766",
+    ATM_SECCION: process.env.ATM_SECCION || "3",
   };
 }
 
-/* ======================= NUEVO: fechas / offset ======================= */
+// ============== core SOAP with fallbacks ==============
+async function postSoapWithFallbacks({ method, innerXmlBuilder }){
+  const env=pickEnv();
+  const candidates = [];
+  for(const url of env.endpoints){
+    candidates.push({ url, soapAction: `http://tempuri.org/${method}`, xmlns: "http://tempuri.org/" });
+    candidates.push({ url, soapAction: `urn:${method}`,                  xmlns: "urn:" });
+    candidates.push({ url, soapAction: "",                               xmlns: "http://tempuri.org/" });
+  }
+  let lastErr = null;
+  for(const cand of candidates){
+    try{
+      const axios=buildAxios({ baseURL: cand.url });
+      const innerXml = innerXmlBuilder(cand.xmlns);
+      const envelope=buildSoapEnvelope(innerXml);
+      const res=await axios.post("", envelope, {
+        headers: { "Content-Type": "text/xml; charset=UTF-8", "SOAPAction": cand.soapAction },
+        validateStatus: ()=>true
+      });
+      const txt=String(res.data||"");
+      // si el server devuelve 500 + 'not present', probamos siguiente candidato
+      if(res.status===500 && /not present/i.test(txt)){ lastErr = `HTTP 500 not present @ ${cand.url} ${cand.soapAction}`; continue; }
+      // si devuelve 404/405 también probamos siguiente
+      if(res.status>=400 && res.status!==500){ lastErr = `HTTP ${res.status} @ ${cand.url}`; continue; }
+      return { ok:true, res, cand };
+    }catch(e){ lastErr = e.message || String(e); }
+  }
+  return { ok:false, error:lastErr || "No SOAP endpoint matched" };
+}
 
-/** Devuelve offset de vigencia en días (prioriza env sobre archivo JSON).
- *  - ENV: ATM_VIGENCIA_OFFSET_DAYS
- *  - Archivo: backend/config/aseguradoras/atm.json → { "vigencia_offset_days": N }
- *  - Default: 0
- */
-function getVigenciaOffsetDays() {
-  // 1) ENV
-  const envVal = process.env.ATM_VIGENCIA_OFFSET_DAYS;
-  if (envVal != null && envVal !== "") {
-    const n = Number(envVal);
-    if (Number.isFinite(n)) return n;
+// ============== operaciones ==============
+async function cotizarSoapDemo(bodyRaw){
+  const env = pickEnv();
+  const { bodyPlain } = normalizeVigenciaDates(bodyRaw);
+  const usuarioFecha = bodyPlain.Fecha || formatDDMMYYYY(new Date());
+  const fechaCot     = bodyPlain.FechaCotizacion || usuarioFecha;
+  const vigDesde     = bodyPlain.VigenciaDesde || usuarioFecha;
+
+  const docIn = `
+<doc_in>
+  <auto>
+    <usuario>
+      <usa>${env.ATM_USER}</usa>
+      <pass>${env.ATM_PASS}</pass>
+      <fecha>${usuarioFecha}</fecha>
+      <vendedor>${env.ATM_VENDEDOR}</vendedor>
+      <origen>WS</origen>
+    </usuario>
+    <cotizacion>
+      <seccion>${(bodyRaw?.Seccion || env.ATM_SECCION).toString()}</seccion>
+      <fechacotizacion>${fechaCot}</fechacotizacion>
+      <fechavigenciadesde>${vigDesde}</fechavigenciadesde>
+    </cotizacion>
+    <vehiculo>
+      <codia>${bodyRaw?.tau_codia || bodyRaw?.codia || ""}</codia>
+      <anio>${bodyRaw?.anio || bodyRaw?.anofab || ""}</anio>
+      <cp>${bodyRaw?.codigo_postal || bodyRaw?.codpostal || bodyRaw?.CP || ""}</cp>
+      <uso>${bodyRaw?.uso || "Particular"}</uso>
+    </vehiculo>
+  </auto>
+</doc_in>`.trim();
+
+  // debug
+  try{ const dbg=path.join(process.cwd(),"data","atm","debug"); fs.mkdirSync(dbg,{recursive:true}); fs.writeFileSync(path.join(dbg,"last_doc_in.xml"),docIn,"utf8"); }catch{}
+
+  const method = "ws_au_cotizar_demo";
+  const result = await postSoapWithFallbacks({
+    method,
+    innerXmlBuilder: (xmlns)=>`
+      <${method} xmlns="${xmlns}">
+        <doc_in><![CDATA[${docIn}]]></doc_in>
+      </${method}>
+    `.trim()
+  });
+
+  if(!result.ok){
+    return { ok:false, error:"ATM SOAP error", raw:{ message: result.error } };
   }
 
-  // 2) Archivo JSON (si existe)
-  try {
-    const p = path.join(process.cwd(), "backend", "config", "aseguradoras", "atm.json");
-    if (fs.existsSync(p)) {
-      const js = JSON.parse(fs.readFileSync(p, "utf8"));
-      const n = Number(js?.vigencia_offset_days);
-      if (Number.isFinite(n)) return n;
-    }
-  } catch {}
+  const { res } = result;
+  // SOAP → doc_out string
+  const parsed = await xmlToJson(res.data,[`${method}Response`,`${method}Result`]);
+  if(!parsed.ok){
+    return { ok:false, error:"ATM SOAP error", raw:{ message: parsed.fault || `HTTP ${res.status}` } };
+  }
+  let root = parsed.data;
+  if(typeof root === "string"){
+    const inner = await xmlToJson(root, ["auto"]);
+    root = inner.ok ? inner.data : {};
+  } else {
+    root = root?.auto || {};
+  }
 
-  // 3) Default
-  return 0;
+  const operacion = root?.operacion || root?.Operacion || null;
+  const statusSuccess = (root?.statusSuccess || "").toString();
+  const statusText = root?.statusText || {};
+  const coberturas = Array.isArray(root?.coberturas?.cobertura) ? root.coberturas.cobertura : [];
+
+  return { ok:true, operacion, coberturas, raw:{ operacion, statusSuccess, statusText } };
 }
-
-/** Formatea fecha con offset en ddMMyyyy */
-function formatDDMMYYYY(date = new Date(), offsetDays = 0) {
-  const d = new Date(date);
-  if (offsetDays) d.setDate(d.getDate() + offsetDays);
-  const dd = String(d.getDate()).padStart(2, "0");
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const yyyy = String(d.getFullYear());
-  return `${dd}${mm}${yyyy}`;
-}
-
-/** Pisa TODAS las fechas típicas del request de ATM y agrega `fecha` (minúscula).
- *  - Campos tocados: Fecha, VigenciaDesde, FechaDesde, FechaCotizacion, fecha_vigencia y fecha
- *  - Formato: ddMMyyyy
- *  - Devuelve un NUEVO objeto (no muta el original).
- */
-function normalizeVigenciaDates(reqObj, offsetDays = 0) {
-  const out = { ...(reqObj || {}) };
-  const ddmmyyyy = formatDDMMYYYY(new Date(), offsetDays);
-
-  const fields = [
-    "Fecha",
-    "VigenciaDesde",
-    "FechaDesde",
-    "FechaCotizacion",
-    "fecha_vigencia",
-    "fecha" // clave que ATM menciona en el PDF
-  ];
-  for (const f of fields) out[f] = ddmmyyyy;
-  return out;
-}
-
-/* ===================================================================== */
 
 module.exports = {
-  buildAxios,
+  formatDDMMYYYY,
+  formatDDMMYYYYSlash,
+  getVigenciaOffsetDays,
+  normalizeVigenciaDates,
   buildSoapEnvelope,
+  buildAxios,
   xmlToJson,
   pickEnv,
-
-  // nuevos helpers exportados
-  getVigenciaOffsetDays,
-  formatDDMMYYYY,
-  normalizeVigenciaDates,
+  cotizarSoapDemo,
 };
+

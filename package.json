@@ -18,7 +18,8 @@
     "serve-index": "^1.9.1",
     "slugify": "^1.6.6",
     "sqlite3": "^5.1.6",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "xml2js": "^0.6.2"
   },
   "description": "Cotizador masivo de seguros de autos.",
   "keywords": [],
