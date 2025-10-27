@@ -115,6 +115,7 @@
       </div>
       <input type="submit" value="Guardar Cabecera" />
     </form>
+    <div id="cabeceraActivaInfo" class="muted" style="margin-top:6px;"></div>
   </div>
 
   <!-- ====== TAB: Histórico ====== -->
@@ -208,7 +209,7 @@
 
         const tabla = document.createElement('table');
         tabla.border = '1';
-        tabla.innerHTML = `<tr><th>ID</th><th>Archivo</th><th>Fecha</th><th>Registros</th></tr>` +
+        tabla.innerHTML = `<tr><th>ID</th><th>Archivo</th><th>Fecha</th><th>Acción</th><th>Registros</th></tr>` +
           data.map(r =>
             `<tr>
               <td>${r.id}</td>
@@ -279,19 +280,70 @@
     });
 
     /* ====== Cabecera: cálculo cruzado Edad/Fecha ====== */
-    document.getElementById("formCabecera").addEventListener("submit", function (e) {
-      e.preventDefault();
-      const formData = new FormData(this);
-      const asegurado = {};
-      formData.forEach((value, key) => { asegurado[key] = value; });
-      alert("Cabecera guardada en memoria (por ahora no se guarda en base de datos)");
-    });
     document.getElementById("edad").addEventListener("input", function () {
       const edad = parseInt(this.value);
       if (!isNaN(edad)) {
         const hoy = new Date();
         const nacimiento = new Date(hoy.getFullYear() - edad, hoy.getMonth(), hoy.getDate());
         document.getElementById("fechaNacimiento").value = nacimiento.toISOString().split('T')[0];
+      }
+    });
+
+    /* ====== Guardar Cabecera (NUEVO: ahora persiste en backend y queda activa) ====== */
+    (function initCabeceraActivaBanner(){
+      const info = document.getElementById('cabeceraActivaInfo');
+      const id = Number(localStorage.getItem('cabecera_id_activa') || '0');
+      const nom = localStorage.getItem('cabecera_nombre_activa') || '';
+      info.innerHTML = id ? `Cabecera activa: <b>${nom || ('ID ' + id)}</b> (ID ${id})` : 'Sin cabecera activa';
+    })();
+
+    document.getElementById("formCabecera").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const fd = new FormData(this);
+
+      // Mapeo mínimo a los campos que definimos en /cabeceras/crear
+      const payload = {
+        nombre:      fd.get('nombreCotizacion') || 'Cabecera',
+        tipopersona: 'F', // tu UI tiene "género" y "estado civil"; acá sólo guardamos lo necesario para ATM
+        iva:         'CF',
+        tipodoc:     'DNI',
+        nrodoc:      '',            // si después agregás inputs, se mapearán acá
+        apellido:    '',
+        nombre_aseg: '',
+        sexo:        (fd.get('genero') === 'Femenino') ? 'F' : 'M',
+        est_civil:   fd.get('estadoCivil') || '',
+        fec_nac:     (fd.get('fechaNacimiento') || '').toString().replace(/-/g,''), // yyyymmdd
+        ajuste:      '',
+        rastreo:     '',
+        alarma:      '',
+        seccion:     '3',
+        plan:        '',
+        provincia:   '',
+        localidad:   '',
+        calle:       '',
+        altura:      '',
+        cp:          '',
+        sub_cp:      '',
+        tel_part:    '',
+        tel_cel:     '',
+        mail:        ''
+      };
+
+      try{
+        const resp = await fetch('/cabeceras/crear', {
+          method:'POST',
+          headers:{ 'Content-Type':'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await resp.json();
+        if(!resp.ok || !data.ok) throw new Error(data.error || ('HTTP '+resp.status));
+        localStorage.setItem('cabecera_id_activa', String(data.cabecera.id));
+        localStorage.setItem('cabecera_nombre_activa', data.cabecera.nombre || '');
+        const info = document.getElementById('cabeceraActivaInfo');
+        info.innerHTML = `Cabecera activa: <b>${data.cabecera.nombre || ('ID '+data.cabecera.id)}</b> (ID ${data.cabecera.id})`;
+        alert(`Cabecera guardada y activada (ID ${data.cabecera.id}).`);
+      }catch(err){
+        alert('No se pudo guardar la cabecera: ' + (err.message || err));
       }
     });
 
@@ -414,8 +466,29 @@
       document.querySelector('input[name="archivoCP"]').value = "";
       document.querySelector('input[name="archivoUnico"]').value = "";
     }
-    window.ejecutarProceso = function(id){
-      alert("Se ejecutaría el proceso ID: " + id);
+
+    /* ====== Ejecutar proceso: ahora envía cabecera_id + limite=5 ====== */
+    window.ejecutarProceso = async function(id){
+      const limite = 5; // como pediste
+      const cabeceraId = Number(localStorage.getItem('cabecera_id_activa') || '0');
+      if(!cabeceraId){
+        alert('Elegí una cabecera primero (no hay cabecera activa).');
+        return;
+      }
+      try{
+        const resp = await fetch(`/proceso/ejecutar/${id}`, {
+          method:'POST',
+          headers:{ 'Content-Type':'application/json' },
+          body: JSON.stringify({ limite, cabecera_id: cabeceraId })
+        });
+        const text = await resp.text();
+        let data = {};
+        try { data = JSON.parse(text); } catch { throw new Error(text); }
+        if(!resp.ok || !data.ok){ throw new Error(data.error || `HTTP ${resp.status}`); }
+        alert(`Proceso ${data.proceso} OK con cabecera ${data.cabecera_id}. Intentados: ${data.total}. Revisá /data/procesos/${data.proceso}/`);
+      }catch(e){
+        alert('Fallo al ejecutar: ' + (e.message || e));
+      }
     };
   </script>
 </body>

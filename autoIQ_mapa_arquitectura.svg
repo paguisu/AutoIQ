@@ -1,0 +1,113 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="980" viewBox="0 0 1400 980" font-family="Inter, Arial, sans-serif">
+  <style>
+    .title { font-size: 28px; font-weight: 700; fill: #001470; }
+    .subtitle { font-size: 16px; fill: #333; }
+    .box { fill: #ffffff; stroke: #1f2937; stroke-width: 1.2; rx: 14; }
+    .grp-title { font-weight: 700; font-size: 16px; fill: #0f172a; }
+    .file { font-size: 14px; fill: #111827; }
+    .note { font-size: 12px; fill: #374151; }
+    .pill { fill: #e5e7eb; stroke: #9ca3af; stroke-width: 1; rx: 10; }
+    .pill-txt { font-size: 12px; fill: #111827; }
+    .arrow { stroke: #374151; stroke-width: 1.4; marker-end: url(#arrow); fill: none; }
+    .legend { font-size: 13px; fill: #111827; }
+    .warn { fill: #fef3c7; stroke: #f59e0b; }
+    .ok { fill: #ecfdf5; stroke: #10b981; }
+    .err { fill: #fef2f2; stroke: #ef4444; }
+  </style>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#374151" />
+    </marker>
+  </defs>
+
+  <text x="40" y="52" class="title">AutoIQ — Mapa de Arquitectura (borrador)</text>
+  <text x="40" y="78" class="subtitle">Relación de archivos y flujo principal (según estado compartido por Paul)</text>
+
+  <!-- FRONTEND -->
+  <g transform="translate(40,110)">
+    <rect class="box" width="380" height="220" />
+    <text x="16" y="26" class="grp-title">Frontend</text>
+    <rect x="16" y="40" width="152" height="22" class="pill"/><text x="24" y="56" class="pill-txt">/frontend/index.html</text>
+    <text x="16" y="84" class="file">• Tabs: Inputs, Cabecera, Histórico, Base, Procesos</text>
+    <text x="16" y="106" class="file">• Fetch: /upload, /historial, /cotizacion/listar</text>
+    <text x="16" y="128" class="file">• Acción: Ejecutar proceso (placeholder)</text>
+    <text x="16" y="150" class="file">• Auto-carga de Histórico y Procesos</text>
+    <text x="16" y="182" class="note">Genera enlaces de descarga para combinados y lista procesos</text>
+  </g>
+
+  <!-- BACKEND CORE (server.js) -->
+  <g transform="translate(480,110)">
+    <rect class="box" width="480" height="280" />
+    <text x="16" y="26" class="grp-title">Backend (Express)</text>
+    <rect x="16" y="40" width="130" height="22" class="pill"/><text x="24" y="56" class="pill-txt">/backend/server.js</text>
+    <text x="16" y="84" class="file">• Endpoints: /upload, /historial, /health, estáticos /data</text>
+    <text x="16" y="106" class="file">• Routers: /cotizacion, /proceso, /proceso/atm</text>
+    <text x="16" y="128" class="file">• Registra /atm (router) y /atm/marcas</text>
+    <text x="16" y="150" class="file">• Usa multer, xlsx, validarColumnas, combinador</text>
+    <text x="16" y="172" class="file">• Conecta a DB (mysql2/promise)</text>
+    <text x="16" y="206" class="note">Guarda historial de combinaciones, expone descargas y navegación de /data</text>
+  </g>
+
+  <!-- DB -->
+  <g transform="translate(1000,110)">
+    <rect class="box" width="330" height="160" />
+    <text x="16" y="26" class="grp-title">Base de Datos</text>
+    <rect x="16" y="40" width="178" height="22" class="pill"/><text x="24" y="56" class="pill-txt">/backend/config/db.js</text>
+    <text x="16" y="90" class="file">• Pool MySQL (utf8mb4)</text>
+    <text x="16" y="112" class="file">• Tabla: historial_combinaciones (uso desde server)</text>
+  </g>
+
+  <!-- COMBINADOR + VALIDACIÓN -->
+  <g transform="translate(40,360)">
+    <rect class="box" width="420" height="230" />
+    <text x="16" y="26" class="grp-title">Procesamiento de Archivos</text>
+    <rect x="16" y="40" width="210" height="22" class="pill"/><text x="24" y="56" class="pill-txt">/backend/scripts/combinador.js</text>
+    <text x="16" y="86" class="file">• Combina cartesiano de Vehículos × Códigos Postales</text>
+    <text x="16" y="108" class="file">• Exporta planilla "Combinado"</text>
+    <rect x="16" y="138" width="254" height="22" class="pill"/><text x="24" y="154" class="pill-txt">/backend/utils/validarColumnas.js</text>
+    <text x="16" y="188" class="file">• Normaliza encabezados y valida columnas</text>
+  </g>
+
+  <!-- ATM SERVICE -->
+  <g transform="translate(500,420)">
+    <rect class="box" width="420" height="290" />
+    <text x="16" y="26" class="grp-title">Integración ATM</text>
+    <rect x="16" y="40" width="264" height="22" class="pill"/><text x="24" y="56" class="pill-txt">/backend/services/atm/atm.js</text>
+    <text x="16" y="80" class="file">• Router: POST /atm/cotizar-soap-demo</text>
+    <rect x="16" y="100" width="270" height="22" class="pill"/><text x="24" y="116" class="pill-txt">/backend/services/atm/client.js</text>
+    <text x="16" y="142" class="file">• Genera doc_in con fechas ddMMyyyy (3 campos)</text>
+    <text x="16" y="164" class="file">• Prueba múltiples endpoints y métodos SOAP</text>
+    <text x="16" y="186" class="file">• Guarda artefactos de depuración en /data/atm/debug</text>
+
+    <rect x="16" y="214" width="240" height="22" class="pill"/><text x="24" y="230" class="pill-txt">/backend/soapClient.js</text>
+    <text x="16" y="256" class="file">• Variante alternativa: AUTOS_Cotizar_PHP</text>
+  </g>
+
+  <!-- Arrows -->
+  <path class="arrow" d="M 420 200 C 460 200 460 200 480 200" />
+  <path class="arrow" d="M 720 240 C 900 240 900 240 1000 240" />
+  <path class="arrow" d="M 540 390 C 540 420 540 420 540 420" />
+  <path class="arrow" d="M 260 330 C 260 360 260 360 260 360" />
+
+  <!-- Legend -->
+  <g transform="translate(950,340)">
+    <rect class="box" width="380" height="180" />
+    <text x="16" y="28" class="grp-title">Leyenda / Flujo</text>
+    <text x="16" y="58" class="legend">1. index.html → solicita /upload y /historial</text>
+    <text x="16" y="82" class="legend">2. server.js valida columnas → combinador.js</text>
+    <text x="16" y="106" class="legend">3. server.js guarda historial en DB</text>
+    <text x="16" y="130" class="legend">4. /atm/cotizar-soap-demo → client.js (fechas ddMMyyyy)</text>
+    <text x="16" y="154" class="legend">5. client.js testea variantes SOAP y retorna coberturas</text>
+  </g>
+
+  <!-- Notices -->
+  <g transform="translate(40,620)">
+    <rect class="box warn" width="660" height="110" />
+    <text x="16" y="34" class="grp-title">Notas</text>
+    <text x="16" y="62" class="note">• El diagrama refleja los archivos compartidos; algunos routers referenciados en server.js pueden no estar presentes localmente.</text>
+    <text x="16" y="84" class="note">• La sección ATM utiliza formato de fecha ddMMyyyy en tres campos del doc_in.</text>
+  </g>
+
+</svg>
