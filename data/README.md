@@ -1,0 +1,1 @@
+Carpeta para artefactos generados (RR, RES, excels). No se versiona.
