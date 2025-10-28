@@ -1,13 +1,33 @@
 {
   "base_url": "https://wsatm.atmseguros.com.ar",
   "soap_path": "/index.php/soap",
+
   "usuario": "PNONCECOM",
   "password": "s91101",
   "vendedor": "0067804766",
   "origen": "WS",
+
   "seccion_default": "3",
   "plan": "01",
+
   "contacto_tecnico": "",
   "contacto_comercial": "",
-  "date_format": "ddmmAAAA"
+
+  "date_format": "ddmmAAAA",
+
+  "vigencia": "mensual",
+  "refacturacion": "mensual",
+  "ajuste_rc": 0,
+  "ajuste_casco": 0,
+
+  "planes": [
+    { "codigo": "01", "nombre": "Responsabilidad Civil" },
+    { "codigo": "02", "nombre": "Terceros Completo" },
+    { "codigo": "03", "nombre": "Todo Riesgo c/ Franquicia" }
+  ],
+
+  "parametros_extras": {
+    "formato_fecha_request": "ddMMyyyy",
+    "moneda": "ARS"
+  }
 }

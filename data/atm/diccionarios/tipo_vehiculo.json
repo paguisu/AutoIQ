@@ -1,0 +1,13 @@
+{
+  "Auto":         { "seccion": "3" },
+  "Sedán":        { "seccion": "3" },
+  "Hatchback":    { "seccion": "3" },
+  "SUV":          { "seccion": "3" },
+  "Pick-Up":      { "seccion": "3" },
+  "Pick-Up A":    { "seccion": "3" },
+  "Pick-Up B":    { "seccion": "3" },
+  "Camioneta":    { "seccion": "3" },
+
+  "Moto":         { "seccion": "1" },
+  "Scooter":      { "seccion": "1" }
+}
