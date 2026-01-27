@@ -58,3 +58,6 @@ web_servicies/
 # (Opcional) permitir fixtures versionadas en tests:
 !backend/tests/fixtures/**/*.xlsx
 !backend/tests/fixtures/**/*.csv
+
+# Documentos locales
+*.docx
