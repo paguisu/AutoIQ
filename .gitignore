@@ -1,35 +1,60 @@
-# Ignorar archivos temporales y generados automáticamente
+# =========================
+# AutoIQ - Git ignore
+# =========================
+
+# --- Entornos / editor ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- Node ---
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# --- Variables de entorno (credenciales) ---
+.env
+.env.*
+!.env.example
+
+# --- Sistema ---
+.DS_Store
+Thumbs.db
+
+# --- Salidas / datos generados por la app (NO versionar) ---
 data/archivos_subidos/
 data/combinados/
 data/procesos/
 frontend/descargas/
 
-# Documentación de Web Services (pesado / no código)
-web_services/
-web_servicies/
-
-# Node y herramientas
-node_modules/
-.vscode/
-
-# Logs y temporales
-*.log
-npm-debug.log*
-yarn-error.log*
-
-# Variables de entorno (credenciales)
-.env
-.env.*
-
-# Datos de ejecución / dumps / responses (NO subir)
+# Debug/outputs ATM (NO subir)
 data/atm/debug/
 data/atm/res/
 data/atm/rr/
+
+# Cabeceras persistidas localmente (si usás archivo)
 data/cabeceras/cabeceras.json
 
-# Binarios pesados no esenciales al código
-diagrama.pptx
+# --- Documentación pesada / adjuntos ---
+web_services/
+web_servicies/
 
-# Sistema
-.DS_Store
-Thumbs.db
+# --- Binarios grandes (evitar que el repo explote) ---
+*.zip
+*.7z
+*.rar
+*.pdf
+*.pptx
+
+# Excel / CSV grandes (si querés versionar fixtures chicos, ver abajo)
+*.xlsx
+*.xls
+*.csv
+
+# (Opcional) permitir fixtures versionadas en tests:
+!backend/tests/fixtures/**/*.xlsx
+!backend/tests/fixtures/**/*.csv
