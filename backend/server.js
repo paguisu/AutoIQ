@@ -30,6 +30,9 @@ const PORT = process.env.PORT || 3000;
 // Middlewares básicos
 app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true }));
+// agrego alta de ruta sugira por Vera 29-oct
+app.use('/aseguradoras', require('./routes/aseguradoras'));
+
 
 // Asegurar carpetas necesarias
 const dirSubidos   = path.join(__dirname, '../data/archivos_subidos');
@@ -259,6 +262,9 @@ app.use('/atm', atmRouter);
 app.use('/cotizacion', cotizacionRouter);
 app.use('/proceso', procesoRouter);
 app.use('/cabeceras', cabecerasRouter);
+app.use('/aseguradoras', require('./routes/aseguradoras_params'));
+app.use('/preprocesado', require('./routes/preprocesado'));
+
 
 // Escucha
 if (require.main === module) {
