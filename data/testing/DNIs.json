@@ -1,0 +1,24 @@
+{
+  "default_strategy": "match_fecha_nacimiento",
+  "fallback": "any",
+  "personas": [
+    {
+      "id": "dni_1",
+      "dni": "20123456",
+      "sexo": "M",
+      "fecha_nacimiento": "1985-07-14"
+    },
+    {
+      "id": "dni_2",
+      "dni": "27345678",
+      "sexo": "F",
+      "fecha_nacimiento": "1992-11-03"
+    },
+    {
+      "id": "dni_3",
+      "dni": "30987654",
+      "sexo": "M",
+      "fecha_nacimiento": "1978-02-28"
+    }
+  ]
+}

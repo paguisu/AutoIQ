@@ -10,6 +10,59 @@ const { XMLParser } = require('fast-xml-parser');
 const db = require('../config/db');
 const { initPreprocesador } = require('../utils/preprocesado_helper');
 
+// =============================================================================
+// Helpers DB (tabla procesos_cotizacion)
+// =============================================================================
+async function crearProcesoDB({ nombre, nombre_cabecera }) {
+  // Si la tabla no existe o falla el INSERT, devolvemos null y seguimos sólo con filesystem.
+  try {
+    const [r] = await db.execute(
+      'INSERT INTO procesos_cotizacion (nombre, nombre_cabecera, estado, fecha_inicio, registros_procesados, cotizaciones_exitosas, cotizaciones_con_error) VALUES (?, ?, ?, NOW(), 0, 0, 0)',
+      [nombre || null, nombre_cabecera || null, 'en curso']
+    );
+    return r.insertId;
+  } catch (e) {
+    try {
+      const [r2] = await db.execute(
+        'INSERT INTO procesos_cotizacion (nombre, nombre_cabecera, estado) VALUES (?, ?, ?)',
+        [nombre || null, nombre_cabecera || null, 'en curso']
+      );
+      return r2.insertId;
+    } catch {
+      return null;
+    }
+  }
+}
+
+async function actualizarProcesoDB(proceso_id, patch) {
+  if (!proceso_id) return;
+  try {
+    const sets = [];
+    const vals = [];
+    const map = {
+      nombre: 'nombre',
+      nombre_cabecera: 'nombre_cabecera',
+      estado: 'estado',
+      fecha_inicio: 'fecha_inicio',
+      fecha_fin: 'fecha_fin',
+      registros_procesados: 'registros_procesados',
+      cotizaciones_exitosas: 'cotizaciones_exitosas',
+      cotizaciones_con_error: 'cotizaciones_con_error',
+    };
+    for (const [k, col] of Object.entries(map)) {
+      if (Object.prototype.hasOwnProperty.call(patch, k)) {
+        sets.push(`${col} = ?`);
+        vals.push(patch[k]);
+      }
+    }
+    if (sets.length === 0) return;
+    vals.push(proceso_id);
+    await db.execute(`UPDATE procesos_cotizacion SET ${sets.join(', ')} WHERE id = ?`, vals);
+  } catch {
+    // No romper el flujo si DB falla.
+  }
+}
+
 function ensureDir(p) {
   if (!fs.existsSync(p)) fs.mkdirSync(p, { recursive: true });
 }
@@ -249,17 +302,7 @@ async function cotizarFila({
   SOAP_METHOD,
   usoDicc,
 }) {
-  const codiaRaw = pick([
-    fila?.infoautocod,
-    fila?.tau_codia,
-    fila?.codigo_infoauto,
-    fila?.cod_infoauto,
-    fila?.codigoInfoauto,
-    fila?.CodigoInfoauto,
-    fila?.InfoAutoCod,
-    fila?.infoauto
-  ]);
-  const codia = String(codiaRaw ?? '').trim();
+  const codia = (fila?.infoautocod ?? fila?.tau_codia ?? '').toString().trim();
   const anio = pick([fila?.anio, fila?.anofab, fila?.ANO, fila?.Anio, fila?.ano]);
   const cpRaw = pick([fila?.codigo_postal, fila?.codpostal, fila?.CP, fila?.cp, fila?.CodigoPostal]);
   const cp = String(cpRaw ?? '').trim();
@@ -581,70 +624,14 @@ router.post('/crear', express.json(), async (req, res) => {
 // =============================================================================
 router.post('/ejecutar/:id', express.json(), async (req, res) => {
   try {
-    const id = Number(req.params.id);
-
-    let meta = await loadMetadata(id);
-
-    if (!meta) {
-      // Si no existe metadata, interpretamos :id como HISTORIAL id y creamos un NUEVO proceso (DB + carpeta).
-      const historial_id = id;
-
-      const cabeceraIdCompat = Number(req.body?.cabecera_id);
-      if (!cabeceraIdCompat) return res.status(400).json({ ok: false, error: 'Falta cabecera_id' });
-
-      const cabeceraCompat = getCabecera(cabeceraIdCompat);
-      if (!cabeceraCompat) return res.status(404).json({ ok: false, error: `Cabecera ${cabeceraIdCompat} no encontrada` });
-
-      const hist = await getHistorialItem(historial_id);
-      if (!hist) return res.status(404).json({ ok: false, error: `No existe el histórico ${historial_id}` });
-
-      const archivo = hist?.archivo;
-      if (!archivo) return res.status(400).json({ ok: false, error: `Histórico ${historial_id} sin archivo asociado` });
-
-      // Crear registro en DB para que aparezca en "Procesos en curso"
-      let proceso_id = null;
-      try {
-        const nombreProceso = `ATM - UI (histórico ${historial_id})`;
-        const nombreCabecera = cabeceraCompat?.nombre || cabeceraCompat?.nombre_cabecera || cabeceraCompat?.nombre_publico || `Cabecera ${cabeceraIdCompat}`;
-
-        const [ins] = await db.execute(
-          'INSERT INTO procesos_cotizacion (nombre, cabecera_id, estado, fecha_inicio) VALUES (?, ?, ?, NOW())',
-          [nombreProceso, cabeceraIdCompat, 'en curso']
-        );
-        proceso_id = ins.insertId;
-
-        // Guardar nombre de cabecera si existe la columna (defensivo)
-        try {
-          await db.execute('UPDATE procesos_cotizacion SET nombre_cabecera = ? WHERE id = ?', [nombreCabecera, proceso_id]);
-        } catch (_e) {
-          // columna puede no existir en algunos esquemas; ignorar
-        }
-      } catch (e) {
-        console.error('Error creando proceso en DB', e);
-        return res.status(500).json({ ok: false, error: 'No se pudo crear el proceso en DB' });
-      }
-
-      const procesoDir = path.join(process.cwd(), 'data', 'procesos', `proceso-${proceso_id}`);
-      await ensureDir(procesoDir);
-      const metaPath = path.join(procesoDir, 'metadata.json');
-
-      meta = {
-        id: proceso_id,
-        historial_id,
-        archivo,
-        fecha: new Date().toISOString(),
-        limite: Number(req.body?.limite ?? 50),
-        cabecera_id: cabeceraIdCompat,
-        aseguradoras: req.body?.aseguradoras || req.body?.aseguradora || [],
-        resultados: {}
-      };
-
-      await fsp.writeFile(metaPath, JSON.stringify(meta, null, 2), 'utf8');
+    // El :id de esta ruta es SIEMPRE el id del Histórico (archivo combinado).
+    const historial_id = Number(req.params.id);
+    if (!Number.isFinite(historial_id) || historial_id <= 0) {
+      return res.status(400).json({ ok: false, error: 'id de histórico inválido' });
     }
 
-    const proceso_id = meta.id;
-    const historial_id = Number(meta.historial_id);
-    const cabecera_id = Number(meta.cabecera_id);
+    const cabecera_id = Number(req.body?.cabecera_id);
+    if (!cabecera_id) return res.status(400).json({ ok: false, error: 'Falta cabecera_id' });
 
     const cabecera = getCabecera(cabecera_id);
     if (!cabecera) return res.status(404).json({ ok: false, error: `Cabecera ${cabecera_id} no encontrada` });
@@ -658,28 +645,48 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
     }
 
     const limiteBody = Number(req.body?.limite);
-    const limite = Number.isFinite(limiteBody)
-      ? Math.max(1, Math.min(limiteBody, 100))
-      : Math.max(1, Math.min(Number(meta.limite || 5), 100));
+    const limite = Number.isFinite(limiteBody) ? Math.max(1, Math.min(limiteBody, 100)) : 5;
 
     let aseguradoras = req.body?.aseguradoras;
     if (typeof aseguradoras === 'string') aseguradoras = [aseguradoras];
-    if (!Array.isArray(aseguradoras) || aseguradoras.length === 0) aseguradoras = meta.aseguradoras || ['atm'];
+    if (!Array.isArray(aseguradoras) || aseguradoras.length === 0) aseguradoras = ['atm'];
     aseguradoras = aseguradoras.map((s) => String(s).toLowerCase().trim()).filter(Boolean);
     if (aseguradoras.length === 0) aseguradoras = ['atm'];
 
-    await saveMetadata(proceso_id, {
+    // Crear SIEMPRE un nuevo proceso (para que aparezca en /cotizacion/listar)
+    const nombreProceso = `ATM - UI (histórico ${historial_id})`;
+    const proceso_id = (await crearProcesoDB({ nombre: nombreProceso, nombre_cabecera: cabecera?.nombre || null })) || historial_id;
+
+    ensureDir(procesoDir(proceso_id));
+    const meta = await saveMetadata(proceso_id, {
+      id: proceso_id,
+      nombre: nombreProceso,
       estado: 'en curso',
-      fecha_inicio: new Date().toISOString(),
+      historial_id,
       archivo: relPath,
-      limite,
+      cabecera_id,
       aseguradoras,
+      limite,
+      fecha_creacion: new Date().toISOString(),
+      fecha_inicio: new Date().toISOString(),
+      fecha_fin: null,
+      registros_total: Number(hist.cantidad_registros || 0) || null,
       registros_procesados: 0,
       cotizaciones_exitosas: 0,
       cotizaciones_con_error: 0,
     });
 
-    ensureDir(procesoDir(proceso_id));
+    await actualizarProcesoDB(proceso_id, {
+      nombre: nombreProceso,
+      nombre_cabecera: cabecera?.nombre || null,
+      estado: 'en curso',
+      fecha_inicio: new Date(),
+      registros_procesados: 0,
+      cotizaciones_exitosas: 0,
+      cotizaciones_con_error: 0,
+    });
+
+    // Nota: el archivo en metadata queda apuntando al combinado del histórico
 
     // leer filas una vez
     const filas = await readFilasFromFile(absPath);
@@ -705,6 +712,14 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
         estado: 'con errores',
         fecha_fin: new Date().toISOString(),
         registros_total: 0,
+        registros_procesados: 0,
+        cotizaciones_exitosas: 0,
+        cotizaciones_con_error: 0,
+      });
+
+      await actualizarProcesoDB(proceso_id, {
+        estado: 'con errores',
+        fecha_fin: new Date(),
         registros_procesados: 0,
         cotizaciones_exitosas: 0,
         cotizaciones_con_error: 0,
@@ -748,7 +763,7 @@ if ((fila_final.CP === '' || fila_final.CP == null) && (fila.CP != null && Strin
 }
 
 const resp = await cotizarFila({
-  proceso_id: meta.id,
+  proceso_id,
   fila: fila_final,
           cabecera,
           hoy_fmt: hoy,
@@ -783,6 +798,12 @@ const resp = await cotizarFila({
         } catch {}
 
         await saveMetadata(proceso_id, {
+          registros_procesados: i + 1,
+          cotizaciones_exitosas: totalOk,
+          cotizaciones_con_error: totalErr,
+        });
+
+        await actualizarProcesoDB(proceso_id, {
           registros_procesados: i + 1,
           cotizaciones_exitosas: totalOk,
           cotizaciones_con_error: totalErr,
@@ -830,20 +851,14 @@ const resp = await cotizarFila({
       cotizaciones_exitosas: totalOk,
       cotizaciones_con_error: totalErr,
     });
-      // Persistir estado final en DB (para la tabla de "Procesos de Cotización")
-      try {
-        const estadoFinal = cotizaciones_con_error > 0 ? 'con errores' : 'completado';
-        await db.execute(
-          `UPDATE procesos_cotizacion
-           SET estado = ?, fecha_fin = NOW(),
-               registros_procesados = ?, cotizaciones_exitosas = ?, cotizaciones_con_error = ?
-           WHERE id = ?`,
-          [estadoFinal, total_filas_intentadas, cotizaciones_exitosas, cotizaciones_con_error, proceso_id]
-        );
-      } catch (e) {
-        console.warn('No se pudo actualizar procesos_cotizacion', e?.message || e);
-      }
 
+    await actualizarProcesoDB(proceso_id, {
+      estado: totalErr > 0 ? 'con errores' : 'completado',
+      fecha_fin: new Date(),
+      registros_procesados: tomar,
+      cotizaciones_exitosas: totalOk,
+      cotizaciones_con_error: totalErr,
+    });
 
     return res.status(200).json({
       ok: true,

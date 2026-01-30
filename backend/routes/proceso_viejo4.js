@@ -249,17 +249,14 @@ async function cotizarFila({
   SOAP_METHOD,
   usoDicc,
 }) {
-  const codiaRaw = pick([
+  const codia = String(pick([
     fila?.infoautocod,
-    fila?.tau_codia,
     fila?.codigo_infoauto,
     fila?.cod_infoauto,
-    fila?.codigoInfoauto,
-    fila?.CodigoInfoauto,
-    fila?.InfoAutoCod,
-    fila?.infoauto
-  ]);
-  const codia = String(codiaRaw ?? '').trim();
+    fila?.codinfoauto,
+    fila?.infoauto,
+    fila?.tau_codia
+  ]) ?? '').trim();
   const anio = pick([fila?.anio, fila?.anofab, fila?.ANO, fila?.Anio, fila?.ano]);
   const cpRaw = pick([fila?.codigo_postal, fila?.codpostal, fila?.CP, fila?.cp, fila?.CodigoPostal]);
   const cp = String(cpRaw ?? '').trim();
@@ -516,6 +513,46 @@ return {
 // =============================================================================
 // NUEVO: POST /proceso/crear
 // =============================================================================
+
+// GET /proceso/aseguradoras-disponibles
+// Detecta aseguradoras por filesystem: data/<slug>/aseguradora.json
+router.get('/aseguradoras-disponibles', async (_req, res) => {
+  try {
+    const dataDir = path.join(process.cwd(), 'data');
+    if (!fs.existsSync(dataDir)) return res.json({ ok: true, items: [] });
+
+    const entries = await fsp.readdir(dataDir, { withFileTypes: true });
+    const items = [];
+
+    for (const ent of entries) {
+      if (!ent.isDirectory()) continue;
+      const slug = ent.name.toLowerCase();
+      const jsonPath = path.join(dataDir, ent.name, 'aseguradora.json');
+      if (!fs.existsSync(jsonPath)) continue;
+
+      try {
+        const raw = await fsp.readFile(jsonPath, 'utf8');
+        const j = JSON.parse(raw);
+        items.push({
+          slug,
+          nombre_publico: j?.nombre_publico || j?.nombre || slug,
+          activo: true
+        });
+      } catch {
+        items.push({ slug, nombre_publico: slug, activo: true });
+      }
+    }
+
+    // orden por nombre
+    items.sort((a,b)=> String(a.nombre_publico).localeCompare(String(b.nombre_publico), 'es'));
+    res.json({ ok: true, items });
+  } catch (err) {
+    console.error('Error en /proceso/aseguradoras-disponibles', err);
+    res.status(500).json({ ok: false, error: err.message || String(err) });
+  }
+});
+
+
 router.post('/crear', express.json(), async (req, res) => {
   try {
     const historial_id = Number(req.body?.historial_id);
@@ -586,9 +623,7 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
     let meta = await loadMetadata(id);
 
     if (!meta) {
-      // Si no existe metadata, interpretamos :id como HISTORIAL id y creamos un NUEVO proceso (DB + carpeta).
       const historial_id = id;
-
       const cabeceraIdCompat = Number(req.body?.cabecera_id);
       if (!cabeceraIdCompat) return res.status(400).json({ ok: false, error: 'Falta cabecera_id' });
 
@@ -596,50 +631,33 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
       if (!cabeceraCompat) return res.status(404).json({ ok: false, error: `Cabecera ${cabeceraIdCompat} no encontrada` });
 
       const hist = await getHistorialItem(historial_id);
-      if (!hist) return res.status(404).json({ ok: false, error: `No existe el histórico ${historial_id}` });
+      if (!hist) return res.status(404).json({ ok: false, error: `No existe histórico id=${historial_id}` });
 
-      const archivo = hist?.archivo;
-      if (!archivo) return res.status(400).json({ ok: false, error: `Histórico ${historial_id} sin archivo asociado` });
+      const { relPath, absPath } = resolveCombinedAbsPath(hist);
+      if (!fs.existsSync(absPath)) return res.status(400).json({ ok: false, error: `No se encuentra el archivo combinado: ${absPath}` });
 
-      // Crear registro en DB para que aparezca en "Procesos en curso"
-      let proceso_id = null;
-      try {
-        const nombreProceso = `ATM - UI (histórico ${historial_id})`;
-        const nombreCabecera = cabeceraCompat?.nombre || cabeceraCompat?.nombre_cabecera || cabeceraCompat?.nombre_publico || `Cabecera ${cabeceraIdCompat}`;
+      const slugCompat = (req.body?.aseguradora || 'atm').toString().toLowerCase();
+      const limiteBody = Number(req.body?.limite);
+      const limiteCompat = Number.isFinite(limiteBody) ? Math.max(1, Math.min(limiteBody, 100)) : 5;
 
-        const [ins] = await db.execute(
-          'INSERT INTO procesos_cotizacion (nombre, cabecera_id, estado, fecha_inicio) VALUES (?, ?, ?, NOW())',
-          [nombreProceso, cabeceraIdCompat, 'en curso']
-        );
-        proceso_id = ins.insertId;
-
-        // Guardar nombre de cabecera si existe la columna (defensivo)
-        try {
-          await db.execute('UPDATE procesos_cotizacion SET nombre_cabecera = ? WHERE id = ?', [nombreCabecera, proceso_id]);
-        } catch (_e) {
-          // columna puede no existir en algunos esquemas; ignorar
-        }
-      } catch (e) {
-        console.error('Error creando proceso en DB', e);
-        return res.status(500).json({ ok: false, error: 'No se pudo crear el proceso en DB' });
-      }
-
-      const procesoDir = path.join(process.cwd(), 'data', 'procesos', `proceso-${proceso_id}`);
-      await ensureDir(procesoDir);
-      const metaPath = path.join(procesoDir, 'metadata.json');
-
-      meta = {
-        id: proceso_id,
+      ensureDir(procesoDir(historial_id));
+      meta = await saveMetadata(historial_id, {
+        id: historial_id,
+        nombre: `Proceso ${historial_id}`,
+        estado: 'creado',
         historial_id,
-        archivo,
-        fecha: new Date().toISOString(),
-        limite: Number(req.body?.limite ?? 50),
+        archivo: relPath,
         cabecera_id: cabeceraIdCompat,
-        aseguradoras: req.body?.aseguradoras || req.body?.aseguradora || [],
-        resultados: {}
-      };
-
-      await fsp.writeFile(metaPath, JSON.stringify(meta, null, 2), 'utf8');
+        aseguradoras: [slugCompat],
+        limite: limiteCompat,
+        fecha_creacion: new Date().toISOString(),
+        fecha_inicio: null,
+        fecha_fin: null,
+        registros_total: Number(hist.cantidad_registros || 0) || null,
+        registros_procesados: 0,
+        cotizaciones_exitosas: 0,
+        cotizaciones_con_error: 0,
+      });
     }
 
     const proceso_id = meta.id;
@@ -748,7 +766,7 @@ if ((fila_final.CP === '' || fila_final.CP == null) && (fila.CP != null && Strin
 }
 
 const resp = await cotizarFila({
-  proceso_id: meta.id,
+  proceso_id: id,
   fila: fila_final,
           cabecera,
           hoy_fmt: hoy,
@@ -830,20 +848,6 @@ const resp = await cotizarFila({
       cotizaciones_exitosas: totalOk,
       cotizaciones_con_error: totalErr,
     });
-      // Persistir estado final en DB (para la tabla de "Procesos de Cotización")
-      try {
-        const estadoFinal = cotizaciones_con_error > 0 ? 'con errores' : 'completado';
-        await db.execute(
-          `UPDATE procesos_cotizacion
-           SET estado = ?, fecha_fin = NOW(),
-               registros_procesados = ?, cotizaciones_exitosas = ?, cotizaciones_con_error = ?
-           WHERE id = ?`,
-          [estadoFinal, total_filas_intentadas, cotizaciones_exitosas, cotizaciones_con_error, proceso_id]
-        );
-      } catch (e) {
-        console.warn('No se pudo actualizar procesos_cotizacion', e?.message || e);
-      }
-
 
     return res.status(200).json({
       ok: true,
