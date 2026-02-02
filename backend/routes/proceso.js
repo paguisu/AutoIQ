@@ -20,6 +20,7 @@ function fmt_ddmmAAAA(d) {
   const dt = d instanceof Date ? d : new Date(d);
   return `${pad2(dt.getDate())}${pad2(dt.getMonth() + 1)}${dt.getFullYear()}`;
 }
+
 // ===== Testing data (tarjetas / CBU / DNI) =====
 const TESTING_DIR = path.join(__dirname, '..', '..', 'data', 'testing');
 const _testingCache = { tarjetas: null, cbus: null, dnis: null };
@@ -93,50 +94,6 @@ function getCabecera(id) {
   } catch {
     return null;
   }
-}
-
-// ===== Config y helpers por aseguradora (dinámico) =====
-function asegPath(slug) {
-  return path.join(process.cwd(), 'data', slug);
-}
-async function loadAsegConfig(slug) {
-  const cfgPath = path.join(asegPath(slug), 'aseguradora.json');
-  const j = await readJsonStrict(cfgPath);
-  if (!j.base_url || !j.soap_path) throw new Error(`Config ${slug}: faltan base_url o soap_path`);
-  const method = j.soap_method || j.SOAP_METHOD || 'AUTOS_Cotizar_PHP';
-  const url = `${j.base_url.replace(/\/+$/, '')}${j.soap_path}`;
-  const formato =
-    (j.parametros_extras && j.parametros_extras.formato_fecha_request) ||
-    process.env.ATM_DATE_FMT ||
-    'ddMMyyyy';
-  return { cfg: j, SOAP_URL: url, SOAP_METHOD: method, fechaFmt: formato };
-}
-
-// ===== Fallbacks menores =====
-function inferSeccionVehiculo(fila) {
-  const join = Object.values(fila || {}).join(' ').toLowerCase();
-  if (/\bmoto(s)?\b/.test(join)) return '4';
-  return '3';
-}
-
-// ===== Diccionarios de USO =====
-async function readUsoDicc(slug) {
-  try {
-    const p = path.join(asegPath(slug), 'diccionarios', 'uso.json');
-    return await readJsonStrict(p);
-  } catch {
-    return {};
-  }
-}
-function mapUsoTextoACodigo(value, DICC) {
-  if (!value) return '';
-  const raw = String(value).trim();
-  if (/^\d+$/.test(raw)) return raw;
-  const key = raw
-    .normalize('NFD')
-    .replace(/\p{Diacritic}/gu, '')
-    .toLowerCase();
-  return DICC[key] || '';
 }
 
 // ===== Helpers Proceso (filesystem) =====
@@ -220,288 +177,142 @@ async function readFilasFromFile(absPath) {
     }
   }
 
-  // 2) Intentar parsear; si da 0, probar otras hojas
-  const tryParse = (name) => xlsx.utils.sheet_to_json(wb.Sheets[name], { defval: '' });
+  // 2) Parsear la hoja elegida
+  let ws = wb.Sheets[best];
+  filas = xlsx.utils.sheet_to_json(ws, { defval: '' });
 
-  filas = tryParse(best) || [];
-  if (filas.length === 0) {
+  // 3) Si quedó vacío, intentar otras hojas
+  if (!filas || filas.length === 0) {
     for (const name of sheetNames) {
-      const tmp = tryParse(name) || [];
-      if (tmp.length > 0) {
-        filas = tmp;
+      if (name === best) continue;
+      ws = wb.Sheets[name];
+      const f = xlsx.utils.sheet_to_json(ws, { defval: '' });
+      if (f && f.length > 0) {
+        filas = f;
         break;
       }
     }
   }
 
-  return filas;
+  return filas || [];
 }
 
-// ===== Caller SOAP para una fila =====
-async function cotizarFila({
-  proceso_id,
-  fila,
-  cabecera,
-  hoy_fmt,
-  mapeos,
-  Aseg,
-  SOAP_URL,
-  SOAP_METHOD,
-  usoDicc,
-}) {
-  const codiaRaw = pick([
-    fila?.infoautocod,
-    fila?.tau_codia,
-    fila?.codigo_infoauto,
-    fila?.cod_infoauto,
-    fila?.codigoInfoauto,
-    fila?.CodigoInfoauto,
-    fila?.InfoAutoCod,
-    fila?.infoauto
-  ]);
-  const codia = String(codiaRaw ?? '').trim();
-  const anio = pick([fila?.anio, fila?.anofab, fila?.ANO, fila?.Anio, fila?.ano]);
-  const cpRaw = pick([fila?.codigo_postal, fila?.codpostal, fila?.CP, fila?.cp, fila?.CodigoPostal]);
-  const cp = String(cpRaw ?? '').trim();
-  if (!cp) {
-    return { ok: false, error: 'Debe informar el código postal', operacion: '0', coberturas: [], raw: '' };
-  }
-  if (!/^\d{4}$/.test(cp)) {
-    return { ok: false, error: 'Código postal inválido (debe ser numérico de 4 posiciones)', operacion: '0', coberturas: [], raw: '' };
-  }
+// =============================================================================
+// Cotizador SOAP genérico (ATM) con retries + logging raw
+// =============================================================================
+async function cotizarFila({ proceso_id, fila, cabecera, hoy_fmt, mapeos, Aseg, SOAP_URL, SOAP_METHOD, usoDicc }) {
+  const user = (Aseg && (Aseg.usuario || Aseg.USER || Aseg.user)) || process.env.ATM_USER;
+  const pass = (Aseg && (Aseg.password || Aseg.PASS || Aseg.pass)) || process.env.ATM_PASS;
 
+  const docTipo = pick([cabecera.tipo_documento, cabecera.doc_tipo, cabecera.tipoDoc, 'DNI']);
+  const docNro = pick([cabecera.documento, cabecera.doc_nro, cabecera.doc, cabecera.dni, '00000000']);
+  const sexo = pick([cabecera.sexo, cabecera.genero, 'M']);
+  const nac = pick([cabecera.fecha_nacimiento, cabecera.nacimiento, cabecera.fec_nac, fmt_ddmmAAAA(new Date(1990, 0, 1))]);
+  const email = pick([cabecera.email, cabecera.mail, 'test@autoiq.local']);
+  const tel = pick([cabecera.telefono, cabecera.tel, '5491100000000']);
 
-  let usoCodigo = '';
-  if (mapeos && mapeos.uso_codigo) {
-    usoCodigo = String(mapeos.uso_codigo);
-  } else {
-    const usoExcel = pick([fila?.uso, fila?.Uso, fila?.tipo_uso, fila?.TipoUso]);
-    if (usoExcel) usoCodigo = mapUsoTextoACodigo(usoExcel, usoDicc);
-    if (!usoCodigo) {
-      const maybe = (cabecera?.uso_default || cabecera?.uso || '').toString().trim();
-      if (maybe) usoCodigo = mapUsoTextoACodigo(maybe, usoDicc);
-    }
-  }
+  const pat = pick([fila.patente, fila.Patente, fila.dominio, fila.Dominio, fila.pat, 'AA000AA']);
+  const cp = pick([fila.CP, fila.cp, fila.codigo_postal, fila.Codigo_Postal, fila.codpos, fila.cod_postal]);
 
-  const seccion =
-    (mapeos && mapeos.seccion && String(mapeos.seccion).trim()) ||
-    (cabecera?.seccion && String(cabecera.seccion).trim()) ||
-    inferSeccionVehiculo(fila) ||
-    (Aseg.seccion_default && String(Aseg.seccion_default).trim()) ||
-    '3';
+  // InfoAuto: aceptar varias columnas posibles
+  const codInfoAuto = pick([fila.codigo_infoauto, fila.cod_infoauto, fila.infoautocod, fila.tau_codia]);
 
-  const cerokm = cabecera?.cerokm === '1' ? '1' : '0';
-  const tipo_uso = ['1', '2'].includes(String(cabecera?.tipo_uso || ''))
-    ? String(cabecera.tipo_uso)
-    : '1';
-  const ajuste = (cabecera?.ajuste || '').toString().trim();
-  const rastreoRaw = (cabecera?.rastreo ?? '').toString().trim();
-// ATM: 'rastreo' es un CÓDIGO de la tabla ws_au_rastreo_satelital. Si no hay código válido, NO se envía.
-// Si tu UI guarda 0/1 como booleano, lo tratamos como 'no informar'.
-const rastreoCodigo = (!rastreoRaw || rastreoRaw === '0' || rastreoRaw === '1') ? '' : rastreoRaw;
-  const alarma = cabecera?.alarma === '1' ? '1' : '0';
-  const gnc = cabecera?.gnc === '1' ? '1' : '0';
+  const anio = pick([fila.anio, fila.anofab, fila.ANIO, fila.ANO, fila['Año'], fila['anio_fabricacion']]);
 
-  let bienXML = `
-    <cod_infoauto>${codia}</cod_infoauto>
-    <anofab>${anio}</anofab>
-    <codpostal>${cp}</codpostal>
-    <seccion>${seccion}</seccion>
-  `.trim();
+  // Uso puede venir textual y lo mapeamos con diccionario
+  const usoTxt = pick([fila.uso, fila.Uso, fila.uso_vehiculo, fila.UsoVehiculo]);
+  const usoCod = (() => {
+    if (!usoTxt) return pick([fila.uso_cod, fila.usoCod, fila.uso_codigo]);
+    const raw = String(usoTxt).trim();
+    if (/^\d+$/.test(raw)) return raw;
+    const key = raw.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
+    return usoDicc?.[key] || pick([fila.uso_cod, fila.usoCod, fila.uso_codigo]);
+  })();
 
-  if (usoCodigo) bienXML += `\n    <uso>${usoCodigo}</uso>`;
-  if (ajuste) bienXML += `\n    <ajuste>${ajuste}</ajuste>`;
-  bienXML += `\n    <alarma>${alarma}</alarma>`;
-  if (rastreoCodigo) bienXML += `
-    <rastreo>${rastreoCodigo}</rastreo>`;
-  bienXML += `\n    <cerokm>${cerokm}</cerokm>`;
-  bienXML += `\n    <gnc>${gnc}</gnc>`;
-  if (seccion === '4' && tipo_uso) bienXML += `\n    <tipo_uso>${tipo_uso}</tipo_uso>`;
+  const seccionVehiculo = (() => {
+    const join = Object.values(fila || {}).join(' ').toLowerCase();
+    if (/\bmoto(s)?\b/.test(join)) return '4';
+    return '3';
+  })();
 
-  // ===== Forma de pago (ATM) =====
-  // Según manual ATM:
-  // - forma=2 (Tarjeta de crédito) requiere tarjeta(nombre=código ws_au_tarjeta, numero, vcto MMAAAA)
-  // - forma=4 (CBU) requiere cbu.numero
-  // - forma=1 (Otra / efectivo) solo requiere forma
-  const mpRaw = String(
-    cabecera?.medio_pago ??
-      cabecera?.medioPago ??
-      cabecera?.forma_pago ??
-      cabecera?.formaPago ??
-      ''
-  )
-    .trim()
-    .toUpperCase();
+  // Construcción XML: ATM - AUTOS_Cotizar_PHP
+  const sa = `urn:ws#${SOAP_METHOD}`;
+  const soapEnvelope = `<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:ws">
+  <soapenv:Header/>
+  <soapenv:Body>
+    <urn:${SOAP_METHOD}>
+      <user>${user || ''}</user>
+      <pass>${pass || ''}</pass>
 
-  const formaPago =
-    mpRaw === '2' || mpRaw.includes('TARJ') || mpRaw.includes('TC') || mpRaw.includes('CRED')
-      ? '2'
-      : mpRaw === '4' || mpRaw.includes('CBU')
-      ? '4'
-      : mpRaw === '1' || mpRaw.includes('EFVO') || mpRaw.includes('EFEC') || mpRaw.includes('OTRA')
-      ? '1'
-      : '2'; // default: Tarjeta de crédito (por omisión)
+      <cod_infoauto>${codInfoAuto || ''}</cod_infoauto>
+      <anio>${anio || ''}</anio>
+      <patente>${pat || ''}</patente>
+      <cp>${cp || ''}</cp>
+      <uso>${usoCod || ''}</uso>
+      <seccion>${seccionVehiculo || ''}</seccion>
 
-  let formapagoXML = '';
-  if (formaPago === '1') {
-    formapagoXML = `\n  <formapago>\n    <forma>1</forma>\n  </formapago>`;
-  } else if (formaPago === '4') {
-    const cbusCfg = getTestingCbus();
-    const cbuKey = String(cabecera?.cbu_id ?? cabecera?.cbu_key ?? cabecera?.cbu ?? cbusCfg.default ?? '').trim();
-    const cbuObj = cbusCfg.cbus?.[cbuKey];
-    const cbuNumero = String(cabecera?.cbu_numero ?? cbuObj?.numero ?? '').trim();
+      <fecha>${hoy_fmt}</fecha>
 
-    if (!cbuNumero) {
-      return { ok: false, error: 'Forma de pago CBU (forma=4) requiere cbu_numero (o cbu_id con data/testing/cbus.json)', operacion: '0', coberturas: [], raw: '' };
-    }
-    if (!/^\d{22}$/.test(cbuNumero)) {
-      return { ok: false, error: 'CBU inválido (debe ser numérico de 22 dígitos)', operacion: '0', coberturas: [], raw: '' };
-    }
+      <doc_tipo>${docTipo}</doc_tipo>
+      <doc_nro>${docNro}</doc_nro>
+      <sexo>${sexo}</sexo>
+      <fec_nac>${nac}</fec_nac>
+      <email>${email}</email>
+      <telefono>${tel}</telefono>
+    </urn:${SOAP_METHOD}>
+  </soapenv:Body>
+</soapenv:Envelope>`;
 
-    formapagoXML =
-      `\n  <formapago>` +
-      `\n    <forma>4</forma>` +
-      `\n    <cbu>\n      <numero>${cbuNumero}</numero>\n    </cbu>` +
-      `\n  </formapago>`;
-  } else {
-    // formaPago === '2' (Tarjeta de crédito)
-    const tarjetasCfg = getTestingTarjetas();
-    const tarjetaKey = String(cabecera?.tarjeta_id ?? cabecera?.tarjeta_key ?? cabecera?.tarjeta ?? tarjetasCfg.default ?? '').trim();
-    const tObj = tarjetasCfg.tarjetas?.[tarjetaKey];
+  // logging last request
+  try {
+    fs.writeFileSync(path.join(procesoDir(proceso_id), 'last_soap_request_atm.xml'), soapEnvelope, 'utf8');
+  } catch {}
 
-    // ATM: <tarjeta><nombre> es CÓDIGO de la tabla ws_au_tarjeta
-    const tNombre = String(cabecera?.tarjeta_nombre ?? tObj?.codigo_atm ?? '').trim();
-    const tNumero = String(cabecera?.tarjeta_numero ?? tObj?.numero ?? '').trim();
-    const tVcto = String(cabecera?.tarjeta_vcto ?? tObj?.vencimiento ?? '').trim(); // MMAAAA
+  const headers = {
+    'Content-Type': 'text/xml; charset=utf-8',
+    SOAPAction: sa,
+  };
 
-    if (!tNombre || !tNumero || !tVcto) {
-      return { ok: false, error: 'Forma de pago TARJETA (forma=2) requiere tarjeta_nombre(código ws_au_tarjeta), tarjeta_numero y tarjeta_vcto (MMAAAA) en cabecera o en data/testing/tarjetas_credito.json', operacion: '0', coberturas: [], raw: '' };
-    }
-    if (!/^\d{13,19}$/.test(tNumero)) {
-      return { ok: false, error: 'Número de tarjeta inválido (debe ser numérico 13-19 dígitos)', operacion: '0', coberturas: [], raw: '' };
-    }
-    if (!/^\d{6}$/.test(tVcto)) {
-      return { ok: false, error: 'Vencimiento de tarjeta inválido (formato MMAAAA, 6 dígitos)', operacion: '0', coberturas: [], raw: '' };
-    }
-
-    formapagoXML =
-      `\n  <formapago>` +
-      `\n    <forma>2</forma>` +
-      `\n    <tarjeta>` +
-      `\n      <nombre>${tNombre}</nombre>` +
-      `\n      <numero>${tNumero}</numero>` +
-      `\n      <vcto>${tVcto}</vcto>` +
-      `\n    </tarjeta>` +
-      `\n  </formapago>`;
-  }
-
-  const docIn = `
-<auto>
-  <usuario>
-    <usa>${Aseg.usuario}</usa>
-    <pass>${Aseg.password}</pass>
-    <fecha>${hoy_fmt}</fecha>
-    <vendedor>${Aseg.vendedor || ''}</vendedor>
-    <origen>${Aseg.origen || 'WS'}</origen>
-    ${Aseg.plan ? `<plan>${Aseg.plan}</plan>` : ''}
-    ${Aseg.contacto_tecnico ? `<contacto_tecnico>${Aseg.contacto_tecnico}</contacto_tecnico>` : ''}
-    ${Aseg.contacto_comercial ? `<contacto_comercial>${Aseg.contacto_comercial}</contacto_comercial>` : ''}
-  </usuario>
-  <asegurado>
-    <persona>${cabecera.tipopersona || 'F'}</persona>
-    <iva>${cabecera.iva || 'CF'}</iva>
-  </asegurado>
-  <bien>
-    ${bienXML}
-  </bien>${formapagoXML}
-</auto>`.trim();
-
-  const envelope = `<?xml version="1.0" encoding="UTF-8"?>
-<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
-  <SOAP-ENV:Body>
-    <${SOAP_METHOD} xmlns="http://tempuri.org/">
-      <doc_in><![CDATA[${docIn}]]></doc_in>
-    </${SOAP_METHOD}>
-  </SOAP-ENV:Body>
-</SOAP-ENV:Envelope>`.trim();
-
-  const actions = [`http://tempuri.org/${SOAP_METHOD}`, `${SOAP_METHOD}`, `urn:${SOAP_METHOD}`];
-  const parser = new XMLParser({ ignoreAttributes: false, trimValues: true });
-  let lastErr = null;
-  let rawResp = null;
-
-  for (const sa of actions) {
+  let rawResp = '';
+  let lastErr = '';
+  for (let attempt = 1; attempt <= 2; attempt++) {
     try {
-            // Guardar SOAP REQUEST para auditoría (permite verificar <formapago> y demás campos enviados)
-      if (proceso_id) {
-        const reqPath = path.join(procesoDir(proceso_id), 'last_soap_request_atm.xml');
-        fs.writeFileSync(reqPath, envelope);
-      }
-
-const resp = await axios.post(SOAP_URL, envelope, {
-        headers: { 'Content-Type': 'text/xml; charset=UTF-8', SOAPAction: sa },
-        timeout: 20000,
-        validateStatus: () => true,
-      });
+      const resp = await axios.post(SOAP_URL, soapEnvelope, { headers, timeout: 20000, validateStatus: () => true });
       rawResp = resp.data;
 
       if (resp.status >= 200 && resp.status < 300) {
-        const parsed = parser.parse(String(rawResp || ''));
+        const parser = new XMLParser({ ignoreAttributes: false });
+        const json = parser.parse(String(resp.data || ''));
+
         const body =
-          parsed?.['SOAP-ENV:Envelope']?.['SOAP-ENV:Body'] || parsed?.Envelope?.Body;
-        const result =
-          body?.['ns1:' + SOAP_METHOD + 'Response']?.['ns1:' + SOAP_METHOD + 'Result'] ||
-          body?.[SOAP_METHOD + 'Response']?.[SOAP_METHOD + 'Result'] ||
-          body?.[`${SOAP_METHOD}Response`]?.[`${SOAP_METHOD}Result`];
+          json?.['soapenv:Envelope']?.['soapenv:Body'] ||
+          json?.['SOAP-ENV:Envelope']?.['SOAP-ENV:Body'] ||
+          json?.Envelope?.Body ||
+          json?.['soap:Envelope']?.['soap:Body'];
 
-        let payload = result;
-        if (typeof payload === 'string') {
-          try {
-            payload = parser.parse(payload);
-          } catch {}
-        }
+        const node = body?.[`${SOAP_METHOD}Response`] || body?.[`${SOAP_METHOD}Result`] || body?.return || body;
 
-        const auto = payload?.auto || payload?.doc_out?.auto || payload?.AUTO || null;
-        const operacion = auto?.operacion || auto?.Operacion || null;
-        const coberturas = Array.isArray(auto?.cotizacion?.cobertura)
-          ? auto.cotizacion.cobertura
-          : auto?.cotizacion?.Cobertura
-          ? [].concat(auto.cotizacion.Cobertura)
-          : [];
+        const ok = !!node && !String(rawResp).toLowerCase().includes('fault');
 
-        // return { ok: true, operacion, coberturas, used: { soapAction: sa }, raw: rawResp };
-        // Fallback por si no pudimos extraer bien operacion/status del parse
-const rawStr = String(rawResp || '');
-const opRx = rawStr.match(/<operacion>\s*([^<]+)\s*<\/operacion>/i);
-const ssRx = rawStr.match(/<statusSuccess>\s*([^<]+)\s*<\/statusSuccess>/i);
-const msgRx = rawStr.match(/<msg>\s*([^<]+)\s*<\/msg>/i);
+        const operacion = pick([node?.operacion, node?.Operacion, node?.op, node?.Op]);
+        const error = pick([node?.error, node?.Error, node?.mensaje, node?.Mensaje]);
 
-const operacionFinal = (operacion ?? (opRx ? opRx[1].trim() : null));
-const statusSuccess =
-  (auto?.statusSuccess ?? auto?.StatusSuccess ?? (ssRx ? ssRx[1].trim() : '')).toString().toUpperCase();
-const msg = (msgRx ? msgRx[1].trim() : '');
+        let coberturas = [];
+        try {
+          const c = node?.coberturas || node?.Coberturas || node?.cobertura || node?.Cobertura;
+          if (Array.isArray(c)) coberturas = c;
+          else if (c) coberturas = [c];
+        } catch {}
 
-const success = statusSuccess === 'TRUE';
-
-if (!success) {
-  return {
-    ok: false,
-    operacion: operacionFinal,
-    coberturas: [],
-    error: msg || 'statusSuccess=FALSE',
-    used: { soapAction: sa },
-    raw: rawResp,
-  };
-}
-
-return {
-  ok: true,
-  operacion: operacionFinal,
-  coberturas,
-  used: { soapAction: sa },
-  raw: rawResp,
-};
-
+        return {
+          ok: ok && !error,
+          operacion: operacion || null,
+          coberturas,
+          error: error || null,
+          used: { soapAction: sa },
+          raw: rawResp,
+        };
       }
 
       lastErr = `HTTP ${resp.status}`;
@@ -511,6 +322,33 @@ return {
   }
 
   return { ok: false, error: lastErr, raw: rawResp };
+}
+
+// ===== Config y helpers por aseguradora (dinámico) =====
+function asegPath(slug) {
+  return path.join(process.cwd(), 'data', slug);
+}
+async function loadAsegConfig(slug) {
+  const cfgPath = path.join(asegPath(slug), 'aseguradora.json');
+  const j = await readJsonStrict(cfgPath);
+  if (!j.base_url || !j.soap_path) throw new Error(`Config ${slug}: faltan base_url o soap_path`);
+  const method = j.soap_method || j.SOAP_METHOD || 'AUTOS_Cotizar_PHP';
+  const url = `${j.base_url.replace(/\/+$/, '')}${j.soap_path}`;
+  const formato =
+    (j.parametros_extras && j.parametros_extras.formato_fecha_request) ||
+    process.env.ATM_DATE_FMT ||
+    'ddMMyyyy';
+  return { cfg: j, SOAP_URL: url, SOAP_METHOD: method, fechaFmt: formato };
+}
+
+// ===== Diccionarios de USO =====
+async function readUsoDicc(slug) {
+  try {
+    const p = path.join(asegPath(slug), 'diccionarios', 'uso.json');
+    return await readJsonStrict(p);
+  } catch {
+    return {};
+  }
 }
 
 // =============================================================================
@@ -544,14 +382,31 @@ router.post('/crear', express.json(), async (req, res) => {
     const limiteBody = Number(req.body?.limite);
     const limite = Number.isFinite(limiteBody) ? Math.max(1, Math.min(limiteBody, 100)) : 5;
 
-    const proceso_id = Date.now();
+    // Crear proceso en DB para que aparezca en "Procesos en curso"
+    const nombreProceso = nombre || `Proceso (historial ${historial_id})`;
+    const nombreCabecera = cabecera?.nombre || cabecera?.nombre_cabecera || cabecera?.nombre_publico || `Cabecera ${cabecera_id}`;
+
+    let proceso_id = null;
+    try {
+      const [ins] = await db.execute(
+        'INSERT INTO procesos_cotizacion (nombre, cabecera_id, nombre_cabecera, estado, fecha_inicio) VALUES (?, ?, ?, ?, NOW())',
+        [nombreProceso, cabecera_id, nombreCabecera || null, 'creado']
+      );
+      proceso_id = ins.insertId;
+    } catch (e) {
+      const [ins2] = await db.execute('INSERT INTO procesos_cotizacion (nombre, estado, fecha_inicio) VALUES (?, ?, NOW())', [
+        nombreProceso,
+        'creado',
+      ]);
+      proceso_id = ins2.insertId;
+    }
 
     ensureDir(procesosRoot());
     ensureDir(procesoDir(proceso_id));
 
     const meta = {
       id: proceso_id,
-      nombre: nombre || `Proceso ${proceso_id}`,
+      nombre: nombreProceso,
       estado: 'creado',
       historial_id,
       archivo: relPath,
@@ -584,6 +439,29 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
     const id = Number(req.params.id);
 
     let meta = await loadMetadata(id);
+
+    // Si existe metadata pero no hay registro en procesos_cotizacion, insertarlo para que aparezca en "Procesos en Curso"
+    if (meta && meta.id) {
+      try {
+        const [rowsProc] = await db.execute('SELECT id FROM procesos_cotizacion WHERE id = ? LIMIT 1', [Number(meta.id)]);
+        if (!rowsProc || rowsProc.length === 0) {
+          const nombreProc = meta.nombre || `Proceso ${meta.id}`;
+          const cabId = meta.cabecera_id ? Number(meta.cabecera_id) : null;
+
+          // Intentar insertar con el mismo ID (para mantener consistencia con metadata/carpeta)
+          try {
+            await db.execute(
+              'INSERT INTO procesos_cotizacion (id, nombre, cabecera_id, estado, fecha_inicio) VALUES (?, ?, ?, ?, NOW())',
+              [Number(meta.id), nombreProc, cabId, meta.estado || 'en curso']
+            );
+          } catch (eIns) {
+            console.warn('No se pudo insertar procesos_cotizacion con ID explícito (proceso existe en FS pero no en DB).', eIns?.message || eIns);
+          }
+        }
+      } catch (eSel) {
+        console.warn('No se pudo verificar/crear proceso en DB', eSel?.message || eSel);
+      }
+    }
 
     if (!meta) {
       // Si no existe metadata, interpretamos :id como HISTORIAL id y creamos un NUEVO proceso (DB + carpeta).
@@ -624,9 +502,9 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
         return res.status(500).json({ ok: false, error: 'No se pudo crear el proceso en DB' });
       }
 
-      const procesoDir = path.join(process.cwd(), 'data', 'procesos', `proceso-${proceso_id}`);
-      await ensureDir(procesoDir);
-      const metaPath = path.join(procesoDir, 'metadata.json');
+      const procesoDirAbs = path.join(process.cwd(), 'data', 'procesos', `proceso-${proceso_id}`);
+      await ensureDir(procesoDirAbs);
+      const metaPath = path.join(procesoDirAbs, 'metadata.json');
 
       meta = {
         id: proceso_id,
@@ -679,12 +557,24 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
       cotizaciones_con_error: 0,
     });
 
+    // Reflejar "en curso" en DB
+    try {
+      await db.execute(
+        `UPDATE procesos_cotizacion
+         SET estado = ?, fecha_inicio = NOW(), cabecera_id = ?
+         WHERE id = ?`,
+        ['en curso', cabecera_id, proceso_id]
+      );
+    } catch (e) {
+      // si no existe en DB, ya intentamos crear arriba; no frenamos ejecución
+      console.warn('No se pudo actualizar procesos_cotizacion al inicio', e?.message || e);
+    }
+
     ensureDir(procesoDir(proceso_id));
 
     // leer filas una vez
     const filas = await readFilasFromFile(absPath);
 
-    // ===== FIX: si el combinado viene vacío, cortar con error explícito =====
     if (!Array.isArray(filas) || filas.length === 0) {
       const resumenVacio = {
         id: proceso_id,
@@ -717,7 +607,6 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
       });
     }
 
-    // guardar total real (sirve para UI)
     await saveMetadata(proceso_id, { registros_total: filas.length });
 
     const tomar = Math.min(limite, filas.length);
@@ -739,17 +628,29 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
         const fila = filas[i] || {};
         const { fila_preparada, mapeos } = await procesarFila(fila);
 
-// Merge defensivo: conservar columnas del Excel (ej. CP)
-const fila_final = { ...fila, ...fila_preparada };
+        // Merge defensivo: conservar columnas del Excel (ej. CP)
+        const fila_final = { ...fila, ...fila_preparada };
 
-// Si el preprocesador borró CP, restaurar el CP original
-if ((fila_final.CP === '' || fila_final.CP == null) && (fila.CP != null && String(fila.CP).trim() !== '')) {
-  fila_final.CP = fila.CP;
-}
+        // Si el preprocesador borró CP, restaurar el CP original
+        if ((fila_final.CP === '' || fila_final.CP == null) && (fila.CP != null && String(fila.CP).trim() !== '')) {
+          fila_final.CP = fila.CP;
+        }
 
-const resp = await cotizarFila({
-  proceso_id: meta.id,
-  fila: fila_final,
+        // Si el preprocesador borró codigo_infoauto / cod_infoauto / infoautocod, restaurar del original
+        const originalInfoAuto = (fila.codigo_infoauto ?? fila.cod_infoauto ?? fila.infoautocod ?? fila.tau_codia ?? '');
+        const finalInfoAuto    = (fila_final.codigo_infoauto ?? fila_final.cod_infoauto ?? fila_final.infoautocod ?? fila_final.tau_codia ?? '');
+
+        if ((finalInfoAuto === '' || finalInfoAuto == null) && (originalInfoAuto != null && String(originalInfoAuto).trim() !== '')) {
+          // Preferimos mantener el nombre de columna original del Excel (codigo_infoauto)
+          fila_final.codigo_infoauto = fila.codigo_infoauto ?? fila_final.codigo_infoauto;
+          fila_final.cod_infoauto    = fila.cod_infoauto ?? fila_final.cod_infoauto;
+          fila_final.infoautocod     = fila.infoautocod ?? fila_final.infoautocod;
+          fila_final.tau_codia       = fila.tau_codia ?? fila_final.tau_codia;
+        }
+
+        const resp = await cotizarFila({
+          proceso_id: meta.id,
+          fila: fila_final,
           cabecera,
           hoy_fmt: hoy,
           mapeos,
@@ -830,20 +731,20 @@ const resp = await cotizarFila({
       cotizaciones_exitosas: totalOk,
       cotizaciones_con_error: totalErr,
     });
-      // Persistir estado final en DB (para la tabla de "Procesos de Cotización")
-      try {
-        const estadoFinal = cotizaciones_con_error > 0 ? 'con errores' : 'completado';
-        await db.execute(
-          `UPDATE procesos_cotizacion
-           SET estado = ?, fecha_fin = NOW(),
-               registros_procesados = ?, cotizaciones_exitosas = ?, cotizaciones_con_error = ?
-           WHERE id = ?`,
-          [estadoFinal, total_filas_intentadas, cotizaciones_exitosas, cotizaciones_con_error, proceso_id]
-        );
-      } catch (e) {
-        console.warn('No se pudo actualizar procesos_cotizacion', e?.message || e);
-      }
 
+    // Persistir estado final en DB (para la tabla de "Procesos de Cotización")
+    try {
+      const estadoFinal = totalErr > 0 ? 'con errores' : 'completado';
+      await db.execute(
+        `UPDATE procesos_cotizacion
+         SET estado = ?, fecha_fin = NOW(),
+             registros_procesados = ?, cotizaciones_exitosas = ?, cotizaciones_con_error = ?
+         WHERE id = ?`,
+        [estadoFinal, tomar, totalOk, totalErr, proceso_id]
+      );
+    } catch (e) {
+      console.warn('No se pudo actualizar procesos_cotizacion', e?.message || e);
+    }
 
     return res.status(200).json({
       ok: true,
