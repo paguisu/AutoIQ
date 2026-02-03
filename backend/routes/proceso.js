@@ -102,6 +102,16 @@ function asegPath(slug) {
 async function loadAsegConfig(slug) {
   const cfgPath = path.join(asegPath(slug), 'aseguradora.json');
   const j = await readJsonStrict(cfgPath);
+  // Centralización credenciales ATM: preferimos ENV y, si no, caemos al JSON.
+  if (slug === 'atm') {
+    j.usuario = process.env.ATM_USER || j.usuario;
+    j.password = process.env.ATM_PASS || j.password;
+    j.vendedor = process.env.ATM_VENDEDOR || j.vendedor;
+    j.origen = process.env.ATM_ORIGEN || j.origen;
+    j.plan = process.env.ATM_PLAN || j.plan;
+    j.contacto_tecnico = process.env.ATM_CONTACTO_TECNICO || j.contacto_tecnico;
+    j.contacto_comercial = process.env.ATM_CONTACTO_COMERCIAL || j.contacto_comercial;
+  }
   if (!j.base_url || !j.soap_path) throw new Error(`Config ${slug}: faltan base_url o soap_path`);
   const method = j.soap_method || j.SOAP_METHOD || 'AUTOS_Cotizar_PHP';
   let url = `${j.base_url.replace(/\/+$/, '')}${j.soap_path}`;
