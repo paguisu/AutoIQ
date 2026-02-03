@@ -20,6 +20,7 @@ function fmt_ddmmAAAA(d) {
   const dt = d instanceof Date ? d : new Date(d);
   return `${pad2(dt.getDate())}${pad2(dt.getMonth() + 1)}${dt.getFullYear()}`;
 }
+
 // ===== Testing data (tarjetas / CBU / DNI) =====
 const TESTING_DIR = path.join(__dirname, '..', '..', 'data', 'testing');
 const _testingCache = { tarjetas: null, cbus: null, dnis: null };
@@ -247,9 +248,34 @@ async function readFilasFromFile(absPath) {
   return filas;
 }
 
+// ===== Instrumentación (evidencias por fila) =====
+function evidenciasDir(proceso_id, slug, index) {
+  return path.join(procesoDir(proceso_id), 'evidencias', String(slug), `fila-${String(index).padStart(4, '0')}`);
+}
+function safeWriteFile(absPath, content, encoding = 'utf8') {
+  try {
+    ensureDir(path.dirname(absPath));
+    fs.writeFileSync(absPath, content, encoding);
+    return true;
+  } catch {
+    return false;
+  }
+}
+function safeWriteJson(absPath, obj) {
+  try {
+    ensureDir(path.dirname(absPath));
+    fs.writeFileSync(absPath, JSON.stringify(obj, null, 2), 'utf8');
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 // ===== Caller SOAP para una fila =====
 async function cotizarFila({
   proceso_id,
+  slug,
+  index,
   fila,
   cabecera,
   hoy_fmt,
@@ -273,13 +299,25 @@ async function cotizarFila({
   const anio = pick([fila?.anio, fila?.anofab, fila?.ANO, fila?.Anio, fila?.ano]);
   const cpRaw = pick([fila?.codigo_postal, fila?.codpostal, fila?.CP, fila?.cp, fila?.CodigoPostal]);
   const cp = String(cpRaw ?? '').trim();
-  if (!cp) {
-    return { ok: false, error: 'Debe informar el código postal', operacion: '0', coberturas: [], raw: '' };
-  }
-  if (!/^\d{4}$/.test(cp)) {
-    return { ok: false, error: 'Código postal inválido (debe ser numérico de 4 posiciones)', operacion: '0', coberturas: [], raw: '' };
+
+  const evDir = (proceso_id != null && slug != null && index != null)
+    ? evidenciasDir(proceso_id, slug, index)
+    : null;
+
+  if (evDir) {
+    safeWriteJson(path.join(evDir, 'fila_input.json'), { fila, mapeos, cabecera_id: cabecera?.id ?? null });
   }
 
+  if (!cp) {
+    const out = { ok: false, error: 'Debe informar el código postal', operacion: '0', coberturas: [], raw: '' };
+    if (evDir) safeWriteJson(path.join(evDir, 'atm-error.json'), out);
+    return out;
+  }
+  if (!/^\d{4}$/.test(cp)) {
+    const out = { ok: false, error: 'Código postal inválido (debe ser numérico de 4 posiciones)', operacion: '0', coberturas: [], raw: '' };
+    if (evDir) safeWriteJson(path.join(evDir, 'atm-error.json'), out);
+    return out;
+  }
 
   let usoCodigo = '';
   if (mapeos && mapeos.uso_codigo) {
@@ -306,9 +344,9 @@ async function cotizarFila({
     : '1';
   const ajuste = (cabecera?.ajuste || '').toString().trim();
   const rastreoRaw = (cabecera?.rastreo ?? '').toString().trim();
-// ATM: 'rastreo' es un CÓDIGO de la tabla ws_au_rastreo_satelital. Si no hay código válido, NO se envía.
-// Si tu UI guarda 0/1 como booleano, lo tratamos como 'no informar'.
-const rastreoCodigo = (!rastreoRaw || rastreoRaw === '0' || rastreoRaw === '1') ? '' : rastreoRaw;
+  // ATM: 'rastreo' es un CÓDIGO de la tabla ws_au_rastreo_satelital. Si no hay código válido, NO se envía.
+  // Si tu UI guarda 0/1 como booleano, lo tratamos como 'no informar'.
+  const rastreoCodigo = (!rastreoRaw || rastreoRaw === '0' || rastreoRaw === '1') ? '' : rastreoRaw;
   const alarma = cabecera?.alarma === '1' ? '1' : '0';
   const gnc = cabecera?.gnc === '1' ? '1' : '0';
 
@@ -322,17 +360,12 @@ const rastreoCodigo = (!rastreoRaw || rastreoRaw === '0' || rastreoRaw === '1') 
   if (usoCodigo) bienXML += `\n    <uso>${usoCodigo}</uso>`;
   if (ajuste) bienXML += `\n    <ajuste>${ajuste}</ajuste>`;
   bienXML += `\n    <alarma>${alarma}</alarma>`;
-  if (rastreoCodigo) bienXML += `
-    <rastreo>${rastreoCodigo}</rastreo>`;
+  if (rastreoCodigo) bienXML += `\n    <rastreo>${rastreoCodigo}</rastreo>`;
   bienXML += `\n    <cerokm>${cerokm}</cerokm>`;
   bienXML += `\n    <gnc>${gnc}</gnc>`;
   if (seccion === '4' && tipo_uso) bienXML += `\n    <tipo_uso>${tipo_uso}</tipo_uso>`;
 
   // ===== Forma de pago (ATM) =====
-  // Según manual ATM:
-  // - forma=2 (Tarjeta de crédito) requiere tarjeta(nombre=código ws_au_tarjeta, numero, vcto MMAAAA)
-  // - forma=4 (CBU) requiere cbu.numero
-  // - forma=1 (Otra / efectivo) solo requiere forma
   const mpRaw = String(
     cabecera?.medio_pago ??
       cabecera?.medioPago ??
@@ -350,7 +383,7 @@ const rastreoCodigo = (!rastreoRaw || rastreoRaw === '0' || rastreoRaw === '1') 
       ? '4'
       : mpRaw === '1' || mpRaw.includes('EFVO') || mpRaw.includes('EFEC') || mpRaw.includes('OTRA')
       ? '1'
-      : '2'; // default: Tarjeta de crédito (por omisión)
+      : '2';
 
   let formapagoXML = '';
   if (formaPago === '1') {
@@ -362,10 +395,14 @@ const rastreoCodigo = (!rastreoRaw || rastreoRaw === '0' || rastreoRaw === '1') 
     const cbuNumero = String(cabecera?.cbu_numero ?? cbuObj?.numero ?? '').trim();
 
     if (!cbuNumero) {
-      return { ok: false, error: 'Forma de pago CBU (forma=4) requiere cbu_numero (o cbu_id con data/testing/cbus.json)', operacion: '0', coberturas: [], raw: '' };
+      const out = { ok: false, error: 'Forma de pago CBU (forma=4) requiere cbu_numero (o cbu_id con data/testing/cbus.json)', operacion: '0', coberturas: [], raw: '' };
+      if (evDir) safeWriteJson(path.join(evDir, 'atm-error.json'), out);
+      return out;
     }
     if (!/^\d{22}$/.test(cbuNumero)) {
-      return { ok: false, error: 'CBU inválido (debe ser numérico de 22 dígitos)', operacion: '0', coberturas: [], raw: '' };
+      const out = { ok: false, error: 'CBU inválido (debe ser numérico de 22 dígitos)', operacion: '0', coberturas: [], raw: '' };
+      if (evDir) safeWriteJson(path.join(evDir, 'atm-error.json'), out);
+      return out;
     }
 
     formapagoXML =
@@ -374,24 +411,28 @@ const rastreoCodigo = (!rastreoRaw || rastreoRaw === '0' || rastreoRaw === '1') 
       `\n    <cbu>\n      <numero>${cbuNumero}</numero>\n    </cbu>` +
       `\n  </formapago>`;
   } else {
-    // formaPago === '2' (Tarjeta de crédito)
     const tarjetasCfg = getTestingTarjetas();
     const tarjetaKey = String(cabecera?.tarjeta_id ?? cabecera?.tarjeta_key ?? cabecera?.tarjeta ?? tarjetasCfg.default ?? '').trim();
     const tObj = tarjetasCfg.tarjetas?.[tarjetaKey];
 
-    // ATM: <tarjeta><nombre> es CÓDIGO de la tabla ws_au_tarjeta
     const tNombre = String(cabecera?.tarjeta_nombre ?? tObj?.codigo_atm ?? '').trim();
     const tNumero = String(cabecera?.tarjeta_numero ?? tObj?.numero ?? '').trim();
     const tVcto = String(cabecera?.tarjeta_vcto ?? tObj?.vencimiento ?? '').trim(); // MMAAAA
 
     if (!tNombre || !tNumero || !tVcto) {
-      return { ok: false, error: 'Forma de pago TARJETA (forma=2) requiere tarjeta_nombre(código ws_au_tarjeta), tarjeta_numero y tarjeta_vcto (MMAAAA) en cabecera o en data/testing/tarjetas_credito.json', operacion: '0', coberturas: [], raw: '' };
+      const out = { ok: false, error: 'Forma de pago TARJETA (forma=2) requiere tarjeta_nombre(código ws_au_tarjeta), tarjeta_numero y tarjeta_vcto (MMAAAA) en cabecera o en data/testing/tarjetas_credito.json', operacion: '0', coberturas: [], raw: '' };
+      if (evDir) safeWriteJson(path.join(evDir, 'atm-error.json'), out);
+      return out;
     }
     if (!/^\d{13,19}$/.test(tNumero)) {
-      return { ok: false, error: 'Número de tarjeta inválido (debe ser numérico 13-19 dígitos)', operacion: '0', coberturas: [], raw: '' };
+      const out = { ok: false, error: 'Número de tarjeta inválido (debe ser numérico 13-19 dígitos)', operacion: '0', coberturas: [], raw: '' };
+      if (evDir) safeWriteJson(path.join(evDir, 'atm-error.json'), out);
+      return out;
     }
     if (!/^\d{6}$/.test(tVcto)) {
-      return { ok: false, error: 'Vencimiento de tarjeta inválido (formato MMAAAA, 6 dígitos)', operacion: '0', coberturas: [], raw: '' };
+      const out = { ok: false, error: 'Vencimiento de tarjeta inválido (formato MMAAAA, 6 dígitos)', operacion: '0', coberturas: [], raw: '' };
+      if (evDir) safeWriteJson(path.join(evDir, 'atm-error.json'), out);
+      return out;
     }
 
     formapagoXML =
@@ -438,6 +479,19 @@ const rastreoCodigo = (!rastreoRaw || rastreoRaw === '0' || rastreoRaw === '1') 
   </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>`.trim();
 
+  if (evDir) {
+    safeWriteFile(path.join(evDir, 'atm-doc_in.xml'), docIn);
+    safeWriteFile(path.join(evDir, 'atm-soap_request.xml'), envelope);
+    safeWriteJson(path.join(evDir, 'atm-config-usada.json'), {
+      soap_url: SOAP_URL,
+      soap_method: SOAP_METHOD,
+      vendedor: Aseg?.vendedor ?? null,
+      origen: Aseg?.origen ?? null,
+      plan: Aseg?.plan ?? null,
+      fecha_fmt: hoy_fmt,
+    });
+  }
+
   const actions = [`http://tempuri.org/${SOAP_METHOD}`, `${SOAP_METHOD}`, `urn:${SOAP_METHOD}`];
   const parser = new XMLParser({ ignoreAttributes: false, trimValues: true });
   let lastErr = null;
@@ -445,18 +499,21 @@ const rastreoCodigo = (!rastreoRaw || rastreoRaw === '0' || rastreoRaw === '1') 
 
   for (const sa of actions) {
     try {
-            // Guardar SOAP REQUEST para auditoría (permite verificar <formapago> y demás campos enviados)
-      if (proceso_id) {
-        const reqPath = path.join(procesoDir(proceso_id), 'last_soap_request_atm.xml');
-        fs.writeFileSync(reqPath, envelope);
+      if (evDir) {
+        safeWriteFile(path.join(evDir, 'atm-soapaction.txt'), sa);
       }
 
-const resp = await axios.post(SOAP_URL, envelope, {
+      const resp = await axios.post(SOAP_URL, envelope, {
         headers: { 'Content-Type': 'text/xml; charset=UTF-8', SOAPAction: sa },
         timeout: 20000,
         validateStatus: () => true,
       });
       rawResp = resp.data;
+
+      if (evDir) {
+        safeWriteFile(path.join(evDir, 'atm-raw_response.xml'), String(rawResp || ''));
+        safeWriteJson(path.join(evDir, 'atm-http.json'), { status: resp.status, ok: resp.status >= 200 && resp.status < 300 });
+      }
 
       if (resp.status >= 200 && resp.status < 300) {
         const parsed = parser.parse(String(rawResp || ''));
@@ -482,48 +539,71 @@ const resp = await axios.post(SOAP_URL, envelope, {
           ? [].concat(auto.cotizacion.Cobertura)
           : [];
 
-        // return { ok: true, operacion, coberturas, used: { soapAction: sa }, raw: rawResp };
-        // Fallback por si no pudimos extraer bien operacion/status del parse
-const rawStr = String(rawResp || '');
-const opRx = rawStr.match(/<operacion>\s*([^<]+)\s*<\/operacion>/i);
-const ssRx = rawStr.match(/<statusSuccess>\s*([^<]+)\s*<\/statusSuccess>/i);
-const msgRx = rawStr.match(/<msg>\s*([^<]+)\s*<\/msg>/i);
+        const rawStr = String(rawResp || '');
+        const opRx = rawStr.match(/<operacion>\s*([^<]+)\s*<\/operacion>/i);
+        const ssRx = rawStr.match(/<statusSuccess>\s*([^<]+)\s*<\/statusSuccess>/i);
+        const msgRx = rawStr.match(/<msg>\s*([^<]+)\s*<\/msg>/i);
 
-const operacionFinal = (operacion ?? (opRx ? opRx[1].trim() : null));
-const statusSuccess =
-  (auto?.statusSuccess ?? auto?.StatusSuccess ?? (ssRx ? ssRx[1].trim() : '')).toString().toUpperCase();
-const msg = (msgRx ? msgRx[1].trim() : '');
+        const operacionFinal = (operacion ?? (opRx ? opRx[1].trim() : null));
+        const statusSuccess =
+          (auto?.statusSuccess ?? auto?.StatusSuccess ?? (ssRx ? ssRx[1].trim() : '')).toString().toUpperCase();
+        const msg = (msgRx ? msgRx[1].trim() : '');
 
-const success = statusSuccess === 'TRUE';
+        const success = statusSuccess === 'TRUE';
 
-if (!success) {
-  return {
-    ok: false,
-    operacion: operacionFinal,
-    coberturas: [],
-    error: msg || 'statusSuccess=FALSE',
-    used: { soapAction: sa },
-    raw: rawResp,
-  };
-}
+        const parsedOut = {
+          ok: success,
+          operacion: operacionFinal,
+          statusSuccess,
+          msg,
+          coberturas_len: Array.isArray(coberturas) ? coberturas.length : 0,
+          used: { soapAction: sa }
+        };
 
-return {
-  ok: true,
-  operacion: operacionFinal,
-  coberturas,
-  used: { soapAction: sa },
-  raw: rawResp,
-};
+        if (evDir) {
+          safeWriteJson(path.join(evDir, 'atm-parsed.json'), parsedOut);
+          if (Array.isArray(coberturas) && coberturas.length) {
+            safeWriteJson(path.join(evDir, 'atm-coberturas.json'), coberturas);
+          }
+        }
 
+        if (!success) {
+          const out = {
+            ok: false,
+            operacion: operacionFinal,
+            coberturas: [],
+            error: msg || 'statusSuccess=FALSE',
+            used: { soapAction: sa },
+            raw: rawResp,
+          };
+          if (evDir) safeWriteJson(path.join(evDir, 'atm-error.json'), out);
+          return out;
+        }
+
+        return {
+          ok: true,
+          operacion: operacionFinal,
+          coberturas,
+          used: { soapAction: sa },
+          raw: rawResp,
+        };
       }
 
       lastErr = `HTTP ${resp.status}`;
     } catch (e) {
       lastErr = e.message || 'axios error';
+      if (evDir) {
+        safeWriteJson(path.join(evDir, 'atm-exception.json'), {
+          message: e?.message || String(e),
+          stack: e?.stack || null,
+        });
+      }
     }
   }
 
-  return { ok: false, error: lastErr, raw: rawResp };
+  const out = { ok: false, error: lastErr, raw: rawResp };
+  if (evDir) safeWriteJson(path.join(evDir, 'atm-error.json'), out);
+  return out;
 }
 
 // =============================================================================
@@ -630,16 +710,16 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
         try {
           await db.execute('UPDATE procesos_cotizacion SET nombre_cabecera = ? WHERE id = ?', [nombreCabecera, proceso_id]);
         } catch (_e) {
-          // columna puede no existir en algunos esquemas; ignorar
+          // columna puede no existir; ignorar
         }
       } catch (e) {
         console.error('Error creando proceso en DB', e);
         return res.status(500).json({ ok: false, error: 'No se pudo crear el proceso en DB' });
       }
 
-      const procesoDir = path.join(process.cwd(), 'data', 'procesos', `proceso-${proceso_id}`);
-      await ensureDir(procesoDir);
-      const metaPath = path.join(procesoDir, 'metadata.json');
+      const procesoFolder = path.join(process.cwd(), 'data', 'procesos', `proceso-${proceso_id}`);
+      ensureDir(procesoFolder);
+      const metaPath = path.join(procesoFolder, 'metadata.json');
 
       meta = {
         id: proceso_id,
@@ -693,6 +773,7 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
     });
 
     ensureDir(procesoDir(proceso_id));
+    ensureDir(path.join(procesoDir(proceso_id), 'evidencias'));
 
     // leer filas una vez
     const filas = await readFilasFromFile(absPath);
@@ -739,6 +820,18 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
     let totalOk = 0;
     let totalErr = 0;
 
+    // Guardar “run header”
+    safeWriteJson(path.join(procesoDir(proceso_id), 'run.json'), {
+      proceso_id,
+      historial_id,
+      cabecera_id,
+      archivo: relPath.replace(/\\/g, '/'),
+      absPath,
+      limite: tomar,
+      aseguradoras,
+      started_at: new Date().toISOString()
+    });
+
     for (const slug of aseguradoras) {
       const { cfg: Aseg, SOAP_URL, SOAP_METHOD, fechaFmt } = await loadAsegConfig(slug);
       const hoy = formatFecha(new Date(), fechaFmt);
@@ -752,17 +845,19 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
         const fila = filas[i] || {};
         const { fila_preparada, mapeos } = await procesarFila(fila);
 
-// Merge defensivo: conservar columnas del Excel (ej. CP)
-const fila_final = { ...fila, ...fila_preparada };
+        // Merge defensivo: conservar columnas del Excel (ej. CP)
+        const fila_final = { ...fila, ...fila_preparada };
 
-// Si el preprocesador borró CP, restaurar el CP original
-if ((fila_final.CP === '' || fila_final.CP == null) && (fila.CP != null && String(fila.CP).trim() !== '')) {
-  fila_final.CP = fila.CP;
-}
+        // Si el preprocesador borró CP, restaurar el CP original
+        if ((fila_final.CP === '' || fila_final.CP == null) && (fila.CP != null && String(fila.CP).trim() !== '')) {
+          fila_final.CP = fila.CP;
+        }
 
-const resp = await cotizarFila({
-  proceso_id: meta.id,
-  fila: fila_final,
+        const resp = await cotizarFila({
+          proceso_id,
+          slug,
+          index: i,
+          fila: fila_final,
           cabecera,
           hoy_fmt: hoy,
           mapeos,
@@ -787,13 +882,14 @@ const resp = await cotizarFila({
         if (resp.ok) totalOk++;
         else totalErr++;
 
-        try {
-          fs.writeFileSync(
-            path.join(procesoDir(proceso_id), `last_soap_response_${slug}.xml`),
-            String(resp.raw || ''),
-            'utf8'
-          );
-        } catch {}
+        // evidencia “resumen” por fila (rápido de leer)
+        safeWriteJson(path.join(evidenciasDir(proceso_id, slug, i), 'atm-result.json'), {
+          ok: resp.ok,
+          operacion: resp.operacion ?? null,
+          coberturas_len: Array.isArray(resp.coberturas) ? resp.coberturas.length : 0,
+          error: resp.error || null,
+          used: resp.used || null,
+        });
 
         await saveMetadata(proceso_id, {
           registros_procesados: i + 1,
@@ -836,27 +932,38 @@ const resp = await cotizarFila({
     }
     fs.writeFileSync(path.join(procesoDir(proceso_id), 'resumen.csv'), [head, ...lines].join('\n'));
 
+    const estadoFinalMeta = totalErr > 0 ? 'con errores' : 'completado';
+
     await saveMetadata(proceso_id, {
-      estado: totalErr > 0 ? 'con errores' : 'completado',
+      estado: estadoFinalMeta,
       fecha_fin: new Date().toISOString(),
       registros_procesados: tomar,
       cotizaciones_exitosas: totalOk,
       cotizaciones_con_error: totalErr,
     });
-      // Persistir estado final en DB (para la tabla de "Procesos de Cotización")
-      try {
-        const estadoFinal = cotizaciones_con_error > 0 ? 'con errores' : 'completado';
-        await db.execute(
-          `UPDATE procesos_cotizacion
-           SET estado = ?, fecha_fin = NOW(),
-               registros_procesados = ?, cotizaciones_exitosas = ?, cotizaciones_con_error = ?
-           WHERE id = ?`,
-          [estadoFinal, total_filas_intentadas, cotizaciones_exitosas, cotizaciones_con_error, proceso_id]
-        );
-      } catch (e) {
-        console.warn('No se pudo actualizar procesos_cotizacion', e?.message || e);
-      }
 
+    // Persistir estado final en DB (para la tabla de "Procesos de Cotización")
+    try {
+      await db.execute(
+        `UPDATE procesos_cotizacion
+         SET estado = ?, fecha_fin = NOW(),
+             registros_procesados = ?, cotizaciones_exitosas = ?, cotizaciones_con_error = ?
+         WHERE id = ?`,
+        [estadoFinalMeta, tomar, totalOk, totalErr, proceso_id]
+      );
+    } catch (e) {
+      console.warn('No se pudo actualizar procesos_cotizacion', e?.message || e);
+    }
+
+    // marcar fin de run
+    safeWriteJson(path.join(procesoDir(proceso_id), 'run_end.json'), {
+      proceso_id,
+      finished_at: new Date().toISOString(),
+      estado: estadoFinalMeta,
+      total_filas_intentadas: tomar,
+      cotizaciones_exitosas: totalOk,
+      cotizaciones_con_error: totalErr,
+    });
 
     return res.status(200).json({
       ok: true,
@@ -964,3 +1071,4 @@ router.get('/:id', async (req, res) => {
 });
 
 module.exports = router;
+
