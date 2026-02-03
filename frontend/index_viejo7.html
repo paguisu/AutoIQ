@@ -848,10 +848,10 @@
         let data = {};
         try { data = JSON.parse(text); } catch { throw new Error(text); }
         if(!resp.ok || !data.ok){ throw new Error(data.error || `HTTP ${resp.status}`); }
-        const procesoId = data.proceso_id ?? data.historial_id ?? data.id ?? data.proceso;
-        const intentados = data.total_filas_intentadas ?? data.total_intentadas ?? data.intentados ?? data.total ?? limite;
-        const carpeta = data.carpeta ?? (procesoId ? `data/procesos/proceso-${procesoId}/` : '');
-        alert(`Proceso ${procesoId} OK con cabecera ${data.cabecera_id}. Intentados: ${intentados}. Revisá /${carpeta}`);
+        const pid = data.proceso_id ?? data.procesoId ?? data.id;
+        const intentados = data.total_filas_intentadas ?? data.total ?? data.intentados;
+        const carpeta = data.carpeta || (pid ? `/data/procesos/proceso-${pid}/` : '/data/procesos/');
+        alert(`Proceso ${pid} OK con cabecera ${data.cabecera_id}. Intentados: ${intentados}. Revisá ${carpeta}`);
       }catch(e){
         alert('Fallo al ejecutar: ' + (e.message || e));
       }

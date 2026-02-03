@@ -1,20 +1,20 @@
 // backend/services/atm/client.js
 // Cliente ATM robusto con formateo de fecha configurable.
-// - Por defecto: ddMMyyyy (como venías usando)
-// - Se puede cambiar por ENV: ATM_DATE_FMT (ej: 'ddMMyyyy', 'yyyyMMdd', 'dd/MM/yyyy', 'yyyy-MM-dd')
-// - También se puede forzar por request body: { fecha_formato: 'yyyyMMdd' }
+// - Por defecto: ddMMyyyy
+// - Se puede forzar por request body: { fecha_formato: 'yyyyMMdd' }
+// Fuente única de configuración: data/atm/aseguradora.json (loadAtmConfig)
 
 const axios = require("axios");
 const { parseStringPromise } = require("xml2js");
 const fs = require("fs");
 const path = require("path");
+const { loadAtmConfig } = require("./config");
 
 // ================== Helpers de fecha ==================
 function pad2(n) { return String(n).padStart(2, "0"); }
 
 /**
  * Soporta patrones: ddMMyyyy, yyyyMMdd, dd/MM/yyyy, yyyy-MM-dd
- * (Se pueden agregar variantes fácil si ATM pide otro exacto)
  */
 function formatByPattern(d, pattern) {
   const dt = d instanceof Date ? d : new Date(d);
@@ -32,11 +32,11 @@ function formatByPattern(d, pattern) {
   }
 }
 
-function pickDateFormat(overrideFromBody) {
-  // prioridad: body.fecha_formato > ENV.ATM_DATE_FMT > 'ddMMyyyy'
-  const envFmt = (process.env.ATM_DATE_FMT || "").trim();
+function pickDateFormat(overrideFromBody, cfgDateFmt) {
+  // prioridad: body.fecha_formato > cfg.dateFormat > 'ddMMyyyy'
   const bodyFmt = (overrideFromBody || "").trim();
-  return bodyFmt || envFmt || "ddMMyyyy";
+  const cfgFmt = (cfgDateFmt || "").trim();
+  return bodyFmt || cfgFmt || "ddMMyyyy";
 }
 
 // ================== SOAP helpers ==================
@@ -68,35 +68,24 @@ async function xmlToJson(xml, pathTags = []) {
   }
 }
 
-// ================== Config mínima ===========
+// ================== Config ATM (fuente única: aseguradora.json) ==================
 function pickEnv() {
-  const baseUrl = (process.env.ATM_BASE_URL || "https://wsatm.atmseguros.com.ar").replace(/\/+$/, "");
-  const explicit = process.env.ATM_SOAP_URL && process.env.ATM_SOAP_URL.trim();
-  const endpoints = explicit
-    ? [explicit]
-    : [
-        `${baseUrl}/index.php/soap`,
-        `${baseUrl}/index.php/soap/auto`,
-        `${baseUrl}/index.php/soap/au`,
-        `${baseUrl}/soap`,
-      ];
+  const cfg = loadAtmConfig();
 
-  // posibles métodos que hemos visto en instalaciones ATM
-  const explicitMethod = process.env.ATM_SOAP_METHOD && process.env.ATM_SOAP_METHOD.trim();
-  const methods = explicitMethod
-    ? [explicitMethod]
-    : [
-        "ws_au_cotizar_demo",
-        "ws_au_cotizar",
-        "ws_cotizar_demo",
-        "ws_cotizar",
-      ];
+  // Fuente única: aseguradora.json
+  // - endpoint único: cfg.soapUrl
+  // - método único: cfg.soapMethod
+  // - credenciales: cfg.usuario/cfg.password
+  const endpoints = [cfg.soapUrl];
+  const methods = [cfg.soapMethod];
 
   return {
+    cfg,
     endpoints,
     methods,
-    ATM_USER: process.env.ATM_USER || "PNONCECOM",
-    ATM_PASS: process.env.ATM_PASS || "s91101",
+    ATM_USER: cfg.usuario,
+    ATM_PASS: cfg.password,
+    ATM_DATE_FMT: cfg.dateFormat,
   };
 }
 
@@ -148,7 +137,7 @@ async function trySoapCandidate({ url, method, soapAction, xmlns, docIn }) {
  */
 async function cotizarSoapDemo(bodyRaw) {
   const env = pickEnv();
-  const fmt = pickDateFormat(bodyRaw?.fecha_formato);
+  const fmt = pickDateFormat(bodyRaw?.fecha_formato, env.cfg?.dateFormat);
   const hoyFmt = formatByPattern(new Date(), fmt);
 
   // Campos del vehículo desde el body
@@ -179,12 +168,21 @@ async function cotizarSoapDemo(bodyRaw) {
   </auto>
 </doc_in>`.trim();
 
-  // Guardamos lo que viaja
+  // Guardamos lo que viaja + config usada
   try {
     const dbgDir = path.join(process.cwd(), "data", "atm", "debug");
     fs.mkdirSync(dbgDir, { recursive: true });
     fs.writeFileSync(path.join(dbgDir, "last_doc_in.xml"), docIn, "utf8");
     fs.writeFileSync(path.join(dbgDir, "last_date_format.txt"), fmt, "utf8");
+    fs.writeFileSync(
+      path.join(dbgDir, "last_atm_config_used.json"),
+      JSON.stringify(
+        { jsonPath: env.cfg?.jsonPath, soapUrl: env.cfg?.soapUrl, soapMethod: env.cfg?.soapMethod },
+        null,
+        2
+      ),
+      "utf8"
+    );
   } catch {}
 
   // Construimos candidatos y probamos hasta que uno funcione
@@ -232,7 +230,6 @@ async function cotizarSoapDemo(bodyRaw) {
       }
     } catch (e) {
       tried.push({ url: cand.url, method: cand.method, soapAction: cand.soapAction, ok: false, status: 0, error: e.message });
-      continue;
     }
   }
 

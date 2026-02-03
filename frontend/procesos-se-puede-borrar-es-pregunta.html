@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>AutoIQ — Procesos de Cotización</title>
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;margin:0;background:#f6f7fb;color:#222}
+    header{background:#0f62fe;color:#fff;padding:14px 18px;display:flex;align-items:center;gap:10px}
+    header h1{font-size:18px;margin:0}
+    main{max-width:1100px;margin:20px auto;padding:0 16px}
+    .card{background:#fff;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,.06);padding:14px 14px}
+    .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
+    select,input,button{height:36px;border:1px solid #d0d7de;border-radius:8px;padding:0 10px;background:#fff}
+    button{background:#0f62fe;color:#fff;border:none;cursor:pointer}
+    button.secondary{background:#fff;color:#0f62fe;border:1px solid #0f62fe}
+    button:disabled{opacity:.6;cursor:not-allowed}
+    table{width:100%;border-collapse:separate;border-spacing:0}
+    th,td{padding:10px 8px;border-bottom:1px solid #eee;font-size:14px;vertical-align:top}
+    th{background:#fafbff;text-align:left;position:sticky;top:0;z-index:1}
+    .pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px}
+    .ok{background:#e8f5e9;color:#1b5e20}
+    .warn{background:#fff3e0;color:#e65100}
+    .err{background:#ffebee;color:#b71c1c}
+    .muted{color:#6b7280}
+    .row{display:flex;gap:8px;align-items:center}
+    .pagination{display:flex;gap:8px;align-items:center;justify-content:flex-end;margin-top:10px}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+    a.btn{display:inline-block;text-decoration:none}
+    .nowrap{white-space:nowrap}
+  </style>
+</head>
+<body>
+<header>
+  <h1>Procesos de Cotización</h1>
+  <a href="/" class="btn">
+    <button class="secondary">↩ Volver al inicio</button>
+  </a>
+</header>
+
+<main>
+  <div class="card">
+    <div class="controls">
+      <label>Estado:
+        <select id="f-estado">
+          <option value="">(todos)</option>
+          <option value="en curso">en curso</option>
+          <option value="completado">completado</option>
+          <option value="con errores">con errores</option>
+        </select>
+      </label>
+      <label>Por página:
+        <select id="f-limit">
+          <option>10</option>
+          <option selected>20</option>
+          <option>50</option>
+          <option>100</option>
+        </select>
+      </label>
+      <button id="btn-buscar">🔍 Buscar</button>
+      <span id="meta" class="muted"></span>
+    </div>
+
+    <div style="overflow:auto; max-height: 65vh; border:1px solid #eee; border-radius:10px">
+      <table id="tabla">
+        <thead>
+          <tr>
+            <th class="nowrap">ID</th>
+            <th>Nombre</th>
+            <th>Cabecera</th>
+            <th>Estado</th>
+            <th class="nowrap">Inicio</th>
+            <th class="nowrap">Fin</th>
+            <th class="nowrap">Registros</th>
+            <th class="nowrap">Exitosas</th>
+            <th class="nowrap">Con error</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+          <tr><td colspan="10" class="muted">Cargá para ver resultados…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination">
+      <button id="prev">&lt; Anterior</button>
+      <span id="pageInfo" class="muted"></span>
+      <button id="next">Siguiente &gt;</button>
+    </div>
+  </div>
+</main>
+
+<script>
+  const qs = (s)=>document.querySelector(s);
+  const estadoEl = qs('#f-estado');
+  const limitEl  = qs('#f-limit');
+  const btnBuscar= qs('#btn-buscar');
+  const tbody    = qs('#tbody');
+  const meta     = qs('#meta');
+  const prevBtn  = qs('#prev');
+  const nextBtn  = qs('#next');
+  const pageInfo = qs('#pageInfo');
+
+  let offset = 0, total = 0;
+
+  function pill(text){
+    const span = document.createElement('span');
+    span.classList.add('pill');
+    if(text === 'completado') span.classList.add('ok');
+    else if(text === 'en curso') span.classList.add('warn');
+    else span.classList.add('err');
+    span.textContent = text;
+    return span.outerHTML;
+  }
+
+  function fmt(dt){
+    if(!dt) return '';
+    // Soporta strings tipo "2025-09-12T10:08:19.000Z" o "2025-09-12 10:08:19"
+    const d = new Date(dt);
+    if(isNaN(d)) return dt;
+    return d.toLocaleString();
+  }
+
+  async function cargar(){
+    const estado = estadoEl.value.trim();
+    const limit  = Number(limitEl.value) || 20;
+
+    const params = new URLSearchParams();
+    params.set('limit', String(limit));
+    params.set('offset', String(offset));
+    if(estado) params.set('estado', estado);
+
+    btnBuscar.disabled = true;
+    prevBtn.disabled = true;
+    nextBtn.disabled = true;
+    meta.textContent = 'Cargando…';
+
+    try{
+      const resp = await fetch(`/cotizacion/listar?${params.toString()}`);
+      if(!resp.ok){
+        const err = await resp.text();
+        throw new Error(err || 'HTTP ' + resp.status);
+      }
+      const data = await resp.json();
+      total = data.total ?? 0;
+      const items = Array.isArray(data.items) ? data.items : [];
+
+      tbody.innerHTML = '';
+      if(items.length === 0){
+        tbody.innerHTML = `<tr><td colspan="10" class="muted">Sin resultados</td></tr>`;
+      } else {
+        for(const it of items){
+          const tr = document.createElement('tr');
+          const acc = `
+            <div class="row">
+              <a class="btn" href="/cotizacion/estado/${it.id}" target="_blank"><button class="secondary">Ver estado</button></a>
+              <a class="btn" href="/data/procesos/proceso-${it.id}/" target="_blank"><button>📁 Abrir carpeta</button></a>
+            </div>
+          `;
+          tr.innerHTML = `
+            <td class="mono">${it.id}</td>
+            <td>${it.nombre || ''}</td>
+            <td>${it.nombre_cabecera || ''}</td>
+            <td>${pill(it.estado || '')}</td>
+            <td class="nowrap mono">${fmt(it.fecha_inicio)}</td>
+            <td class="nowrap mono">${fmt(it.fecha_fin)}</td>
+            <td class="mono">${it.registros_procesados ?? ''}</td>
+            <td class="mono">${it.cotizaciones_exitosas ?? ''}</td>
+            <td class="mono">${it.cotizaciones_con_error ?? ''}</td>
+            <td>${acc}</td>
+          `;
+          tbody.appendChild(tr);
+        }
+      }
+
+      const desde = Math.min(total, offset + 1);
+      const hasta = Math.min(total, offset + (Number(limit)||20));
+      meta.textContent = `Mostrando ${desde || 0}–${hasta || 0} de ${total}`;
+      pageInfo.textContent = `Página ${Math.floor(offset/limit)+1} — ${limit} por página`;
+
+      prevBtn.disabled = (offset <= 0);
+      nextBtn.disabled = (offset + limit >= total);
+    } catch(e){
+      tbody.innerHTML = `<tr><td colspan="10" style="color:#b71c1c">Error: ${e.message}</td></tr>`;
+      meta.textContent = '';
+      pageInfo.textContent = '';
+    } finally {
+      btnBuscar.disabled = false;
+      // prev/next se habilitan dentro de try si corresponde
+    }
+  }
+
+  btnBuscar.addEventListener('click', ()=>{ offset = 0; cargar(); });
+  prevBtn.addEventListener('click', ()=>{
+    const limit = Number(limitEl.value)||20;
+    offset = Math.max(0, offset - limit);
+    cargar();
+  });
+  nextBtn.addEventListener('click', ()=>{
+    const limit = Number(limitEl.value)||20;
+    offset = offset + limit;
+    cargar();
+  });
+
+  // auto-cargar al abrir
+  cargar();
+</script>
+</body>
+</html>

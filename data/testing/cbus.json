@@ -1,0 +1,13 @@
+{
+  "default": "cbu_1",
+  "cbus": {
+    "cbu_1": {
+      "banco": "BANCO TEST",
+      "numero": "2850590940090418135201"
+    },
+    "cbu_2": {
+      "banco": "BANCO MOCK",
+      "numero": "0720169720000001181274"
+    }
+  }
+}

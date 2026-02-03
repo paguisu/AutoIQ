@@ -102,19 +102,9 @@ function asegPath(slug) {
 async function loadAsegConfig(slug) {
   const cfgPath = path.join(asegPath(slug), 'aseguradora.json');
   const j = await readJsonStrict(cfgPath);
-  // Centralización credenciales ATM: preferimos ENV y, si no, caemos al JSON.
-  if (slug === 'atm') {
-    j.usuario = process.env.ATM_USER || j.usuario;
-    j.password = process.env.ATM_PASS || j.password;
-    j.vendedor = process.env.ATM_VENDEDOR || j.vendedor;
-    j.origen = process.env.ATM_ORIGEN || j.origen;
-    j.plan = process.env.ATM_PLAN || j.plan;
-    j.contacto_tecnico = process.env.ATM_CONTACTO_TECNICO || j.contacto_tecnico;
-    j.contacto_comercial = process.env.ATM_CONTACTO_COMERCIAL || j.contacto_comercial;
-  }
   if (!j.base_url || !j.soap_path) throw new Error(`Config ${slug}: faltan base_url o soap_path`);
   const method = j.soap_method || j.SOAP_METHOD || 'AUTOS_Cotizar_PHP';
-  let url = `${j.base_url.replace(/\/+$/, '')}${j.soap_path}`;
+  const url = `${j.base_url.replace(/\/+$/, '')}${j.soap_path}`;
   const formato =
     (j.parametros_extras && j.parametros_extras.formato_fecha_request) ||
     process.env.ATM_DATE_FMT ||
@@ -433,12 +423,20 @@ const rastreoCodigo = (!rastreoRaw || rastreoRaw === '0' || rastreoRaw === '1') 
   xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/">
   <SOAP-ENV:Body>
     <${SOAP_METHOD} xmlns="http://tempuri.org/">
-      <doc_in><![CDATA[${docIn}]]></doc_in>
+      <doc_in>
+${docIn}
+      </doc_in>
     </${SOAP_METHOD}>
   </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>`.trim();
 
-  const actions = [`http://tempuri.org/${SOAP_METHOD}`, `${SOAP_METHOD}`, `urn:${SOAP_METHOD}`];
+  const actions = [
+    `"http://tempuri.org/${SOAP_METHOD}"`,
+    `http://tempuri.org/${SOAP_METHOD}`,
+    `"${SOAP_METHOD}"`,
+    `${SOAP_METHOD}`,
+    `urn:${SOAP_METHOD}`,
+  ];
   const parser = new XMLParser({ ignoreAttributes: false, trimValues: true });
   let lastErr = null;
   let rawResp = null;

@@ -1,9 +1,10 @@
 {
   "base_url": "https://wsatm.atmseguros.com.ar",
   "soap_path": "/index.php/soap",
+  "soap_method": "AUTOS_Cotizar_PHP",
 
   "usuario": "PNONCECOM",
-  "password": "s91101",
+  "password": "125qNQVku1tC",
   "vendedor": "0067804766",
   "origen": "WS",
 

@@ -102,19 +102,9 @@ function asegPath(slug) {
 async function loadAsegConfig(slug) {
   const cfgPath = path.join(asegPath(slug), 'aseguradora.json');
   const j = await readJsonStrict(cfgPath);
-  // Centralización credenciales ATM: preferimos ENV y, si no, caemos al JSON.
-  if (slug === 'atm') {
-    j.usuario = process.env.ATM_USER || j.usuario;
-    j.password = process.env.ATM_PASS || j.password;
-    j.vendedor = process.env.ATM_VENDEDOR || j.vendedor;
-    j.origen = process.env.ATM_ORIGEN || j.origen;
-    j.plan = process.env.ATM_PLAN || j.plan;
-    j.contacto_tecnico = process.env.ATM_CONTACTO_TECNICO || j.contacto_tecnico;
-    j.contacto_comercial = process.env.ATM_CONTACTO_COMERCIAL || j.contacto_comercial;
-  }
   if (!j.base_url || !j.soap_path) throw new Error(`Config ${slug}: faltan base_url o soap_path`);
   const method = j.soap_method || j.SOAP_METHOD || 'AUTOS_Cotizar_PHP';
-  let url = `${j.base_url.replace(/\/+$/, '')}${j.soap_path}`;
+  const url = `${j.base_url.replace(/\/+$/, '')}${j.soap_path}`;
   const formato =
     (j.parametros_extras && j.parametros_extras.formato_fecha_request) ||
     process.env.ATM_DATE_FMT ||
@@ -259,17 +249,7 @@ async function cotizarFila({
   SOAP_METHOD,
   usoDicc,
 }) {
-  const codiaRaw = pick([
-    fila?.infoautocod,
-    fila?.tau_codia,
-    fila?.codigo_infoauto,
-    fila?.cod_infoauto,
-    fila?.codigoInfoauto,
-    fila?.CodigoInfoauto,
-    fila?.InfoAutoCod,
-    fila?.infoauto
-  ]);
-  const codia = String(codiaRaw ?? '').trim();
+  const codia = (fila?.infoautocod ?? fila?.tau_codia ?? '').toString().trim();
   const anio = pick([fila?.anio, fila?.anofab, fila?.ANO, fila?.Anio, fila?.ano]);
   const cpRaw = pick([fila?.codigo_postal, fila?.codpostal, fila?.CP, fila?.cp, fila?.CodigoPostal]);
   const cp = String(cpRaw ?? '').trim();
@@ -427,10 +407,7 @@ const rastreoCodigo = (!rastreoRaw || rastreoRaw === '0' || rastreoRaw === '1') 
 </auto>`.trim();
 
   const envelope = `<?xml version="1.0" encoding="UTF-8"?>
-<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
-  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/">
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
   <SOAP-ENV:Body>
     <${SOAP_METHOD} xmlns="http://tempuri.org/">
       <doc_in><![CDATA[${docIn}]]></doc_in>
@@ -599,9 +576,7 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
     let meta = await loadMetadata(id);
 
     if (!meta) {
-      // Si no existe metadata, interpretamos :id como HISTORIAL id y creamos un NUEVO proceso (DB + carpeta).
       const historial_id = id;
-
       const cabeceraIdCompat = Number(req.body?.cabecera_id);
       if (!cabeceraIdCompat) return res.status(400).json({ ok: false, error: 'Falta cabecera_id' });
 
@@ -609,50 +584,33 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
       if (!cabeceraCompat) return res.status(404).json({ ok: false, error: `Cabecera ${cabeceraIdCompat} no encontrada` });
 
       const hist = await getHistorialItem(historial_id);
-      if (!hist) return res.status(404).json({ ok: false, error: `No existe el histórico ${historial_id}` });
+      if (!hist) return res.status(404).json({ ok: false, error: `No existe histórico id=${historial_id}` });
 
-      const archivo = hist?.archivo;
-      if (!archivo) return res.status(400).json({ ok: false, error: `Histórico ${historial_id} sin archivo asociado` });
+      const { relPath, absPath } = resolveCombinedAbsPath(hist);
+      if (!fs.existsSync(absPath)) return res.status(400).json({ ok: false, error: `No se encuentra el archivo combinado: ${absPath}` });
 
-      // Crear registro en DB para que aparezca en "Procesos en curso"
-      let proceso_id = null;
-      try {
-        const nombreProceso = `ATM - UI (histórico ${historial_id})`;
-        const nombreCabecera = cabeceraCompat?.nombre || cabeceraCompat?.nombre_cabecera || cabeceraCompat?.nombre_publico || `Cabecera ${cabeceraIdCompat}`;
+      const slugCompat = (req.body?.aseguradora || 'atm').toString().toLowerCase();
+      const limiteBody = Number(req.body?.limite);
+      const limiteCompat = Number.isFinite(limiteBody) ? Math.max(1, Math.min(limiteBody, 100)) : 5;
 
-        const [ins] = await db.execute(
-          'INSERT INTO procesos_cotizacion (nombre, cabecera_id, estado, fecha_inicio) VALUES (?, ?, ?, NOW())',
-          [nombreProceso, cabeceraIdCompat, 'en curso']
-        );
-        proceso_id = ins.insertId;
-
-        // Guardar nombre de cabecera si existe la columna (defensivo)
-        try {
-          await db.execute('UPDATE procesos_cotizacion SET nombre_cabecera = ? WHERE id = ?', [nombreCabecera, proceso_id]);
-        } catch (_e) {
-          // columna puede no existir en algunos esquemas; ignorar
-        }
-      } catch (e) {
-        console.error('Error creando proceso en DB', e);
-        return res.status(500).json({ ok: false, error: 'No se pudo crear el proceso en DB' });
-      }
-
-      const procesoDir = path.join(process.cwd(), 'data', 'procesos', `proceso-${proceso_id}`);
-      await ensureDir(procesoDir);
-      const metaPath = path.join(procesoDir, 'metadata.json');
-
-      meta = {
-        id: proceso_id,
+      ensureDir(procesoDir(historial_id));
+      meta = await saveMetadata(historial_id, {
+        id: historial_id,
+        nombre: `Proceso ${historial_id}`,
+        estado: 'creado',
         historial_id,
-        archivo,
-        fecha: new Date().toISOString(),
-        limite: Number(req.body?.limite ?? 50),
+        archivo: relPath,
         cabecera_id: cabeceraIdCompat,
-        aseguradoras: req.body?.aseguradoras || req.body?.aseguradora || [],
-        resultados: {}
-      };
-
-      await fsp.writeFile(metaPath, JSON.stringify(meta, null, 2), 'utf8');
+        aseguradoras: [slugCompat],
+        limite: limiteCompat,
+        fecha_creacion: new Date().toISOString(),
+        fecha_inicio: null,
+        fecha_fin: null,
+        registros_total: Number(hist.cantidad_registros || 0) || null,
+        registros_procesados: 0,
+        cotizaciones_exitosas: 0,
+        cotizaciones_con_error: 0,
+      });
     }
 
     const proceso_id = meta.id;
@@ -761,7 +719,7 @@ if ((fila_final.CP === '' || fila_final.CP == null) && (fila.CP != null && Strin
 }
 
 const resp = await cotizarFila({
-  proceso_id: meta.id,
+  proceso_id: id,
   fila: fila_final,
           cabecera,
           hoy_fmt: hoy,
@@ -843,20 +801,6 @@ const resp = await cotizarFila({
       cotizaciones_exitosas: totalOk,
       cotizaciones_con_error: totalErr,
     });
-      // Persistir estado final en DB (para la tabla de "Procesos de Cotización")
-      try {
-        const estadoFinal = cotizaciones_con_error > 0 ? 'con errores' : 'completado';
-        await db.execute(
-          `UPDATE procesos_cotizacion
-           SET estado = ?, fecha_fin = NOW(),
-               registros_procesados = ?, cotizaciones_exitosas = ?, cotizaciones_con_error = ?
-           WHERE id = ?`,
-          [estadoFinal, total_filas_intentadas, cotizaciones_exitosas, cotizaciones_con_error, proceso_id]
-        );
-      } catch (e) {
-        console.warn('No se pudo actualizar procesos_cotizacion', e?.message || e);
-      }
-
 
     return res.status(200).json({
       ok: true,
