@@ -1,4 +1,4 @@
-﻿// backend/services/atm/atm.js
+﻿﻿// backend/services/atm/atm.js
 const express = require("express");
 const router = express.Router();
 const fs = require("fs");
@@ -7,8 +7,8 @@ const axios = require("axios");
 const { XMLParser } = require("fast-xml-parser");
 const xlsx = require("xlsx");
 
-// Cliente “clásico” (ws_* con barrido automático) — se mantiene para compatibilidad
 const { cotizarSoapDemo } = require("./client");
+const { loadAtmConfig } = require("./config");
 
 // ---------- Helpers compartidos ----------
 function ensureDir(p) { if (!fs.existsSync(p)) fs.mkdirSync(p, { recursive: true }); }
@@ -50,23 +50,33 @@ router.post("/cotizar-php", async (req, res) => {
   ensureDir(dbgDir);
 
   try {
-    const fmt = (req.body && req.body.fecha_formato) || process.env.ATM_DATE_FMT || "ddMMyyyy";
-    const hoy = formatByPattern(new Date(), fmt);
-    try { fs.writeFileSync(path.join(dbgDir, "last_date_format.txt"), fmt, "utf8"); } catch {}
+    const cfg = loadAtmConfig();
 
-    const baseUrl = (process.env.ATM_BASE_URL || "https://wsatm.atmseguros.com.ar").replace(/\/+$/,"");
-    const url = process.env.ATM_SOAP_URL || `${baseUrl}/index.php/soap`;
-    const ATM_USER = process.env.ATM_USER || "PNONCECOM";
-    const ATM_PASS = process.env.ATM_PASS || "s91101";
-    const ATM_VENDEDOR = process.env.ATM_VENDEDOR || "0067804766";
-    const ATM_SECCION = (process.env.ATM_SECCION || "3").toString();
+    const fmt = (req.body && req.body.fecha_formato) || cfg.dateFormat || "ddMMyyyy";
+    const hoy = formatByPattern(new Date(), fmt);
+    try {
+      fs.writeFileSync(path.join(dbgDir, "last_date_format.txt"), fmt, "utf8");
+      fs.writeFileSync(path.join(dbgDir, "last_atm_config_used.json"), JSON.stringify({
+        jsonPath: cfg.jsonPath,
+        soapUrl: cfg.soapUrl,
+        soapMethod: cfg.soapMethod
+      }, null, 2), "utf8");
+    } catch {}
+
+    const url = (process.env.ATM_SOAP_URL || "").trim() || cfg.soapUrl;
+    const method = (process.env.ATM_SOAP_METHOD || "").trim() || cfg.soapMethod;
+
+    const ATM_USER = cfg.usuario;
+    const ATM_PASS = cfg.password;
+    const ATM_VENDEDOR = cfg.vendedor;
+    const ATM_SECCION = (process.env.ATM_SECCION || cfg.seccionDefault || "3").toString();
+    const ORIGEN = cfg.origen || "WS";
 
     const codia = pick([req.body?.tau_codia, req.body?.codia]);
     const anio  = pick([req.body?.anio, req.body?.anofab]);
     const cp    = pick([req.body?.codigo_postal, req.body?.codpostal, req.body?.CP, req.body?.cp]);
     const uso   = pick([req.body?.uso]) || "Particular";
 
-    // DOC_IN con usuario en raíz (variante más compatible)
     const docIn = `
 <doc_in>
   <usuario>
@@ -74,7 +84,7 @@ router.post("/cotizar-php", async (req, res) => {
     <pas>${ATM_PASS}</pas>
     <fecha>${hoy}</fecha>
     <vendedor>${ATM_VENDEDOR}</vendedor>
-    <origen>WS</origen>
+    <origen>${ORIGEN}</origen>
   </usuario>
   <cotizacion>
     <seccion>${ATM_SECCION}</seccion>
@@ -93,7 +103,6 @@ router.post("/cotizar-php", async (req, res) => {
 
     try { fs.writeFileSync(path.join(dbgDir, "last_doc_in.xml"), docIn, "utf8"); } catch {}
 
-    const method = "AUTOS_Cotizar_PHP";
     const envelope = `<?xml version="1.0" encoding="UTF-8"?>
 <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
   <SOAP-ENV:Body>
@@ -123,7 +132,7 @@ router.post("/cotizar-php", async (req, res) => {
         try {
           fs.writeFileSync(path.join(dbgDir, "last_soap_response.xml"), String(rawResp || ""), "utf8");
           fs.writeFileSync(path.join(dbgDir, "last_candidate.json"), JSON.stringify(
-            { url, method, soapAction: cand.soapAction, variant: "DOCIN_ROOT_USUARIO" }, null, 2
+            { url, method, soapAction: cand.soapAction }, null, 2
           ), "utf8");
         } catch {}
 
@@ -174,30 +183,27 @@ router.post("/cotizar-php", async (req, res) => {
   }
 });
 
-// ---------- 3) NUEVA ruta: batch (lee XLSX/CSV o items[], 5–10 autos) ----------
-/**
- * POST /atm/cotizar-php-batch
- * Body opciones:
- *  A) { "archivo": "data/combinados/tuarchivo.xlsx", "limite": 10, "fecha_formato": "yyyyMMdd" }
- *  B) { "items": [ { tau_codia, anio, codigo_postal, uso }, ... ], "limite": 5 }
- */
+// ---------- 3) Ruta batch ----------
 router.post("/cotizar-php-batch", async (req, res) => {
   const dbgDir = path.join(process.cwd(), "data", "atm", "debug");
   ensureDir(dbgDir);
 
   try {
-    const fmt = (req.body && req.body.fecha_formato) || process.env.ATM_DATE_FMT || "ddMMyyyy";
+    const cfg = loadAtmConfig();
+
+    const fmt = (req.body && req.body.fecha_formato) || cfg.dateFormat || "ddMMyyyy";
     const hoy = formatByPattern(new Date(), fmt);
     try { fs.writeFileSync(path.join(dbgDir, "last_date_format.txt"), fmt, "utf8"); } catch {}
 
-    const baseUrl = (process.env.ATM_BASE_URL || "https://wsatm.atmseguros.com.ar").replace(/\/+$/,"");
-    const url = process.env.ATM_SOAP_URL || `${baseUrl}/index.php/soap`;
-    const ATM_USER = process.env.ATM_USER || "PNONCECOM";
-    const ATM_PASS = process.env.ATM_PASS || "s91101";
-    const ATM_VENDEDOR = process.env.ATM_VENDEDOR || "0067804766";
-    const ATM_SECCION = (process.env.ATM_SECCION || "3").toString();
+    const url = (process.env.ATM_SOAP_URL || "").trim() || cfg.soapUrl;
+    const method = (process.env.ATM_SOAP_METHOD || "").trim() || cfg.soapMethod;
 
-    // --- Fuente de datos ---
+    const ATM_USER = cfg.usuario;
+    const ATM_PASS = cfg.password;
+    const ATM_VENDEDOR = cfg.vendedor;
+    const ATM_SECCION = (process.env.ATM_SECCION || cfg.seccionDefault || "3").toString();
+    const ORIGEN = cfg.origen || "WS";
+
     let rows = [];
     if (Array.isArray(req.body?.items)) {
       rows = req.body.items;
@@ -227,7 +233,6 @@ router.post("/cotizar-php-batch", async (req, res) => {
     const limite = Math.max(1, Math.min(Number(req.body?.limite || 10), rows.length));
     const out = [];
     const parser = new XMLParser({ ignoreAttributes:false, trimValues:true });
-    const method = "AUTOS_Cotizar_PHP";
 
     for (let i = 0; i < limite; i++) {
       const r = rows[i] || {};
@@ -243,7 +248,7 @@ router.post("/cotizar-php-batch", async (req, res) => {
     <pas>${ATM_PASS}</pas>
     <fecha>${hoy}</fecha>
     <vendedor>${ATM_VENDEDOR}</vendedor>
-    <origen>WS</origen>
+    <origen>${ORIGEN}</origen>
   </usuario>
   <cotizacion>
     <seccion>${ATM_SECCION}</seccion>
@@ -319,15 +324,10 @@ router.post("/cotizar-php-batch", async (req, res) => {
       }
 
       out.push(rowRes);
-      // guardar última respuesta por si hay que auditar
-      try {
-        fs.writeFileSync(path.join(dbgDir, "last_soap_response.xml"), String(rawResp || ""), "utf8");
-      } catch {}
+      try { fs.writeFileSync(path.join(dbgDir, "last_soap_response.xml"), String(rawResp || ""), "utf8"); } catch {}
     }
 
-    try {
-      fs.writeFileSync(path.join(dbgDir, "last_batch.json"), JSON.stringify(out, null, 2), "utf8");
-    } catch {}
+    try { fs.writeFileSync(path.join(dbgDir, "last_batch.json"), JSON.stringify(out, null, 2), "utf8"); } catch {}
 
     return res.status(200).json({ ok:true, totalIntentados: out.length, resultados: out });
   } catch (err) {

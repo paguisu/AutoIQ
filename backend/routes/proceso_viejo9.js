@@ -105,6 +105,10 @@ async function loadAsegConfig(slug) {
   if (!j.base_url || !j.soap_path) throw new Error(`Config ${slug}: faltan base_url o soap_path`);
   const method = j.soap_method || j.SOAP_METHOD || 'AUTOS_Cotizar_PHP';
   let url = `${j.base_url.replace(/\/+$/, '')}${j.soap_path}`;
+  // ATM: algunas integraciones (NuSOAP) envían el POST a /soap?wsdl para métodos *_PHP.
+  if (String(method || '').endsWith('_PHP') && !url.toLowerCase().includes('?wsdl')) {
+    url = `${url}?wsdl`;
+  }
   const formato =
     (j.parametros_extras && j.parametros_extras.formato_fecha_request) ||
     process.env.ATM_DATE_FMT ||

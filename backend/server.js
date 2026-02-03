@@ -1,4 +1,6 @@
-﻿// backend/server.js
+﻿﻿// backend/server.js
+require('dotenv').config();
+
 const express = require('express');
 const multer = require('multer');
 const xlsx = require('xlsx');
@@ -95,7 +97,6 @@ function pickFile(filesArray, possibleNames) {
 
 // Upload (combinatorio / taxativo)
 app.post('/upload', upload.any(), async (req, res) => {
-  let mensaje = '<h2>Resultado de la carga</h2><ul>';
   const jsonResp = { mensajes: [], errores: [], descarga: null };
 
   try {
@@ -152,7 +153,7 @@ app.post('/upload', upload.any(), async (req, res) => {
           jsonResp.mensajes.push(`Se completaron auto ${completadosUso} "uso" y ${completadosTipo} "tipo_vehiculo".`);
         }
 
-        // Guardar archivo de vehículos ajustado (solo si completamos cosas)
+        // Guardar archivo de vehículos ajustado
         const wsVehNew = xlsx.utils.json_to_sheet(rowsVeh);
         const wbVehNew = xlsx.utils.book_new();
         xlsx.utils.book_append_sheet(wbVehNew, wsVehNew, 'Sheet1');
@@ -235,7 +236,6 @@ app.post('/upload', upload.any(), async (req, res) => {
     jsonResp.errores.push(`Error al procesar archivos: ${msg}`);
   }
 
-  // Devolver JSON (tu front ya entiende HTML o JSON)
   res.json(jsonResp);
 });
 
@@ -264,7 +264,6 @@ app.use('/proceso', procesoRouter);
 app.use('/cabeceras', cabecerasRouter);
 app.use('/aseguradoras', require('./routes/aseguradoras_params'));
 app.use('/preprocesado', require('./routes/preprocesado'));
-
 
 // Escucha
 if (require.main === module) {
