@@ -179,7 +179,7 @@ async function saveMetadata(id, patch) {
 
 async function getHistorialItem(historial_id) {
   const [rows] = await db.execute(
-    'SELECT id, nombre_archivo, ruta, fecha, cantidad_registros FROM historial_combinaciones WHERE id = ? LIMIT 1',
+    'SELECT id, nombre_archivo, ruta, ruta AS archivo, fecha, cantidad_registros FROM historial_combinaciones WHERE id = ? LIMIT 1',
     [Number(historial_id)]
   );
   if (!rows || rows.length === 0) return null;
@@ -701,8 +701,8 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
         const nombreCabecera = cabeceraCompat?.nombre || cabeceraCompat?.nombre_cabecera || cabeceraCompat?.nombre_publico || `Cabecera ${cabeceraIdCompat}`;
 
         const [ins] = await db.execute(
-          'INSERT INTO procesos_cotizacion (nombre, cabecera_id, estado, fecha_inicio) VALUES (?, ?, ?, NOW())',
-          [nombreProceso, cabeceraIdCompat, 'en curso']
+          'INSERT INTO procesos_cotizacion (nombre, nombre_cabecera, estado, fecha_inicio) VALUES (?, ?, ?, NOW())',
+          [nombreProceso, nombreCabecera, 'en curso']
         );
         proceso_id = ins.insertId;
 

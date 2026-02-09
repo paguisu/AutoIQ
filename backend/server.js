@@ -1,9 +1,14 @@
 ﻿﻿// backend/server.js
 
+const path = require('path');
+
+// ✅ Cargar .env desde la raíz del proyecto ANTES de importar el resto
+// antes require('dotenv').config({ path: path.join(__dirname, '../.env') });
+require('dotenv').config({ path: path.join(__dirname, '../.env'), override: true });
+
 const express = require('express');
 const multer = require('multer');
 const xlsx = require('xlsx');
-const path = require('path');
 const fs = require('fs');
 const validarColumnas = require('./utils/validarColumnas');
 const serveIndex = require('serve-index');
@@ -25,20 +30,16 @@ const cotizacionRouter = require('./routes/cotizacion');
 const procesoRouter = require('./routes/proceso');
 const cabecerasRouter = require('./routes/cabeceras'); // <— NUEVO
 
-require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middlewares básicos
 app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true }));
-// agrego alta de ruta sugira por Vera 29-oct
-app.use('/aseguradoras', require('./routes/aseguradoras'));
-
 
 // Asegurar carpetas necesarias
-const dirSubidos   = path.join(__dirname, '../data/archivos_subidos');
-const dirCombinados= path.join(__dirname, '../data/combinados');
+const dirSubidos = path.join(__dirname, '../data/archivos_subidos');
+const dirCombinados = path.join(__dirname, '../data/combinados');
 const dirDescargas = path.join(__dirname, '../frontend/descargas');
 [dirSubidos, dirCombinados, dirDescargas].forEach((d) => {
   if (!fs.existsSync(d)) fs.mkdirSync(d, { recursive: true });
@@ -55,8 +56,12 @@ const upload = multer({
   fileFilter: (req, file, cb) => {
     const ext = path.extname(file.originalname).toLowerCase();
     if (!extensionesValidas.includes(ext)) {
-      return cb(new multer.MulterError('LIMIT_UNEXPECTED_FILE',
-        `Extensión no permitida (${ext}). Solo .xlsx / .csv`));
+      return cb(
+        new multer.MulterError(
+          'LIMIT_UNEXPECTED_FILE',
+          `Extensión no permitida (${ext}). Solo .xlsx / .csv`
+        )
+      );
     }
     cb(null, true);
   },
@@ -103,7 +108,7 @@ app.post('/upload', upload.any(), async (req, res) => {
     const files = req.files || [];
 
     const fileVeh = pickFile(files, ['archivoVehiculos', 'archivoVehiculo', 'vehiculos', 'vehiculo']);
-    const fileCP  = pickFile(files, ['archivoCP', 'codigosPostales', 'codigoPostal', 'cp']);
+    const fileCP = pickFile(files, ['archivoCP', 'codigosPostales', 'codigoPostal', 'cp']);
     const fileUnico = pickFile(files, ['archivoUnico', 'taxativo']);
 
     // Flujo combinatorio (2 archivos)
@@ -126,31 +131,45 @@ app.post('/upload', upload.any(), async (req, res) => {
       if (!cpHojaNombre) throw new Error('El archivo de códigos postales no contiene hojas con datos');
 
       let rowsVeh = xlsx.utils.sheet_to_json(wbVeh.Sheets[vehHojaNombre], { defval: '' });
-      const rowsCP  = xlsx.utils.sheet_to_json(wbCP.Sheets[cpHojaNombre], { defval: '' });
+      const rowsCP = xlsx.utils.sheet_to_json(wbCP.Sheets[cpHojaNombre], { defval: '' });
 
       let completadosUso = 0;
       let completadosTipo = 0;
       rowsVeh = rowsVeh.map((row) => {
         const r = { ...row };
-        if (r.uso == null || r.uso === '') { r.uso = 'Particular'; completadosUso++; }
-        if (r.tipo_vehiculo == null || r.tipo_vehiculo === '') { r.tipo_vehiculo = 'Sedán'; completadosTipo++; }
+        if (r.uso == null || r.uso === '') {
+          r.uso = 'Particular';
+          completadosUso++;
+        }
+        if (r.tipo_vehiculo == null || r.tipo_vehiculo === '') {
+          r.tipo_vehiculo = 'Sedán';
+          completadosTipo++;
+        }
         return r;
       });
 
       const columnasVeh = Object.keys(rowsVeh[0] || {});
-      const columnasCP  = Object.keys(rowsCP[0] || {});
+      const columnasCP = Object.keys(rowsCP[0] || {});
       const faltanVeh = validarColumnas('combinatoriaVehiculos', columnasVeh);
-      const faltanCP  = validarColumnas('combinatoriaCP', columnasCP);
+      const faltanCP = validarColumnas('combinatoriaCP', columnasCP);
 
-      jsonResp.mensajes.push(`Columnas detectadas Vehículos: ${columnasVeh.join(', ') || '(ninguna)'}`);
-      jsonResp.mensajes.push(`Columnas detectadas Códigos Postales: ${columnasCP.join(', ') || '(ninguna)'}`);
+      jsonResp.mensajes.push(
+        `Columnas detectadas Vehículos: ${columnasVeh.join(', ') || '(ninguna)'}`
+      );
+      jsonResp.mensajes.push(
+        `Columnas detectadas Códigos Postales: ${columnasCP.join(', ') || '(ninguna)'}`
+      );
 
       if (faltanVeh.length > 0 || faltanCP.length > 0) {
-        if (faltanVeh.length > 0) jsonResp.errores.push(`Faltan columnas Vehículos: ${faltanVeh.join(', ')}`);
-        if (faltanCP.length > 0) jsonResp.errores.push(`Faltan columnas Códigos postales: ${faltanCP.join(', ')}`);
+        if (faltanVeh.length > 0)
+          jsonResp.errores.push(`Faltan columnas Vehículos: ${faltanVeh.join(', ')}`);
+        if (faltanCP.length > 0)
+          jsonResp.errores.push(`Faltan columnas Códigos postales: ${faltanCP.join(', ')}`);
       } else {
         if (completadosUso > 0 || completadosTipo > 0) {
-          jsonResp.mensajes.push(`Se completaron auto ${completadosUso} "uso" y ${completadosTipo} "tipo_vehiculo".`);
+          jsonResp.mensajes.push(
+            `Se completaron auto ${completadosUso} "uso" y ${completadosTipo} "tipo_vehiculo".`
+          );
         }
 
         // Guardar archivo de vehículos ajustado
@@ -161,8 +180,8 @@ app.post('/upload', upload.any(), async (req, res) => {
         xlsx.writeFile(wbVehNew, vehPathFinal);
 
         const nombreArchivo = `combinado-${Date.now()}.xlsx`;
-        const rutaDestino   = path.join(dirCombinados, nombreArchivo);
-        const rutaPublica   = path.join(dirDescargas, nombreArchivo);
+        const rutaDestino = path.join(dirCombinados, nombreArchivo);
+        const rutaPublica = path.join(dirDescargas, nombreArchivo);
 
         const totalCombinaciones = combinarArchivos(vehPathFinal, fileCP.path, rutaDestino);
         fs.copyFileSync(rutaDestino, rutaPublica);
@@ -182,7 +201,7 @@ app.post('/upload', upload.any(), async (req, res) => {
         }
       }
 
-    // Flujo taxativo (1 archivo)
+      // Flujo taxativo (1 archivo)
     } else if (fileUnico) {
       const wb = xlsx.readFile(fileUnico.path);
       const hoja =
@@ -200,8 +219,8 @@ app.post('/upload', upload.any(), async (req, res) => {
         jsonResp.errores.push(`Faltan columnas requeridas (taxativo): ${faltan.join(', ')}`);
       } else {
         const nombreArchivo = `taxativo-${Date.now()}.xlsx`;
-        const rutaDestino   = path.join(dirCombinados, nombreArchivo);
-        const rutaPublica   = path.join(dirDescargas, nombreArchivo);
+        const rutaDestino = path.join(dirCombinados, nombreArchivo);
+        const rutaPublica = path.join(dirDescargas, nombreArchivo);
 
         const ws = xlsx.utils.json_to_sheet(rows);
         const wbOut = xlsx.utils.book_new();
@@ -224,7 +243,6 @@ app.post('/upload', upload.any(), async (req, res) => {
         jsonResp.mensajes.push(`Archivo válido para modo taxativo con ${rows.length} registros.`);
         jsonResp.descarga = `/descargas/${nombreArchivo}`;
       }
-
     } else {
       jsonResp.errores.push('No se detectaron archivos válidos o faltan campos requeridos.');
     }
@@ -254,7 +272,7 @@ app.get('/historial', async (req, res) => {
 
 // Health
 app.get('/health', (req, res) => {
-  res.status(200).json({ status: "ok" });
+  res.status(200).json({ status: 'ok' });
 });
 
 // Montaje de routers
@@ -262,7 +280,11 @@ app.use('/atm', atmRouter);
 app.use('/cotizacion', cotizacionRouter);
 app.use('/proceso', procesoRouter);
 app.use('/cabeceras', cabecerasRouter);
+
+// ✅ Dejar una sola fuente de /aseguradoras (evita doble mount)
+// app.use('/aseguradoras', require('./routes/aseguradoras'));
 app.use('/aseguradoras', require('./routes/aseguradoras_params'));
+
 app.use('/preprocesado', require('./routes/preprocesado'));
 
 // Escucha
