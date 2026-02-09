@@ -748,6 +748,8 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
 
       meta = {
         id: proceso_id,
+        nombre: `ATM - UI (histórico ${historial_id})`,
+        nombre_cabecera: cabeceraCompat?.nombre || cabeceraCompat?.nombre_cabecera || cabeceraCompat?.nombre_publico || `Cabecera ${cabeceraIdCompat}`,
         historial_id,
         archivo,
         fecha: new Date().toISOString(),
@@ -795,6 +797,7 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
       registros_procesados: 0,
       cotizaciones_exitosas: 0,
       cotizaciones_con_error: 0,
+      cotizaciones_skipped: 0,
     });
 
     ensureDir(procesoDir(proceso_id));
@@ -827,6 +830,7 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
         registros_procesados: 0,
         cotizaciones_exitosas: 0,
         cotizaciones_con_error: 0,
+        cotizaciones_skipped: 0,
       });
 
       return res.status(400).json({
@@ -844,6 +848,7 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
     const resultadosPorAseg = {};
     let totalOk = 0;
     let totalErr = 0;
+    let totalSkipped = 0;
 
     // Guardar “run header”
     safeWriteJson(path.join(procesoDir(proceso_id), 'run.json'), {
@@ -904,8 +909,13 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
           ...resp,
         });
 
-        if (resp.ok) totalOk++;
-        else totalErr++;
+        if (resp && resp.skipped) {
+          totalSkipped++;
+        } else if (resp && resp.ok) {
+          totalOk++;
+        } else {
+          totalErr++;
+        }
 
         // evidencia “resumen” por fila (rápido de leer)
         safeWriteJson(path.join(evidenciasDir(proceso_id, slug, i), 'atm-result.json'), {
@@ -920,6 +930,7 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
           registros_procesados: i + 1,
           cotizaciones_exitosas: totalOk,
           cotizaciones_con_error: totalErr,
+          cotizaciones_skipped: totalSkipped,
         });
       }
 
@@ -965,6 +976,7 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
       registros_procesados: tomar,
       cotizaciones_exitosas: totalOk,
       cotizaciones_con_error: totalErr,
+      cotizaciones_skipped: totalSkipped,
     });
 
     // Persistir estado final en DB (para la tabla de "Procesos de Cotización")
@@ -988,6 +1000,7 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
       total_filas_intentadas: tomar,
       cotizaciones_exitosas: totalOk,
       cotizaciones_con_error: totalErr,
+      cotizaciones_skipped: totalSkipped,
     });
 
     return res.status(200).json({
@@ -999,6 +1012,7 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
       total_filas_intentadas: tomar,
       cotizaciones_exitosas: totalOk,
       cotizaciones_con_error: totalErr,
+      cotizaciones_skipped: totalSkipped,
       carpeta: `data/procesos/proceso-${proceso_id}/`,
       resumen,
     });
@@ -1042,18 +1056,35 @@ router.get('/listar', async (req, res) => {
         historial_id: meta.historial_id || null,
         archivo: meta.archivo || null,
         cabecera_id: meta.cabecera_id || null,
+        nombre_cabecera: meta.nombre_cabecera || null,
         aseguradoras: meta.aseguradoras || [],
         limite: meta.limite || null,
         registros_total: meta.registros_total ?? null,
         registros_procesados: meta.registros_procesados ?? 0,
         cotizaciones_exitosas: meta.cotizaciones_exitosas ?? 0,
         cotizaciones_con_error: meta.cotizaciones_con_error ?? 0,
+        cotizaciones_skipped: meta.cotizaciones_skipped ?? 0,
         carpeta: `data/procesos/proceso-${meta.id}/`,
       });
     }
 
+    // Orden: más nuevo primero
     items.sort((a, b) => b.id - a.id);
-    res.json({ ok: true, total: items.length, items });
+
+    // Filtros (compat UI): estado + paginado (limit/offset)
+    const qEstado = (req.query?.estado || '').toString().trim().toLowerCase();
+    const limit = Math.max(1, Math.min(Number(req.query?.limit || 50), 200));
+    const offset = Math.max(0, Number(req.query?.offset || 0));
+
+    let filtered = items;
+    if (qEstado) {
+      filtered = filtered.filter((x) => String(x.estado || '').toLowerCase() === qEstado);
+    }
+
+    const total = filtered.length;
+    const paged = filtered.slice(offset, offset + limit);
+
+    res.json({ ok: true, total, items: paged });
   } catch (err) {
     res.status(500).json({ ok: false, error: err.message || String(err) });
   }

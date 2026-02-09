@@ -78,112 +78,44 @@
   <!-- ====== TAB: Cabecera ====== -->
   <div id="cabecera" class="tab-content">
     <h2>Datos del Asegurado</h2>
-
-    <div class="form-group">
-      <label>Cabecera activa</label>
-      <div id="cabeceraActivaInfo" class="muted">Sin cabecera activa</div>
-    </div>
-
-    <div class="form-group">
-      <label>Elegir una cabecera existente</label>
-      <div class="row-inline">
-        <select id="cabeceraSelector">
-          <option value="">(sin seleccionar)</option>
-        </select>
-        <button type="button" id="btnCargarCabecera">Cargar en formulario</button>
-      </div>
-      <div class="muted" style="margin-top:6px;">
-        Si elegís una cabecera y no cambiás nada, al guardar se activa esa misma. Si cambiás algo, se guarda como nueva y se activa la nueva.
-      </div>
-    </div>
-
     <form id="formCabecera">
       <div class="form-group">
-        <label>Nombre de la Cotización (editable)</label>
-        <input type="text" name="nombreCotizacion" id="nombreCotizacion" />
-        <div class="muted" style="margin-top:6px;">
-          Sugerencia automática: Género + Edad + (solo desvíos de default: GNC / Comercial / Rastreo) + YYYYMM.
-        </div>
+        <label>Nombre de la Cotización</label>
+        <input type="text" name="nombreCotizacion" />
       </div>
-
       <div class="form-group">
         <label>Edad</label>
-        <input type="number" name="edad" id="edad" min="0" />
+        <input type="number" name="edad" id="edad" />
       </div>
-
       <div class="form-group">
         <label>Fecha de Nacimiento</label>
         <input type="date" name="fechaNacimiento" id="fechaNacimiento" readonly />
       </div>
-
       <div class="form-group">
         <label>Género</label>
-        <select name="genero" id="genero">
+        <select name="genero">
           <option value="Masculino">Masculino</option>
           <option value="Femenino">Femenino</option>
         </select>
       </div>
-
       <div class="form-group">
         <label>Estado Civil</label>
-        <select name="estadoCivil" id="estadoCivil">
+        <select name="estadoCivil">
           <option value="Soltero">Soltero</option>
           <option value="Casado">Casado</option>
         </select>
       </div>
-
       <div class="form-group">
         <label>Medio de Pago</label>
-        <select name="medioPago" id="medioPago">
-          <option value="TC">Débito en Tarjeta</option>
-          <option value="DC">Débito en Cuenta</option>
-          <option value="PF">Pago Fácil</option>
+        <select name="medioPago">
+          <option value="Debito Tarjeta">Debito en Tarjeta</option>
+          <option value="Debito Cuenta">Debito en Cuenta</option>
+          <option value="Pago Facil">Pago Fácil</option>
         </select>
       </div>
-
-      <hr />
-
-      <h3>Datos adicionales</h3>
-
-      <div class="form-group">
-        <label>Uso</label>
-        <select name="uso" id="uso">
-          <option value="Particular" selected>Particular</option>
-          <option value="Comercial">Comercial</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>Rastreador</label>
-        <select name="rastreador" id="rastreador">
-          <option value="Sin" selected>Sin</option>
-          <option value="Con">Con</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>Equipo GNC</label>
-        <select name="gnc" id="gnc">
-          <option value="Sin" selected>Sin</option>
-          <option value="Con">Con</option>
-        </select>
-      </div>
-
-      <div class="form-group" id="gncSumaGroup" style="display:none;">
-        <label>Suma asegurada GNC (ARS, sin decimales)</label>
-        <input type="number" name="gncSuma" id="gncSuma" min="0" step="1" placeholder="Ej: 500000" />
-      </div>
-
-      <hr />
-
-      <h3>Aseguradoras (selector independiente)</h3>
-      <div class="muted" style="margin-bottom:6px;">
-        Se guarda como preferencia para ejecutar procesos (no modifica la cabecera).
-      </div>
-      <div id="aseguradorasBox" class="form-group"></div>
-
-      <input type="submit" value="Guardar / Activar" />
+      <input type="submit" value="Guardar Cabecera" />
     </form>
+    <div id="cabeceraActivaInfo" class="muted" style="margin-top:6px;"></div>
   </div>
 
   <!-- ====== TAB: Histórico ====== -->
@@ -266,7 +198,6 @@
         document.getElementById(tabId).classList.add("active");
         if (tabId === "historico") cargarHistorico();
         if (tabId === "procesos") proc_cargar();  // auto-carga al entrar
-        if (tabId === "cabecera") initCabeceraTab();
       });
     });
 
@@ -358,287 +289,44 @@
       }
     });
 
-    /* ====== Cabecera (listar desde backend, cargar, sugerir nombre, activar o crear-copia) ====== */
-    const LS = {
-      cabeceraActivaId: 'cabecera_id_activa',
-      cabeceraActivaNom: 'cabecera_nombre_activa',
-      aseguradorasSel: 'aseguradoras_seleccionadas'
-    };
-
-    let cabecerasCache = [];
-    let cabeceraSeleccionada = null;
-    let snapshotAntes = null;
-    let nombreTocado = false;
-
-    function renderCabeceraActivaBanner(){
+    /* ====== Guardar Cabecera (NUEVO: ahora persiste en backend y queda activa) ====== */
+    (function initCabeceraActivaBanner(){
       const info = document.getElementById('cabeceraActivaInfo');
-      const id = Number(localStorage.getItem(LS.cabeceraActivaId) || '0');
-      const nom = localStorage.getItem(LS.cabeceraActivaNom) || '';
+      const id = Number(localStorage.getItem('cabecera_id_activa') || '0');
+      const nom = localStorage.getItem('cabecera_nombre_activa') || '';
       info.innerHTML = id ? `Cabecera activa: <b>${nom || ('ID ' + id)}</b> (ID ${id})` : 'Sin cabecera activa';
-    }
+    })();
 
-    function escapeHtml(str){
-      return String(str)
-        .replaceAll('&','&amp;')
-        .replaceAll('<','&lt;')
-        .replaceAll('>','&gt;')
-        .replaceAll('"','&quot;')
-        .replaceAll("'",'&#39;');
-    }
-
-    function getYYYYMM(){
-      const d = new Date();
-      const y = d.getFullYear();
-      const m = String(d.getMonth()+1).padStart(2,'0');
-      return `${y}${m}`;
-    }
-
-    function buildSuggestedName(){
-      const genero = document.getElementById('genero').value;
-      const edad = (document.getElementById('edad').value || '').toString().trim();
-      const uso = document.getElementById('uso').value;
-      const rastreador = document.getElementById('rastreador').value;
-      const gnc = document.getElementById('gnc').value;
-
-      const pref = (genero === 'Femenino') ? 'Muj' : 'Hom';
-      const parts = [pref];
-      if(edad) parts.push(edad);
-
-      // Solo variables no default
-      if(gnc === 'Con') parts.push('GNC');
-      if(uso === 'Comercial') parts.push('Comer');
-      if(rastreador === 'Con') parts.push('Rastreo');
-
-      parts.push(getYYYYMM());
-      return parts.join('-');
-    }
-
-    function refreshNombreSugerido(){
-      if(nombreTocado) return;
-      const el = document.getElementById('nombreCotizacion');
-      el.value = buildSuggestedName();
-    }
-
-    function showGncSuma(){
-      const gnc = document.getElementById('gnc').value;
-      const grp = document.getElementById('gncSumaGroup');
-      grp.style.display = (gnc === 'Con') ? 'block' : 'none';
-      if(gnc !== 'Con'){
-        document.getElementById('gncSuma').value = '';
-      }
-    }
-
-    async function fetchCabecerasList(){
-      const resp = await fetch('/cabeceras/listar');
-      const data = await resp.json();
-      // compat: si devuelve array directo o {ok:true,items}
-      let items = [];
-      if(Array.isArray(data)) items = data;
-      else if(data && Array.isArray(data.items)) items = data.items;
-      cabecerasCache = items;
-      return items;
-    }
-
-    function fillCabeceraSelector(items){
-      const sel = document.getElementById('cabeceraSelector');
-      const activeId = Number(localStorage.getItem(LS.cabeceraActivaId) || '0');
-      sel.innerHTML = `<option value="">(sin seleccionar)</option>` + items.map(c=>{
-        const tag = (Number(c.id) === activeId) ? ' (activa)' : '';
-        return `<option value="${c.id}">${c.id} — ${escapeHtml(c.nombre || ('Cabecera '+c.id))}${tag}</option>`;
-      }).join('');
-    }
-
-    function setFormFromCabecera(c){
-      document.getElementById('nombreCotizacion').value = c.nombre || '';
-      nombreTocado = false;
-
-      // fec_nac yyyymmdd -> yyyy-mm-dd
-      if(c.fec_nac && /^\d{8}$/.test(String(c.fec_nac))){
-        const y = String(c.fec_nac).slice(0,4);
-        const m = String(c.fec_nac).slice(4,6);
-        const d = String(c.fec_nac).slice(6,8);
-        document.getElementById('fechaNacimiento').value = `${y}-${m}-${d}`;
-      } else {
-        document.getElementById('fechaNacimiento').value = '';
-      }
-
-      // Edad calculada
-      const fn = document.getElementById('fechaNacimiento').value;
-      if(fn){
-        const birth = new Date(fn);
-        const today = new Date();
-        let age = today.getFullYear() - birth.getFullYear();
-        const md = today.getMonth() - birth.getMonth();
-        if(md < 0 || (md === 0 && today.getDate() < birth.getDate())) age--;
-        document.getElementById('edad').value = isNaN(age) ? '' : String(age);
-      } else {
-        document.getElementById('edad').value = '';
-      }
-
-      document.getElementById('genero').value = (String(c.sexo || '').toUpperCase() === 'F') ? 'Femenino' : 'Masculino';
-      document.getElementById('estadoCivil').value = c.est_civil || 'Soltero';
-      document.getElementById('medioPago').value = c.medio_pago || 'TC';
-
-      // Defaults ATM ya existentes
-      document.getElementById('uso').value = (String(c.tipo_uso) === '2') ? 'Comercial' : 'Particular';
-      document.getElementById('rastreador').value = (String(c.rastreo) === '1') ? 'Con' : 'Sin';
-      document.getElementById('gnc').value = (String(c.gnc) === '1') ? 'Con' : 'Sin';
-      document.getElementById('gncSuma').value = c.suma_gnc || '';
-      showGncSuma();
-
-      snapshotAntes = snapshotForm();
-    }
-
-    function readFormValues(){
-      const nombre = (document.getElementById('nombreCotizacion').value || '').trim();
-      const edad = (document.getElementById('edad').value || '').trim();
-      const fec = (document.getElementById('fechaNacimiento').value || '').trim();
-      const genero = document.getElementById('genero').value;
-      const estCivil = document.getElementById('estadoCivil').value;
-      const medioPago = document.getElementById('medioPago').value;
-
-      const uso = document.getElementById('uso').value;
-      const rastreador = document.getElementById('rastreador').value;
-      const gnc = document.getElementById('gnc').value;
-      const sumaGnc = (document.getElementById('gncSuma').value || '').trim();
-
-      return { nombre, edad, fec, genero, estCivil, medioPago, uso, rastreador, gnc, sumaGnc };
-    }
-
-    function snapshotForm(){
-      return JSON.stringify(readFormValues());
-    }
-
-    async function initCabeceraTab(){
-      renderCabeceraActivaBanner();
-      try{
-        const items = await fetchCabecerasList();
-        fillCabeceraSelector(items);
-      }catch(err){
-        console.error('No se pudo listar cabeceras', err);
-      }
-
-      try{ await loadAseguradorasUI(); } catch(e){
-        console.error(e);
-        const box = document.getElementById('aseguradorasBox');
-        if(box) box.innerHTML = '<div class="muted">No se pudieron cargar aseguradoras (ver backend/DB).</div>';
-      }
-
-      // Si no hay selección ni nombre, tiramos sugerencia por default
-      if(!(document.getElementById('nombreCotizacion').value || '').trim()){
-        refreshNombreSugerido();
-      }
-      showGncSuma();
-    }
-
-    document.getElementById('btnCargarCabecera').addEventListener('click', ()=>{
-      const id = Number(document.getElementById('cabeceraSelector').value || '0');
-      if(!id){ alert('Seleccioná una cabecera.'); return; }
-      const cab = cabecerasCache.find(x => Number(x.id) === id);
-      if(!cab){ alert('No se encontró la cabecera seleccionada.'); return; }
-      cabeceraSeleccionada = cab;
-      setFormFromCabecera(cab);
-      alert(`Cabecera ${id} cargada en el formulario.`);
-    });
-
-    // Cálculo cruzado Edad -> Fecha nacimiento
-    document.getElementById("edad").addEventListener("input", function () {
-      const edad = parseInt(this.value);
-      if (!isNaN(edad)) {
-        const hoy = new Date();
-        const nacimiento = new Date(hoy.getFullYear() - edad, hoy.getMonth(), hoy.getDate());
-        document.getElementById("fechaNacimiento").value = nacimiento.toISOString().split('T')[0];
-      }
-      if(!nombreTocado) refreshNombreSugerido();
-      snapshotAntes = snapshotAntes ?? snapshotForm();
-    });
-
-    document.getElementById('nombreCotizacion').addEventListener('input', ()=>{
-      nombreTocado = true;
-    });
-
-    ['genero','uso','rastreador','gnc'].forEach(id=>{
-      const el = document.getElementById(id);
-      el.addEventListener('change', ()=>{
-        if(!nombreTocado) refreshNombreSugerido();
-        if(id === 'gnc') showGncSuma();
-      });
-    });
-
-    // Guardar / Activar
     document.getElementById("formCabecera").addEventListener("submit", async function (e) {
       e.preventDefault();
-      const v = readFormValues();
+      const fd = new FormData(this);
 
-      const fec_nac = v.fec ? v.fec.replaceAll('-','') : '';
-      const sexo = (v.genero === 'Femenino') ? 'F' : 'M';
-      const tipo_uso = (v.uso === 'Comercial') ? '2' : '1';
-      const rastreo = (v.rastreador === 'Con') ? '1' : '0';
-      const gnc = (v.gnc === 'Con') ? '1' : '0';
-
-      const snapAhora = snapshotForm();
-      const huboCambios = (snapshotAntes != null) ? (snapshotAntes !== snapAhora) : true;
-
-      // Si hay cabecera seleccionada y NO hubo cambios: activar esa y listo
-      if(cabeceraSeleccionada && !huboCambios){
-        localStorage.setItem(LS.cabeceraActivaId, String(cabeceraSeleccionada.id));
-        localStorage.setItem(LS.cabeceraActivaNom, cabeceraSeleccionada.nombre || '');
-        renderCabeceraActivaBanner();
-        alert(`Cabecera activada (ID ${cabeceraSeleccionada.id}).`);
-        return;
-      }
-
-      // Crear nueva (nueva o copia)
-      let nombreFinal = (v.nombre || '').trim();
-      const names = new Set((cabecerasCache||[]).map(x => (x.nombre||'').toLowerCase()));
-
-      if(!nombreTocado){
-        nombreFinal = buildSuggestedName();
-        if(names.has(nombreFinal.toLowerCase())){
-          let n = 1;
-          while(names.has((nombreFinal + '-' + n).toLowerCase())) n++;
-          nombreFinal = nombreFinal + '-' + n;
-        }
-        document.getElementById('nombreCotizacion').value = nombreFinal;
-      } else if(cabeceraSeleccionada && nombreFinal === (cabeceraSeleccionada.nombre || '').trim()){
-        // Copia con el mismo nombre -> suffix (1..n)
-        const base = nombreFinal || 'Cabecera';
-        let n = 1;
-        let cand = `${base} (${n})`;
-        while(names.has(cand.toLowerCase())) { n++; cand = `${base} (${n})`; }
-        nombreFinal = cand;
-        document.getElementById('nombreCotizacion').value = nombreFinal;
-      }
-
+      // Mapeo mínimo a los campos que definimos en /cabeceras/crear
       const payload = {
-        nombre: nombreFinal || 'Cabecera sin nombre',
-        tipopersona: 'F',
-        iva: 'CF',
-        tipodoc: 'DNI',
-        medio_pago: v.medioPago || 'TC',
-        nrodoc: '',
-        apellido: '',
+        nombre:      fd.get('nombreCotizacion') || 'Cabecera',
+        tipopersona: 'F', // tu UI tiene "género" y "estado civil"; acá sólo guardamos lo necesario para ATM
+        iva:         'CF',
+        tipodoc:     'DNI',
+        nrodoc:      '',            // si después agregás inputs, se mapearán acá
+        apellido:    '',
         nombre_aseg: '',
-        sexo,
-        fec_nac,
-        est_civil: v.estCivil || '',
-        provincia: '',
-        localidad: '',
-        calle: '',
-        altura: '',
-        cp: '',
-        sub_cp: '',
-        tel_part: '',
-        tel_cel: '',
-        mail: '',
-        seccion: '3',
-        plan: '',
-        contacto_tecnico: '',
-        contacto_comercial: '',
-        tipo_uso,
-        rastreo,
-        gnc,
-        suma_gnc: (gnc === '1') ? (v.sumaGnc || '') : ''
+        sexo:        (fd.get('genero') === 'Femenino') ? 'F' : 'M',
+        est_civil:   fd.get('estadoCivil') || '',
+        fec_nac:     (fd.get('fechaNacimiento') || '').toString().replace(/-/g,''), // yyyymmdd
+        ajuste:      '',
+        rastreo:     '',
+        alarma:      '',
+        seccion:     '3',
+        plan:        '',
+        provincia:   '',
+        localidad:   '',
+        calle:       '',
+        altura:      '',
+        cp:          '',
+        sub_cp:      '',
+        tel_part:    '',
+        tel_cel:     '',
+        mail:        ''
       };
 
       try{
@@ -649,68 +337,17 @@
         });
         const data = await resp.json();
         if(!resp.ok || !data.ok) throw new Error(data.error || ('HTTP '+resp.status));
-
-        localStorage.setItem(LS.cabeceraActivaId, String(data.cabecera.id));
-        localStorage.setItem(LS.cabeceraActivaNom, data.cabecera.nombre || '');
-        renderCabeceraActivaBanner();
-
-        const items = await fetchCabecerasList();
-        fillCabeceraSelector(items);
-
-        cabeceraSeleccionada = data.cabecera;
-        setFormFromCabecera(data.cabecera);
-
+        localStorage.setItem('cabecera_id_activa', String(data.cabecera.id));
+        localStorage.setItem('cabecera_nombre_activa', data.cabecera.nombre || '');
+        const info = document.getElementById('cabeceraActivaInfo');
+        info.innerHTML = `Cabecera activa: <b>${data.cabecera.nombre || ('ID '+data.cabecera.id)}</b> (ID ${data.cabecera.id})`;
         alert(`Cabecera guardada y activada (ID ${data.cabecera.id}).`);
       }catch(err){
         alert('No se pudo guardar la cabecera: ' + (err.message || err));
       }
     });
 
-    async function loadAseguradorasUI(){
-      const box = document.getElementById('aseguradorasBox');
-      box.innerHTML = 'Cargando aseguradoras…';
-      const resp = await fetch('/proceso/aseguradoras-disponibles');
-      const data = await resp.json();
-      if(!resp.ok || !data.ok) throw new Error(data.error || ('HTTP '+resp.status));
-            const items = Array.isArray(data.items) ? data.items : [];
-      const activas = items; // viene desde /data/<slug>/aseguradora.json
-
-      const selRaw = localStorage.getItem(LS.aseguradorasSel) || '[]';
-      let sel = [];
-      try { sel = JSON.parse(selRaw); } catch { sel = []; }
-      if(!Array.isArray(sel)) sel = [];
-
-      if(activas.length === 0){
-        box.innerHTML = '<div class="muted">No hay aseguradoras activas para mostrar.</div>';
-        return;
-      }
-
-      box.innerHTML = activas.map(a=>{
-        const checked = sel.includes(a.slug) ? 'checked' : '';
-        return `
-          <label style="display:block; font-weight:normal; margin:6px 0;">
-            <input type="checkbox" class="asegChk" value="${a.slug}" ${checked} style="width:auto; margin-right:8px;" />
-            ${escapeHtml(a.nombre_publico || ('Aseguradora '+a.id))}
-          </label>
-        `;
-      }).join('');
-
-      box.querySelectorAll('.asegChk').forEach(chk=>{
-        chk.addEventListener('change', ()=>{
-          const ids = Array.from(box.querySelectorAll('.asegChk'))
-            .filter(x => x.checked)
-            .map(x => String(x.value));
-          localStorage.setItem(LS.aseguradorasSel, JSON.stringify(ids));
-        });
-      });
-    }
-
-    // Inicialización
-    (function bootCabecera(){
-      try { initCabeceraTab(); } catch(e){ console.error(e); }
-    })();
-
-/* ====== PROCESOS (clonado/adaptado de procesos.html) ====== */
+    /* ====== PROCESOS (clonado/adaptado de procesos.html) ====== */
     const procEstadoEl = document.getElementById('proc-estado');
     const procLimitEl  = document.getElementById('proc-limit');
     const procBtn      = document.getElementById('proc-buscar');
@@ -848,10 +485,7 @@
         let data = {};
         try { data = JSON.parse(text); } catch { throw new Error(text); }
         if(!resp.ok || !data.ok){ throw new Error(data.error || `HTTP ${resp.status}`); }
-        const procesoId = data.proceso_id ?? data.historial_id ?? data.id ?? data.proceso;
-        const intentados = data.total_filas_intentadas ?? data.total_intentadas ?? data.intentados ?? data.total ?? limite;
-        const carpeta = data.carpeta ?? (procesoId ? `data/procesos/proceso-${procesoId}/` : '');
-        alert(`Proceso ${procesoId} OK con cabecera ${data.cabecera_id}. Intentados: ${intentados}. Revisá /${carpeta}`);
+        alert(`Proceso ${data.proceso} OK con cabecera ${data.cabecera_id}. Intentados: ${data.total}. Revisá /data/procesos/${data.proceso}/`);
       }catch(e){
         alert('Fallo al ejecutar: ' + (e.message || e));
       }
