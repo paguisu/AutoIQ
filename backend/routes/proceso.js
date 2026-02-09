@@ -126,7 +126,7 @@ async function loadAsegConfig(slug) {
 // ===== Fallbacks menores =====
 function inferSeccionVehiculo(fila) {
   const join = Object.values(fila || {}).join(' ').toLowerCase();
-  if (/\bmoto(s)?\b/.test(join)) return '4';
+  if (/\bmoto(s)?\b/.test(join)) return '1';
   return '3';
 }
 
@@ -337,6 +337,31 @@ async function cotizarFila({
     inferSeccionVehiculo(fila) ||
     (Aseg.seccion_default && String(Aseg.seccion_default).trim()) ||
     '3';
+
+  // Bypass motos: por ahora NO se envían al WS de autos (AUTOS_Cotizar_PHP).
+  // Se detecta por: seccion=1, texto tipo_vehiculo, o regla InfoAuto >= 8000000.
+  const tipoVehTxt = pick([fila?.tipo_vehiculo, fila?.TipoVehiculo, fila?.tipoVehiculo]);
+  const tipoVehNorm = (tipoVehTxt || '').toString().toLowerCase();
+  const codiaNum = Number.parseInt(String(codia || '').replace(/\D+/g, ''), 10);
+  const esMoto =
+    String(seccion) === '1' ||
+    (Number.isFinite(codiaNum) && codiaNum >= 8000000) ||
+    tipoVehNorm.includes('moto') ||
+    tipoVehNorm.includes('scooter');
+
+  if (slug === 'atm' && String(SOAP_METHOD) === 'AUTOS_Cotizar_PHP' && esMoto) {
+    const outSkip = {
+      ok: true,
+      skipped: true,
+      reason: 'Moto: se omite WS AUTOS_Cotizar_PHP',
+      operacion: 'SKIP_MOTO',
+      coberturas: [],
+      raw: '',
+      used: { seccion, cod_infoauto: codia, soap_method: SOAP_METHOD }
+    };
+    if (evDir) safeWriteJson(path.join(evDir, 'atm-skip.json'), outSkip);
+    return outSkip;
+  }
 
   const cerokm = cabecera?.cerokm === '1' ? '1' : '0';
   const tipo_uso = ['1', '2'].includes(String(cabecera?.tipo_uso || ''))

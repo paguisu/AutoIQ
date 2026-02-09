@@ -47,6 +47,15 @@ function completarYMapear({ fila, cabecera, dicc }) {
   }
 
   // completar tipo_vehiculo
+  // regla motos por InfoAuto: >= 8000000 => Moto (no depende de diccionarios)
+  // Nota: se aplica antes de tomar cabecera para evitar que una cabecera de auto "pise" una moto.
+  const codiaRaw = out?.infoautocod ?? out?.tau_codia ?? out?.codigo_infoauto ?? out?.cod_infoauto ?? out?.codigoInfoauto ?? out?.CodigoInfoauto ?? out?.InfoAutoCod ?? out?.infoauto;
+  const codiaNum = Number.parseInt(String(codiaRaw ?? '').replace(/\D+/g, ''), 10);
+  if (Number.isFinite(codiaNum) && codiaNum >= 8000000) {
+    out.tipo_vehiculo = 'Moto';
+    fuentes.tipo_vehiculo = 'regla_infoauto';
+  }
+
   if (!out.tipo_vehiculo || norm(out.tipo_vehiculo) === 'null') {
     if (cabecera?.tipo_vehiculo) {
       out.tipo_vehiculo = cabecera.tipo_vehiculo;
