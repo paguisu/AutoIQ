@@ -168,11 +168,12 @@
               <th class="nowrap">Registros</th>
               <th class="nowrap">Exitosas</th>
               <th class="nowrap">Con error</th>
+              <th class="nowrap">Skipped</th>
               <th>Acciones</th>
             </tr>
           </thead>
           <tbody id="proc-tbody">
-            <tr><td colspan="10" class="muted">Cargá para ver resultados…</td></tr>
+            <tr><td colspan="11" class="muted">Cargá para ver resultados…</td></tr>
           </tbody>
         </table>
       </div>
@@ -382,7 +383,7 @@
       prevBtn.disabled = true;
       nextBtn.disabled = true;
       procMeta.textContent = 'Cargando…';
-      procTbody.innerHTML = `<tr><td colspan="10" class="muted">Cargando…</td></tr>`;
+      procTbody.innerHTML = `<tr><td colspan="11" class="muted">Cargando…</td></tr>`;
 
       try {
         const resp = await fetch(`/cotizacion/listar?${params.toString()}`);
@@ -394,8 +395,19 @@
         procTotal = data.total ?? 0;
         const items = Array.isArray(data.items) ? data.items : [];
 
+        // Ordenar por fecha_inicio DESC (más recientes primero). Fallback: id DESC.
+        items.sort((a, b) => {
+          const ta = Date.parse(a?.fecha_inicio || a?.fechaInicio || '') || 0;
+          const tb = Date.parse(b?.fecha_inicio || b?.fechaInicio || '') || 0;
+          if (tb !== ta) return tb - ta;
+          const ida = Number(a?.id) || 0;
+          const idb = Number(b?.id) || 0;
+          return idb - ida;
+        });
+
+
         if(items.length === 0){
-          procTbody.innerHTML = `<tr><td colspan="10" class="muted">Sin resultados</td></tr>`;
+          procTbody.innerHTML = `<tr><td colspan="11" class="muted">Sin resultados</td></tr>`;
         } else {
           const frag = document.createDocumentFragment();
           for(const it of items){
@@ -404,6 +416,7 @@
               <div class="row">
                 <a class="btn" href="/cotizacion/estado/${it.id}" target="_blank"><button class="secondary">Ver estado</button></a>
                 <a class="btn" href="/data/procesos/proceso-${it.id}/" target="_blank"><button>📁 Abrir carpeta</button></a>
+                <a class="btn" href="/proceso/excel/${it.id}" target="_blank"><button>⬇️ Excel</button></a>
               </div>
             `;
             tr.innerHTML = `
@@ -416,6 +429,7 @@
               <td class="mono">${it.registros_procesados ?? ''}</td>
               <td class="mono">${it.cotizaciones_exitosas ?? ''}</td>
               <td class="mono">${it.cotizaciones_con_error ?? ''}</td>
+              <td class="mono">${it.cotizaciones_skipped ?? ''}</td>
               <td>${acc}</td>
             `;
             frag.appendChild(tr);
@@ -433,7 +447,7 @@
         nextBtn.disabled = (procOffset + limit >= procTotal);
       } catch (e) {
         console.error('[Procesos] Error:', e);
-        procTbody.innerHTML = `<tr><td colspan="10" class="muted">Error al cargar</td></tr>`;
+        procTbody.innerHTML = `<tr><td colspan="11" class="muted">Error al cargar</td></tr>`;
         procMeta.textContent = 'Error';
       } finally {
         procBtn.disabled = false;

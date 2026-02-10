@@ -164,6 +164,118 @@ function resumenPath(id) {
   return path.join(procesoDir(id), 'resumen.json');
 }
 
+// ===== Export Excel por Proceso =====
+function flattenForExcel(obj, prefix = '') {
+  const out = {};
+  for (const [k, v] of Object.entries(obj || {})) {
+    const key = prefix ? `${prefix}${k}` : k;
+    if (v == null) {
+      out[key] = '';
+    } else if (typeof v === 'object') {
+      // Evitar explotar columnas: guardar objeto completo como JSON
+      out[key] = JSON.stringify(v);
+    } else {
+      out[key] = v;
+    }
+  }
+  return out;
+}
+
+async function generarExcelProceso(procesoId) {
+  const id = Number(procesoId);
+  const meta = await loadMetadata(id);
+  if (!meta) throw new Error('No existe el proceso');
+
+  const rp = resumenPath(id);
+  if (!fs.existsSync(rp)) throw new Error('El proceso no tiene resumen.json');
+  const resumen = JSON.parse(fs.readFileSync(rp, 'utf8'));
+
+  const cabecera = meta.cabecera_id ? getCabecera(meta.cabecera_id) : null;
+
+  // Resolver archivo combinado desde metadata (fallback: DB historial)
+  let relArchivo = meta.archivo || null;
+  let absArchivo = null;
+  if (relArchivo) {
+    absArchivo = path.isAbsolute(relArchivo) ? relArchivo : path.join(process.cwd(), relArchivo);
+  } else if (meta.historial_id) {
+    const hist = await getHistorialItem(meta.historial_id);
+    if (hist) {
+      const resolved = resolveCombinedAbsPath(hist);
+      relArchivo = resolved.relPath;
+      absArchivo = resolved.absPath;
+    }
+  }
+  if (!absArchivo || !fs.existsSync(absArchivo)) {
+    throw new Error('No se encontró el archivo combinado para exportar');
+  }
+
+  const filas = await readFilasFromFile(absArchivo);
+
+  const rowsCot = [];
+  const rowsSkip = [];
+  const rowsErr = [];
+
+  for (const slug of Object.keys(resumen.resultados || {})) {
+    const arr = Array.isArray(resumen.resultados[slug]) ? resumen.resultados[slug] : [];
+    for (const item of arr) {
+      const idx = Number(item.index);
+      const filaIn = filas[idx] || {};
+      const base = {
+        proceso_id: id,
+        historial_id: meta.historial_id || resumen.historial_id || null,
+        cabecera_id: meta.cabecera_id || resumen.cabecera_id || null,
+        aseguradora: slug,
+        index: idx,
+        ok: item.ok === true,
+        skipped: item.skipped === true,
+        operacion: item.operacion || '',
+        reason: item.reason || '',
+        error: item.error || '',
+      };
+
+      const filaFlat = flattenForExcel(filaIn, 'veh_');
+      const cabFlat = cabecera ? flattenForExcel(cabecera, 'cab_') : {};
+
+      if (item.skipped) {
+        rowsSkip.push({ ...base, ...filaFlat, ...cabFlat, used: JSON.stringify(item.used || {}) });
+        continue;
+      }
+
+      if (!item.ok) {
+        rowsErr.push({ ...base, ...filaFlat, ...cabFlat, used: JSON.stringify(item.used || {}) });
+        continue;
+      }
+
+      // ok y no skipped: una fila por cobertura (si existe), sino una fila base
+      const cobs = Array.isArray(item.coberturas) ? item.coberturas : [];
+      if (cobs.length === 0) {
+        rowsCot.push({ ...base, ...filaFlat, ...cabFlat, used: JSON.stringify(item.used || {}) });
+      } else {
+        for (const cob of cobs) {
+          const cobFlat = flattenForExcel(cob, 'cot_');
+          rowsCot.push({ ...base, ...filaFlat, ...cabFlat, ...cobFlat, used: JSON.stringify(item.used || {}) });
+        }
+      }
+    }
+  }
+
+  const wb = xlsx.utils.book_new();
+  const wsCot = xlsx.utils.json_to_sheet(rowsCot);
+  xlsx.utils.book_append_sheet(wb, wsCot, 'Cotizaciones');
+
+  const wsErr = xlsx.utils.json_to_sheet(rowsErr);
+  xlsx.utils.book_append_sheet(wb, wsErr, 'Errores');
+
+  const wsSkip = xlsx.utils.json_to_sheet(rowsSkip);
+  xlsx.utils.book_append_sheet(wb, wsSkip, 'Skipped');
+
+  const dlDir = path.join(procesoDir(id), 'descargas');
+  ensureDir(dlDir);
+  const outAbs = path.join(dlDir, `proceso-${id}-cotizaciones.xlsx`);
+  xlsx.writeFile(wb, outAbs);
+  return outAbs;
+}
+
 async function loadMetadata(id) {
   const p = metadataPath(id);
   if (!fs.existsSync(p)) return null;
@@ -748,8 +860,6 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
 
       meta = {
         id: proceso_id,
-        nombre: `ATM - UI (histórico ${historial_id})`,
-        nombre_cabecera: cabeceraCompat?.nombre || cabeceraCompat?.nombre_cabecera || cabeceraCompat?.nombre_publico || `Cabecera ${cabeceraIdCompat}`,
         historial_id,
         archivo,
         fecha: new Date().toISOString(),
@@ -797,7 +907,6 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
       registros_procesados: 0,
       cotizaciones_exitosas: 0,
       cotizaciones_con_error: 0,
-      cotizaciones_skipped: 0,
     });
 
     ensureDir(procesoDir(proceso_id));
@@ -1056,7 +1165,6 @@ router.get('/listar', async (req, res) => {
         historial_id: meta.historial_id || null,
         archivo: meta.archivo || null,
         cabecera_id: meta.cabecera_id || null,
-        nombre_cabecera: meta.nombre_cabecera || null,
         aseguradoras: meta.aseguradoras || [],
         limite: meta.limite || null,
         registros_total: meta.registros_total ?? null,
@@ -1068,25 +1176,41 @@ router.get('/listar', async (req, res) => {
       });
     }
 
-    // Orden: más nuevo primero
-    items.sort((a, b) => b.id - a.id);
-
-    // Filtros (compat UI): estado + paginado (limit/offset)
-    const qEstado = (req.query?.estado || '').toString().trim().toLowerCase();
-    const limit = Math.max(1, Math.min(Number(req.query?.limit || 50), 200));
-    const offset = Math.max(0, Number(req.query?.offset || 0));
-
-    let filtered = items;
-    if (qEstado) {
-      filtered = filtered.filter((x) => String(x.estado || '').toLowerCase() === qEstado);
-    }
-
-    const total = filtered.length;
-    const paged = filtered.slice(offset, offset + limit);
-
-    res.json({ ok: true, total, items: paged });
+// Orden: más recientes primero (fecha_inicio DESC). Fallback: id DESC.
+items.sort((a, b) => {
+  const ta = Date.parse(a?.fecha_inicio || '') || 0;
+  const tb = Date.parse(b?.fecha_inicio || '') || 0;
+  if (tb !== ta) return tb - ta;
+  return (Number(b?.id) || 0) - (Number(a?.id) || 0);
+});
+    res.json({ ok: true, total: items.length, items });
   } catch (err) {
     res.status(500).json({ ok: false, error: err.message || String(err) });
+  }
+});
+
+// =============================================================================
+// GET /proceso/excel/:id
+// Descarga Excel con: (vehículo + cabecera + cotizaciones) + hojas Errores/Skipped
+// =============================================================================
+router.get('/excel/:id', async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const dlDir = path.join(procesoDir(id), 'descargas');
+    const outAbs = path.join(dlDir, `proceso-${id}-cotizaciones.xlsx`);
+
+    if (!fs.existsSync(outAbs)) {
+      await generarExcelProceso(id);
+    }
+
+    if (!fs.existsSync(outAbs)) {
+      return res.status(404).json({ ok: false, error: 'No se pudo generar el Excel' });
+    }
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    return res.download(outAbs, `proceso-${id}-cotizaciones.xlsx`);
+  } catch (err) {
+    return res.status(500).json({ ok: false, error: err.message || String(err) });
   }
 });
 
