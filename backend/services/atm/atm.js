@@ -183,6 +183,109 @@ function buildSoapEnvelope(method, docIn) {
 </SOAP-ENV:Envelope>`;
 }
 
+function escapeXml(v) {
+  return String(v ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
+
+function objectToXml(obj) {
+  if (!obj || typeof obj !== "object") return "";
+  const chunks = [];
+  for (const [k, v] of Object.entries(obj)) {
+    if (v == null) continue;
+    const tag = String(k).trim();
+    if (!tag) continue;
+    if (Array.isArray(v)) {
+      v.forEach((item) => {
+        if (item != null && typeof item === "object") chunks.push(`<${tag}>${objectToXml(item)}</${tag}>`);
+        else chunks.push(`<${tag}>${escapeXml(item)}</${tag}>`);
+      });
+      continue;
+    }
+    if (typeof v === "object") {
+      chunks.push(`<${tag}>${objectToXml(v)}</${tag}>`);
+      continue;
+    }
+    chunks.push(`<${tag}>${escapeXml(v)}</${tag}>`);
+  }
+  return chunks.join("\n");
+}
+
+function findFirstBySuffix(node, suffix) {
+  if (!node || typeof node !== "object") return null;
+  for (const [k, v] of Object.entries(node)) {
+    if (k === suffix || k.endsWith(`:${suffix}`)) return v;
+  }
+  return null;
+}
+
+function parseDynamicSoapResponse(xmlStr, methodName) {
+  const parser = new XMLParser({ ignoreAttributes: false, trimValues: true });
+  const parsed = parser.parse(String(xmlStr || ""));
+  const body = parsed?.["SOAP-ENV:Envelope"]?.["SOAP-ENV:Body"] || parsed?.Envelope?.Body || null;
+
+  const responseNode = findFirstBySuffix(body, `${methodName}Response`) || body;
+  const resultNode = findFirstBySuffix(responseNode, `${methodName}Result`) || responseNode;
+  if (typeof resultNode === "string") {
+    try {
+      return parser.parse(resultNode);
+    } catch {
+      return { raw: resultNode };
+    }
+  }
+  return resultNode;
+}
+
+function collectScalarRecords(node, out = []) {
+  if (Array.isArray(node)) {
+    node.forEach((item) => collectScalarRecords(item, out));
+    return out;
+  }
+  if (!node || typeof node !== "object") return out;
+
+  const entries = Object.entries(node).filter(([k]) => !k.startsWith("@_"));
+  const scalar = {};
+  let hasScalar = false;
+
+  entries.forEach(([k, v]) => {
+    if (v == null) return;
+    if (typeof v === "string" || typeof v === "number" || typeof v === "boolean") {
+      scalar[k] = v;
+      hasScalar = true;
+      return;
+    }
+    collectScalarRecords(v, out);
+  });
+
+  if (hasScalar && Object.keys(scalar).length) out.push(scalar);
+  return out;
+}
+
+function buildInfoautoDocIn(body, cfg) {
+  if (body?.doc_in && String(body.doc_in).trim()) return String(body.doc_in).trim();
+
+  const fecha = formatDDMMYYYY(new Date());
+  const usuarioXml = `<usuario>
+    <usa>${cfg.usuario}</usa>
+    <pass>${cfg.password}</pass>
+    <fecha>${fecha}</fecha>
+    <vendedor>${cfg.vendedor}</vendedor>
+    <origen>${cfg.origen || "WS"}</origen>
+  </usuario>`;
+
+  const filtrosObj = body?.filtros && typeof body.filtros === "object" ? body.filtros : {};
+  const filtrosXml = objectToXml(filtrosObj);
+
+  return `<auto>
+  ${usuarioXml}
+  ${filtrosXml ? `<filtros>${filtrosXml}</filtros>` : ""}
+</auto>`;
+}
+
 function parseAtmSoapResponse(xmlStr) {
   const parser = new XMLParser({ ignoreAttributes: false, trimValues: true });
   const parsed = parser.parse(String(xmlStr || ""));
