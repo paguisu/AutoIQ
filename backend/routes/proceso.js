@@ -150,6 +150,30 @@ function mapUsoTextoACodigo(value, DICC) {
   return DICC[key] || '';
 }
 
+function resolveRastreoCodigo(cabecera, Aseg) {
+  const raw = String(cabecera?.rastreo ?? '').trim();
+  const defaultCode = String(
+    process.env.ATM_RASTREO_CODIGO_CON ||
+      Aseg?.parametros_extras?.rastreo_codigo_con ||
+      ''
+  ).trim();
+
+  // Si la UI guarda 0/1, usamos código por defecto solo cuando viene "Con" (=1).
+  if (raw === '1') return defaultCode;
+  if (!raw || raw === '0') return '';
+
+  // Si ya viene un código ATM específico (numérico u otro), lo respetamos.
+  return raw;
+}
+
+function resolveSumaGnc(cabecera, gncFlag) {
+  if (gncFlag !== '1') return '';
+  const raw = String(cabecera?.suma_gnc ?? '').trim();
+  if (!raw) return '';
+  const normalized = raw.replace(/[.,\s]/g, '');
+  return /^\d+$/.test(normalized) ? normalized : '';
+}
+
 // ===== Helpers Proceso (filesystem) =====
 function procesosRoot() {
   return path.join(process.cwd(), 'data', 'procesos');
@@ -480,12 +504,10 @@ async function cotizarFila({
     ? String(cabecera.tipo_uso)
     : '1';
   const ajuste = (cabecera?.ajuste || '').toString().trim();
-  const rastreoRaw = (cabecera?.rastreo ?? '').toString().trim();
-  // ATM: 'rastreo' es un CÓDIGO de la tabla ws_au_rastreo_satelital. Si no hay código válido, NO se envía.
-  // Si tu UI guarda 0/1 como booleano, lo tratamos como 'no informar'.
-  const rastreoCodigo = (!rastreoRaw || rastreoRaw === '0' || rastreoRaw === '1') ? '' : rastreoRaw;
+  const rastreoCodigo = resolveRastreoCodigo(cabecera, Aseg);
   const alarma = cabecera?.alarma === '1' ? '1' : '0';
   const gnc = cabecera?.gnc === '1' ? '1' : '0';
+  const sumaGnc = resolveSumaGnc(cabecera, gnc);
 
   let bienXML = `
     <cod_infoauto>${codia}</cod_infoauto>
@@ -500,6 +522,7 @@ async function cotizarFila({
   if (rastreoCodigo) bienXML += `\n    <rastreo>${rastreoCodigo}</rastreo>`;
   bienXML += `\n    <cerokm>${cerokm}</cerokm>`;
   bienXML += `\n    <gnc>${gnc}</gnc>`;
+  if (sumaGnc) bienXML += `\n    <suma_gnc>${sumaGnc}</suma_gnc>`;
   if (seccion === '4' && tipo_uso) bienXML += `\n    <tipo_uso>${tipo_uso}</tipo_uso>`;
 
   // ===== Forma de pago (ATM) =====
@@ -1251,4 +1274,3 @@ router.get('/:id', async (req, res) => {
 });
 
 module.exports = router;
-
