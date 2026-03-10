@@ -283,7 +283,8 @@ app.use('/cabeceras', cabecerasRouter);
 
 // ✅ Dejar una sola fuente de /aseguradoras (evita doble mount)
 // app.use('/aseguradoras', require('./routes/aseguradoras'));
-app.use('/aseguradoras', require('./routes/aseguradoras_params'));
+app.use('/aseguradoras', require('./routes/aseguradoras_params'))
+app.use('/catalogos', require('./routes/catalogos'));
 
 app.use('/preprocesado', require('./routes/preprocesado'));
 
@@ -295,3 +296,4 @@ if (require.main === module) {
 }
 
 module.exports = app;
+
