@@ -194,8 +194,31 @@
 
   <!-- ====== TAB: Base Propia ====== -->
   <div id="base" class="tab-content">
-    <h2>Base Propia</h2>
-    <p>En construcción...</p>
+    <h2>Gestión de Catálogos</h2>
+
+    <div class="form-group">
+      <label>Compañía</label>
+      <select id="cat-compania"></select>
+    </div>
+
+    <div class="form-group">
+      <button type="button" id="cat-refresh">🔄 Refrescar tablas</button>
+      <button type="button" id="cat-sync-all">⚙️ Sync todas</button>
+    </div>
+
+    <div id="cat-status" class="muted" style="margin-bottom:10px;"></div>
+
+    <table id="cat-table" border="1" cellpadding="6" cellspacing="0" style="width:100%; border-collapse:collapse;">
+      <thead>
+        <tr>
+          <th>Tabla</th>
+          <th>Fuente local</th>
+          <th>Existe</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
   </div>
 
   <!-- ====== TAB: Procesos (integración de procesos.html) ====== -->
@@ -267,6 +290,7 @@
         if (tabId === "historico") cargarHistorico();
         if (tabId === "procesos") proc_cargar();  // auto-carga al entrar
         if (tabId === "cabecera") initCabeceraTab();
+        if (tabId === "base") initCatalogosTab();
       });
     });
 
@@ -710,6 +734,95 @@
       try { initCabeceraTab(); } catch(e){ console.error(e); }
     })();
 
+    /* ====== CATÁLOGOS (Base Propia) ====== */
+    let catCompania = '';
+    let catTablas = [];
+
+    async function catFetchJson(url, options = {}) {
+      const resp = await fetch(url, options);
+      const data = await resp.json().catch(() => ({}));
+      if (!resp.ok || data.ok === false) throw new Error(data.error || `HTTP ${resp.status}`);
+      return data;
+    }
+    function catSetStatus(msg){ const el = document.getElementById('cat-status'); if(el) el.textContent = msg || ''; }
+    function catReportLinks(slug, runId){
+      return `<a href="/catalogos/${slug}/reportes/${runId}" target="_blank">JSON</a> | <a href="/catalogos/${slug}/reportes/${runId}.csv" target="_blank">CSV</a>`;
+    }
+
+    function catRenderTable(){
+      const tb = document.querySelector('#cat-table tbody');
+      if(!tb) return;
+      tb.innerHTML = '';
+      catTablas.forEach((t)=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><code>${t.table}</code></td>
+          <td><small>${t.sourcePath || ''}</small></td>
+          <td>${t.exists ? '✅' : '❌'}</td>
+          <td>
+            <button type="button" data-sync="${t.table}" ${t.exists ? '' : 'disabled'}>Sync</button>
+            <span id="cat-report-${t.table.replace(/[^a-zA-Z0-9_-]/g,'_')}" style="margin-left:8px;"></span>
+          </td>`;
+        tb.appendChild(tr);
+      });
+
+      tb.querySelectorAll('button[data-sync]').forEach((btn)=>{
+        btn.addEventListener('click', async ()=>{
+          const table = btn.getAttribute('data-sync');
+          try{
+            catSetStatus(`Sincronizando ${table}...`);
+            const out = await catFetchJson(`/catalogos/${catCompania}/sync/${table}`, { method:'POST' });
+            const id = `cat-report-${table.replace(/[^a-zA-Z0-9_-]/g,'_')}`;
+            const slot = document.getElementById(id);
+            if(slot && out.runId) slot.innerHTML = catReportLinks(catCompania, out.runId);
+            catSetStatus(`OK ${table}: altas=${out.resumen?.altas||0}, bajas=${out.resumen?.bajas||0}, modificados=${out.resumen?.modificados||0}`);
+          }catch(e){ catSetStatus(`Error sync ${table}: ${e.message || e}`); }
+        });
+      });
+    }
+
+    async function catLoadCompanias(){
+      const sel = document.getElementById('cat-compania');
+      if(!sel) return;
+      const out = await catFetchJson('/catalogos/companias');
+      sel.innerHTML = '';
+      (out.items || []).forEach((slug)=>{
+        const op = document.createElement('option');
+        op.value = slug; op.textContent = slug.toUpperCase();
+        sel.appendChild(op);
+      });
+      catCompania = sel.value || '';
+    }
+
+    async function catLoadTablas(){
+      if(!catCompania) return;
+      const out = await catFetchJson(`/catalogos/${catCompania}/tablas`);
+      catTablas = out.items || [];
+      catRenderTable();
+      catSetStatus(`Tablas cargadas: ${catTablas.length}`);
+    }
+
+    async function catSyncAll(){
+      if(!catCompania) return;
+      catSetStatus(`Sincronizando todas las tablas de ${catCompania}...`);
+      const out = await catFetchJson(`/catalogos/${catCompania}/sync-all`, { method:'POST' });
+      catSetStatus(`Sync-all OK: ${out.total || 0} tablas`);
+    }
+
+    async function initCatalogosTab(){
+      try{
+        await catLoadCompanias();
+        await catLoadTablas();
+        const sel = document.getElementById('cat-compania');
+        const btnRefresh = document.getElementById('cat-refresh');
+        const btnAll = document.getElementById('cat-sync-all');
+        if(sel){ sel.onchange = async ()=>{ catCompania = sel.value || ''; await catLoadTablas(); }; }
+        if(btnRefresh) btnRefresh.onclick = ()=>catLoadTablas();
+        if(btnAll) btnAll.onclick = ()=>catSyncAll();
+      }catch(e){
+        catSetStatus(`Error inicializando catálogos: ${e.message || e}`);
+      }
+    }
 /* ====== PROCESOS (clonado/adaptado de procesos.html) ====== */
     const procEstadoEl = document.getElementById('proc-estado');
     const procLimitEl  = document.getElementById('proc-limit');
@@ -859,3 +972,4 @@
   </script>
 </body>
 </html>
+
