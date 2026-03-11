@@ -17,6 +17,16 @@ function roots() {
   return { dataRoot, catalogRoot };
 }
 
+function parseBool(v) {
+  const s = String(v ?? '').trim().toLowerCase();
+  return s === '1' || s === 'true' || s === 'yes' || s === 'si';
+}
+
+function pickSource(req) {
+  const q = String(req.query?.source || req.body?.source || 'local').toLowerCase().trim();
+  return q === 'remote' ? 'remote' : 'local';
+}
+
 router.get('/companias', (_req, res) => {
   try {
     const { dataRoot } = roots();
@@ -45,12 +55,16 @@ router.post('/:slug/sync/:tabla', express.json(), async (req, res) => {
     const { dataRoot, catalogRoot } = roots();
     const slug = String(req.params.slug || '').toLowerCase().trim();
     const table = String(req.params.tabla || '').trim();
+    const dryRun = parseBool(req.query?.dryRun ?? req.body?.dryRun);
+    const source = pickSource(req);
 
     const out = await syncTable({
       dataRoot,
       catalogRoot,
       slug,
       table,
+      source,
+      dryRun,
     });
 
     res.json({ ok: true, ...out });
@@ -64,17 +78,30 @@ router.post('/:slug/sync-all', express.json(), async (req, res) => {
   try {
     const { dataRoot, catalogRoot } = roots();
     const slug = String(req.params.slug || '').toLowerCase().trim();
+    const dryRun = parseBool(req.query?.dryRun ?? req.body?.dryRun);
+    const source = pickSource(req);
+
     const tables = listTablesForCompany(dataRoot, slug)
-      .filter((x) => x.exists)
+      .filter((x) => source === 'remote' || x.exists)
       .map((x) => x.table);
 
     const results = [];
     for (const table of tables) {
-      const out = await syncTable({ dataRoot, catalogRoot, slug, table });
-      results.push({ table, resumen: out.resumen, runId: out.runId });
+      // secuencial para reducir ruido de IO y facilitar troubleshooting
+      // eslint-disable-next-line no-await-in-loop
+      const out = await syncTable({ dataRoot, catalogRoot, slug, table, source, dryRun });
+      results.push({
+        table,
+        runId: out.runId,
+        dryRun,
+        source,
+        rows: out.profile?.totalRows || 0,
+        columns: out.profile?.columns?.length || 0,
+        resumen: out.resumen,
+      });
     }
 
-    res.json({ ok: true, slug, total: results.length, results });
+    res.json({ ok: true, slug, source, dryRun, total: results.length, results });
   } catch (err) {
     console.error('catalogos:sync:all', err);
     res.status(400).json({ ok: false, error: err.message || 'No se pudo sincronizar todas las tablas' });
