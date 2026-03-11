@@ -1,0 +1,40 @@
+{
+  "runId": "run-atm-ws_au_usos-2026-03-11T22-27-24-588Z",
+  "slug": "atm",
+  "table": "ws_au_usos",
+  "updatedAt": "2026-03-11T22:27:24.588Z",
+  "source": "local",
+  "sourcePath": "D:\\AutoIQ\\data\\atm\\diccionarios\\uso.json",
+  "dryRun": true,
+  "keyField": "codigo",
+  "profile": {
+    "totalRows": 3,
+    "columns": [
+      "codigo",
+      "descripcion"
+    ],
+    "sample": [
+      {
+        "codigo": "particular",
+        "descripcion": "4263"
+      },
+      {
+        "codigo": "comercial",
+        "descripcion": "4261"
+      },
+      {
+        "codigo": "taxi",
+        "descripcion": "4262"
+      }
+    ]
+  },
+  "resumen": {
+    "altas": 0,
+    "bajas": 0,
+    "modificados": 0,
+    "sin_cambios": true
+  },
+  "altas": [],
+  "bajas": [],
+  "modificados": []
+}

@@ -1,0 +1,38 @@
+{
+  "runId": "run-atm-ws_au_usos-2026-03-11T18-43-09-912Z",
+  "slug": "atm",
+  "table": "ws_au_usos",
+  "updatedAt": "2026-03-11T18:43:09.912Z",
+  "keyField": "codigo",
+  "resumen": {
+    "altas": 3,
+    "bajas": 0,
+    "modificados": 0,
+    "sin_cambios": false
+  },
+  "altas": [
+    {
+      "key": "particular",
+      "row": {
+        "codigo": "particular",
+        "descripcion": "4263"
+      }
+    },
+    {
+      "key": "comercial",
+      "row": {
+        "codigo": "comercial",
+        "descripcion": "4261"
+      }
+    },
+    {
+      "key": "taxi",
+      "row": {
+        "codigo": "taxi",
+        "descripcion": "4262"
+      }
+    }
+  ],
+  "bajas": [],
+  "modificados": []
+}

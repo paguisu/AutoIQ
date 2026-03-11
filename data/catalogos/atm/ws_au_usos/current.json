@@ -1,0 +1,43 @@
+{
+  "slug": "atm",
+  "table": "ws_au_usos",
+  "updatedAt": "2026-03-11T22:45:16.219Z",
+  "sourcePath": "D:\\AutoIQ\\data\\atm\\diccionarios\\uso.json",
+  "sourceType": "local",
+  "keyField": "codigo",
+  "rows": [
+    {
+      "codigo": "particular",
+      "descripcion": "4263"
+    },
+    {
+      "codigo": "comercial",
+      "descripcion": "4261"
+    },
+    {
+      "codigo": "taxi",
+      "descripcion": "4262"
+    }
+  ],
+  "profile": {
+    "totalRows": 3,
+    "columns": [
+      "codigo",
+      "descripcion"
+    ],
+    "sample": [
+      {
+        "codigo": "particular",
+        "descripcion": "4263"
+      },
+      {
+        "codigo": "comercial",
+        "descripcion": "4261"
+      },
+      {
+        "codigo": "taxi",
+        "descripcion": "4262"
+      }
+    ]
+  }
+}
