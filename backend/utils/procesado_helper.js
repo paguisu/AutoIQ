@@ -1,6 +1,7 @@
 // backend/utils/preprocesado_helper.js
 const fs = require('fs/promises');
 const path = require('path');
+const { resolveAtmVehicleKind } = require('./atm_tipo_vehiculo');
 
 function dataPath(...p) {
   return path.join(process.cwd(), 'data', ...p);
@@ -34,7 +35,7 @@ async function cargarDiccionarios(slug) {
   return { uso, tipoVeh };
 }
 
-function completarYMapear({ fila, cabecera, dicc }) {
+async function completarYMapear({ fila, cabecera, dicc, slug }) {
   const fuentes = { uso: 'archivo', tipo_vehiculo: 'archivo' };
   const out = { ...fila };
 
@@ -47,6 +48,12 @@ function completarYMapear({ fila, cabecera, dicc }) {
   }
 
   // completar tipo_vehiculo
+  const atmVehicle = slug === 'atm' ? await resolveAtmVehicleKind(out) : null;
+  if (atmVehicle?.isMoto === true) {
+    out.tipo_vehiculo = 'Moto';
+    fuentes.tipo_vehiculo = 'atm_catalogo';
+  }
+
   if (!out.tipo_vehiculo || norm(out.tipo_vehiculo) === 'null') {
     if (cabecera?.tipo_vehiculo) {
       out.tipo_vehiculo = cabecera.tipo_vehiculo;
@@ -69,14 +76,18 @@ function completarYMapear({ fila, cabecera, dicc }) {
 
   // mapeo tipo_vehiculo → seccion
   let seccion = null;
+  if (atmVehicle?.seccion) {
+    seccion = atmVehicle.seccion;
+  }
+
   if (out.tipo_vehiculo) {
     const t = out.tipo_vehiculo.toString();
-    if (dicc.tipoVeh[t]?.seccion) {
+    if (!seccion && dicc.tipoVeh[t]?.seccion) {
       seccion = dicc.tipoVeh[t].seccion;
     } else {
       const tN = norm(t);
       const match = Object.keys(dicc.tipoVeh).find(k => norm(k) === tN);
-      if (match && dicc.tipoVeh[match]?.seccion) seccion = dicc.tipoVeh[match].seccion;
+      if (!seccion && match && dicc.tipoVeh[match]?.seccion) seccion = dicc.tipoVeh[match].seccion;
       if (!seccion) {
         if (tN.includes('moto') || tN.includes('scooter')) seccion = '1';
         else seccion = '3';
@@ -87,7 +98,8 @@ function completarYMapear({ fila, cabecera, dicc }) {
   return {
     fila_preparada: out,
     mapeos: { uso_codigo, seccion },
-    fuentes
+    fuentes,
+    atm_vehicle: atmVehicle,
   };
 }
 
@@ -101,8 +113,8 @@ async function initPreprocesador({ slug = 'atm', cabecera_id = null } = {}) {
   ]);
 
   return async function procesarFila(fila) {
-    const { fila_preparada, mapeos, fuentes } = completarYMapear({ fila, cabecera, dicc });
-    return { fila_preparada, mapeos, fuentes };
+    const { fila_preparada, mapeos, fuentes, atm_vehicle } = await completarYMapear({ fila, cabecera, dicc, slug });
+    return { fila_preparada, mapeos, fuentes, atm_vehicle };
   };
 }
 

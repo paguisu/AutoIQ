@@ -9,6 +9,7 @@ const axios = require('axios');
 const { XMLParser } = require('fast-xml-parser');
 const db = require('../config/db');
 const { initPreprocesador } = require('../utils/preprocesado_helper');
+const { resolveAtmVehicleKind } = require('../utils/atm_tipo_vehiculo');
 
 function ensureDir(p) {
   if (!fs.existsSync(p)) fs.mkdirSync(p, { recursive: true });
@@ -474,14 +475,17 @@ async function cotizarFila({
     (Aseg.seccion_default && String(Aseg.seccion_default).trim()) ||
     '3';
 
+  const atmVehicle = slug === 'atm' ? await resolveAtmVehicleKind(fila) : null;
+  const seccionAtm = String(atmVehicle?.seccion || '').trim();
+
   // Bypass motos: por ahora NO se envían al WS de autos (AUTOS_Cotizar_PHP).
-  // Se detecta por: seccion=1, texto tipo_vehiculo, o regla InfoAuto >= 8000000.
+  // Se detecta por: catálogo ATM, seccion=1 o texto tipo_vehiculo.
   const tipoVehTxt = pick([fila?.tipo_vehiculo, fila?.TipoVehiculo, fila?.tipoVehiculo]);
   const tipoVehNorm = (tipoVehTxt || '').toString().toLowerCase();
-  const codiaNum = Number.parseInt(String(codia || '').replace(/\D+/g, ''), 10);
   const esMoto =
+    atmVehicle?.isMoto === true ||
+    seccionAtm === '4' ||
     String(seccion) === '1' ||
-    (Number.isFinite(codiaNum) && codiaNum >= 8000000) ||
     tipoVehNorm.includes('moto') ||
     tipoVehNorm.includes('scooter');
 

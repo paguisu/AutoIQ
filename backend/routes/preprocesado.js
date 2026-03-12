@@ -9,6 +9,7 @@
 const express = require('express');
 const fs = require('fs/promises');
 const path = require('path');
+const { resolveAtmVehicleKind } = require('../utils/atm_tipo_vehiculo');
 
 const router = express.Router();
 
@@ -44,7 +45,7 @@ async function getDiccionarios(slug) {
   return { uso, tipoVeh };
 }
 
-function completarYMapear({ fila, cabecera, dicc }) {
+async function completarYMapear({ fila, cabecera, dicc, slug }) {
   const fuentes = { uso: 'archivo', tipo_vehiculo: 'archivo' };
   const out = { ...fila };
 
@@ -57,6 +58,12 @@ function completarYMapear({ fila, cabecera, dicc }) {
   }
 
   // 2) completar tipo_vehiculo
+  const atmVehicle = slug === 'atm' ? await resolveAtmVehicleKind(out) : null;
+  if (atmVehicle?.isMoto === true) {
+    out.tipo_vehiculo = 'Moto';
+    fuentes.tipo_vehiculo = 'atm_catalogo';
+  }
+
   if (!out.tipo_vehiculo || norm(out.tipo_vehiculo) === 'null') {
     if (cabecera?.tipo_vehiculo) {
       out.tipo_vehiculo = cabecera.tipo_vehiculo;
@@ -78,14 +85,18 @@ function completarYMapear({ fila, cabecera, dicc }) {
   }
 
   let seccion = null;
+  if (atmVehicle?.seccion) {
+    seccion = atmVehicle.seccion;
+  }
+
   if (out.tipo_vehiculo) {
     const t = out.tipo_vehiculo.toString();
-    if (dicc.tipoVeh[t]?.seccion) {
+    if (!seccion && dicc.tipoVeh[t]?.seccion) {
       seccion = dicc.tipoVeh[t].seccion;
     } else {
       const tN = norm(t);
       const match = Object.keys(dicc.tipoVeh).find(k => norm(k) === tN);
-      if (match && dicc.tipoVeh[match]?.seccion) seccion = dicc.tipoVeh[match].seccion;
+      if (!seccion && match && dicc.tipoVeh[match]?.seccion) seccion = dicc.tipoVeh[match].seccion;
       if (!seccion) {
         if (tN.includes('moto') || tN.includes('scooter')) seccion = '1';
         else seccion = '3';
@@ -97,7 +108,8 @@ function completarYMapear({ fila, cabecera, dicc }) {
     fila_original: fila,
     completada: out,
     mapeos: { uso_codigo, seccion },
-    fuentes
+    fuentes,
+    atm_vehicle: atmVehicle,
   };
 }
 
@@ -117,7 +129,7 @@ router.post('/preview', async (req, res) => {
       cabecera = await getCabeceraByIdHTTP(cabecera_id); // ← usa HTTP, no SQL
     }
 
-    const result = completarYMapear({ fila, cabecera, dicc });
+    const result = await completarYMapear({ fila, cabecera, dicc, slug: aseguradora });
     res.json({ ok: true, aseguradora, cabecera_id: cabecera_id ?? null, result });
   } catch (err) {
     console.error('preprocesado:preview', err);
