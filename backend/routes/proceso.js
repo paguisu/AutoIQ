@@ -10,6 +10,7 @@ const { XMLParser } = require('fast-xml-parser');
 const db = require('../config/db');
 const { initPreprocesador } = require('../utils/preprocesado_helper');
 const { resolveAtmVehicleKind } = require('../utils/atm_tipo_vehiculo');
+const { resolveSumaAsegurada } = require('../utils/atm_infoauto');
 
 function ensureDir(p) {
   if (!fs.existsSync(p)) fs.mkdirSync(p, { recursive: true });
@@ -206,6 +207,20 @@ function flattenForExcel(obj, prefix = '') {
   return out;
 }
 
+function insertFieldBeforePrefix(obj, fieldName, fieldValue, prefix) {
+  const out = {};
+  let inserted = false;
+  for (const [key, value] of Object.entries(obj || {})) {
+    if (!inserted && String(key).startsWith(prefix)) {
+      out[fieldName] = fieldValue ?? '';
+      inserted = true;
+    }
+    out[key] = value;
+  }
+  if (!inserted) out[fieldName] = fieldValue ?? '';
+  return out;
+}
+
 async function generarExcelProceso(procesoId) {
   const id = Number(procesoId);
   const meta = await loadMetadata(id);
@@ -273,12 +288,29 @@ async function generarExcelProceso(procesoId) {
 
       // ok y no skipped: una fila por cobertura (si existe), sino una fila base
       const cobs = Array.isArray(item.coberturas) ? item.coberturas : [];
+      const sumaAsegurada = await resolveSumaAsegurada({
+        row: { ...filaIn, ...item.fila_preview },
+        responseAmount: item.suma_asegurada,
+      });
       if (cobs.length === 0) {
-        rowsCot.push({ ...base, ...filaFlat, ...cabFlat, used: JSON.stringify(item.used || {}) });
+        const row = {
+          ...base,
+          ...filaFlat,
+          ...cabFlat,
+          used: JSON.stringify(item.used || {}),
+        };
+        rowsCot.push(insertFieldBeforePrefix(row, 'Suma Asegurada', sumaAsegurada, 'cot_'));
       } else {
         for (const cob of cobs) {
           const cobFlat = flattenForExcel(cob, 'cot_');
-          rowsCot.push({ ...base, ...filaFlat, ...cabFlat, ...cobFlat, used: JSON.stringify(item.used || {}) });
+          const row = {
+            ...base,
+            ...filaFlat,
+            ...cabFlat,
+            ...cobFlat,
+            used: JSON.stringify(item.used || {}),
+          };
+          rowsCot.push(insertFieldBeforePrefix(row, 'Suma Asegurada', sumaAsegurada, 'cot_'));
         }
       }
     }
@@ -714,12 +746,14 @@ async function cotizarFila({
         const msg = (msgRx ? msgRx[1].trim() : '');
 
         const success = statusSuccess === 'TRUE';
+        const sumaAsegurada = auto?.datos_cotiz?.suma ?? auto?.datos_cotiz?.Suma ?? auto?.Datos_Cotiz?.suma ?? null;
 
         const parsedOut = {
           ok: success,
           operacion: operacionFinal,
           statusSuccess,
           msg,
+          suma_asegurada: sumaAsegurada,
           coberturas_len: Array.isArray(coberturas) ? coberturas.length : 0,
           used: { soapAction: sa }
         };
@@ -747,6 +781,7 @@ async function cotizarFila({
         return {
           ok: true,
           operacion: operacionFinal,
+          suma_asegurada: sumaAsegurada,
           coberturas,
           used: { soapAction: sa },
           raw: rawResp,

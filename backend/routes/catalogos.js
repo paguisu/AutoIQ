@@ -4,6 +4,7 @@ const path = require('path');
 const {
   listCompanySlugs,
   listTablesForCompany,
+  getTableStatus,
   syncTable,
   readReport,
 } = require('../services/catalogos');
@@ -47,6 +48,19 @@ router.get('/:slug/tablas', (req, res) => {
   } catch (err) {
     console.error('catalogos:tablas', err);
     res.status(500).json({ ok: false, error: 'No se pudo listar tablas' });
+  }
+});
+
+router.get('/:slug/estado/:tabla', (req, res) => {
+  try {
+    const { dataRoot } = roots();
+    const slug = String(req.params.slug || '').toLowerCase().trim();
+    const table = String(req.params.tabla || '').trim();
+    const status = getTableStatus({ dataRoot, slug, table });
+    res.json({ ok: true, status });
+  } catch (err) {
+    console.error('catalogos:estado:tabla', err);
+    res.status(404).json({ ok: false, error: err.message || 'No se pudo leer el estado de la tabla' });
   }
 });
 

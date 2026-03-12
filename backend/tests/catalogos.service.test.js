@@ -1,7 +1,7 @@
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const { normalizeRecords, buildDiff, syncTable } = require('../services/catalogos');
+const { normalizeRecords, buildDiff, syncTable, getTableStatus } = require('../services/catalogos');
 
 describe('catalogos service', () => {
   test('normalizeRecords convierte objeto diccionario a filas con codigo', () => {
@@ -142,5 +142,23 @@ describe('catalogos service', () => {
       descripcion: 'ACURA',
       seccion: '3',
     });
+  });
+
+  test('getTableStatus informa si la tabla pertenece al mes en curso', async () => {
+    const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'autoiq-catalogos-'));
+    const dataRoot = path.join(tmpRoot, 'data');
+    const diccDir = path.join(dataRoot, 'atm', 'diccionarios');
+    fs.mkdirSync(diccDir, { recursive: true });
+
+    const file = path.join(diccDir, 'infoauto.json');
+    fs.writeFileSync(file, '[]', 'utf8');
+
+    const currentDate = new Date();
+    fs.utimesSync(file, currentDate, currentDate);
+
+    const status = getTableStatus({ dataRoot, slug: 'atm', table: 'ws_au_infoauto' });
+    expect(status.exists).toBe(true);
+    expect(status.isCurrentMonth).toBe(true);
+    expect(status.updatedAt).toBeTruthy();
   });
 });

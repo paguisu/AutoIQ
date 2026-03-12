@@ -583,6 +583,28 @@ function listTablesForCompany(dataRoot, slug) {
   }));
 }
 
+function getTableStatus({ dataRoot, slug, table }) {
+  const meta = getTableMeta(slug, table);
+  const localSourcePath = path.join(dataRoot, slug, 'diccionarios', meta.fileName);
+  const exists = fs.existsSync(localSourcePath);
+  const updatedAt = exists ? fs.statSync(localSourcePath).mtime.toISOString() : null;
+  const now = new Date();
+  const currentMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  const updatedMonthKey = updatedAt
+    ? `${new Date(updatedAt).getFullYear()}-${String(new Date(updatedAt).getMonth() + 1).padStart(2, '0')}`
+    : null;
+
+  return {
+    slug,
+    table,
+    exists,
+    sourcePath: localSourcePath,
+    updatedAt,
+    currentMonthKey,
+    isCurrentMonth: Boolean(updatedMonthKey && updatedMonthKey === currentMonthKey),
+  };
+}
+
 async function syncTable({
   dataRoot,
   catalogRoot,
@@ -688,6 +710,7 @@ async function readReport({ catalogRoot, slug, runId }) {
 module.exports = {
   listCompanySlugs,
   listTablesForCompany,
+  getTableStatus,
   normalizeRecords,
   buildDiff,
   syncTable,

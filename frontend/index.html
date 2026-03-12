@@ -47,6 +47,22 @@
     #procesos .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
     #procesos .nowrap{white-space:nowrap}
     #procesos .table-shell{overflow:auto; max-height: 65vh; border:1px solid #eee; border-radius:10px}
+    .tab-button.with-indicator{
+      position: relative;
+    }
+    .tab-alert-dot{
+      display: none;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #d93025;
+      margin-left: 8px;
+      vertical-align: middle;
+      box-shadow: 0 0 0 2px rgba(255,255,255,.25);
+    }
+    .tab-alert-dot.show{
+      display: inline-block;
+    }
     .toast-status{
       position: fixed;
       top: 18px;
@@ -76,7 +92,7 @@
   <div class="tabs">
     <button class="tab-button active" data-tab="inputs">Inputs</button>
     <button class="tab-button" data-tab="cabecera">Cabecera</button>
-    <button class="tab-button" data-tab="historico">Histórico</button>
+    <button class="tab-button with-indicator" data-tab="historico" id="historicoTabButton">Histórico<span id="historicoInfoautoDot" class="tab-alert-dot"></span></button>
     <button class="tab-button" data-tab="base">Base Propia</button>
     <button class="tab-button" data-tab="procesos">Procesos en curso</button>
   </div>
@@ -348,6 +364,32 @@
         contenedor.appendChild(tabla);
       } catch (err) {
         console.error("Error cargando historial:", err);
+      }
+    }
+
+    async function actualizarIndicadorInfoauto(){
+      const dot = document.getElementById('historicoInfoautoDot');
+      const tab = document.getElementById('historicoTabButton');
+      if(!dot || !tab) return;
+      try{
+        const out = await catFetchJson('/catalogos/atm/estado/ws_au_infoauto');
+        const status = out.status || {};
+        const title = status.updatedAt
+          ? `Infoauto actualizado por última vez: ${String(status.updatedAt).replace('T', ' ').replace('Z', '')}`
+          : 'Infoauto todavía no fue sincronizado localmente.';
+        tab.title = title;
+        dot.title = title;
+        if(status.exists && status.isCurrentMonth === false){
+          dot.classList.add('show');
+        } else if(!status.exists){
+          dot.classList.add('show');
+        } else {
+          dot.classList.remove('show');
+        }
+      }catch(_e){
+        tab.title = 'No se pudo verificar el estado de infoauto.';
+        dot.title = tab.title;
+        dot.classList.remove('show');
       }
     }
 
@@ -821,6 +863,7 @@
             const slot = document.getElementById(id);
             if(slot && out.runId) slot.innerHTML = catReportLinks(catCompania, out.runId);
             await catLoadTablas();
+            if(catCompania === 'atm' && table === 'ws_au_infoauto') await actualizarIndicadorInfoauto();
             catSetStatus(`OK ${table}: altas=${out.resumen?.altas||0}, bajas=${out.resumen?.bajas||0}, modificados=${out.resumen?.modificados||0}`);
           }catch(e){ catSetStatus(`Error sync ${table}: ${e.message || e}`); }
         });
@@ -858,6 +901,7 @@
         const slot = document.getElementById(id);
         if(slot && item.runId) slot.innerHTML = catReportLinks(catCompania, item.runId);
       });
+      if(catCompania === 'atm') await actualizarIndicadorInfoauto();
       catSetStatus(`Sync-all OK: ${out.total || 0} tablas`);
     }
 
@@ -989,6 +1033,7 @@
     // Al cargar página, precarga Histórico para que esté listo
     window.onload = () => {
       cargarHistorico();
+      actualizarIndicadorInfoauto();
     };
 
     /* Utilidad */
