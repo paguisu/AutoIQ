@@ -47,9 +47,32 @@
     #procesos .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
     #procesos .nowrap{white-space:nowrap}
     #procesos .table-shell{overflow:auto; max-height: 65vh; border:1px solid #eee; border-radius:10px}
+    .toast-status{
+      position: fixed;
+      top: 18px;
+      right: 18px;
+      z-index: 9999;
+      background: rgba(0, 20, 112, 0.94);
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: 10px;
+      box-shadow: 0 10px 28px rgba(0,0,0,.18);
+      font-size: 14px;
+      line-height: 1.35;
+      max-width: 360px;
+      opacity: 0;
+      transform: translateY(-8px);
+      pointer-events: none;
+      transition: opacity .18s ease, transform .18s ease;
+    }
+    .toast-status.show{
+      opacity: 1;
+      transform: translateY(0);
+    }
   </style>
 </head>
 <body>
+  <div id="statusToast" class="toast-status" aria-live="polite"></div>
   <div class="tabs">
     <button class="tab-button active" data-tab="inputs">Inputs</button>
     <button class="tab-button" data-tab="cabecera">Cabecera</button>
@@ -416,6 +439,18 @@
         .replaceAll('>','&gt;')
         .replaceAll('"','&quot;')
         .replaceAll("'",'&#39;');
+    }
+
+    let toastTimer = null;
+    function showStatusToast(message, duration = 1200){
+      const el = document.getElementById('statusToast');
+      if(!el) return;
+      el.textContent = message || '';
+      el.classList.add('show');
+      if(toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(()=>{
+        el.classList.remove('show');
+      }, duration);
     }
 
     function getYYYYMM(){
@@ -898,7 +933,7 @@
             const tr = document.createElement('tr');
             const acc = `
               <div class="row">
-                <a class="btn" href="/cotizacion/estado/${it.id}" target="_blank"><button class="secondary">Ver estado</button></a>
+                <a class="btn" href="/proceso/excel/${it.id}" target="_blank"><button class="secondary">Descargar XLS</button></a>
                 <a class="btn" href="/data/procesos/proceso-${it.id}/" target="_blank"><button>📁 Abrir carpeta</button></a>
               </div>
             `;
@@ -967,10 +1002,13 @@
     window.ejecutarProceso = async function(id){
       const limite = 5; // como pediste
       const cabeceraId = Number(localStorage.getItem('cabecera_id_activa') || '0');
+      const cabeceraNom = (localStorage.getItem('cabecera_nombre_activa') || '').trim();
       if(!cabeceraId){
         alert('Elegí una cabecera primero (no hay cabecera activa).');
         return;
       }
+      const cabeceraLabel = cabeceraNom || `ID ${cabeceraId}`;
+      showStatusToast(`Procesando histórico ${id} con cabecera ${cabeceraLabel}...`, 1400);
       try{
         const resp = await fetch(`/proceso/ejecutar/${id}`, {
           method:'POST',
