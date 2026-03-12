@@ -174,9 +174,9 @@
       <div class="form-group">
         <label>Medio de Pago</label>
         <select name="medioPago" id="medioPago">
-          <option value="TC">Débito en Tarjeta</option>
-          <option value="DC">Débito en Cuenta</option>
-          <option value="PF">Pago Fácil</option>
+          <option value="TC">Tarjeta de crédito</option>
+          <option value="CBU">CBU</option>
+          <option value="EF">Efectivo</option>
         </select>
       </div>
 
@@ -195,8 +195,8 @@
       <div class="form-group">
         <label>Rastreador</label>
         <select name="rastreador" id="rastreador">
-          <option value="Sin" selected>Sin</option>
-          <option value="Con">Con</option>
+          <option value="0" selected>No posee</option>
+          <option value="1">Posee</option>
         </select>
       </div>
 
@@ -586,11 +586,15 @@
 
       document.getElementById('genero').value = (String(c.sexo || '').toUpperCase() === 'F') ? 'Femenino' : 'Masculino';
       document.getElementById('estadoCivil').value = c.est_civil || 'Soltero';
-      document.getElementById('medioPago').value = c.medio_pago || 'TC';
+      const mp = String(c.medio_pago || '').trim().toUpperCase();
+      document.getElementById('medioPago').value =
+        (mp === '4' || mp === 'CBU' || mp === 'DC') ? 'CBU' :
+        (mp === '1' || mp === '3' || mp === 'EF' || mp === 'EFVO' || mp === 'PF') ? 'EF' :
+        'TC';
 
       // Defaults ATM ya existentes
       document.getElementById('uso').value = (String(c.tipo_uso) === '2') ? 'Comercial' : 'Particular';
-      document.getElementById('rastreador').value = (String(c.rastreo) === '1') ? 'Con' : 'Sin';
+      document.getElementById('rastreador').value = ['1', 'A', 'POSEE', 'CON'].includes(String(c.rastreo || '').trim().toUpperCase()) ? '1' : '0';
       document.getElementById('gnc').value = (String(c.gnc) === '1') ? 'Con' : 'Sin';
       document.getElementById('gncSuma').value = c.suma_gnc || '';
       showGncSuma();
@@ -682,7 +686,7 @@
       const fec_nac = v.fec ? v.fec.replaceAll('-','') : '';
       const sexo = (v.genero === 'Femenino') ? 'F' : 'M';
       const tipo_uso = (v.uso === 'Comercial') ? '2' : '1';
-      const rastreo = (v.rastreador === 'Con') ? '1' : '0';
+      const rastreo = (String(v.rastreador) === '1') ? '1' : '0';
       const gnc = (v.gnc === 'Con') ? '1' : '0';
 
       const snapAhora = snapshotForm();
@@ -747,7 +751,8 @@
         tipo_uso,
         rastreo,
         gnc,
-        suma_gnc: (gnc === '1') ? (v.sumaGnc || '') : ''
+        suma_gnc: (gnc === '1') ? (v.sumaGnc || '') : '',
+        accesorios: (gnc === '1') ? '1' : ''
       };
 
       try{

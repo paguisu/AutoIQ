@@ -152,20 +152,59 @@ function mapUsoTextoACodigo(value, DICC) {
   return DICC[key] || '';
 }
 
+function normalizeText(value) {
+  return String(value || '')
+    .trim()
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .toUpperCase();
+}
+
 function resolveRastreoCodigo(cabecera, Aseg) {
-  const raw = String(cabecera?.rastreo ?? '').trim();
+  const raw = normalizeText(cabecera?.rastreo);
   const defaultCode = String(
     process.env.ATM_RASTREO_CODIGO_CON ||
       Aseg?.parametros_extras?.rastreo_codigo_con ||
-      ''
+      'A'
   ).trim();
 
-  // Si la UI guarda 0/1, usamos código por defecto solo cuando viene "Con" (=1).
-  if (raw === '1') return defaultCode;
-  if (!raw || raw === '0') return '';
+  if (raw === '1' || raw === 'CON' || raw === 'POSEE' || raw === 'A') return defaultCode;
+  if (!raw || raw === '0' || raw === 'SIN' || raw === 'NO POSEE' || raw === 'N') return 'N';
 
   // Si ya viene un código ATM específico (numérico u otro), lo respetamos.
   return raw;
+}
+
+function resolveFormaPagoCodigo(cabecera) {
+  const raw = normalizeText(
+    cabecera?.medio_pago ??
+    cabecera?.medioPago ??
+    cabecera?.forma_pago ??
+    cabecera?.formaPago ??
+    ''
+  );
+
+  if (['2', 'TC', 'TARJETA', 'TARJETA DE CREDITO', 'CREDITO'].includes(raw)) return '2';
+  if (['4', 'CBU', 'DC', 'DEBITO EN CUENTA'].includes(raw)) return '4';
+
+  // "Efectivo" en la UI agrupa el resto de medios no tarjeta/no CBU.
+  if ([
+    '1',
+    '3',
+    'EF',
+    'EFVO',
+    'EFECTIVO',
+    'PF',
+    'PAGO FACIL',
+    'PAGO FÁCIL',
+    'RAPIPAGO',
+    'COBRO EXPRESS',
+    'MERCADOPAGO',
+    'MERCADO PAGO',
+    'OTRA',
+  ].includes(raw)) return '1';
+
+  return '2';
 }
 
 function resolveSumaGnc(cabecera, gncFlag) {
@@ -562,24 +601,7 @@ async function cotizarFila({
   if (seccion === '4' && tipo_uso) bienXML += `\n    <tipo_uso>${tipo_uso}</tipo_uso>`;
 
   // ===== Forma de pago (ATM) =====
-  const mpRaw = String(
-    cabecera?.medio_pago ??
-      cabecera?.medioPago ??
-      cabecera?.forma_pago ??
-      cabecera?.formaPago ??
-      ''
-  )
-    .trim()
-    .toUpperCase();
-
-  const formaPago =
-    mpRaw === '2' || mpRaw.includes('TARJ') || mpRaw.includes('TC') || mpRaw.includes('CRED')
-      ? '2'
-      : mpRaw === '4' || mpRaw.includes('CBU')
-      ? '4'
-      : mpRaw === '1' || mpRaw.includes('EFVO') || mpRaw.includes('EFEC') || mpRaw.includes('OTRA')
-      ? '1'
-      : '2';
+  const formaPago = resolveFormaPagoCodigo(cabecera);
 
   let formapagoXML = '';
   if (formaPago === '1') {
