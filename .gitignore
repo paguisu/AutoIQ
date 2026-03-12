@@ -29,6 +29,7 @@ Thumbs.db
 data/archivos_subidos/
 data/combinados/
 data/procesos/
+data/catalogos/
 frontend/descargas/
 
 # Debug/outputs ATM (NO subir)
@@ -61,3 +62,6 @@ web_servicies/
 
 # Documentos locales
 *.docx
+
+# otros
+Vera/

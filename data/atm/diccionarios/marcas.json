@@ -1,0 +1,2487 @@
+[
+  {
+    "codigo": "1",
+    "descripcion": "ACURA",
+    "seccion": "3"
+  },
+  {
+    "codigo": "2",
+    "descripcion": "ALEKO",
+    "seccion": "3"
+  },
+  {
+    "codigo": "3",
+    "descripcion": "ALFA ROMEO",
+    "seccion": "3"
+  },
+  {
+    "codigo": "4",
+    "descripcion": "ARO",
+    "seccion": "3"
+  },
+  {
+    "codigo": "5",
+    "descripcion": "ASIA",
+    "seccion": "3"
+  },
+  {
+    "codigo": "6",
+    "descripcion": "AUDI",
+    "seccion": "3"
+  },
+  {
+    "codigo": "7",
+    "descripcion": "AUTOBIANCHI",
+    "seccion": "3"
+  },
+  {
+    "codigo": "8",
+    "descripcion": "BMW",
+    "seccion": "3"
+  },
+  {
+    "codigo": "9",
+    "descripcion": "BUIK",
+    "seccion": "3"
+  },
+  {
+    "codigo": "10",
+    "descripcion": "CADILLAC",
+    "seccion": "3"
+  },
+  {
+    "codigo": "11",
+    "descripcion": "CITROEN",
+    "seccion": "3"
+  },
+  {
+    "codigo": "12",
+    "descripcion": "CHEVROLET",
+    "seccion": "3"
+  },
+  {
+    "codigo": "13",
+    "descripcion": "CHRYSLER",
+    "seccion": "3"
+  },
+  {
+    "codigo": "14",
+    "descripcion": "DACIA",
+    "seccion": "3"
+  },
+  {
+    "codigo": "15",
+    "descripcion": "DAEWOO",
+    "seccion": "3"
+  },
+  {
+    "codigo": "16",
+    "descripcion": "DAIHATSU",
+    "seccion": "3"
+  },
+  {
+    "codigo": "17",
+    "descripcion": "FIAT",
+    "seccion": "3"
+  },
+  {
+    "codigo": "18",
+    "descripcion": "FORD",
+    "seccion": "3"
+  },
+  {
+    "codigo": "19",
+    "descripcion": "HONDA",
+    "seccion": "3"
+  },
+  {
+    "codigo": "20",
+    "descripcion": "HYUNDAI",
+    "seccion": "3"
+  },
+  {
+    "codigo": "21",
+    "descripcion": "AEOLUS",
+    "seccion": "3"
+  },
+  {
+    "codigo": "22",
+    "descripcion": "ISUZU",
+    "seccion": "3"
+  },
+  {
+    "codigo": "23",
+    "descripcion": "JAGUAR",
+    "seccion": "3"
+  },
+  {
+    "codigo": "24",
+    "descripcion": "KIA",
+    "seccion": "3"
+  },
+  {
+    "codigo": "25",
+    "descripcion": "LADA",
+    "seccion": "3"
+  },
+  {
+    "codigo": "26",
+    "descripcion": "MAZDA",
+    "seccion": "3"
+  },
+  {
+    "codigo": "27",
+    "descripcion": "MERCURY",
+    "seccion": "3"
+  },
+  {
+    "codigo": "28",
+    "descripcion": "MERCEDES BENZ",
+    "seccion": "3"
+  },
+  {
+    "codigo": "29",
+    "descripcion": "MITSUBISHI",
+    "seccion": "3"
+  },
+  {
+    "codigo": "30",
+    "descripcion": "NISSAN",
+    "seccion": "3"
+  },
+  {
+    "codigo": "31",
+    "descripcion": "OPEL",
+    "seccion": "3"
+  },
+  {
+    "codigo": "32",
+    "descripcion": "PEUGEOT",
+    "seccion": "3"
+  },
+  {
+    "codigo": "33",
+    "descripcion": "POLONEZ",
+    "seccion": "3"
+  },
+  {
+    "codigo": "34",
+    "descripcion": "PONTIAC",
+    "seccion": "3"
+  },
+  {
+    "codigo": "35",
+    "descripcion": "PORSCHE",
+    "seccion": "3"
+  },
+  {
+    "codigo": "36",
+    "descripcion": "RENAULT",
+    "seccion": "3"
+  },
+  {
+    "codigo": "37",
+    "descripcion": "ROVER-LAND ROV.",
+    "seccion": "3"
+  },
+  {
+    "codigo": "38",
+    "descripcion": "SAAB",
+    "seccion": "3"
+  },
+  {
+    "codigo": "39",
+    "descripcion": "SEAT",
+    "seccion": "3"
+  },
+  {
+    "codigo": "40",
+    "descripcion": "SKODA",
+    "seccion": "3"
+  },
+  {
+    "codigo": "41",
+    "descripcion": "IVECO",
+    "seccion": "3"
+  },
+  {
+    "codigo": "42",
+    "descripcion": "SUBARU",
+    "seccion": "3"
+  },
+  {
+    "codigo": "43",
+    "descripcion": "SUZUKI",
+    "seccion": "3"
+  },
+  {
+    "codigo": "44",
+    "descripcion": "TAVRIA",
+    "seccion": "3"
+  },
+  {
+    "codigo": "45",
+    "descripcion": "TOYOTA",
+    "seccion": "3"
+  },
+  {
+    "codigo": "46",
+    "descripcion": "VOLKSWAGEN",
+    "seccion": "3"
+  },
+  {
+    "codigo": "47",
+    "descripcion": "VOLVO",
+    "seccion": "3"
+  },
+  {
+    "codigo": "48",
+    "descripcion": "PROTON",
+    "seccion": "3"
+  },
+  {
+    "codigo": "49",
+    "descripcion": "HUMMER",
+    "seccion": "3"
+  },
+  {
+    "codigo": "51",
+    "descripcion": "FERRARI",
+    "seccion": "3"
+  },
+  {
+    "codigo": "52",
+    "descripcion": "HAM-JIANG",
+    "seccion": "3"
+  },
+  {
+    "codigo": "53",
+    "descripcion": "LANCIA",
+    "seccion": "3"
+  },
+  {
+    "codigo": "54",
+    "descripcion": "ENIAK",
+    "seccion": "3"
+  },
+  {
+    "codigo": "55",
+    "descripcion": "MAHINDRA",
+    "seccion": "3"
+  },
+  {
+    "codigo": "56",
+    "descripcion": "RASTROJERO",
+    "seccion": "3"
+  },
+  {
+    "codigo": "57",
+    "descripcion": "TATA",
+    "seccion": "3"
+  },
+  {
+    "codigo": "58",
+    "descripcion": "BLAC",
+    "seccion": "3"
+  },
+  {
+    "codigo": "59",
+    "descripcion": "I.K.A. RENAULT",
+    "seccion": "3"
+  },
+  {
+    "codigo": "60",
+    "descripcion": "AUSTIN",
+    "seccion": "3"
+  },
+  {
+    "codigo": "61",
+    "descripcion": "BERTONE",
+    "seccion": "3"
+  },
+  {
+    "codigo": "77",
+    "descripcion": "NAKAI (CHANGAN)",
+    "seccion": "3"
+  },
+  {
+    "codigo": "78",
+    "descripcion": "BELAVTOMAZ",
+    "seccion": "3"
+  },
+  {
+    "codigo": "79",
+    "descripcion": "G.A.Z.",
+    "seccion": "3"
+  },
+  {
+    "codigo": "80",
+    "descripcion": "HINO",
+    "seccion": "3"
+  },
+  {
+    "codigo": "81",
+    "descripcion": "IZH",
+    "seccion": "3"
+  },
+  {
+    "codigo": "82",
+    "descripcion": "KAMAZ",
+    "seccion": "3"
+  },
+  {
+    "codigo": "83",
+    "descripcion": "KENWORTH",
+    "seccion": "3"
+  },
+  {
+    "codigo": "84",
+    "descripcion": "LIAZ",
+    "seccion": "3"
+  },
+  {
+    "codigo": "85",
+    "descripcion": "UAZ",
+    "seccion": "3"
+  },
+  {
+    "codigo": "87",
+    "descripcion": "INTERNATIONAL",
+    "seccion": "3"
+  },
+  {
+    "codigo": "94",
+    "descripcion": "PIAGGIO",
+    "seccion": "3"
+  },
+  {
+    "codigo": "95",
+    "descripcion": "SANXING",
+    "seccion": "3"
+  },
+  {
+    "codigo": "96",
+    "descripcion": "STAR (3-STAR)",
+    "seccion": "3"
+  },
+  {
+    "codigo": "97",
+    "descripcion": "YANTAI",
+    "seccion": "3"
+  },
+  {
+    "codigo": "98",
+    "descripcion": "JAC MOTORS",
+    "seccion": "3"
+  },
+  {
+    "codigo": "99",
+    "descripcion": "HEIBAO",
+    "seccion": "3"
+  },
+  {
+    "codigo": "100",
+    "descripcion": "WULING MOTORS",
+    "seccion": "3"
+  },
+  {
+    "codigo": "101",
+    "descripcion": "SPACE",
+    "seccion": "3"
+  },
+  {
+    "codigo": "102",
+    "descripcion": "MASERATI",
+    "seccion": "3"
+  },
+  {
+    "codigo": "103",
+    "descripcion": "SANTANA",
+    "seccion": "3"
+  },
+  {
+    "codigo": "104",
+    "descripcion": "SIAM DI TELLA",
+    "seccion": "3"
+  },
+  {
+    "codigo": "105",
+    "descripcion": "PLYMOUTH",
+    "seccion": "3"
+  },
+  {
+    "codigo": "106",
+    "descripcion": "MINI COOPER",
+    "seccion": "3"
+  },
+  {
+    "codigo": "107",
+    "descripcion": "ROLLS ROYCE",
+    "seccion": "3"
+  },
+  {
+    "codigo": "108",
+    "descripcion": "CHERY",
+    "seccion": "3"
+  },
+  {
+    "codigo": "109",
+    "descripcion": "LINCOLN",
+    "seccion": "3"
+  },
+  {
+    "codigo": "110",
+    "descripcion": "SMART",
+    "seccion": "3"
+  },
+  {
+    "codigo": "111",
+    "descripcion": "MACK",
+    "seccion": "3"
+  },
+  {
+    "codigo": "112",
+    "descripcion": "DFM",
+    "seccion": "3"
+  },
+  {
+    "codigo": "113",
+    "descripcion": "JMC",
+    "seccion": "3"
+  },
+  {
+    "codigo": "114",
+    "descripcion": "LIFAN",
+    "seccion": "3"
+  },
+  {
+    "codigo": "115",
+    "descripcion": "FOTON",
+    "seccion": "3"
+  },
+  {
+    "codigo": "116",
+    "descripcion": "GEELY",
+    "seccion": "3"
+  },
+  {
+    "codigo": "117",
+    "descripcion": "DS AUTOMOBILES",
+    "seccion": "3"
+  },
+  {
+    "codigo": "118",
+    "descripcion": "BAIC",
+    "seccion": "3"
+  },
+  {
+    "codigo": "119",
+    "descripcion": "DFSK",
+    "seccion": "3"
+  },
+  {
+    "codigo": "120",
+    "descripcion": "SHINERAY",
+    "seccion": "3"
+  },
+  {
+    "codigo": "121",
+    "descripcion": "GREAT WALL",
+    "seccion": "3"
+  },
+  {
+    "codigo": "122",
+    "descripcion": "HAVAL",
+    "seccion": "3"
+  },
+  {
+    "codigo": "124",
+    "descripcion": "CHANGAN",
+    "seccion": "3"
+  },
+  {
+    "codigo": "125",
+    "descripcion": "ZANELLA",
+    "seccion": "3"
+  },
+  {
+    "codigo": "126",
+    "descripcion": "SERO ELECTRIC",
+    "seccion": "3"
+  },
+  {
+    "codigo": "127",
+    "descripcion": "SOUEAST",
+    "seccion": "3"
+  },
+  {
+    "codigo": "128",
+    "descripcion": "MCLAREN",
+    "seccion": "3"
+  },
+  {
+    "codigo": "129",
+    "descripcion": "CORADIR",
+    "seccion": "3"
+  },
+  {
+    "codigo": "372",
+    "descripcion": "KAWASAKI",
+    "seccion": "4"
+  },
+  {
+    "codigo": "373",
+    "descripcion": "YAMAHA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "374",
+    "descripcion": "ZANELLA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "375",
+    "descripcion": "GARELLI",
+    "seccion": "4"
+  },
+  {
+    "codigo": "376",
+    "descripcion": "HONDA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "377",
+    "descripcion": "SUZUKI",
+    "seccion": "4"
+  },
+  {
+    "codigo": "378",
+    "descripcion": "HERCHEE",
+    "seccion": "4"
+  },
+  {
+    "codigo": "379",
+    "descripcion": "MONDIAL",
+    "seccion": "4"
+  },
+  {
+    "codigo": "380",
+    "descripcion": "CICLON",
+    "seccion": "4"
+  },
+  {
+    "codigo": "381",
+    "descripcion": "DA DALT",
+    "seccion": "4"
+  },
+  {
+    "codigo": "382",
+    "descripcion": "MELIPAL",
+    "seccion": "4"
+  },
+  {
+    "codigo": "383",
+    "descripcion": "FANTI",
+    "seccion": "4"
+  },
+  {
+    "codigo": "384",
+    "descripcion": "GILERA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "385",
+    "descripcion": "OLMO",
+    "seccion": "4"
+  },
+  {
+    "codigo": "387",
+    "descripcion": "TRIUMPH",
+    "seccion": "4"
+  },
+  {
+    "codigo": "388",
+    "descripcion": "JUKI",
+    "seccion": "4"
+  },
+  {
+    "codigo": "389",
+    "descripcion": "ZADINA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "390",
+    "descripcion": "VESPA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "391",
+    "descripcion": "QINGQI",
+    "seccion": "4"
+  },
+  {
+    "codigo": "392",
+    "descripcion": "PGO",
+    "seccion": "4"
+  },
+  {
+    "codigo": "394",
+    "descripcion": "SALATINO",
+    "seccion": "4"
+  },
+  {
+    "codigo": "395",
+    "descripcion": "SIAMBRETTA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "397",
+    "descripcion": "HUSQVARNA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "398",
+    "descripcion": "GUZZI",
+    "seccion": "4"
+  },
+  {
+    "codigo": "399",
+    "descripcion": "KOTIR",
+    "seccion": "4"
+  },
+  {
+    "codigo": "400",
+    "descripcion": "DEL VISSO",
+    "seccion": "4"
+  },
+  {
+    "codigo": "401",
+    "descripcion": "PUMA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "402",
+    "descripcion": "SCOOTER",
+    "seccion": "4"
+  },
+  {
+    "codigo": "403",
+    "descripcion": "MATCHLESS",
+    "seccion": "4"
+  },
+  {
+    "codigo": "404",
+    "descripcion": "EGO",
+    "seccion": "4"
+  },
+  {
+    "codigo": "405",
+    "descripcion": "PIAGGIO",
+    "seccion": "4"
+  },
+  {
+    "codigo": "406",
+    "descripcion": "KIT",
+    "seccion": "4"
+  },
+  {
+    "codigo": "407",
+    "descripcion": "CAGIVA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "408",
+    "descripcion": "ELEGANT",
+    "seccion": "4"
+  },
+  {
+    "codigo": "409",
+    "descripcion": "NSU",
+    "seccion": "4"
+  },
+  {
+    "codigo": "410",
+    "descripcion": "YUKI",
+    "seccion": "4"
+  },
+  {
+    "codigo": "411",
+    "descripcion": "KENIA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "412",
+    "descripcion": "JIALING",
+    "seccion": "4"
+  },
+  {
+    "codigo": "414",
+    "descripcion": "PUMITA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "416",
+    "descripcion": "RECORD",
+    "seccion": "4"
+  },
+  {
+    "codigo": "417",
+    "descripcion": "AGRALE",
+    "seccion": "4"
+  },
+  {
+    "codigo": "419",
+    "descripcion": "PEUGEOT",
+    "seccion": "4"
+  },
+  {
+    "codigo": "420",
+    "descripcion": "JAWA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "421",
+    "descripcion": "DERBI",
+    "seccion": "4"
+  },
+  {
+    "codigo": "423",
+    "descripcion": "PETERSON",
+    "seccion": "4"
+  },
+  {
+    "codigo": "424",
+    "descripcion": "DAELIM",
+    "seccion": "4"
+  },
+  {
+    "codigo": "426",
+    "descripcion": "HERO",
+    "seccion": "4"
+  },
+  {
+    "codigo": "427",
+    "descripcion": "RZA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "428",
+    "descripcion": "ITAL JET",
+    "seccion": "4"
+  },
+  {
+    "codigo": "429",
+    "descripcion": "BAJAJ",
+    "seccion": "4"
+  },
+  {
+    "codigo": "430",
+    "descripcion": "BMW",
+    "seccion": "4"
+  },
+  {
+    "codigo": "431",
+    "descripcion": "LUOJIA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "432",
+    "descripcion": "SIANG",
+    "seccion": "4"
+  },
+  {
+    "codigo": "433",
+    "descripcion": "DAEWOO",
+    "seccion": "4"
+  },
+  {
+    "codigo": "434",
+    "descripcion": "LIMING",
+    "seccion": "4"
+  },
+  {
+    "codigo": "435",
+    "descripcion": "JIANSHE",
+    "seccion": "4"
+  },
+  {
+    "codigo": "438",
+    "descripcion": "TMZ",
+    "seccion": "4"
+  },
+  {
+    "codigo": "439",
+    "descripcion": "MINSK",
+    "seccion": "4"
+  },
+  {
+    "codigo": "440",
+    "descripcion": "SUNNY",
+    "seccion": "4"
+  },
+  {
+    "codigo": "441",
+    "descripcion": "RIWA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "445",
+    "descripcion": "RENIA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "447",
+    "descripcion": "RITMO",
+    "seccion": "4"
+  },
+  {
+    "codigo": "449",
+    "descripcion": "WANGGUAN",
+    "seccion": "4"
+  },
+  {
+    "codigo": "452",
+    "descripcion": "SIAM",
+    "seccion": "4"
+  },
+  {
+    "codigo": "453",
+    "descripcion": "KTM",
+    "seccion": "4"
+  },
+  {
+    "codigo": "456",
+    "descripcion": "TULA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "460",
+    "descripcion": "WINDY",
+    "seccion": "4"
+  },
+  {
+    "codigo": "461",
+    "descripcion": "TGB",
+    "seccion": "4"
+  },
+  {
+    "codigo": "462",
+    "descripcion": "HUBEI",
+    "seccion": "4"
+  },
+  {
+    "codigo": "463",
+    "descripcion": "VOSKHOD",
+    "seccion": "4"
+  },
+  {
+    "codigo": "466",
+    "descripcion": "SAFARI",
+    "seccion": "4"
+  },
+  {
+    "codigo": "467",
+    "descripcion": "FACTORY",
+    "seccion": "4"
+  },
+  {
+    "codigo": "468",
+    "descripcion": "DEI",
+    "seccion": "4"
+  },
+  {
+    "codigo": "469",
+    "descripcion": "VIRAGO",
+    "seccion": "4"
+  },
+  {
+    "codigo": "471",
+    "descripcion": "XINGFU",
+    "seccion": "4"
+  },
+  {
+    "codigo": "475",
+    "descripcion": "MOTOMEL",
+    "seccion": "4"
+  },
+  {
+    "codigo": "476",
+    "descripcion": "SANYANG",
+    "seccion": "4"
+  },
+  {
+    "codigo": "477",
+    "descripcion": "BETAMOTOR",
+    "seccion": "4"
+  },
+  {
+    "codigo": "478",
+    "descripcion": "HARLEY DAVIDSON",
+    "seccion": "4"
+  },
+  {
+    "codigo": "479",
+    "descripcion": "ELITE",
+    "seccion": "4"
+  },
+  {
+    "codigo": "480",
+    "descripcion": "MULAN",
+    "seccion": "4"
+  },
+  {
+    "codigo": "482",
+    "descripcion": "PASSING",
+    "seccion": "4"
+  },
+  {
+    "codigo": "483",
+    "descripcion": "YATSU",
+    "seccion": "4"
+  },
+  {
+    "codigo": "484",
+    "descripcion": "JINCHENG",
+    "seccion": "4"
+  },
+  {
+    "codigo": "485",
+    "descripcion": "SUNEX",
+    "seccion": "4"
+  },
+  {
+    "codigo": "486",
+    "descripcion": "DAYANG",
+    "seccion": "4"
+  },
+  {
+    "codigo": "488",
+    "descripcion": "UB",
+    "seccion": "4"
+  },
+  {
+    "codigo": "490",
+    "descripcion": "HYOSUNG",
+    "seccion": "4"
+  },
+  {
+    "codigo": "491",
+    "descripcion": "ZAFARI",
+    "seccion": "4"
+  },
+  {
+    "codigo": "492",
+    "descripcion": "MZ",
+    "seccion": "4"
+  },
+  {
+    "codigo": "493",
+    "descripcion": "WINKING",
+    "seccion": "4"
+  },
+  {
+    "codigo": "494",
+    "descripcion": "LIBERTY",
+    "seccion": "4"
+  },
+  {
+    "codigo": "495",
+    "descripcion": "LANYING",
+    "seccion": "4"
+  },
+  {
+    "codigo": "498",
+    "descripcion": "PENTA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "499",
+    "descripcion": "PUCH",
+    "seccion": "4"
+  },
+  {
+    "codigo": "500",
+    "descripcion": "MURAVEY",
+    "seccion": "4"
+  },
+  {
+    "codigo": "501",
+    "descripcion": "MAJESTY",
+    "seccion": "4"
+  },
+  {
+    "codigo": "502",
+    "descripcion": "DUCATI",
+    "seccion": "4"
+  },
+  {
+    "codigo": "503",
+    "descripcion": "NAN FANG",
+    "seccion": "4"
+  },
+  {
+    "codigo": "504",
+    "descripcion": "PLANETA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "506",
+    "descripcion": "NORTON",
+    "seccion": "4"
+  },
+  {
+    "codigo": "507",
+    "descripcion": "CPI",
+    "seccion": "4"
+  },
+  {
+    "codigo": "509",
+    "descripcion": "POLARIS",
+    "seccion": "4"
+  },
+  {
+    "codigo": "510",
+    "descripcion": "MAGIC",
+    "seccion": "4"
+  },
+  {
+    "codigo": "511",
+    "descripcion": "ZAP",
+    "seccion": "4"
+  },
+  {
+    "codigo": "512",
+    "descripcion": "QUIONG",
+    "seccion": "4"
+  },
+  {
+    "codigo": "513",
+    "descripcion": "APSONIC",
+    "seccion": "4"
+  },
+  {
+    "codigo": "514",
+    "descripcion": "GUERRERO",
+    "seccion": "4"
+  },
+  {
+    "codigo": "515",
+    "descripcion": "RIEJU",
+    "seccion": "4"
+  },
+  {
+    "codigo": "516",
+    "descripcion": "SUNDOWN",
+    "seccion": "4"
+  },
+  {
+    "codigo": "517",
+    "descripcion": "QJIANG",
+    "seccion": "4"
+  },
+  {
+    "codigo": "519",
+    "descripcion": "ROYAL ENFIELD",
+    "seccion": "4"
+  },
+  {
+    "codigo": "520",
+    "descripcion": "HARTHFORD",
+    "seccion": "4"
+  },
+  {
+    "codigo": "521",
+    "descripcion": "KYMCO",
+    "seccion": "4"
+  },
+  {
+    "codigo": "522",
+    "descripcion": "GAS-GAS",
+    "seccion": "4"
+  },
+  {
+    "codigo": "523",
+    "descripcion": "TVS",
+    "seccion": "4"
+  },
+  {
+    "codigo": "524",
+    "descripcion": "RUNNER",
+    "seccion": "4"
+  },
+  {
+    "codigo": "527",
+    "descripcion": "OJIONG",
+    "seccion": "4"
+  },
+  {
+    "codigo": "528",
+    "descripcion": "SUNDIRO",
+    "seccion": "4"
+  },
+  {
+    "codigo": "529",
+    "descripcion": "AJS",
+    "seccion": "4"
+  },
+  {
+    "codigo": "530",
+    "descripcion": "GUOGIA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "531",
+    "descripcion": "BABETA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "532",
+    "descripcion": "ZONGSHEN",
+    "seccion": "4"
+  },
+  {
+    "codigo": "534",
+    "descripcion": "FOX",
+    "seccion": "4"
+  },
+  {
+    "codigo": "535",
+    "descripcion": "PRIDE",
+    "seccion": "4"
+  },
+  {
+    "codigo": "537",
+    "descripcion": "ZELATINO",
+    "seccion": "4"
+  },
+  {
+    "codigo": "538",
+    "descripcion": "APRILIA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "539",
+    "descripcion": "LONCIN",
+    "seccion": "4"
+  },
+  {
+    "codigo": "540",
+    "descripcion": "MODENAS",
+    "seccion": "4"
+  },
+  {
+    "codigo": "541",
+    "descripcion": "BRAVA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "542",
+    "descripcion": "IMSA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "543",
+    "descripcion": "WHELLS",
+    "seccion": "4"
+  },
+  {
+    "codigo": "544",
+    "descripcion": "XIAM",
+    "seccion": "4"
+  },
+  {
+    "codigo": "545",
+    "descripcion": "URAL",
+    "seccion": "4"
+  },
+  {
+    "codigo": "546",
+    "descripcion": "VINCENT",
+    "seccion": "4"
+  },
+  {
+    "codigo": "547",
+    "descripcion": "VW",
+    "seccion": "4"
+  },
+  {
+    "codigo": "548",
+    "descripcion": "MAVERICK",
+    "seccion": "4"
+  },
+  {
+    "codigo": "550",
+    "descripcion": "VICTORY",
+    "seccion": "4"
+  },
+  {
+    "codigo": "551",
+    "descripcion": "BSA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "552",
+    "descripcion": "PANNONIA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "553",
+    "descripcion": "HUAWEI",
+    "seccion": "4"
+  },
+  {
+    "codigo": "554",
+    "descripcion": "BUELL",
+    "seccion": "4"
+  },
+  {
+    "codigo": "555",
+    "descripcion": "SCORTS",
+    "seccion": "4"
+  },
+  {
+    "codigo": "556",
+    "descripcion": "KONISA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "558",
+    "descripcion": "AVANTI",
+    "seccion": "4"
+  },
+  {
+    "codigo": "559",
+    "descripcion": "UNI",
+    "seccion": "4"
+  },
+  {
+    "codigo": "560",
+    "descripcion": "HUSKI",
+    "seccion": "4"
+  },
+  {
+    "codigo": "561",
+    "descripcion": "VENTO",
+    "seccion": "4"
+  },
+  {
+    "codigo": "562",
+    "descripcion": "ZUNDAPP",
+    "seccion": "4"
+  },
+  {
+    "codigo": "563",
+    "descripcion": "X-SCREAMS",
+    "seccion": "4"
+  },
+  {
+    "codigo": "564",
+    "descripcion": "LONGXIN",
+    "seccion": "4"
+  },
+  {
+    "codigo": "565",
+    "descripcion": "BUYANG",
+    "seccion": "4"
+  },
+  {
+    "codigo": "566",
+    "descripcion": "DKW",
+    "seccion": "4"
+  },
+  {
+    "codigo": "568",
+    "descripcion": "DNEPR",
+    "seccion": "4"
+  },
+  {
+    "codigo": "569",
+    "descripcion": "HANG",
+    "seccion": "4"
+  },
+  {
+    "codigo": "570",
+    "descripcion": "JMSTAR",
+    "seccion": "4"
+  },
+  {
+    "codigo": "572",
+    "descripcion": "NAEMA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "573",
+    "descripcion": "PEOPLE",
+    "seccion": "4"
+  },
+  {
+    "codigo": "575",
+    "descripcion": "IZH",
+    "seccion": "4"
+  },
+  {
+    "codigo": "576",
+    "descripcion": "APPIA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "577",
+    "descripcion": "KINROAD",
+    "seccion": "4"
+  },
+  {
+    "codigo": "578",
+    "descripcion": "OKINOI",
+    "seccion": "4"
+  },
+  {
+    "codigo": "579",
+    "descripcion": "PANTHER",
+    "seccion": "4"
+  },
+  {
+    "codigo": "580",
+    "descripcion": "GAMMA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "581",
+    "descripcion": "WHEEL",
+    "seccion": "4"
+  },
+  {
+    "codigo": "582",
+    "descripcion": "GBK",
+    "seccion": "4"
+  },
+  {
+    "codigo": "583",
+    "descripcion": "VELIMOTOR",
+    "seccion": "4"
+  },
+  {
+    "codigo": "585",
+    "descripcion": "ZCT",
+    "seccion": "4"
+  },
+  {
+    "codigo": "587",
+    "descripcion": "CITROEN",
+    "seccion": "4"
+  },
+  {
+    "codigo": "588",
+    "descripcion": "SCOUT",
+    "seccion": "4"
+  },
+  {
+    "codigo": "589",
+    "descripcion": "DHENP",
+    "seccion": "4"
+  },
+  {
+    "codigo": "590",
+    "descripcion": "ARIEL",
+    "seccion": "4"
+  },
+  {
+    "codigo": "591",
+    "descripcion": "SUMO",
+    "seccion": "4"
+  },
+  {
+    "codigo": "593",
+    "descripcion": "SKYGO",
+    "seccion": "4"
+  },
+  {
+    "codigo": "595",
+    "descripcion": "MAGNAT",
+    "seccion": "4"
+  },
+  {
+    "codigo": "596",
+    "descripcion": "ESCORT",
+    "seccion": "4"
+  },
+  {
+    "codigo": "597",
+    "descripcion": "CERRO",
+    "seccion": "4"
+  },
+  {
+    "codigo": "598",
+    "descripcion": "RADAR",
+    "seccion": "4"
+  },
+  {
+    "codigo": "599",
+    "descripcion": "DINCI",
+    "seccion": "4"
+  },
+  {
+    "codigo": "600",
+    "descripcion": "BOMBARDIER",
+    "seccion": "4"
+  },
+  {
+    "codigo": "603",
+    "descripcion": "LAMBRETTA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "604",
+    "descripcion": "HAOJIN",
+    "seccion": "4"
+  },
+  {
+    "codigo": "605",
+    "descripcion": "KIKAI",
+    "seccion": "4"
+  },
+  {
+    "codigo": "606",
+    "descripcion": "YONGKANG",
+    "seccion": "4"
+  },
+  {
+    "codigo": "607",
+    "descripcion": "GOES",
+    "seccion": "4"
+  },
+  {
+    "codigo": "608",
+    "descripcion": "ISO",
+    "seccion": "4"
+  },
+  {
+    "codigo": "611",
+    "descripcion": "FAMSA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "612",
+    "descripcion": "CAN-AM",
+    "seccion": "4"
+  },
+  {
+    "codigo": "614",
+    "descripcion": "LEGNANO",
+    "seccion": "4"
+  },
+  {
+    "codigo": "617",
+    "descripcion": "CHIRETTE",
+    "seccion": "4"
+  },
+  {
+    "codigo": "619",
+    "descripcion": "EUROMOT",
+    "seccion": "4"
+  },
+  {
+    "codigo": "620",
+    "descripcion": "CROSS",
+    "seccion": "4"
+  },
+  {
+    "codigo": "621",
+    "descripcion": "GRAMSUNG",
+    "seccion": "4"
+  },
+  {
+    "codigo": "622",
+    "descripcion": "BLACKSTONE",
+    "seccion": "4"
+  },
+  {
+    "codigo": "623",
+    "descripcion": "MPR",
+    "seccion": "4"
+  },
+  {
+    "codigo": "625",
+    "descripcion": "JAAM",
+    "seccion": "4"
+  },
+  {
+    "codigo": "627",
+    "descripcion": "HISSUMA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "628",
+    "descripcion": "DAYAMA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "629",
+    "descripcion": "TOBAX",
+    "seccion": "4"
+  },
+  {
+    "codigo": "630",
+    "descripcion": "EVER GREEN",
+    "seccion": "4"
+  },
+  {
+    "codigo": "631",
+    "descripcion": "DYNAMIC",
+    "seccion": "4"
+  },
+  {
+    "codigo": "632",
+    "descripcion": "WINNER",
+    "seccion": "4"
+  },
+  {
+    "codigo": "633",
+    "descripcion": "RUGGI",
+    "seccion": "4"
+  },
+  {
+    "codigo": "634",
+    "descripcion": "JIANGSU",
+    "seccion": "4"
+  },
+  {
+    "codigo": "635",
+    "descripcion": "TRITON",
+    "seccion": "4"
+  },
+  {
+    "codigo": "636",
+    "descripcion": "PARILLA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "637",
+    "descripcion": "HAMATSU",
+    "seccion": "4"
+  },
+  {
+    "codigo": "638",
+    "descripcion": "TIBO",
+    "seccion": "4"
+  },
+  {
+    "codigo": "639",
+    "descripcion": "LEOPARD",
+    "seccion": "4"
+  },
+  {
+    "codigo": "640",
+    "descripcion": "JAGUAR ATV",
+    "seccion": "4"
+  },
+  {
+    "codigo": "641",
+    "descripcion": "JORDAN",
+    "seccion": "4"
+  },
+  {
+    "codigo": "642",
+    "descripcion": "CORVEN",
+    "seccion": "4"
+  },
+  {
+    "codigo": "643",
+    "descripcion": "MV AGUSTA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "645",
+    "descripcion": "KELLER",
+    "seccion": "4"
+  },
+  {
+    "codigo": "646",
+    "descripcion": "MOTO",
+    "seccion": "4"
+  },
+  {
+    "codigo": "649",
+    "descripcion": "YAMAZUKY",
+    "seccion": "4"
+  },
+  {
+    "codigo": "651",
+    "descripcion": "GEELY",
+    "seccion": "4"
+  },
+  {
+    "codigo": "652",
+    "descripcion": "DANGER",
+    "seccion": "4"
+  },
+  {
+    "codigo": "655",
+    "descripcion": "JAGUAR",
+    "seccion": "4"
+  },
+  {
+    "codigo": "656",
+    "descripcion": "ALPINO",
+    "seccion": "4"
+  },
+  {
+    "codigo": "658",
+    "descripcion": "LIFAN",
+    "seccion": "4"
+  },
+  {
+    "codigo": "661",
+    "descripcion": "HOWARD",
+    "seccion": "4"
+  },
+  {
+    "codigo": "662",
+    "descripcion": "BIG WARRIOR",
+    "seccion": "4"
+  },
+  {
+    "codigo": "663",
+    "descripcion": "RUMI",
+    "seccion": "4"
+  },
+  {
+    "codigo": "664",
+    "descripcion": "TANK",
+    "seccion": "4"
+  },
+  {
+    "codigo": "665",
+    "descripcion": "RIGAR",
+    "seccion": "4"
+  },
+  {
+    "codigo": "666",
+    "descripcion": "BLOOWER",
+    "seccion": "4"
+  },
+  {
+    "codigo": "669",
+    "descripcion": "PAGANI",
+    "seccion": "4"
+  },
+  {
+    "codigo": "671",
+    "descripcion": "XQUAD",
+    "seccion": "4"
+  },
+  {
+    "codigo": "672",
+    "descripcion": "LUCKY LION",
+    "seccion": "4"
+  },
+  {
+    "codigo": "674",
+    "descripcion": "MULTIROAD",
+    "seccion": "4"
+  },
+  {
+    "codigo": "675",
+    "descripcion": "IKA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "676",
+    "descripcion": "NIPPON MOTORS",
+    "seccion": "4"
+  },
+  {
+    "codigo": "677",
+    "descripcion": "FRAMBRETTA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "678",
+    "descripcion": "SERTUM",
+    "seccion": "4"
+  },
+  {
+    "codigo": "679",
+    "descripcion": "KIWI",
+    "seccion": "4"
+  },
+  {
+    "codigo": "680",
+    "descripcion": "XTM",
+    "seccion": "4"
+  },
+  {
+    "codigo": "681",
+    "descripcion": "LOGUS",
+    "seccion": "4"
+  },
+  {
+    "codigo": "682",
+    "descripcion": "SYM",
+    "seccion": "4"
+  },
+  {
+    "codigo": "683",
+    "descripcion": "JINWEI",
+    "seccion": "4"
+  },
+  {
+    "codigo": "684",
+    "descripcion": "KENTON",
+    "seccion": "4"
+  },
+  {
+    "codigo": "685",
+    "descripcion": "MINGXING",
+    "seccion": "4"
+  },
+  {
+    "codigo": "689",
+    "descripcion": "TEHUELCHE",
+    "seccion": "4"
+  },
+  {
+    "codigo": "692",
+    "descripcion": "RADAM",
+    "seccion": "4"
+  },
+  {
+    "codigo": "693",
+    "descripcion": "DINLI",
+    "seccion": "4"
+  },
+  {
+    "codigo": "694",
+    "descripcion": "SPARTA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "697",
+    "descripcion": "ECORIDER",
+    "seccion": "4"
+  },
+  {
+    "codigo": "699",
+    "descripcion": "YINGANG",
+    "seccion": "4"
+  },
+  {
+    "codigo": "700",
+    "descripcion": "SHINERAY",
+    "seccion": "4"
+  },
+  {
+    "codigo": "701",
+    "descripcion": "MDL",
+    "seccion": "4"
+  },
+  {
+    "codigo": "702",
+    "descripcion": "BABOON",
+    "seccion": "4"
+  },
+  {
+    "codigo": "703",
+    "descripcion": "XIAOBEIGE",
+    "seccion": "4"
+  },
+  {
+    "codigo": "704",
+    "descripcion": "DELTA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "705",
+    "descripcion": "DELTAX",
+    "seccion": "4"
+  },
+  {
+    "codigo": "706",
+    "descripcion": "KML",
+    "seccion": "4"
+  },
+  {
+    "codigo": "707",
+    "descripcion": "VOXAN",
+    "seccion": "4"
+  },
+  {
+    "codigo": "708",
+    "descripcion": "ARCTIC CAT",
+    "seccion": "4"
+  },
+  {
+    "codigo": "709",
+    "descripcion": "HENSIM",
+    "seccion": "4"
+  },
+  {
+    "codigo": "710",
+    "descripcion": "TAIGA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "711",
+    "descripcion": "VERSATTA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "712",
+    "descripcion": "MAGNUM",
+    "seccion": "4"
+  },
+  {
+    "codigo": "713",
+    "descripcion": "PIT BIKE",
+    "seccion": "4"
+  },
+  {
+    "codigo": "714",
+    "descripcion": "UNITED MOTORS",
+    "seccion": "4"
+  },
+  {
+    "codigo": "715",
+    "descripcion": "SEAHORSE",
+    "seccion": "4"
+  },
+  {
+    "codigo": "716",
+    "descripcion": "RAFTER",
+    "seccion": "4"
+  },
+  {
+    "codigo": "717",
+    "descripcion": "MOTUVA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "718",
+    "descripcion": "GUIZZO",
+    "seccion": "4"
+  },
+  {
+    "codigo": "719",
+    "descripcion": "GHIGGERI",
+    "seccion": "4"
+  },
+  {
+    "codigo": "721",
+    "descripcion": "KIRDY",
+    "seccion": "4"
+  },
+  {
+    "codigo": "722",
+    "descripcion": "DOUGLAS",
+    "seccion": "4"
+  },
+  {
+    "codigo": "723",
+    "descripcion": "JONWAY",
+    "seccion": "4"
+  },
+  {
+    "codigo": "724",
+    "descripcion": "FUN TIME",
+    "seccion": "4"
+  },
+  {
+    "codigo": "725",
+    "descripcion": "HARRIER",
+    "seccion": "4"
+  },
+  {
+    "codigo": "726",
+    "descripcion": "VALSTS RIGAS MOTORUPNICA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "727",
+    "descripcion": "SPEED",
+    "seccion": "4"
+  },
+  {
+    "codigo": "729",
+    "descripcion": "DIAMO",
+    "seccion": "4"
+  },
+  {
+    "codigo": "730",
+    "descripcion": "CFMOTO",
+    "seccion": "4"
+  },
+  {
+    "codigo": "731",
+    "descripcion": "INDIAN",
+    "seccion": "4"
+  },
+  {
+    "codigo": "732",
+    "descripcion": "FMC",
+    "seccion": "4"
+  },
+  {
+    "codigo": "733",
+    "descripcion": "STARWAY",
+    "seccion": "4"
+  },
+  {
+    "codigo": "734",
+    "descripcion": "DLM",
+    "seccion": "4"
+  },
+  {
+    "codigo": "735",
+    "descripcion": "LANCRAF",
+    "seccion": "4"
+  },
+  {
+    "codigo": "736",
+    "descripcion": "KINLON",
+    "seccion": "4"
+  },
+  {
+    "codigo": "737",
+    "descripcion": "WANG JIANG",
+    "seccion": "4"
+  },
+  {
+    "codigo": "738",
+    "descripcion": "NOVOMOTO",
+    "seccion": "4"
+  },
+  {
+    "codigo": "739",
+    "descripcion": "BLACKRIDER",
+    "seccion": "4"
+  },
+  {
+    "codigo": "740",
+    "descripcion": "JUNIORS",
+    "seccion": "4"
+  },
+  {
+    "codigo": "741",
+    "descripcion": "NP",
+    "seccion": "4"
+  },
+  {
+    "codigo": "743",
+    "descripcion": "KEEWAY",
+    "seccion": "4"
+  },
+  {
+    "codigo": "744",
+    "descripcion": "YONGKANG NEW FEIYAE",
+    "seccion": "4"
+  },
+  {
+    "codigo": "745",
+    "descripcion": "SHINETIME",
+    "seccion": "4"
+  },
+  {
+    "codigo": "746",
+    "descripcion": "YUMBO",
+    "seccion": "4"
+  },
+  {
+    "codigo": "747",
+    "descripcion": "MOTOM",
+    "seccion": "4"
+  },
+  {
+    "codigo": "748",
+    "descripcion": "QIAOWEI",
+    "seccion": "4"
+  },
+  {
+    "codigo": "749",
+    "descripcion": "MOTOMAX",
+    "seccion": "4"
+  },
+  {
+    "codigo": "751",
+    "descripcion": "HEEWAY",
+    "seccion": "4"
+  },
+  {
+    "codigo": "752",
+    "descripcion": "VELOCETTE",
+    "seccion": "4"
+  },
+  {
+    "codigo": "754",
+    "descripcion": "MOTO GUZZI",
+    "seccion": "4"
+  },
+  {
+    "codigo": "756",
+    "descripcion": "MONSTER",
+    "seccion": "4"
+  },
+  {
+    "codigo": "757",
+    "descripcion": "HURI",
+    "seccion": "4"
+  },
+  {
+    "codigo": "758",
+    "descripcion": "DAYTONA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "761",
+    "descripcion": "DEMON QUADS",
+    "seccion": "4"
+  },
+  {
+    "codigo": "763",
+    "descripcion": "BENELLI",
+    "seccion": "4"
+  },
+  {
+    "codigo": "764",
+    "descripcion": "BETA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "765",
+    "descripcion": "DAELIM",
+    "seccion": "4"
+  },
+  {
+    "codigo": "767",
+    "descripcion": "JIN LING",
+    "seccion": "4"
+  },
+  {
+    "codigo": "769",
+    "descripcion": "FLYER",
+    "seccion": "4"
+  },
+  {
+    "codigo": "773",
+    "descripcion": "PROFLY",
+    "seccion": "4"
+  },
+  {
+    "codigo": "774",
+    "descripcion": "SUNNER",
+    "seccion": "4"
+  },
+  {
+    "codigo": "775",
+    "descripcion": "GIO",
+    "seccion": "4"
+  },
+  {
+    "codigo": "776",
+    "descripcion": "MOTO STAR",
+    "seccion": "4"
+  },
+  {
+    "codigo": "778",
+    "descripcion": "IRON HORSER",
+    "seccion": "4"
+  },
+  {
+    "codigo": "779",
+    "descripcion": "MAX POWER",
+    "seccion": "4"
+  },
+  {
+    "codigo": "780",
+    "descripcion": "XINS",
+    "seccion": "4"
+  },
+  {
+    "codigo": "781",
+    "descripcion": "ODES",
+    "seccion": "4"
+  },
+  {
+    "codigo": "782",
+    "descripcion": "DARK GREEN",
+    "seccion": "4"
+  },
+  {
+    "codigo": "783",
+    "descripcion": "RANDALL",
+    "seccion": "4"
+  },
+  {
+    "codigo": "784",
+    "descripcion": "MELEX",
+    "seccion": "4"
+  },
+  {
+    "codigo": "787",
+    "descripcion": "HAOJUE",
+    "seccion": "4"
+  },
+  {
+    "codigo": "788",
+    "descripcion": "SNOW",
+    "seccion": "4"
+  },
+  {
+    "codigo": "789",
+    "descripcion": "XMOTOS",
+    "seccion": "4"
+  },
+  {
+    "codigo": "790",
+    "descripcion": "MGN MOTO",
+    "seccion": "4"
+  },
+  {
+    "codigo": "791",
+    "descripcion": "CAHUEL",
+    "seccion": "4"
+  },
+  {
+    "codigo": "792",
+    "descripcion": "SUNEQUIP",
+    "seccion": "4"
+  },
+  {
+    "codigo": "795",
+    "descripcion": "MAXUS",
+    "seccion": "4"
+  },
+  {
+    "codigo": "796",
+    "descripcion": "CRONOS",
+    "seccion": "4"
+  },
+  {
+    "codigo": "797",
+    "descripcion": "ELPRA ELECTRIC",
+    "seccion": "4"
+  },
+  {
+    "codigo": "798",
+    "descripcion": "RVM",
+    "seccion": "4"
+  },
+  {
+    "codigo": "799",
+    "descripcion": "DERRI",
+    "seccion": "4"
+  },
+  {
+    "codigo": "800",
+    "descripcion": "SUNRA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "801",
+    "descripcion": "GAUSS",
+    "seccion": "4"
+  },
+  {
+    "codigo": "802",
+    "descripcion": "CANADIAN",
+    "seccion": "4"
+  },
+  {
+    "codigo": "809",
+    "descripcion": "HISUN",
+    "seccion": "4"
+  },
+  {
+    "codigo": "813",
+    "descripcion": "EMUV",
+    "seccion": "4"
+  },
+  {
+    "codigo": "814",
+    "descripcion": "PYRAMID",
+    "seccion": "4"
+  },
+  {
+    "codigo": "815",
+    "descripcion": "ECOOTER",
+    "seccion": "4"
+  },
+  {
+    "codigo": "816",
+    "descripcion": "RUDGE",
+    "seccion": "4"
+  },
+  {
+    "codigo": "817",
+    "descripcion": "B MOVE",
+    "seccion": "4"
+  },
+  {
+    "codigo": "818",
+    "descripcion": "SPY",
+    "seccion": "4"
+  },
+  {
+    "codigo": "820",
+    "descripcion": "TROXUS",
+    "seccion": "4"
+  },
+  {
+    "codigo": "821",
+    "descripcion": "KASIA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "823",
+    "descripcion": "DONYE",
+    "seccion": "4"
+  },
+  {
+    "codigo": "824",
+    "descripcion": "KDW",
+    "seccion": "4"
+  },
+  {
+    "codigo": "825",
+    "descripcion": "BOOM",
+    "seccion": "4"
+  },
+  {
+    "codigo": "826",
+    "descripcion": "ECO WINCO",
+    "seccion": "4"
+  },
+  {
+    "codigo": "827",
+    "descripcion": "ID RIDE DAILY",
+    "seccion": "4"
+  },
+  {
+    "codigo": "828",
+    "descripcion": "TERROT",
+    "seccion": "4"
+  },
+  {
+    "codigo": "829",
+    "descripcion": "ITALIKA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "830",
+    "descripcion": "PHANTOM",
+    "seccion": "4"
+  },
+  {
+    "codigo": "832",
+    "descripcion": "ZA-DI-NA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "834",
+    "descripcion": "MINARELLI",
+    "seccion": "4"
+  },
+  {
+    "codigo": "835",
+    "descripcion": "XSCREEMS",
+    "seccion": "4"
+  },
+  {
+    "codigo": "836",
+    "descripcion": "NUUV",
+    "seccion": "4"
+  },
+  {
+    "codigo": "837",
+    "descripcion": "MADEMOTO",
+    "seccion": "4"
+  },
+  {
+    "codigo": "838",
+    "descripcion": "DELTECH",
+    "seccion": "4"
+  },
+  {
+    "codigo": "839",
+    "descripcion": "FUTUR-E",
+    "seccion": "4"
+  },
+  {
+    "codigo": "840",
+    "descripcion": "ANNAPURNA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "841",
+    "descripcion": "GREENMOVE",
+    "seccion": "4"
+  },
+  {
+    "codigo": "842",
+    "descripcion": "ASIAWING",
+    "seccion": "4"
+  },
+  {
+    "codigo": "843",
+    "descripcion": "VOGE",
+    "seccion": "4"
+  },
+  {
+    "codigo": "844",
+    "descripcion": "TRAILER",
+    "seccion": "3"
+  },
+  {
+    "codigo": "845",
+    "descripcion": "JINMA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "846",
+    "descripcion": "ARTIC",
+    "seccion": "4"
+  },
+  {
+    "codigo": "847",
+    "descripcion": "KIDEN",
+    "seccion": "4"
+  },
+  {
+    "codigo": "848",
+    "descripcion": "MASSIMO HUAN",
+    "seccion": "4"
+  },
+  {
+    "codigo": "849",
+    "descripcion": "XIOMA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "850",
+    "descripcion": "SEGWAY",
+    "seccion": "4"
+  },
+  {
+    "codigo": "851",
+    "descripcion": "XAEA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "859",
+    "descripcion": "VEHICULO RURAL",
+    "seccion": "3"
+  },
+  {
+    "codigo": "861",
+    "descripcion": "PAWERTRAC",
+    "seccion": "3"
+  },
+  {
+    "codigo": "862",
+    "descripcion": "CIDEF",
+    "seccion": "3"
+  },
+  {
+    "codigo": "863",
+    "descripcion": "MACTRAIL",
+    "seccion": "3"
+  },
+  {
+    "codigo": "865",
+    "descripcion": "SHANTUI",
+    "seccion": "3"
+  },
+  {
+    "codigo": "866",
+    "descripcion": "HANGCHA",
+    "seccion": "3"
+  },
+  {
+    "codigo": "867",
+    "descripcion": "GOVECS",
+    "seccion": "4"
+  },
+  {
+    "codigo": "868",
+    "descripcion": "YADEA",
+    "seccion": "4"
+  },
+  {
+    "codigo": "869",
+    "descripcion": "MOTO MORINI",
+    "seccion": "4"
+  },
+  {
+    "codigo": "870",
+    "descripcion": "ARIIC",
+    "seccion": "4"
+  },
+  {
+    "codigo": "871",
+    "descripcion": "SUPER SOCO",
+    "seccion": "4"
+  },
+  {
+    "codigo": "872",
+    "descripcion": "QJMOTOR",
+    "seccion": "4"
+  },
+  {
+    "codigo": "873",
+    "descripcion": "PHILCO",
+    "seccion": "4"
+  },
+  {
+    "codigo": "874",
+    "descripcion": "MORBIDELLI",
+    "seccion": "4"
+  },
+  {
+    "codigo": "875",
+    "descripcion": "KOVE",
+    "seccion": "4"
+  },
+  {
+    "codigo": "876",
+    "descripcion": "BUGATTI",
+    "seccion": "3"
+  },
+  {
+    "codigo": "877",
+    "descripcion": "KAYO",
+    "seccion": "4"
+  },
+  {
+    "codigo": "878",
+    "descripcion": "BYD",
+    "seccion": "3"
+  },
+  {
+    "codigo": "879",
+    "descripcion": "SKYWELL",
+    "seccion": "3"
+  },
+  {
+    "codigo": "880",
+    "descripcion": "KAIYI",
+    "seccion": "3"
+  },
+  {
+    "codigo": "881",
+    "descripcion": "TANK",
+    "seccion": "3"
+  },
+  {
+    "codigo": "882",
+    "descripcion": "MG",
+    "seccion": "3"
+  },
+  {
+    "codigo": "883",
+    "descripcion": "JMEV",
+    "seccion": "3"
+  },
+  {
+    "codigo": "884",
+    "descripcion": "GAC",
+    "seccion": "3"
+  }
+]

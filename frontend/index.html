@@ -47,13 +47,52 @@
     #procesos .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
     #procesos .nowrap{white-space:nowrap}
     #procesos .table-shell{overflow:auto; max-height: 65vh; border:1px solid #eee; border-radius:10px}
+    .tab-button.with-indicator{
+      position: relative;
+    }
+    .tab-alert-dot{
+      display: none;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #d93025;
+      margin-left: 8px;
+      vertical-align: middle;
+      box-shadow: 0 0 0 2px rgba(255,255,255,.25);
+    }
+    .tab-alert-dot.show{
+      display: inline-block;
+    }
+    .toast-status{
+      position: fixed;
+      top: 18px;
+      right: 18px;
+      z-index: 9999;
+      background: rgba(0, 20, 112, 0.94);
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: 10px;
+      box-shadow: 0 10px 28px rgba(0,0,0,.18);
+      font-size: 14px;
+      line-height: 1.35;
+      max-width: 360px;
+      opacity: 0;
+      transform: translateY(-8px);
+      pointer-events: none;
+      transition: opacity .18s ease, transform .18s ease;
+    }
+    .toast-status.show{
+      opacity: 1;
+      transform: translateY(0);
+    }
   </style>
 </head>
 <body>
+  <div id="statusToast" class="toast-status" aria-live="polite"></div>
   <div class="tabs">
     <button class="tab-button active" data-tab="inputs">Inputs</button>
     <button class="tab-button" data-tab="cabecera">Cabecera</button>
-    <button class="tab-button" data-tab="historico">Histórico</button>
+    <button class="tab-button with-indicator" data-tab="historico" id="historicoTabButton">Histórico<span id="historicoInfoautoDot" class="tab-alert-dot"></span></button>
     <button class="tab-button" data-tab="base">Base Propia</button>
     <button class="tab-button" data-tab="procesos">Procesos en curso</button>
   </div>
@@ -135,9 +174,9 @@
       <div class="form-group">
         <label>Medio de Pago</label>
         <select name="medioPago" id="medioPago">
-          <option value="TC">Débito en Tarjeta</option>
-          <option value="DC">Débito en Cuenta</option>
-          <option value="PF">Pago Fácil</option>
+          <option value="TC">Tarjeta de crédito</option>
+          <option value="CBU">CBU</option>
+          <option value="EF">Efectivo</option>
         </select>
       </div>
 
@@ -156,8 +195,8 @@
       <div class="form-group">
         <label>Rastreador</label>
         <select name="rastreador" id="rastreador">
-          <option value="Sin" selected>Sin</option>
-          <option value="Con">Con</option>
+          <option value="0" selected>No posee</option>
+          <option value="1">Posee</option>
         </select>
       </div>
 
@@ -194,8 +233,39 @@
 
   <!-- ====== TAB: Base Propia ====== -->
   <div id="base" class="tab-content">
-    <h2>Base Propia</h2>
-    <p>En construcción...</p>
+    <h2>Gestión de Catálogos</h2>
+
+    <div class="form-group">
+      <label>Compañía</label>
+      <select id="cat-compania"></select>
+    </div>
+
+    <div class="form-group">
+      <label>Origen</label>
+      <select id="cat-source">
+        <option value="remote" selected>Remoto ATM</option>
+        <option value="local">Local</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <button type="button" id="cat-refresh">🔄 Refrescar tablas</button>
+      <button type="button" id="cat-sync-all">⚙️ Sync todas</button>
+    </div>
+
+    <div id="cat-status" class="muted" style="margin-bottom:10px;"></div>
+
+    <table id="cat-table" border="1" cellpadding="6" cellspacing="0" style="width:100%; border-collapse:collapse;">
+      <thead>
+        <tr>
+          <th>Tabla</th>
+          <th>Fuente local</th>
+          <th>Existe</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
   </div>
 
   <!-- ====== TAB: Procesos (integración de procesos.html) ====== -->
@@ -267,6 +337,7 @@
         if (tabId === "historico") cargarHistorico();
         if (tabId === "procesos") proc_cargar();  // auto-carga al entrar
         if (tabId === "cabecera") initCabeceraTab();
+        if (tabId === "base") initCatalogosTab();
       });
     });
 
@@ -293,6 +364,32 @@
         contenedor.appendChild(tabla);
       } catch (err) {
         console.error("Error cargando historial:", err);
+      }
+    }
+
+    async function actualizarIndicadorInfoauto(){
+      const dot = document.getElementById('historicoInfoautoDot');
+      const tab = document.getElementById('historicoTabButton');
+      if(!dot || !tab) return;
+      try{
+        const out = await catFetchJson('/catalogos/atm/estado/ws_au_infoauto');
+        const status = out.status || {};
+        const title = status.updatedAt
+          ? `Infoauto actualizado por última vez: ${String(status.updatedAt).replace('T', ' ').replace('Z', '')}`
+          : 'Infoauto todavía no fue sincronizado localmente.';
+        tab.title = title;
+        dot.title = title;
+        if(status.exists && status.isCurrentMonth === false){
+          dot.classList.add('show');
+        } else if(!status.exists){
+          dot.classList.add('show');
+        } else {
+          dot.classList.remove('show');
+        }
+      }catch(_e){
+        tab.title = 'No se pudo verificar el estado de infoauto.';
+        dot.title = tab.title;
+        dot.classList.remove('show');
       }
     }
 
@@ -386,6 +483,18 @@
         .replaceAll("'",'&#39;');
     }
 
+    let toastTimer = null;
+    function showStatusToast(message, duration = 1200){
+      const el = document.getElementById('statusToast');
+      if(!el) return;
+      el.textContent = message || '';
+      el.classList.add('show');
+      if(toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(()=>{
+        el.classList.remove('show');
+      }, duration);
+    }
+
     function getYYYYMM(){
       const d = new Date();
       const y = d.getFullYear();
@@ -477,11 +586,15 @@
 
       document.getElementById('genero').value = (String(c.sexo || '').toUpperCase() === 'F') ? 'Femenino' : 'Masculino';
       document.getElementById('estadoCivil').value = c.est_civil || 'Soltero';
-      document.getElementById('medioPago').value = c.medio_pago || 'TC';
+      const mp = String(c.medio_pago || '').trim().toUpperCase();
+      document.getElementById('medioPago').value =
+        (mp === '4' || mp === 'CBU' || mp === 'DC') ? 'CBU' :
+        (mp === '1' || mp === '3' || mp === 'EF' || mp === 'EFVO' || mp === 'PF') ? 'EF' :
+        'TC';
 
       // Defaults ATM ya existentes
       document.getElementById('uso').value = (String(c.tipo_uso) === '2') ? 'Comercial' : 'Particular';
-      document.getElementById('rastreador').value = (String(c.rastreo) === '1') ? 'Con' : 'Sin';
+      document.getElementById('rastreador').value = ['1', 'A', 'POSEE', 'CON'].includes(String(c.rastreo || '').trim().toUpperCase()) ? '1' : '0';
       document.getElementById('gnc').value = (String(c.gnc) === '1') ? 'Con' : 'Sin';
       document.getElementById('gncSuma').value = c.suma_gnc || '';
       showGncSuma();
@@ -573,7 +686,7 @@
       const fec_nac = v.fec ? v.fec.replaceAll('-','') : '';
       const sexo = (v.genero === 'Femenino') ? 'F' : 'M';
       const tipo_uso = (v.uso === 'Comercial') ? '2' : '1';
-      const rastreo = (v.rastreador === 'Con') ? '1' : '0';
+      const rastreo = (String(v.rastreador) === '1') ? '1' : '0';
       const gnc = (v.gnc === 'Con') ? '1' : '0';
 
       const snapAhora = snapshotForm();
@@ -638,7 +751,8 @@
         tipo_uso,
         rastreo,
         gnc,
-        suma_gnc: (gnc === '1') ? (v.sumaGnc || '') : ''
+        suma_gnc: (gnc === '1') ? (v.sumaGnc || '') : '',
+        accesorios: (gnc === '1') ? '1' : ''
       };
 
       try{
@@ -710,6 +824,109 @@
       try { initCabeceraTab(); } catch(e){ console.error(e); }
     })();
 
+    /* ====== CATÁLOGOS (Base Propia) ====== */
+    let catCompania = '';
+    let catSource = 'remote';
+    let catTablas = [];
+
+    async function catFetchJson(url, options = {}) {
+      const resp = await fetch(url, options);
+      const data = await resp.json().catch(() => ({}));
+      if (!resp.ok || data.ok === false) throw new Error(data.error || `HTTP ${resp.status}`);
+      return data;
+    }
+    function catSetStatus(msg){ const el = document.getElementById('cat-status'); if(el) el.textContent = msg || ''; }
+    function catReportLinks(slug, runId){
+      return `<a href="/catalogos/${slug}/reportes/${runId}" target="_blank">JSON</a> | <a href="/catalogos/${slug}/reportes/${runId}.csv" target="_blank">CSV</a>`;
+    }
+
+    function catRenderTable(){
+      const tb = document.querySelector('#cat-table tbody');
+      if(!tb) return;
+      tb.innerHTML = '';
+      catTablas.forEach((t)=>{
+        const canSync = catSource === 'remote' ? !!t.remoteSupported : !!t.exists;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><code>${t.table}</code></td>
+          <td><small>${t.sourcePath || ''}</small></td>
+          <td>${t.exists ? '✅' : '❌'}</td>
+          <td>
+            <button type="button" data-sync="${t.table}" ${canSync ? '' : 'disabled'}>Sync</button>
+            <span id="cat-report-${t.table.replace(/[^a-zA-Z0-9_-]/g,'_')}" style="margin-left:8px;"></span>
+          </td>`;
+        tb.appendChild(tr);
+      });
+
+      tb.querySelectorAll('button[data-sync]').forEach((btn)=>{
+        btn.addEventListener('click', async ()=>{
+          const table = btn.getAttribute('data-sync');
+          try{
+            catSetStatus(`Sincronizando ${table} desde ${catSource === 'remote' ? 'ATM' : 'fuente local'}...`);
+            const out = await catFetchJson(`/catalogos/${catCompania}/sync/${table}?source=${encodeURIComponent(catSource)}`, { method:'POST' });
+            const id = `cat-report-${table.replace(/[^a-zA-Z0-9_-]/g,'_')}`;
+            const slot = document.getElementById(id);
+            if(slot && out.runId) slot.innerHTML = catReportLinks(catCompania, out.runId);
+            await catLoadTablas();
+            if(catCompania === 'atm' && table === 'ws_au_infoauto') await actualizarIndicadorInfoauto();
+            catSetStatus(`OK ${table}: altas=${out.resumen?.altas||0}, bajas=${out.resumen?.bajas||0}, modificados=${out.resumen?.modificados||0}`);
+          }catch(e){ catSetStatus(`Error sync ${table}: ${e.message || e}`); }
+        });
+      });
+    }
+
+    async function catLoadCompanias(){
+      const sel = document.getElementById('cat-compania');
+      if(!sel) return;
+      const out = await catFetchJson('/catalogos/companias');
+      sel.innerHTML = '';
+      (out.items || []).forEach((slug)=>{
+        const op = document.createElement('option');
+        op.value = slug; op.textContent = slug.toUpperCase();
+        sel.appendChild(op);
+      });
+      catCompania = sel.value || '';
+    }
+
+    async function catLoadTablas(){
+      if(!catCompania) return;
+      const out = await catFetchJson(`/catalogos/${catCompania}/tablas`);
+      catTablas = out.items || [];
+      catRenderTable();
+      catSetStatus(`Tablas cargadas: ${catTablas.length}`);
+    }
+
+    async function catSyncAll(){
+      if(!catCompania) return;
+      catSetStatus(`Sincronizando todas las tablas de ${catCompania} desde ${catSource === 'remote' ? 'ATM' : 'fuente local'}...`);
+      const out = await catFetchJson(`/catalogos/${catCompania}/sync-all?source=${encodeURIComponent(catSource)}`, { method:'POST' });
+      await catLoadTablas();
+      (out.results || []).forEach((item)=>{
+        const id = `cat-report-${String(item.table || '').replace(/[^a-zA-Z0-9_-]/g,'_')}`;
+        const slot = document.getElementById(id);
+        if(slot && item.runId) slot.innerHTML = catReportLinks(catCompania, item.runId);
+      });
+      if(catCompania === 'atm') await actualizarIndicadorInfoauto();
+      catSetStatus(`Sync-all OK: ${out.total || 0} tablas`);
+    }
+
+    async function initCatalogosTab(){
+      try{
+        await catLoadCompanias();
+        const sourceSelEl = document.getElementById('cat-source');
+        if(sourceSelEl) catSource = sourceSelEl.value || 'remote';
+        await catLoadTablas();
+        const sel = document.getElementById('cat-compania');
+        const btnRefresh = document.getElementById('cat-refresh');
+        const btnAll = document.getElementById('cat-sync-all');
+        if(sel){ sel.onchange = async ()=>{ catCompania = sel.value || ''; await catLoadTablas(); }; }
+        if(sourceSelEl){ sourceSelEl.onchange = async ()=>{ catSource = sourceSelEl.value || 'remote'; await catLoadTablas(); }; }
+        if(btnRefresh) btnRefresh.onclick = ()=>catLoadTablas();
+        if(btnAll) btnAll.onclick = ()=>catSyncAll();
+      }catch(e){
+        catSetStatus(`Error inicializando catálogos: ${e.message || e}`);
+      }
+    }
 /* ====== PROCESOS (clonado/adaptado de procesos.html) ====== */
     const procEstadoEl = document.getElementById('proc-estado');
     const procLimitEl  = document.getElementById('proc-limit');
@@ -765,7 +982,7 @@
             const tr = document.createElement('tr');
             const acc = `
               <div class="row">
-                <a class="btn" href="/cotizacion/estado/${it.id}" target="_blank"><button class="secondary">Ver estado</button></a>
+                <a class="btn" href="/proceso/excel/${it.id}" target="_blank"><button class="secondary">Descargar XLS</button></a>
                 <a class="btn" href="/data/procesos/proceso-${it.id}/" target="_blank"><button>📁 Abrir carpeta</button></a>
               </div>
             `;
@@ -821,6 +1038,7 @@
     // Al cargar página, precarga Histórico para que esté listo
     window.onload = () => {
       cargarHistorico();
+      actualizarIndicadorInfoauto();
     };
 
     /* Utilidad */
@@ -834,10 +1052,13 @@
     window.ejecutarProceso = async function(id){
       const limite = 5; // como pediste
       const cabeceraId = Number(localStorage.getItem('cabecera_id_activa') || '0');
+      const cabeceraNom = (localStorage.getItem('cabecera_nombre_activa') || '').trim();
       if(!cabeceraId){
         alert('Elegí una cabecera primero (no hay cabecera activa).');
         return;
       }
+      const cabeceraLabel = cabeceraNom || `ID ${cabeceraId}`;
+      showStatusToast(`Procesando histórico ${id} con cabecera ${cabeceraLabel}...`, 1400);
       try{
         const resp = await fetch(`/proceso/ejecutar/${id}`, {
           method:'POST',
@@ -859,3 +1080,4 @@
   </script>
 </body>
 </html>
+

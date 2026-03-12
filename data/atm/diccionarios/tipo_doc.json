@@ -1,0 +1,34 @@
+[
+  {
+    "codigo": "CI",
+    "descripcion": "CI"
+  },
+  {
+    "codigo": "PA",
+    "descripcion": "PA"
+  },
+  {
+    "codigo": "DNI",
+    "descripcion": "DNI"
+  },
+  {
+    "codigo": "CUIT",
+    "descripcion": "CUIT"
+  },
+  {
+    "codigo": "CUIL",
+    "descripcion": "CUIL"
+  },
+  {
+    "codigo": "LC",
+    "descripcion": "LC"
+  },
+  {
+    "codigo": "LE",
+    "descripcion": "LE"
+  },
+  {
+    "codigo": "OT",
+    "descripcion": "OT"
+  }
+]

@@ -9,6 +9,8 @@ const axios = require('axios');
 const { XMLParser } = require('fast-xml-parser');
 const db = require('../config/db');
 const { initPreprocesador } = require('../utils/preprocesado_helper');
+const { resolveAtmVehicleKind } = require('../utils/atm_tipo_vehiculo');
+const { resolveSumaAsegurada } = require('../utils/atm_infoauto');
 
 function ensureDir(p) {
   if (!fs.existsSync(p)) fs.mkdirSync(p, { recursive: true });
@@ -126,7 +128,7 @@ async function loadAsegConfig(slug) {
 // ===== Fallbacks menores =====
 function inferSeccionVehiculo(fila) {
   const join = Object.values(fila || {}).join(' ').toLowerCase();
-  if (/\bmoto(s)?\b/.test(join)) return '4';
+  if (/\bmoto(s)?\b/.test(join)) return '1';
   return '3';
 }
 
@@ -150,6 +152,69 @@ function mapUsoTextoACodigo(value, DICC) {
   return DICC[key] || '';
 }
 
+function normalizeText(value) {
+  return String(value || '')
+    .trim()
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .toUpperCase();
+}
+
+function resolveRastreoCodigo(cabecera, Aseg) {
+  const raw = normalizeText(cabecera?.rastreo);
+  const defaultCode = String(
+    process.env.ATM_RASTREO_CODIGO_CON ||
+      Aseg?.parametros_extras?.rastreo_codigo_con ||
+      'A'
+  ).trim();
+
+  if (raw === '1' || raw === 'CON' || raw === 'POSEE' || raw === 'A') return defaultCode;
+  if (!raw || raw === '0' || raw === 'SIN' || raw === 'NO POSEE' || raw === 'N') return 'N';
+
+  // Si ya viene un código ATM específico (numérico u otro), lo respetamos.
+  return raw;
+}
+
+function resolveFormaPagoCodigo(cabecera) {
+  const raw = normalizeText(
+    cabecera?.medio_pago ??
+    cabecera?.medioPago ??
+    cabecera?.forma_pago ??
+    cabecera?.formaPago ??
+    ''
+  );
+
+  if (['2', 'TC', 'TARJETA', 'TARJETA DE CREDITO', 'CREDITO'].includes(raw)) return '2';
+  if (['4', 'CBU', 'DC', 'DEBITO EN CUENTA'].includes(raw)) return '4';
+
+  // "Efectivo" en la UI agrupa el resto de medios no tarjeta/no CBU.
+  if ([
+    '1',
+    '3',
+    'EF',
+    'EFVO',
+    'EFECTIVO',
+    'PF',
+    'PAGO FACIL',
+    'PAGO FÁCIL',
+    'RAPIPAGO',
+    'COBRO EXPRESS',
+    'MERCADOPAGO',
+    'MERCADO PAGO',
+    'OTRA',
+  ].includes(raw)) return '1';
+
+  return '2';
+}
+
+function resolveSumaGnc(cabecera, gncFlag) {
+  if (gncFlag !== '1') return '';
+  const raw = String(cabecera?.suma_gnc ?? '').trim();
+  if (!raw) return '';
+  const normalized = raw.replace(/[.,\s]/g, '');
+  return /^\d+$/.test(normalized) ? normalized : '';
+}
+
 // ===== Helpers Proceso (filesystem) =====
 function procesosRoot() {
   return path.join(process.cwd(), 'data', 'procesos');
@@ -162,6 +227,149 @@ function metadataPath(id) {
 }
 function resumenPath(id) {
   return path.join(procesoDir(id), 'resumen.json');
+}
+
+// ===== Export Excel por Proceso =====
+function flattenForExcel(obj, prefix = '') {
+  const out = {};
+  for (const [k, v] of Object.entries(obj || {})) {
+    const key = prefix ? `${prefix}${k}` : k;
+    if (v == null) {
+      out[key] = '';
+    } else if (typeof v === 'object') {
+      // Evitar explotar columnas: guardar objeto completo como JSON
+      out[key] = JSON.stringify(v);
+    } else {
+      out[key] = v;
+    }
+  }
+  return out;
+}
+
+function insertFieldBeforePrefix(obj, fieldName, fieldValue, prefix) {
+  const out = {};
+  let inserted = false;
+  for (const [key, value] of Object.entries(obj || {})) {
+    if (!inserted && String(key).startsWith(prefix)) {
+      out[fieldName] = fieldValue ?? '';
+      inserted = true;
+    }
+    out[key] = value;
+  }
+  if (!inserted) out[fieldName] = fieldValue ?? '';
+  return out;
+}
+
+async function generarExcelProceso(procesoId) {
+  const id = Number(procesoId);
+  const meta = await loadMetadata(id);
+  if (!meta) throw new Error('No existe el proceso');
+
+  const rp = resumenPath(id);
+  if (!fs.existsSync(rp)) throw new Error('El proceso no tiene resumen.json');
+  const resumen = JSON.parse(fs.readFileSync(rp, 'utf8'));
+
+  const cabecera = meta.cabecera_id ? getCabecera(meta.cabecera_id) : null;
+
+  // Resolver archivo combinado desde metadata (fallback: DB historial)
+  let relArchivo = meta.archivo || null;
+  let absArchivo = null;
+  if (relArchivo) {
+    absArchivo = path.isAbsolute(relArchivo) ? relArchivo : path.join(process.cwd(), relArchivo);
+  } else if (meta.historial_id) {
+    const hist = await getHistorialItem(meta.historial_id);
+    if (hist) {
+      const resolved = resolveCombinedAbsPath(hist);
+      relArchivo = resolved.relPath;
+      absArchivo = resolved.absPath;
+    }
+  }
+  if (!absArchivo || !fs.existsSync(absArchivo)) {
+    throw new Error('No se encontró el archivo combinado para exportar');
+  }
+
+  const filas = await readFilasFromFile(absArchivo);
+
+  const rowsCot = [];
+  const rowsSkip = [];
+  const rowsErr = [];
+
+  for (const slug of Object.keys(resumen.resultados || {})) {
+    const arr = Array.isArray(resumen.resultados[slug]) ? resumen.resultados[slug] : [];
+    for (const item of arr) {
+      const idx = Number(item.index);
+      const filaIn = filas[idx] || {};
+      const base = {
+        proceso_id: id,
+        historial_id: meta.historial_id || resumen.historial_id || null,
+        cabecera_id: meta.cabecera_id || resumen.cabecera_id || null,
+        aseguradora: slug,
+        index: idx,
+        ok: item.ok === true,
+        skipped: item.skipped === true,
+        operacion: item.operacion || '',
+        reason: item.reason || '',
+        error: item.error || '',
+      };
+
+      const filaFlat = flattenForExcel(filaIn, 'veh_');
+      const cabFlat = cabecera ? flattenForExcel(cabecera, 'cab_') : {};
+
+      if (item.skipped) {
+        rowsSkip.push({ ...base, ...filaFlat, ...cabFlat, used: JSON.stringify(item.used || {}) });
+        continue;
+      }
+
+      if (!item.ok) {
+        rowsErr.push({ ...base, ...filaFlat, ...cabFlat, used: JSON.stringify(item.used || {}) });
+        continue;
+      }
+
+      // ok y no skipped: una fila por cobertura (si existe), sino una fila base
+      const cobs = Array.isArray(item.coberturas) ? item.coberturas : [];
+      const sumaAsegurada = await resolveSumaAsegurada({
+        row: { ...filaIn, ...item.fila_preview },
+        responseAmount: item.suma_asegurada,
+      });
+      if (cobs.length === 0) {
+        const row = {
+          ...base,
+          ...filaFlat,
+          ...cabFlat,
+          used: JSON.stringify(item.used || {}),
+        };
+        rowsCot.push(insertFieldBeforePrefix(row, 'Suma Asegurada', sumaAsegurada, 'cot_'));
+      } else {
+        for (const cob of cobs) {
+          const cobFlat = flattenForExcel(cob, 'cot_');
+          const row = {
+            ...base,
+            ...filaFlat,
+            ...cabFlat,
+            ...cobFlat,
+            used: JSON.stringify(item.used || {}),
+          };
+          rowsCot.push(insertFieldBeforePrefix(row, 'Suma Asegurada', sumaAsegurada, 'cot_'));
+        }
+      }
+    }
+  }
+
+  const wb = xlsx.utils.book_new();
+  const wsCot = xlsx.utils.json_to_sheet(rowsCot);
+  xlsx.utils.book_append_sheet(wb, wsCot, 'Cotizaciones');
+
+  const wsErr = xlsx.utils.json_to_sheet(rowsErr);
+  xlsx.utils.book_append_sheet(wb, wsErr, 'Errores');
+
+  const wsSkip = xlsx.utils.json_to_sheet(rowsSkip);
+  xlsx.utils.book_append_sheet(wb, wsSkip, 'Skipped');
+
+  const dlDir = path.join(procesoDir(id), 'descargas');
+  ensureDir(dlDir);
+  const outAbs = path.join(dlDir, `proceso-${id}-cotizaciones.xlsx`);
+  xlsx.writeFile(wb, outAbs);
+  return outAbs;
 }
 
 async function loadMetadata(id) {
@@ -338,17 +546,43 @@ async function cotizarFila({
     (Aseg.seccion_default && String(Aseg.seccion_default).trim()) ||
     '3';
 
+  const atmVehicle = slug === 'atm' ? await resolveAtmVehicleKind(fila) : null;
+  const seccionAtm = String(atmVehicle?.seccion || '').trim();
+
+  // Bypass motos: por ahora NO se envían al WS de autos (AUTOS_Cotizar_PHP).
+  // Se detecta por: catálogo ATM, seccion=1 o texto tipo_vehiculo.
+  const tipoVehTxt = pick([fila?.tipo_vehiculo, fila?.TipoVehiculo, fila?.tipoVehiculo]);
+  const tipoVehNorm = (tipoVehTxt || '').toString().toLowerCase();
+  const esMoto =
+    atmVehicle?.isMoto === true ||
+    seccionAtm === '4' ||
+    String(seccion) === '1' ||
+    tipoVehNorm.includes('moto') ||
+    tipoVehNorm.includes('scooter');
+
+  if (slug === 'atm' && String(SOAP_METHOD) === 'AUTOS_Cotizar_PHP' && esMoto) {
+    const outSkip = {
+      ok: true,
+      skipped: true,
+      reason: 'Moto: se omite WS AUTOS_Cotizar_PHP',
+      operacion: 'SKIP_MOTO',
+      coberturas: [],
+      raw: '',
+      used: { seccion, cod_infoauto: codia, soap_method: SOAP_METHOD }
+    };
+    if (evDir) safeWriteJson(path.join(evDir, 'atm-skip.json'), outSkip);
+    return outSkip;
+  }
+
   const cerokm = cabecera?.cerokm === '1' ? '1' : '0';
   const tipo_uso = ['1', '2'].includes(String(cabecera?.tipo_uso || ''))
     ? String(cabecera.tipo_uso)
     : '1';
   const ajuste = (cabecera?.ajuste || '').toString().trim();
-  const rastreoRaw = (cabecera?.rastreo ?? '').toString().trim();
-  // ATM: 'rastreo' es un CÓDIGO de la tabla ws_au_rastreo_satelital. Si no hay código válido, NO se envía.
-  // Si tu UI guarda 0/1 como booleano, lo tratamos como 'no informar'.
-  const rastreoCodigo = (!rastreoRaw || rastreoRaw === '0' || rastreoRaw === '1') ? '' : rastreoRaw;
+  const rastreoCodigo = resolveRastreoCodigo(cabecera, Aseg);
   const alarma = cabecera?.alarma === '1' ? '1' : '0';
   const gnc = cabecera?.gnc === '1' ? '1' : '0';
+  const sumaGnc = resolveSumaGnc(cabecera, gnc);
 
   let bienXML = `
     <cod_infoauto>${codia}</cod_infoauto>
@@ -363,27 +597,11 @@ async function cotizarFila({
   if (rastreoCodigo) bienXML += `\n    <rastreo>${rastreoCodigo}</rastreo>`;
   bienXML += `\n    <cerokm>${cerokm}</cerokm>`;
   bienXML += `\n    <gnc>${gnc}</gnc>`;
+  if (sumaGnc) bienXML += `\n    <suma_gnc>${sumaGnc}</suma_gnc>`;
   if (seccion === '4' && tipo_uso) bienXML += `\n    <tipo_uso>${tipo_uso}</tipo_uso>`;
 
   // ===== Forma de pago (ATM) =====
-  const mpRaw = String(
-    cabecera?.medio_pago ??
-      cabecera?.medioPago ??
-      cabecera?.forma_pago ??
-      cabecera?.formaPago ??
-      ''
-  )
-    .trim()
-    .toUpperCase();
-
-  const formaPago =
-    mpRaw === '2' || mpRaw.includes('TARJ') || mpRaw.includes('TC') || mpRaw.includes('CRED')
-      ? '2'
-      : mpRaw === '4' || mpRaw.includes('CBU')
-      ? '4'
-      : mpRaw === '1' || mpRaw.includes('EFVO') || mpRaw.includes('EFEC') || mpRaw.includes('OTRA')
-      ? '1'
-      : '2';
+  const formaPago = resolveFormaPagoCodigo(cabecera);
 
   let formapagoXML = '';
   if (formaPago === '1') {
@@ -550,12 +768,14 @@ async function cotizarFila({
         const msg = (msgRx ? msgRx[1].trim() : '');
 
         const success = statusSuccess === 'TRUE';
+        const sumaAsegurada = auto?.datos_cotiz?.suma ?? auto?.datos_cotiz?.Suma ?? auto?.Datos_Cotiz?.suma ?? null;
 
         const parsedOut = {
           ok: success,
           operacion: operacionFinal,
           statusSuccess,
           msg,
+          suma_asegurada: sumaAsegurada,
           coberturas_len: Array.isArray(coberturas) ? coberturas.length : 0,
           used: { soapAction: sa }
         };
@@ -583,6 +803,7 @@ async function cotizarFila({
         return {
           ok: true,
           operacion: operacionFinal,
+          suma_asegurada: sumaAsegurada,
           coberturas,
           used: { soapAction: sa },
           raw: rawResp,
@@ -802,6 +1023,7 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
         registros_procesados: 0,
         cotizaciones_exitosas: 0,
         cotizaciones_con_error: 0,
+        cotizaciones_skipped: 0,
       });
 
       return res.status(400).json({
@@ -819,6 +1041,7 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
     const resultadosPorAseg = {};
     let totalOk = 0;
     let totalErr = 0;
+    let totalSkipped = 0;
 
     // Guardar “run header”
     safeWriteJson(path.join(procesoDir(proceso_id), 'run.json'), {
@@ -879,8 +1102,13 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
           ...resp,
         });
 
-        if (resp.ok) totalOk++;
-        else totalErr++;
+        if (resp && resp.skipped) {
+          totalSkipped++;
+        } else if (resp && resp.ok) {
+          totalOk++;
+        } else {
+          totalErr++;
+        }
 
         // evidencia “resumen” por fila (rápido de leer)
         safeWriteJson(path.join(evidenciasDir(proceso_id, slug, i), 'atm-result.json'), {
@@ -895,6 +1123,7 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
           registros_procesados: i + 1,
           cotizaciones_exitosas: totalOk,
           cotizaciones_con_error: totalErr,
+          cotizaciones_skipped: totalSkipped,
         });
       }
 
@@ -940,6 +1169,7 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
       registros_procesados: tomar,
       cotizaciones_exitosas: totalOk,
       cotizaciones_con_error: totalErr,
+      cotizaciones_skipped: totalSkipped,
     });
 
     // Persistir estado final en DB (para la tabla de "Procesos de Cotización")
@@ -963,6 +1193,7 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
       total_filas_intentadas: tomar,
       cotizaciones_exitosas: totalOk,
       cotizaciones_con_error: totalErr,
+      cotizaciones_skipped: totalSkipped,
     });
 
     return res.status(200).json({
@@ -974,6 +1205,7 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
       total_filas_intentadas: tomar,
       cotizaciones_exitosas: totalOk,
       cotizaciones_con_error: totalErr,
+      cotizaciones_skipped: totalSkipped,
       carpeta: `data/procesos/proceso-${proceso_id}/`,
       resumen,
     });
@@ -1023,14 +1255,46 @@ router.get('/listar', async (req, res) => {
         registros_procesados: meta.registros_procesados ?? 0,
         cotizaciones_exitosas: meta.cotizaciones_exitosas ?? 0,
         cotizaciones_con_error: meta.cotizaciones_con_error ?? 0,
+        cotizaciones_skipped: meta.cotizaciones_skipped ?? 0,
         carpeta: `data/procesos/proceso-${meta.id}/`,
       });
     }
 
-    items.sort((a, b) => b.id - a.id);
+// Orden: más recientes primero (fecha_inicio DESC). Fallback: id DESC.
+items.sort((a, b) => {
+  const ta = Date.parse(a?.fecha_inicio || '') || 0;
+  const tb = Date.parse(b?.fecha_inicio || '') || 0;
+  if (tb !== ta) return tb - ta;
+  return (Number(b?.id) || 0) - (Number(a?.id) || 0);
+});
     res.json({ ok: true, total: items.length, items });
   } catch (err) {
     res.status(500).json({ ok: false, error: err.message || String(err) });
+  }
+});
+
+// =============================================================================
+// GET /proceso/excel/:id
+// Descarga Excel con: (vehículo + cabecera + cotizaciones) + hojas Errores/Skipped
+// =============================================================================
+router.get('/excel/:id', async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const dlDir = path.join(procesoDir(id), 'descargas');
+    const outAbs = path.join(dlDir, `proceso-${id}-cotizaciones.xlsx`);
+
+    if (!fs.existsSync(outAbs)) {
+      await generarExcelProceso(id);
+    }
+
+    if (!fs.existsSync(outAbs)) {
+      return res.status(404).json({ ok: false, error: 'No se pudo generar el Excel' });
+    }
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    return res.download(outAbs, `proceso-${id}-cotizaciones.xlsx`);
+  } catch (err) {
+    return res.status(500).json({ ok: false, error: err.message || String(err) });
   }
 });
 
@@ -1071,4 +1335,3 @@ router.get('/:id', async (req, res) => {
 });
 
 module.exports = router;
-

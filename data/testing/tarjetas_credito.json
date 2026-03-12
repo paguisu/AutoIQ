@@ -3,19 +3,19 @@
   "tarjetas": {
     "visa_1": {
       "marca": "VISA",
-      "codigo_atm": "2",
+      "codigo_atm": "1",
       "numero": "4111111111111111",
       "vencimiento": "122027"
     },
     "visa_2": {
       "marca": "VISA",
-      "codigo_atm": "2",
+      "codigo_atm": "1",
       "numero": "4012888888881881",
       "vencimiento": "112028"
     },
     "master_1": {
       "marca": "MASTERCARD",
-      "codigo_atm": "1",
+      "codigo_atm": "2",
       "numero": "5555555555554444",
       "vencimiento": "062027"
     }

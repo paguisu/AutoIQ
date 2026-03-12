@@ -1,0 +1,18 @@
+[
+  {
+    "codigo": "1",
+    "descripcion": "Rapipago / Pago Fácil / Cobro Express / MercadoPago"
+  },
+  {
+    "codigo": "2",
+    "descripcion": "Tarjeta de Crédito"
+  },
+  {
+    "codigo": "3",
+    "descripcion": "Efectivo"
+  },
+  {
+    "codigo": "4",
+    "descripcion": "CBU"
+  }
+]

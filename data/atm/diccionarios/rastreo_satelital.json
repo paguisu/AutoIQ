@@ -1,0 +1,10 @@
+[
+  {
+    "codigo": "N",
+    "descripcion": "No posee"
+  },
+  {
+    "codigo": "A",
+    "descripcion": "Posee"
+  }
+]
