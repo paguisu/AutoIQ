@@ -202,6 +202,14 @@
     </div>
 
     <div class="form-group">
+      <label>Origen</label>
+      <select id="cat-source">
+        <option value="remote" selected>Remoto ATM</option>
+        <option value="local">Local</option>
+      </select>
+    </div>
+
+    <div class="form-group">
       <button type="button" id="cat-refresh">🔄 Refrescar tablas</button>
       <button type="button" id="cat-sync-all">⚙️ Sync todas</button>
     </div>
@@ -736,6 +744,7 @@
 
     /* ====== CATÁLOGOS (Base Propia) ====== */
     let catCompania = '';
+    let catSource = 'remote';
     let catTablas = [];
 
     async function catFetchJson(url, options = {}) {
@@ -754,13 +763,14 @@
       if(!tb) return;
       tb.innerHTML = '';
       catTablas.forEach((t)=>{
+        const canSync = catSource === 'remote' ? !!t.remoteSupported : !!t.exists;
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td><code>${t.table}</code></td>
           <td><small>${t.sourcePath || ''}</small></td>
           <td>${t.exists ? '✅' : '❌'}</td>
           <td>
-            <button type="button" data-sync="${t.table}" ${t.exists ? '' : 'disabled'}>Sync</button>
+            <button type="button" data-sync="${t.table}" ${canSync ? '' : 'disabled'}>Sync</button>
             <span id="cat-report-${t.table.replace(/[^a-zA-Z0-9_-]/g,'_')}" style="margin-left:8px;"></span>
           </td>`;
         tb.appendChild(tr);
@@ -770,11 +780,12 @@
         btn.addEventListener('click', async ()=>{
           const table = btn.getAttribute('data-sync');
           try{
-            catSetStatus(`Sincronizando ${table}...`);
-            const out = await catFetchJson(`/catalogos/${catCompania}/sync/${table}`, { method:'POST' });
+            catSetStatus(`Sincronizando ${table} desde ${catSource === 'remote' ? 'ATM' : 'fuente local'}...`);
+            const out = await catFetchJson(`/catalogos/${catCompania}/sync/${table}?source=${encodeURIComponent(catSource)}`, { method:'POST' });
             const id = `cat-report-${table.replace(/[^a-zA-Z0-9_-]/g,'_')}`;
             const slot = document.getElementById(id);
             if(slot && out.runId) slot.innerHTML = catReportLinks(catCompania, out.runId);
+            await catLoadTablas();
             catSetStatus(`OK ${table}: altas=${out.resumen?.altas||0}, bajas=${out.resumen?.bajas||0}, modificados=${out.resumen?.modificados||0}`);
           }catch(e){ catSetStatus(`Error sync ${table}: ${e.message || e}`); }
         });
@@ -804,19 +815,28 @@
 
     async function catSyncAll(){
       if(!catCompania) return;
-      catSetStatus(`Sincronizando todas las tablas de ${catCompania}...`);
-      const out = await catFetchJson(`/catalogos/${catCompania}/sync-all`, { method:'POST' });
+      catSetStatus(`Sincronizando todas las tablas de ${catCompania} desde ${catSource === 'remote' ? 'ATM' : 'fuente local'}...`);
+      const out = await catFetchJson(`/catalogos/${catCompania}/sync-all?source=${encodeURIComponent(catSource)}`, { method:'POST' });
+      await catLoadTablas();
+      (out.results || []).forEach((item)=>{
+        const id = `cat-report-${String(item.table || '').replace(/[^a-zA-Z0-9_-]/g,'_')}`;
+        const slot = document.getElementById(id);
+        if(slot && item.runId) slot.innerHTML = catReportLinks(catCompania, item.runId);
+      });
       catSetStatus(`Sync-all OK: ${out.total || 0} tablas`);
     }
 
     async function initCatalogosTab(){
       try{
         await catLoadCompanias();
+        const sourceSelEl = document.getElementById('cat-source');
+        if(sourceSelEl) catSource = sourceSelEl.value || 'remote';
         await catLoadTablas();
         const sel = document.getElementById('cat-compania');
         const btnRefresh = document.getElementById('cat-refresh');
         const btnAll = document.getElementById('cat-sync-all');
         if(sel){ sel.onchange = async ()=>{ catCompania = sel.value || ''; await catLoadTablas(); }; }
+        if(sourceSelEl){ sourceSelEl.onchange = async ()=>{ catSource = sourceSelEl.value || 'remote'; await catLoadTablas(); }; }
         if(btnRefresh) btnRefresh.onclick = ()=>catLoadTablas();
         if(btnAll) btnAll.onclick = ()=>catSyncAll();
       }catch(e){

@@ -1,0 +1,14 @@
+[
+  {
+    "codigo": "Nafta",
+    "descripcion": "Nafta"
+  },
+  {
+    "codigo": "Diesel",
+    "descripcion": "Diesel"
+  },
+  {
+    "codigo": "GNC",
+    "descripcion": "GNC"
+  }
+]

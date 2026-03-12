@@ -1,0 +1,26 @@
+[
+  {
+    "codigo": "1",
+    "descripcion": "CASADO"
+  },
+  {
+    "codigo": "2",
+    "descripcion": "DIVORCIADO/A"
+  },
+  {
+    "codigo": "3",
+    "descripcion": "SEPARADO/A"
+  },
+  {
+    "codigo": "4",
+    "descripcion": "SOLTERO/A"
+  },
+  {
+    "codigo": "5",
+    "descripcion": "VIUDO/A"
+  },
+  {
+    "codigo": "99",
+    "descripcion": "NO INFORMADO"
+  }
+]

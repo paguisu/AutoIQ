@@ -1,0 +1,27 @@
+[
+  {
+    "codigo": "A",
+    "descripcion": "Anual",
+    "cuotas": "12"
+  },
+  {
+    "codigo": "S",
+    "descripcion": "Semestral",
+    "cuotas": "6"
+  },
+  {
+    "codigo": "M",
+    "descripcion": "Mensual",
+    "cuotas": "1"
+  },
+  {
+    "codigo": "Q",
+    "descripcion": "Cuatrimestral",
+    "cuotas": "4"
+  },
+  {
+    "codigo": "T",
+    "descripcion": "Anual/Refac Trimestral",
+    "cuotas": "12"
+  }
+]

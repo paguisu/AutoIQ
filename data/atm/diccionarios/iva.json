@@ -1,0 +1,18 @@
+[
+  {
+    "codigo": "IN",
+    "descripcion": "IVA RESPONSABLE INSCRIPTO"
+  },
+  {
+    "codigo": "EX",
+    "descripcion": "IVA SUJETO EXENTO"
+  },
+  {
+    "codigo": "CF",
+    "descripcion": "CONSUMIDOR FINAL"
+  },
+  {
+    "codigo": "MT",
+    "descripcion": "RESPONSABLE MONOTRIBUTO"
+  }
+]

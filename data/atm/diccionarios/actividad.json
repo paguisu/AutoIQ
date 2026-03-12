@@ -1,0 +1,26 @@
+[
+  {
+    "codigo": "0",
+    "descripcion": "Empl. Publico"
+  },
+  {
+    "codigo": "1",
+    "descripcion": "Empl. Rel. Dep."
+  },
+  {
+    "codigo": "2",
+    "descripcion": "Auton.-Monotrib."
+  },
+  {
+    "codigo": "4",
+    "descripcion": "Jubilado/Pens."
+  },
+  {
+    "codigo": "5",
+    "descripcion": "Pers.Contratado"
+  },
+  {
+    "codigo": "6",
+    "descripcion": "DESOCUPADO"
+  }
+]

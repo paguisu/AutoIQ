@@ -1,0 +1,37 @@
+[
+  {
+    "codigo": "8",
+    "descripcion": "TITANIO",
+    "longitud": "17"
+  },
+  {
+    "codigo": "2",
+    "descripcion": "MASTERCARD/ARGENCARD",
+    "longitud": "16"
+  },
+  {
+    "codigo": "1",
+    "descripcion": "VISA",
+    "longitud": "16"
+  },
+  {
+    "codigo": "5",
+    "descripcion": "AMERICAN EXPRESS",
+    "longitud": "15"
+  },
+  {
+    "codigo": "3",
+    "descripcion": "NARANJA",
+    "longitud": "16"
+  },
+  {
+    "codigo": "9",
+    "descripcion": "VISA ICBC (-10%)",
+    "longitud": "16"
+  },
+  {
+    "codigo": "6",
+    "descripcion": "NEVADA",
+    "longitud": "16"
+  }
+]
