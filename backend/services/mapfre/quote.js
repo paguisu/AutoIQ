@@ -260,6 +260,11 @@ function resolveMapfreCodPostal(row = {}, cabecera = {}, options = {}) {
   return String(resolveMapfrePostalMatch(row, cabecera, options)?.codigo_mapfre || '').trim();
 }
 
+function isMapfrePostalMatchSafe(match) {
+  const kind = String(match?.matchType || '').trim();
+  return ['mapfre_directo', 'sub_cp_exacto', 'cp_unico', 'exacto', 'fuzzy'].includes(kind);
+}
+
 function resolveMapfreCodProv(row = {}, cabecera = {}, cfg = {}, options = {}) {
   const postalMatch = resolveMapfrePostalMatch(row, cabecera, options);
   const fromMatch = String(postalMatch?.codigo_provincia || '').replace(/\D+/g, '');
@@ -333,6 +338,9 @@ async function buildMapfreEnvelope({ fila = {}, cabecera = {}, hoyFmt, cfg = {},
   if (!codInfoauto) throw new Error('Mapfre requiere codInfoauto');
   if (!anio) throw new Error('Mapfre requiere año del vehículo');
   if (!codPostal) throw new Error('Mapfre requiere código postal');
+  if (!isMapfrePostalMatchSafe(postalMatch)) {
+    throw new Error(`Mapfre requiere un match de domicilio no ambiguo (actual: ${postalMatch?.matchType || 'sin_match'})`);
+  }
   if (!valorVeh) throw new Error('Mapfre requiere valorVeh o suma asegurada resoluble');
 
   const fechaNac = normalizeDate(cabecera?.fec_nac);
@@ -491,6 +499,7 @@ module.exports = {
   describeMapfreTipoMedioPago,
   parseMapfreResponse,
   resolveMapfreCodPostal,
+  isMapfrePostalMatchSafe,
   resolveMapfrePostalMatch,
   resolveMapfreTipoMedioPago,
 };

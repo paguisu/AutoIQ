@@ -199,6 +199,12 @@ router.get('/listar', async (req, res) => {
       const meta = readProcesoMetadata(row.id) || {};
       return {
         ...row,
+        estado: meta.estado || row.estado,
+        fecha_inicio: meta.fecha_inicio || row.fecha_inicio,
+        fecha_fin: meta.fecha_fin || row.fecha_fin,
+        registros_procesados: meta.registros_procesados ?? row.registros_procesados ?? 0,
+        cotizaciones_exitosas: meta.cotizaciones_exitosas ?? row.cotizaciones_exitosas ?? 0,
+        cotizaciones_con_error: meta.cotizaciones_con_error ?? row.cotizaciones_con_error ?? 0,
         registros_total: meta.registros_total ?? null,
         cotizaciones_skipped: meta.cotizaciones_skipped ?? 0,
         aseguradoras: meta.aseguradoras ?? [],

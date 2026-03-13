@@ -1,5 +1,6 @@
 const {
   buildMapfreEnvelope,
+  isMapfrePostalMatchSafe,
   parseMapfreResponse,
   resolveMapfreCodPostal,
   resolveMapfrePostalMatch,
@@ -75,13 +76,24 @@ describe('Mapfre quote adapter', () => {
     ).toBe('3514000');
   });
 
+  test('rechaza matches ambiguos por contiene para Mapfre', () => {
+    const match = resolveMapfrePostalMatch(
+      { CP: '1650', localidad: 'GENERAL SAN MARTIN', provincia: 'Buenos Aires' },
+      {},
+      { postalCatalog }
+    );
+
+    expect(match?.matchType).toBe('contiene');
+    expect(isMapfrePostalMatchSafe(match)).toBe(false);
+  });
+
   test('arma el request SOAP con datos principales de Mapfre', async () => {
     const { envelope, requestMeta } = await buildMapfreEnvelope({
       fila: {
         infoautocod: '450420',
         anio: '2023',
         CP: '1650',
-        localidad: 'General San Martin',
+        localidad: 'SAN MARTIN',
         provincia: 'Buenos Aires',
         suma: '25190000',
       },
@@ -120,7 +132,7 @@ describe('Mapfre quote adapter', () => {
       usoVehiculo: '1',
       tipoMedioPago: 'TC',
       codProv: '1',
-      codPostalMatch: 'contiene',
+      codPostalMatch: 'exacto',
       codPostalLocalidad: 'SAN MARTIN',
       codPostalProvincia: 'BUENOS AIRES',
     });

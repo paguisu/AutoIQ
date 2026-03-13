@@ -14,8 +14,10 @@ const { resolveSumaAsegurada } = require('../utils/atm_infoauto');
 const {
   buildMapfreEnvelope,
   describeMapfreTipoMedioPago,
+  isMapfrePostalMatchSafe,
   parseMapfreResponse,
   resolveMapfreCodPostal,
+  resolveMapfrePostalMatch,
 } = require('../services/mapfre/quote');
 
 function ensureDir(p) {
@@ -189,6 +191,141 @@ function mapUsoTextoACodigo(value, DICC) {
     .replace(/\p{Diacritic}/gu, '')
     .toLowerCase();
   return DICC[key] || '';
+}
+
+let atmPostalCatalogPromise = null;
+
+async function loadAtmPostalCatalog() {
+  if (!atmPostalCatalogPromise) {
+    const p = path.join(asegPath('atm'), 'diccionarios', 'localidades.json');
+    atmPostalCatalogPromise = readJsonStrict(p)
+      .then((rows) => Array.isArray(rows) ? rows : [])
+      .catch(() => []);
+  }
+  return atmPostalCatalogPromise;
+}
+
+function normalizeComparableText(value) {
+  return String(value || '')
+    .trim()
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .toUpperCase();
+}
+
+const ATM_CP_FALLBACKS = {
+  'TIERRA DEL FUEGO': ['9420', '9410'],
+};
+
+async function resolveAtmPostalCode(row = {}) {
+  const cpRaw = pick([row?.codigo_postal, row?.codpostal, row?.CP, row?.cp, row?.CodigoPostal]);
+  const cp = String(cpRaw || '').replace(/\D+/g, '').slice(0, 4);
+  const provincia = normalizeComparableText(pick([row?.provincia, row?.Provincia]));
+  const catalog = await loadAtmPostalCatalog();
+
+  const byCp = cp ? catalog.filter((item) => String(item?.codpos || '').trim() === cp) : [];
+  if (byCp.length > 0) {
+    return { cp, source: 'exacto' };
+  }
+
+  const provinceRows = provincia
+    ? catalog.filter((item) => normalizeComparableText(item?.provincia) === provincia)
+    : [];
+
+  for (const candidate of ATM_CP_FALLBACKS[provincia] || []) {
+    if (provinceRows.some((item) => String(item?.codpos || '').trim() === candidate)) {
+      return { cp: candidate, source: 'fallback_provincia', originalCp: cp || '' };
+    }
+  }
+
+  if (provinceRows.length > 0 && cp) {
+    const numericCp = Number(cp);
+    let best = null;
+    let bestDelta = Number.POSITIVE_INFINITY;
+    for (const item of provinceRows) {
+      const candidateCp = String(item?.codpos || '').trim();
+      const candidateNum = Number(candidateCp);
+      if (!Number.isFinite(candidateNum)) continue;
+      const delta = Math.abs(candidateNum - numericCp);
+      if (delta < bestDelta) {
+        best = candidateCp;
+        bestDelta = delta;
+      }
+    }
+    if (best) {
+      return { cp: best, source: 'fallback_cercano', originalCp: cp };
+    }
+  }
+
+  return { cp, source: cp ? 'sin_validar' : 'faltante', originalCp: cp || '' };
+}
+
+function getCompanyQueueConfig(slug, aseg = {}) {
+  const extra = aseg?.parametros_extras || {};
+  if (slug === 'mapfre') {
+    return {
+      maxConcurrency: Number(extra.max_concurrency ?? 2) || 2,
+      minIntervalMs: Number(extra.min_interval_ms ?? 800) || 800,
+      retryDelayMs: Number(extra.retry_delay_ms ?? 4000) || 4000,
+      maxDeferredRetries: Number(extra.max_deferred_retries ?? 1) || 1,
+    };
+  }
+  return {
+    maxConcurrency: Number(extra.max_concurrency ?? 1) || 1,
+    minIntervalMs: Number(extra.min_interval_ms ?? 1200) || 1200,
+    retryDelayMs: Number(extra.retry_delay_ms ?? 0) || 0,
+    maxDeferredRetries: Number(extra.max_deferred_retries ?? 0) || 0,
+  };
+}
+
+function isRetryableMapfreError(result = {}) {
+  const msg = String(result?.error || '').toUpperCase();
+  return msg.includes('ORA-00001') || msg.includes('TIMEOUT') || msg.includes('ECONNRESET');
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function runThrottledTasks(tasks, worker, options = {}) {
+  const maxConcurrency = Math.max(1, Number(options.maxConcurrency || 1));
+  const minIntervalMs = Math.max(0, Number(options.minIntervalMs || 0));
+  let cursor = 0;
+  let active = 0;
+  let lastStart = 0;
+  let timer = null;
+
+  return await new Promise((resolve) => {
+    const pump = () => {
+      if (cursor >= tasks.length && active === 0) {
+        if (timer) clearTimeout(timer);
+        resolve();
+        return;
+      }
+      while (active < maxConcurrency && cursor < tasks.length) {
+        const wait = Math.max(0, (lastStart + minIntervalMs) - Date.now());
+        if (wait > 0) {
+          if (!timer) {
+            timer = setTimeout(() => {
+              timer = null;
+              pump();
+            }, wait);
+          }
+          return;
+        }
+        const task = tasks[cursor++];
+        active += 1;
+        lastStart = Date.now();
+        Promise.resolve(worker(task))
+          .catch(() => {})
+          .finally(() => {
+            active -= 1;
+            pump();
+          });
+      }
+    };
+    pump();
+  });
 }
 
 function normalizeText(value) {
@@ -554,6 +691,7 @@ async function cotizarFila({
   const anio = pick([fila?.anio, fila?.anofab, fila?.ANO, fila?.Anio, fila?.ano]);
   const cpRaw = pick([fila?.codigo_postal, fila?.codpostal, fila?.CP, fila?.cp, fila?.CodigoPostal]);
   const cp = String(cpRaw ?? '').trim();
+  const atmPostal = slug === 'atm' ? await resolveAtmPostalCode(fila) : null;
 
   const evDir = (proceso_id != null && slug != null && index != null)
     ? evidenciasDir(proceso_id, slug, index)
@@ -565,8 +703,14 @@ async function cotizarFila({
   }
 
   if (slug === 'mapfre') {
+    const postalMatch = resolveMapfrePostalMatch(fila, cabecera);
     if (!resolveMapfreCodPostal(fila, cabecera)) {
       const out = { ok: false, error: 'Mapfre requiere un código postal traducible por catálogo (CP y, si aplica, localidad/provincia)', operacion: '0', coberturas: [], raw: '' };
+      if (evDir) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
+      return out;
+    }
+    if (!isMapfrePostalMatchSafe(postalMatch)) {
+      const out = { ok: false, error: `Mapfre requiere un match de domicilio no ambiguo (actual: ${postalMatch?.matchType || 'sin_match'})`, operacion: '0', coberturas: [], raw: '' };
       if (evDir) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
       return out;
     }
@@ -578,6 +722,11 @@ async function cotizarFila({
     }
     if (!/^\d{4}$/.test(cp)) {
       const out = { ok: false, error: 'Código postal inválido (debe ser numérico de 4 posiciones)', operacion: '0', coberturas: [], raw: '' };
+      if (evDir) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
+      return out;
+    }
+    if (!atmPostal?.cp || !/^\d{4}$/.test(String(atmPostal.cp))) {
+      const out = { ok: false, error: 'El código postal no es válido', operacion: '0', coberturas: [], raw: '' };
       if (evDir) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
       return out;
     }
@@ -728,7 +877,7 @@ async function cotizarFila({
   let bienXML = `
     <cod_infoauto>${codia}</cod_infoauto>
     <anofab>${anio}</anofab>
-    <codpostal>${cp}</codpostal>
+    <codpostal>${slug === 'atm' ? atmPostal.cp : cp}</codpostal>
     <seccion>${seccion}</seccion>
   `.trim();
 
@@ -950,6 +1099,9 @@ async function cotizarFila({
             soapAction: sa,
             formaPagoSolicitada: formaPago,
             formaPagoDescripcion: describeAtmFormaPago(formaPago),
+            cpOriginal: cp,
+            cpEnviado: slug === 'atm' ? atmPostal?.cp || cp : cp,
+            cpFallbackSource: slug === 'atm' ? atmPostal?.source || 'exacto' : null,
           },
           raw: rawResp,
         };
@@ -1177,7 +1329,7 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
       });
     }
 
-    // guardar total real (sirve para UI)
+    // guardar total real del archivo
     await saveMetadata(proceso_id, { registros_total: filas.length });
 
     const limiteBody = Number(req.body?.limite);
@@ -1190,11 +1342,17 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
     await saveMetadata(proceso_id, { limite: limite || null });
 
     const tomar = Math.min(limite || filas.length, filas.length);
+    const totalTasks = tomar * aseguradoras.length;
+    await saveMetadata(proceso_id, {
+      registros_total: totalTasks,
+      registros_filas: tomar,
+    });
 
     const resultadosPorAseg = {};
     let totalOk = 0;
     let totalErr = 0;
     let totalSkipped = 0;
+    let totalProcessed = 0;
 
     // Guardar “run header”
     safeWriteJson(path.join(procesoDir(proceso_id), 'run.json'), {
@@ -1204,86 +1362,123 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
       archivo: relPath.replace(/\\/g, '/'),
       absPath,
       limite: tomar,
+      filas_intentadas: tomar,
+      tareas_totales: totalTasks,
       aseguradoras,
       started_at: new Date().toISOString()
     });
 
-    for (const slug of aseguradoras) {
+    const finalizeTaskResult = async (slug, task, resp) => {
+      const result = {
+        aseguradora: slug,
+        index: task.index,
+        fila_preview: task.filaPreview,
+        mapeos: task.mapeos,
+        ...resp,
+      };
+      resultadosPorAseg[slug][task.index] = result;
+
+      if (resp && resp.skipped) {
+        totalSkipped++;
+      } else if (resp && resp.ok) {
+        totalOk++;
+      } else {
+        totalErr++;
+      }
+      totalProcessed++;
+
+      safeWriteJson(path.join(evidenciasDir(proceso_id, slug, task.index), `${slug}-result.json`), {
+        aseguradora: slug,
+        ok: resp.ok,
+        operacion: resp.operacion ?? null,
+        coberturas_len: Array.isArray(resp.coberturas) ? resp.coberturas.length : 0,
+        error: resp.error || null,
+        used: resp.used || null,
+      });
+
+      await saveMetadata(proceso_id, {
+        registros_procesados: totalProcessed,
+        cotizaciones_exitosas: totalOk,
+        cotizaciones_con_error: totalErr,
+        cotizaciones_skipped: totalSkipped,
+      });
+    };
+
+    const processCompany = async (slug) => {
       const { cfg: Aseg, SOAP_URL, SOAP_METHOD, fechaFmt } = await loadAsegConfig(slug);
       const hoy = formatFecha(new Date(), fechaFmt);
-
       const procesarFila = await initPreprocesador({ slug, cabecera_id });
       const usoDicc = await readUsoDicc(slug);
-
-      const resultados = [];
+      const queueCfg = getCompanyQueueConfig(slug, Aseg);
+      const tasks = [];
+      const retryQueue = [];
+      resultadosPorAseg[slug] = new Array(tomar);
 
       for (let i = 0; i < tomar; i++) {
         const fila = filas[i] || {};
         const { fila_preparada, mapeos } = await procesarFila(fila);
-
-        // Merge defensivo: conservar columnas del Excel (ej. CP)
         const fila_final = { ...fila, ...fila_preparada };
-
-        // Si el preprocesador borró CP, restaurar el CP original
         if ((fila_final.CP === '' || fila_final.CP == null) && (fila.CP != null && String(fila.CP).trim() !== '')) {
           fila_final.CP = fila.CP;
         }
-
-        const resp = await cotizarFila({
-          proceso_id,
+        tasks.push({
           slug,
           index: i,
+          attempt: 0,
           fila: fila_final,
-          cabecera,
-          hoy_fmt: hoy,
           mapeos,
-          Aseg,
-          SOAP_URL,
-          SOAP_METHOD,
-          usoDicc,
-        });
-
-        resultados.push({
-          aseguradora: slug,
-          index: i,
-          fila_preview: {
+          filaPreview: {
             infoautocod: fila_preparada.infoautocod ?? fila.infoautocod ?? fila.tau_codia ?? '',
             anio: fila_preparada.anio || fila_preparada.anofab || fila.anio || fila.anofab || '',
             cp: fila_preparada.cp || fila_preparada.codigo_postal || fila.codigo_postal || fila.cp || '',
             uso_origen: fila.uso || fila.Uso || '',
           },
-          mapeos,
-          ...resp,
-        });
-
-        if (resp && resp.skipped) {
-          totalSkipped++;
-        } else if (resp && resp.ok) {
-          totalOk++;
-        } else {
-          totalErr++;
-        }
-
-        // evidencia “resumen” por fila (rápido de leer)
-        safeWriteJson(path.join(evidenciasDir(proceso_id, slug, i), `${slug}-result.json`), {
-          aseguradora: slug,
-          ok: resp.ok,
-          operacion: resp.operacion ?? null,
-          coberturas_len: Array.isArray(resp.coberturas) ? resp.coberturas.length : 0,
-          error: resp.error || null,
-          used: resp.used || null,
-        });
-
-        await saveMetadata(proceso_id, {
-          registros_procesados: i + 1,
-          cotizaciones_exitosas: totalOk,
-          cotizaciones_con_error: totalErr,
-          cotizaciones_skipped: totalSkipped,
+          ctx: { Aseg, SOAP_URL, SOAP_METHOD, usoDicc, hoy_fmt: hoy },
         });
       }
 
-      resultadosPorAseg[slug] = resultados;
-    }
+      const worker = async (task) => {
+        const resp = await cotizarFila({
+          proceso_id,
+          slug,
+          index: task.index,
+          fila: task.fila,
+          cabecera,
+          hoy_fmt: task.ctx.hoy_fmt,
+          mapeos: task.mapeos,
+          Aseg: task.ctx.Aseg,
+          SOAP_URL: task.ctx.SOAP_URL,
+          SOAP_METHOD: task.ctx.SOAP_METHOD,
+          usoDicc: task.ctx.usoDicc,
+        });
+
+        if (slug === 'mapfre' && !resp.ok && isRetryableMapfreError(resp) && task.attempt < queueCfg.maxDeferredRetries) {
+          retryQueue.push({ ...task, attempt: task.attempt + 1 });
+          safeWriteJson(path.join(evidenciasDir(proceso_id, slug, task.index), `${slug}-retry.json`), {
+            scheduled: true,
+            attempt: task.attempt + 1,
+            reason: resp.error || 'retryable error',
+          });
+          return;
+        }
+
+        if (task.attempt > 0) {
+          resp.used = {
+            ...(resp.used || {}),
+            deferredRetryAttempt: task.attempt,
+          };
+        }
+        await finalizeTaskResult(slug, task, resp);
+      };
+
+      await runThrottledTasks(tasks, worker, queueCfg);
+      if (retryQueue.length > 0) {
+        await sleep(queueCfg.retryDelayMs);
+        await runThrottledTasks(retryQueue, worker, queueCfg);
+      }
+    };
+
+    await Promise.all(aseguradoras.map((slug) => processCompany(slug)));
 
     const resumen = {
       id: proceso_id,
@@ -1321,7 +1516,7 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
     await saveMetadata(proceso_id, {
       estado: estadoFinalMeta,
       fecha_fin: new Date().toISOString(),
-      registros_procesados: tomar,
+      registros_procesados: totalProcessed,
       cotizaciones_exitosas: totalOk,
       cotizaciones_con_error: totalErr,
       cotizaciones_skipped: totalSkipped,
@@ -1334,7 +1529,7 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
          SET estado = ?, fecha_fin = NOW(),
              registros_procesados = ?, cotizaciones_exitosas = ?, cotizaciones_con_error = ?
          WHERE id = ?`,
-        [estadoFinalMeta, tomar, totalOk, totalErr, proceso_id]
+        [estadoFinalMeta, totalProcessed, totalOk, totalErr, proceso_id]
       );
     } catch (e) {
       console.warn('No se pudo actualizar procesos_cotizacion', e?.message || e);
@@ -1346,6 +1541,7 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
       finished_at: new Date().toISOString(),
       estado: estadoFinalMeta,
       total_filas_intentadas: tomar,
+      total_tareas_intentadas: totalTasks,
       cotizaciones_exitosas: totalOk,
       cotizaciones_con_error: totalErr,
       cotizaciones_skipped: totalSkipped,
@@ -1358,6 +1554,7 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
       cabecera_id,
       aseguradoras,
       total_filas_intentadas: tomar,
+      total_tareas_intentadas: totalTasks,
       cotizaciones_exitosas: totalOk,
       cotizaciones_con_error: totalErr,
       cotizaciones_skipped: totalSkipped,

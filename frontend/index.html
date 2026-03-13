@@ -950,7 +950,9 @@
     }
     function fmt(val){
       if(!val) return '<span class="muted">—</span>';
-      return String(val).replace('T',' ').replace('Z','');
+      const text = String(val).replace('T',' ').replace('Z','');
+      const m = text.match(/^(\d{4}-\d{2}-\d{2} \d{2}:\d{2})/);
+      return m ? m[1] : text;
     }
     function fmtDuration(ms){
       if(!Number.isFinite(ms) || ms < 0) return '—';
