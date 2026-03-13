@@ -1,0 +1,78 @@
+[
+  {
+    "codigo": "AG",
+    "descripcion": "AGENTE"
+  },
+  {
+    "codigo": "BA",
+    "descripcion": "BANCO"
+  },
+  {
+    "codigo": "CC",
+    "descripcion": "CAJA DE LA COMPAÑÍA"
+  },
+  {
+    "codigo": "CR",
+    "descripcion": "CINTA DE RECAUDACIËN"
+  },
+  {
+    "codigo": "CO",
+    "descripcion": "COBRADOR"
+  },
+  {
+    "codigo": "PC",
+    "descripcion": "CREDITO CON DEBITO BANCARIO"
+  },
+  {
+    "codigo": "DB",
+    "descripcion": "DEBITO AUTOMATICO EN CUENTA"
+  },
+  {
+    "codigo": "DC",
+    "descripcion": "DEBITO CON DEBITO BANCARIO"
+  },
+  {
+    "codigo": "TA",
+    "descripcion": "DEBITO CON TARJETA DE CREDITO"
+  },
+  {
+    "codigo": "TC",
+    "descripcion": "DEBITO CON TARJETA DE CREDITO"
+  },
+  {
+    "codigo": "DD",
+    "descripcion": "DEBITO DIRECTO GIRE - COELSA"
+  },
+  {
+    "codigo": "ZZ",
+    "descripcion": "GENERICO"
+  },
+  {
+    "codigo": "GD",
+    "descripcion": "GESTOR DIRECTO"
+  },
+  {
+    "codigo": "GP",
+    "descripcion": "GESTOR PILOTO COASEG.RECIBIDO"
+  },
+  {
+    "codigo": "GC",
+    "descripcion": "GRANDES COBRADORES"
+  },
+  {
+    "codigo": "LG",
+    "descripcion": "LEGALES"
+  },
+  {
+    "codigo": "OF",
+    "descripcion": "OFICINA COMERCIAL"
+  },
+  {
+    "codigo": "PR",
+    "descripcion": "PRODUCTOR ESPECIAL"
+  },
+  {
+    "codigo": "SU",
+    "descripcion": "RECIBO DE SUELDO"
+  }
+]

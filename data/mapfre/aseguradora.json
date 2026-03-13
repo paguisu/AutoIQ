@@ -1,0 +1,26 @@
+{
+  "nombre_publico": "Mapfre",
+  "activo": true,
+  "base_url": "https://ws.mapfre.com.ar",
+  "soap_path": "/api/srv/SuscripcionAutosService",
+  "soap_method": "cotizar",
+  "codAgt": "21062",
+  "claveAcceso": "21NOVEC0",
+  "claveProcedencia": "",
+  "tipoFacturacion": "M",
+  "vigencia": "mensual",
+  "refacturacion": "mensual",
+  "ajuste_rc": 0,
+  "ajuste_casco": 0,
+  "parametros_extras": {
+    "formato_fecha_request": "ddMMyyyy",
+    "moneda": "1",
+    "cobertura_default": "0",
+    "tipo_persona_default": "F",
+    "condicion_iva_default": "5",
+    "tipo_medio_pago_default": "TC",
+    "cod_prov_default": "0",
+    "guarda_gge_default": "0",
+    "porcentaje_ajuste_default": ""
+  }
+}

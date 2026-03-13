@@ -1,0 +1,177 @@
+[
+  {
+    "cod_tercer": "1000",
+    "nom_completo": "TECNORED",
+    "domicilio": "AV. PAVON 4035",
+    "nom_localidad": "BOEDO",
+    "dia_hora": "LUNES A VIERNES 09:00 a 13:00 y 14:00 a 18:00 | SAB 09:00 a 12:00"
+  },
+  {
+    "cod_tercer": "1005",
+    "nom_completo": "TECNORED",
+    "domicilio": "AV. MONTEVERDE 1750",
+    "nom_localidad": "ADROGUE (GBA)",
+    "dia_hora": "LUNES A VIERNES 09:00 A 16:00 | SAB 08:00 A 12:00:00"
+  },
+  {
+    "cod_tercer": "1007",
+    "nom_completo": "TECNORED",
+    "domicilio": "AV. JUAN DOMINGO PERON 8441",
+    "nom_localidad": "BENAVIDEZ",
+    "dia_hora": "LUNES A VIERNES 08:00 A 12:00 Y 14:00 A 16:00 | SAB 14:00 A 19:00"
+  },
+  {
+    "cod_tercer": "1012",
+    "nom_completo": "TECNORED",
+    "domicilio": "CALLE 12 Nº 519",
+    "nom_localidad": "LA PLATA (BS.AS)",
+    "dia_hora": "LUNES A VIERNES 09:00 A 12:00 Y 15:00 A 18:00 | SAB 09:00 A 13:00"
+  },
+  {
+    "cod_tercer": "1054",
+    "nom_completo": "RELEVAMIENTOS DIGITALES",
+    "domicilio": "AV. TRIUNVIRATO 3325",
+    "nom_localidad": "CHACARITA",
+    "dia_hora": "LUNES A VIERNES 09:00 A 13:00 Y 14:00 A 18:00 | SAB 09:00 A 13:00"
+  },
+  {
+    "cod_tercer": "1055",
+    "nom_completo": "RELEVAMIENTOS DIGITALES",
+    "domicilio": "AV. JUAN B. JUSTO 7239",
+    "nom_localidad": "FLORESTA",
+    "dia_hora": "LUNES A VIERNES de 09:00 a 18:00"
+  },
+  {
+    "cod_tercer": "1058",
+    "nom_completo": "RELEVAMIENTOS DIGITALES",
+    "domicilio": "LOS ALAMOS ESQ. LOS CERROS",
+    "nom_localidad": "ESCOBAR",
+    "dia_hora": "MART A VIER DE 09:00 A 18:00 / SAB Y DOM 09:00 A 13:00"
+  },
+  {
+    "cod_tercer": "1061",
+    "nom_completo": "RELEVAMIENTOS DIGITALES",
+    "domicilio": "AV. TRIUNVIRATO 5793",
+    "nom_localidad": "VILLA URQUIZA",
+    "dia_hora": "LUNES A VIERNES 08:00:30 A 12:00 Y 14:30 A 18:00"
+  },
+  {
+    "cod_tercer": "1065",
+    "nom_completo": "RELEVAMIENTOS DIGITALES",
+    "domicilio": "BOULOGNE SUR MER 2896",
+    "nom_localidad": "DON TORCUATO (GBA)",
+    "dia_hora": "LUNES A VIERNES de 09:00 a 18:00"
+  },
+  {
+    "cod_tercer": "1072",
+    "nom_completo": "RELEVAMIENTOS DIGITALES",
+    "domicilio": "AV. 44 Nº 2185",
+    "nom_localidad": "LA PLATA (BS.AS)",
+    "dia_hora": "LUNES A VIERNES de 08:00 a 18:00"
+  },
+  {
+    "cod_tercer": "1074",
+    "nom_completo": "RELEVAMIENTOS DIGITALES",
+    "domicilio": "BRIG. GRAL. JUAN MANUEL DE ROSAS 12751",
+    "nom_localidad": "LAFERRERE (GBA)",
+    "dia_hora": "LUNES A VIERNES 09:00 A 17:30 | SAB 09:00 a 13:00"
+  },
+  {
+    "cod_tercer": "1080",
+    "nom_completo": "RELEVAMIENTOS DIGITALES",
+    "domicilio": "AV. SOBREMONTE 1459",
+    "nom_localidad": "SAN FERNANDO (GBA)",
+    "dia_hora": "LUNES A VIERNES 08:00 a 17:30 | SAB 09:00 a 12:00"
+  },
+  {
+    "cod_tercer": "1089",
+    "nom_completo": "RELEVAMIENTOS DIGITALES",
+    "domicilio": "CORRIENTES 101",
+    "nom_localidad": "MENDOZA",
+    "dia_hora": "LUNES A VIERNES 09:00 A 17:00 | SAB 09:00 A 12:00"
+  },
+  {
+    "cod_tercer": "1091",
+    "nom_completo": "RELEVAMIENTOS DIGITALES",
+    "domicilio": "MENDOZA 220",
+    "nom_localidad": "SAN JUAN CAPITAL",
+    "dia_hora": "LUNES A VIERNES 09:00 a 12:00 y 16:00 a 19:00"
+  },
+  {
+    "cod_tercer": "1092",
+    "nom_completo": "RELEVAMIENTOS DIGITALES",
+    "domicilio": "CALLE S/N Entre Av Santos Ortiz km 783 y Ruta 20",
+    "nom_localidad": "SAN LUIS CAP",
+    "dia_hora": "LUNES A VIERNES 08:00 a 12:00 y 17:00 a 20:00 | SAB 9:00 a 12:00"
+  },
+  {
+    "cod_tercer": "1093",
+    "nom_completo": "RELEVAMIENTOS DIGITALES",
+    "domicilio": "BOULEVARD AVELLANEDA 970 BIS",
+    "nom_localidad": "ROSARIO NORTE",
+    "dia_hora": "LUN MIE VIE 09:00 a 17:00"
+  },
+  {
+    "cod_tercer": "1096",
+    "nom_completo": "RELEVAMIENTOS DIGITALES",
+    "domicilio": "AUTOPISTA JUAN DOMINGO PERON Y CIRCUNVALACION",
+    "nom_localidad": "TUCUMAN CAP",
+    "dia_hora": "LUNES A VIERNES 8:00 A 13:00 Y 16:00 A 20:00 | SAB 09:00 A 13:00"
+  },
+  {
+    "cod_tercer": "1102",
+    "nom_completo": "TECNORED",
+    "domicilio": "MITRE 100",
+    "nom_localidad": "VENADO TUERTO (SANTA FE)",
+    "dia_hora": "LUNES A VIERNES 08:00 A 12:00 Y 15:00 A 19:00 | SAB 08:00 A 12:00"
+  },
+  {
+    "cod_tercer": "1105",
+    "nom_completo": "TECNORED",
+    "domicilio": "AV. MARCONI 1653",
+    "nom_localidad": "TANDIL (BS.AS)",
+    "dia_hora": "LUNES A VIERNES 08:00 A 12:00 Y 16:00 A 18:00 | SAB 08:00 A 12:00 | NO CAMIONES"
+  },
+  {
+    "cod_tercer": "1108",
+    "nom_completo": "RELEVAMIENTOS DIGITALES",
+    "domicilio": "AV. FRANCISCO BEIRO 2739",
+    "nom_localidad": "AGRONOMIA",
+    "dia_hora": "LUNES A VIERNES 09:00 A 12:00 Y 15:00 A 18:00 | SAB 09:00 A 12:00"
+  },
+  {
+    "cod_tercer": "1109",
+    "nom_completo": "RELEVAMIENTOS DIGITALES",
+    "domicilio": "AV. MITRE 1601",
+    "nom_localidad": "AVELLANEDA (GBA)",
+    "dia_hora": "LUNES A VIERNES 09:00 A 18:00 | NO CAMIONES"
+  },
+  {
+    "cod_tercer": "1118",
+    "nom_completo": "RELEVAMIENTOS DIGITALES",
+    "domicilio": "ESANDI 695",
+    "nom_localidad": "BARILOCHE (RIO NEGRO)",
+    "dia_hora": "LUNES A VIERNES 09:00 A 12:00 Y 15:00 A 18:00"
+  },
+  {
+    "cod_tercer": "1119",
+    "nom_completo": "TECNORED",
+    "domicilio": "WENCESLAO DE TATA 5164",
+    "nom_localidad": "CASEROS (GBA)",
+    "dia_hora": "LUNES A VIERNES 08:00 A 18:00 | SAB 08:00 A 12:00"
+  },
+  {
+    "cod_tercer": "1132",
+    "nom_completo": "RELEVAMIENTOS DIGITALES",
+    "domicilio": "AV. RIVADAVIA 12416",
+    "nom_localidad": "CIUDADELA (GBA)",
+    "dia_hora": "LUNES A VIERNES 09:00 A 13:00 Y 14:00 A 18:00"
+  },
+  {
+    "cod_tercer": "1136",
+    "nom_completo": "RELEVAMIENTOS DIGITALES",
+    "domicilio": "BROWN 1010",
+    "nom_localidad": "BAHIA BLANCA (BS.AS)",
+    "dia_hora": "LUNES A VIERNES 12:00 A 19:00"
+  }
+]

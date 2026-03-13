@@ -1,0 +1,18 @@
+[
+  {
+    "codigo": "CT",
+    "descripcion": "CUIT"
+  },
+  {
+    "codigo": "DU",
+    "descripcion": "Documento Unico"
+  },
+  {
+    "codigo": "LC",
+    "descripcion": "Libreta Civica"
+  },
+  {
+    "codigo": "LE",
+    "descripcion": "Libreta de Enrolamiento"
+  }
+]

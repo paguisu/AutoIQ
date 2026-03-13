@@ -1,0 +1,82 @@
+[
+  {
+    "codigo": "14",
+    "descripcion": "ALAMEDA"
+  },
+  {
+    "codigo": "11",
+    "descripcion": "AUTOPISTA"
+  },
+  {
+    "codigo": "3",
+    "descripcion": "AVDA."
+  },
+  {
+    "codigo": "19",
+    "descripcion": "BLOCK"
+  },
+  {
+    "codigo": "20",
+    "descripcion": "BOULEVARD"
+  },
+  {
+    "codigo": "1",
+    "descripcion": "CALLE"
+  },
+  {
+    "codigo": "18",
+    "descripcion": "CARRETERA"
+  },
+  {
+    "codigo": "8",
+    "descripcion": "COL."
+  },
+  {
+    "codigo": "10",
+    "descripcion": "ESQ."
+  },
+  {
+    "codigo": "12",
+    "descripcion": "JIRON"
+  },
+  {
+    "codigo": "15",
+    "descripcion": "MALECON"
+  },
+  {
+    "codigo": "16",
+    "descripcion": "OVALO"
+  },
+  {
+    "codigo": "17",
+    "descripcion": "PARQUE"
+  },
+  {
+    "codigo": "13",
+    "descripcion": "PASAJE"
+  },
+  {
+    "codigo": "2",
+    "descripcion": "PASEO"
+  },
+  {
+    "codigo": "5",
+    "descripcion": "PLAZA"
+  },
+  {
+    "codigo": "6",
+    "descripcion": "POLIG."
+  },
+  {
+    "codigo": "4",
+    "descripcion": "RUTA"
+  },
+  {
+    "codigo": "9",
+    "descripcion": "SECTOR"
+  },
+  {
+    "codigo": "7",
+    "descripcion": "URBAN."
+  }
+]

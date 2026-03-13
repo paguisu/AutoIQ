@@ -1,0 +1,98 @@
+[
+  {
+    "codigo": "0",
+    "descripcion": "CAPITAL FEDERAL"
+  },
+  {
+    "codigo": "1",
+    "descripcion": "BUENOS AIRES"
+  },
+  {
+    "codigo": "2",
+    "descripcion": "CATAMARCA"
+  },
+  {
+    "codigo": "3",
+    "descripcion": "CORDOBA"
+  },
+  {
+    "codigo": "4",
+    "descripcion": "CORRIENTES"
+  },
+  {
+    "codigo": "5",
+    "descripcion": "ENTRE RIOS"
+  },
+  {
+    "codigo": "6",
+    "descripcion": "JUJUY"
+  },
+  {
+    "codigo": "7",
+    "descripcion": "MENDOZA"
+  },
+  {
+    "codigo": "8",
+    "descripcion": "LA RIOJA"
+  },
+  {
+    "codigo": "9",
+    "descripcion": "SALTA"
+  },
+  {
+    "codigo": "10",
+    "descripcion": "SAN JUAN"
+  },
+  {
+    "codigo": "11",
+    "descripcion": "SAN LUIS"
+  },
+  {
+    "codigo": "12",
+    "descripcion": "SANTA FE"
+  },
+  {
+    "codigo": "13",
+    "descripcion": "SANTIAGO DEL ESTERO"
+  },
+  {
+    "codigo": "15",
+    "descripcion": "TUCUMAN"
+  },
+  {
+    "codigo": "16",
+    "descripcion": "CHACO"
+  },
+  {
+    "codigo": "17",
+    "descripcion": "CHUBUT"
+  },
+  {
+    "codigo": "18",
+    "descripcion": "FORMOSA"
+  },
+  {
+    "codigo": "19",
+    "descripcion": "MISIONES"
+  },
+  {
+    "codigo": "20",
+    "descripcion": "NEUQUEN"
+  },
+  {
+    "codigo": "21",
+    "descripcion": "LA PAMPA"
+  },
+  {
+    "codigo": "22",
+    "descripcion": "RIO NEGRO"
+  },
+  {
+    "codigo": "23",
+    "descripcion": "SANTA CRUZ"
+  },
+  {
+    "codigo": "24",
+    "descripcion": "TIERRA DEL FUEGO"
+  }
+]

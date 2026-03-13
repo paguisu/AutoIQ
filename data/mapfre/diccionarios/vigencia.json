@@ -1,0 +1,18 @@
+[
+  {
+    "codigo": "A",
+    "descripcion": "ANUAL"
+  },
+  {
+    "codigo": "C",
+    "descripcion": "CUATRIMESTRAL"
+  },
+  {
+    "codigo": "T",
+    "descripcion": "TRIMESTRAL"
+  },
+  {
+    "codigo": "M",
+    "descripcion": "MENSUAL"
+  }
+]

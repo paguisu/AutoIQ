@@ -1,0 +1,158 @@
+[
+  {
+    "codigo": "1",
+    "descripcion": "AMERICAN EXPRESS"
+  },
+  {
+    "codigo": "12",
+    "descripcion": "AMERICAN EXPRESS INTERNACIONAL"
+  },
+  {
+    "codigo": "3",
+    "descripcion": "BANELCO"
+  },
+  {
+    "codigo": "9",
+    "descripcion": "BISEL S.A."
+  },
+  {
+    "codigo": "6",
+    "descripcion": "CABAL"
+  },
+  {
+    "codigo": "13",
+    "descripcion": "CALDEN"
+  },
+  {
+    "codigo": "8",
+    "descripcion": "CARTA FRANCA"
+  },
+  {
+    "codigo": "26",
+    "descripcion": "CENCOSUD MASTERCARD"
+  },
+  {
+    "codigo": "24",
+    "descripcion": "CMR FALABELLA"
+  },
+  {
+    "codigo": "4",
+    "descripcion": "CREDENCIAL"
+  },
+  {
+    "codigo": "21",
+    "descripcion": "CREDIMAS"
+  },
+  {
+    "codigo": "57",
+    "descripcion": "CREDITODOS"
+  },
+  {
+    "codigo": "7",
+    "descripcion": "DINERS CLUB"
+  },
+  {
+    "codigo": "14",
+    "descripcion": "DINERS EXCLUSIVO CITIBANK"
+  },
+  {
+    "codigo": "17",
+    "descripcion": "DINERS EXCLUSIVO CITIBANK"
+  },
+  {
+    "codigo": "18",
+    "descripcion": "DINERS EXCLUSIVO CITIBANK"
+  },
+  {
+    "codigo": "15",
+    "descripcion": "DINERS EXCLUSIVO CITIBANK"
+  },
+  {
+    "codigo": "16",
+    "descripcion": "DINERS EXCLUSIVO CITIBANK"
+  },
+  {
+    "codigo": "10",
+    "descripcion": "DINERS EXCLUSIVO CITIBANK"
+  },
+  {
+    "codigo": "11",
+    "descripcion": "DINERS EXCLUSIVO CITIBANK"
+  },
+  {
+    "codigo": "50",
+    "descripcion": "FAVACAR"
+  },
+  {
+    "codigo": "65",
+    "descripcion": "GALICIA RURAL"
+  },
+  {
+    "codigo": "53",
+    "descripcion": "GETRES"
+  },
+  {
+    "codigo": "22",
+    "descripcion": "ITALCRED"
+  },
+  {
+    "codigo": "56",
+    "descripcion": "KADICARD"
+  },
+  {
+    "codigo": "25",
+    "descripcion": "MAS"
+  },
+  {
+    "codigo": "2",
+    "descripcion": "MASTERCARD"
+  },
+  {
+    "codigo": "44",
+    "descripcion": "MASTERCARD - BCO.PATAGONIA"
+  },
+  {
+    "codigo": "36",
+    "descripcion": "NATIVA"
+  },
+  {
+    "codigo": "19",
+    "descripcion": "NEVADA"
+  },
+  {
+    "codigo": "23",
+    "descripcion": "PLATINO"
+  },
+  {
+    "codigo": "52",
+    "descripcion": "PROVENCRED"
+  },
+  {
+    "codigo": "55",
+    "descripcion": "TARJETA LOCAL"
+  },
+  {
+    "codigo": "51",
+    "descripcion": "TARJETA NARANJA"
+  },
+  {
+    "codigo": "60",
+    "descripcion": "TARJETA TITANIO"
+  },
+  {
+    "codigo": "54",
+    "descripcion": "TARJETAS DEL MAR S.A. (MIRA)"
+  },
+  {
+    "codigo": "5",
+    "descripcion": "VISA"
+  },
+  {
+    "codigo": "35",
+    "descripcion": "VISA - AGRO NACION"
+  },
+  {
+    "codigo": "45",
+    "descripcion": "VISA - BCO. PATAGONIA"
+  }
+]

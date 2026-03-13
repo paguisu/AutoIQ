@@ -243,7 +243,7 @@
     <div class="form-group">
       <label>Origen</label>
       <select id="cat-source">
-        <option value="remote" selected>Remoto ATM</option>
+        <option value="remote" selected>Remoto</option>
         <option value="local">Local</option>
       </select>
     </div>
@@ -284,8 +284,9 @@
         </label>
         <label>Por página:
           <select id="proc-limit">
+            <option value="" selected>Todos</option>
             <option value="10">10</option>
-            <option value="20" selected>20</option>
+            <option value="20">20</option>
             <option value="50">50</option>
           </select>
         </label>
@@ -862,7 +863,7 @@
         btn.addEventListener('click', async ()=>{
           const table = btn.getAttribute('data-sync');
           try{
-            catSetStatus(`Sincronizando ${table} desde ${catSource === 'remote' ? 'ATM' : 'fuente local'}...`);
+            catSetStatus(`Sincronizando ${table} desde ${catSource === 'remote' ? 'fuente remota' : 'fuente local'}...`);
             const out = await catFetchJson(`/catalogos/${catCompania}/sync/${table}?source=${encodeURIComponent(catSource)}`, { method:'POST' });
             const id = `cat-report-${table.replace(/[^a-zA-Z0-9_-]/g,'_')}`;
             const slot = document.getElementById(id);
@@ -898,7 +899,7 @@
 
     async function catSyncAll(){
       if(!catCompania) return;
-      catSetStatus(`Sincronizando todas las tablas de ${catCompania} desde ${catSource === 'remote' ? 'ATM' : 'fuente local'}...`);
+      catSetStatus(`Sincronizando todas las tablas de ${catCompania} desde ${catSource === 'remote' ? 'fuente remota' : 'fuente local'}...`);
       const out = await catFetchJson(`/catalogos/${catCompania}/sync-all?source=${encodeURIComponent(catSource)}`, { method:'POST' });
       await catLoadTablas();
       (out.results || []).forEach((item)=>{
@@ -951,12 +952,50 @@
       if(!val) return '<span class="muted">—</span>';
       return String(val).replace('T',' ').replace('Z','');
     }
+    function fmtDuration(ms){
+      if(!Number.isFinite(ms) || ms < 0) return '—';
+      const totalSec = Math.round(ms / 1000);
+      const h = Math.floor(totalSec / 3600);
+      const m = Math.floor((totalSec % 3600) / 60);
+      const s = totalSec % 60;
+      if(h > 0) return `${h}h ${String(m).padStart(2,'0')}m`;
+      if(m > 0) return `${m}m ${String(s).padStart(2,'0')}s`;
+      return `${s}s`;
+    }
+    function renderProgressCell(it){
+      if(it.fecha_fin) return `<span class="nowrap mono">${fmt(it.fecha_fin)}</span>`;
+      const total = Number(it.registros_total ?? 0);
+      const done = Number(it.registros_procesados ?? 0);
+      if(!Number.isFinite(total) || total <= 0){
+        return `<span class="muted">En curso…</span>`;
+      }
+      const pct = Math.max(0, Math.min(100, Math.round((done / total) * 100)));
+      let eta = '—';
+      const startedAt = Date.parse(it.fecha_inicio || '');
+      if(startedAt && done > 0 && done < total){
+        const elapsed = Date.now() - startedAt;
+        eta = fmtDuration((elapsed / done) * (total - done));
+      }
+      return `
+        <div style="min-width:220px;">
+          <div style="display:flex; justify-content:space-between; gap:8px;">
+            <span class="mono">${done}/${total}</span>
+            <span class="mono">${pct}%</span>
+          </div>
+          <div style="height:8px; background:#e5e7eb; border-radius:999px; overflow:hidden; margin:4px 0 6px;">
+            <div style="height:100%; width:${pct}%; background:linear-gradient(90deg,#0f766e,#22c55e);"></div>
+          </div>
+          <div class="muted" style="font-size:12px;">ETA: ${eta}</div>
+        </div>
+      `;
+    }
 
     async function proc_cargar(){
       const limit = Number(procLimitEl.value)||20;
       const estado = procEstadoEl.value;
       const params = new URLSearchParams({ limit: String(limit), offset: String(procOffset) });
       if(estado) params.set('estado', estado);
+      let items = [];
 
       procBtn.disabled = true;
       prevBtn.disabled = true;
@@ -972,7 +1011,7 @@
         }
         const data = await resp.json();
         procTotal = data.total ?? 0;
-        const items = Array.isArray(data.items) ? data.items : [];
+        items = Array.isArray(data.items) ? data.items : [];
 
         if(items.length === 0){
           procTbody.innerHTML = `<tr><td colspan="10" class="muted">Sin resultados</td></tr>`;
@@ -992,8 +1031,8 @@
               <td>${it.nombre_cabecera || ''}</td>
               <td>${pill(it.estado || '')}</td>
               <td class="nowrap mono">${fmt(it.fecha_inicio)}</td>
-              <td class="nowrap mono">${fmt(it.fecha_fin)}</td>
-              <td class="mono">${it.registros_procesados ?? ''}</td>
+              <td>${renderProgressCell(it)}</td>
+              <td class="mono">${it.registros_total != null ? `${it.registros_procesados ?? 0}/${it.registros_total}` : (it.registros_procesados ?? '')}</td>
               <td class="mono">${it.cotizaciones_exitosas ?? ''}</td>
               <td class="mono">${it.cotizaciones_con_error ?? ''}</td>
               <td>${acc}</td>
@@ -1017,6 +1056,14 @@
         procMeta.textContent = 'Error';
       } finally {
         procBtn.disabled = false;
+      }
+
+      clearTimeout(window.procRefreshTimer);
+      const hasRunning = items.some(it => String(it.estado || '').toLowerCase().includes('curso'));
+      if(hasRunning){
+        window.procRefreshTimer = setTimeout(()=>{
+          if(document.getElementById('procesos')?.classList.contains('active')) proc_cargar();
+        }, 5000);
       }
     }
 
@@ -1048,13 +1095,20 @@
       document.querySelector('input[name="archivoUnico"]').value = "";
     }
 
-    /* ====== Ejecutar proceso: ahora envía cabecera_id + limite=5 ====== */
+    /* ====== Ejecutar proceso ====== */
     window.ejecutarProceso = async function(id){
-      const limite = 5; // como pediste
       const cabeceraId = Number(localStorage.getItem('cabecera_id_activa') || '0');
       const cabeceraNom = (localStorage.getItem('cabecera_nombre_activa') || '').trim();
+      const aseguradorasRaw = localStorage.getItem(LS.aseguradorasSel) || '[]';
+      let aseguradoras = [];
+      try { aseguradoras = JSON.parse(aseguradorasRaw); } catch { aseguradoras = []; }
+      if(!Array.isArray(aseguradoras)) aseguradoras = [];
       if(!cabeceraId){
         alert('Elegí una cabecera primero (no hay cabecera activa).');
+        return;
+      }
+      if(aseguradoras.length === 0){
+        alert('Elegí al menos una aseguradora.');
         return;
       }
       const cabeceraLabel = cabeceraNom || `ID ${cabeceraId}`;
@@ -1063,14 +1117,14 @@
         const resp = await fetch(`/proceso/ejecutar/${id}`, {
           method:'POST',
           headers:{ 'Content-Type':'application/json' },
-          body: JSON.stringify({ limite, cabecera_id: cabeceraId })
+          body: JSON.stringify({ cabecera_id: cabeceraId, aseguradoras })
         });
         const text = await resp.text();
         let data = {};
         try { data = JSON.parse(text); } catch { throw new Error(text); }
         if(!resp.ok || !data.ok){ throw new Error(data.error || `HTTP ${resp.status}`); }
         const procesoId = data.proceso_id ?? data.historial_id ?? data.id ?? data.proceso;
-        const intentados = data.total_filas_intentadas ?? data.total_intentadas ?? data.intentados ?? data.total ?? limite;
+        const intentados = data.total_filas_intentadas ?? data.total_intentadas ?? data.intentados ?? data.total ?? 'todos';
         const carpeta = data.carpeta ?? (procesoId ? `data/procesos/proceso-${procesoId}/` : '');
         alert(`Proceso ${procesoId} OK con cabecera ${data.cabecera_id}. Intentados: ${intentados}. Revisá /${carpeta}`);
       }catch(e){

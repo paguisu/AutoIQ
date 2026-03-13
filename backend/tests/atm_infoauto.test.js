@@ -1,4 +1,4 @@
-const { resolveAmountFromInfoautoRow } = require('../utils/atm_infoauto');
+const { resolveAmountFromInfoautoRow, resolveSumaAsegurada } = require('../utils/atm_infoauto');
 
 describe('atm_infoauto', () => {
   test('resuelve la suma desde tau_pre segun el anio del vehiculo', () => {
@@ -24,5 +24,13 @@ describe('atm_infoauto', () => {
 
     expect(resolveAmountFromInfoautoRow(row, 2030)).toBe(31000000);
     expect(resolveAmountFromInfoautoRow(row, 1990)).toBe(1000000);
+  });
+
+  test('escala importes en miles y resuelve via infoauto_dc cuando hace falta', async () => {
+    const amount = await resolveSumaAsegurada({
+      row: { codigo_infoauto: 60533, anio: 2023 },
+    });
+
+    expect(amount).toBe(46500000);
   });
 });

@@ -2,6 +2,7 @@ const fs = require('fs');
 const fsp = require('fs/promises');
 const path = require('path');
 const { Writable } = require('stream');
+const { execFileSync } = require('child_process');
 const axios = require('axios');
 const ftp = require('basic-ftp');
 
@@ -166,8 +167,157 @@ function defaultAtmTableMap() {
   };
 }
 
+function defaultMapfreTableMap() {
+  return {
+    uso: { fileName: 'uso.json', endpoint: 'uso', remoteName: null },
+    tipo_vehiculo: { fileName: 'tipo_vehiculo.json', endpoint: 'tipo_vehiculo', remoteName: null },
+    vigencia: {
+      fileName: 'vigencia.json',
+      endpoint: 'vigencia',
+      remoteName: null,
+      docsUrl: 'https://devs.mapfre.com.ar/api-docs/documentacion/ws_autos/ws_descripcion_campos.md/datos_poliza/',
+      docsTableIndex: 0,
+    },
+    tipo_lugar_inspeccion: {
+      fileName: 'tipo_lugar_inspeccion.json',
+      endpoint: 'tipo_lugar_inspeccion',
+      remoteName: null,
+      docsUrl: 'https://devs.mapfre.com.ar/api-docs/documentacion/ws_autos/ws_descripcion_campos.md/datos_poliza/',
+      docsTableIndex: 1,
+    },
+    centros_externos: {
+      fileName: 'centros_externos.json',
+      endpoint: 'centros_externos',
+      remoteName: null,
+      docsUrl: 'https://devs.mapfre.com.ar/api-docs/documentacion/ws_autos/ws_descripcion_campos.md/datos_poliza/',
+      docsTableIndex: 2,
+    },
+    formas_pago: {
+      fileName: 'formas_pago.json',
+      endpoint: 'formas_pago',
+      remoteName: null,
+      docsUrl: 'https://devs.mapfre.com.ar/api-docs/documentacion/ws_autos/ws_descripcion_campos.md/formas_pago/',
+      docsTableIndex: 0,
+    },
+    monedas: {
+      fileName: 'monedas.json',
+      endpoint: 'monedas',
+      remoteName: null,
+      docsUrl: 'https://devs.mapfre.com.ar/api-docs/documentacion/ws_autos/ws_descripcion_campos.md/formas_pago/',
+      docsTableIndex: 1,
+    },
+    entidades_bancarias: {
+      fileName: 'entidades_bancarias.json',
+      endpoint: 'entidades_bancarias',
+      remoteName: null,
+      docsUrl: 'https://devs.mapfre.com.ar/api-docs/documentacion/ws_autos/ws_descripcion_campos.md/formas_pago/',
+      docsTableIndex: 2,
+    },
+    sucursales_bancarias: {
+      fileName: 'sucursales_bancarias.json',
+      endpoint: 'sucursales_bancarias',
+      remoteName: null,
+      docsUrl: 'https://devs.mapfre.com.ar/api-docs/documentacion/ws_autos/ws_descripcion_campos.md/formas_pago/',
+      docsSource: 'meta',
+    },
+    tarjetas_credito: {
+      fileName: 'tarjetas_credito.json',
+      endpoint: 'tarjetas_credito',
+      remoteName: null,
+      docsUrl: 'https://devs.mapfre.com.ar/api-docs/documentacion/ws_autos/ws_descripcion_campos.md/formas_pago/',
+      docsTableIndex: 3,
+    },
+    provincias: {
+      fileName: 'provincias.json',
+      endpoint: 'provincias',
+      remoteName: null,
+      docsUrl: 'https://devs.mapfre.com.ar/api-docs/documentacion/ws_autos/ws_descripcion_campos.md/domicilio/',
+      docsTableIndex: 0,
+    },
+    codigos_postales: {
+      fileName: 'codigos_postales.json',
+      endpoint: 'codigos_postales',
+      remoteName: null,
+      docsUrl: 'https://devs.mapfre.com.ar/api-docs/documentacion/ws_autos/ws_descripcion_campos.md/domicilio/',
+      docsTableIndex: 1,
+    },
+    tipo_domicilio: {
+      fileName: 'tipo_domicilio.json',
+      endpoint: 'tipo_domicilio',
+      remoteName: null,
+      docsUrl: 'https://devs.mapfre.com.ar/api-docs/documentacion/ws_autos/ws_descripcion_campos.md/domicilio/',
+      docsTableIndex: 2,
+    },
+    color_vehiculo: {
+      fileName: 'color_vehiculo.json',
+      endpoint: 'color_vehiculo',
+      remoteName: null,
+      docsUrl: 'https://devs.mapfre.com.ar/api-docs/documentacion/ws_autos/ws_descripcion_campos.md/datos_vehiculo/',
+      docsTableIndex: 1,
+    },
+    formas_envio: {
+      fileName: 'formas_envio.json',
+      endpoint: 'formas_envio',
+      remoteName: null,
+      docsUrl: 'https://devs.mapfre.com.ar/api-docs/documentacion/ws_autos/ws_descripcion_campos.md/envio/',
+      docsTableIndex: 0,
+    },
+    tipos_envio: {
+      fileName: 'tipos_envio.json',
+      endpoint: 'tipos_envio',
+      remoteName: null,
+      docsUrl: 'https://devs.mapfre.com.ar/api-docs/documentacion/ws_autos/ws_descripcion_campos.md/envio/',
+      docsTableIndex: 1,
+    },
+    tipo_persona: {
+      fileName: 'tipo_persona.json',
+      endpoint: 'tipo_persona',
+      remoteName: null,
+      docsUrl: 'https://devs.mapfre.com.ar/api-docs/documentacion/ws_autos/ws_descripcion_campos.md/tomador_asegurado/',
+      docsTableIndex: 0,
+    },
+    sexo: {
+      fileName: 'sexo.json',
+      endpoint: 'sexo',
+      remoteName: null,
+      docsUrl: 'https://devs.mapfre.com.ar/api-docs/documentacion/ws_autos/ws_descripcion_campos.md/tomador_asegurado/',
+      docsTableIndex: 1,
+    },
+    estado_civil: {
+      fileName: 'estado_civil.json',
+      endpoint: 'estado_civil',
+      remoteName: null,
+      docsUrl: 'https://devs.mapfre.com.ar/api-docs/documentacion/ws_autos/ws_descripcion_campos.md/tomador_asegurado/',
+      docsTableIndex: 2,
+    },
+    tipo_documento: {
+      fileName: 'tipo_documento.json',
+      endpoint: 'tipo_documento',
+      remoteName: null,
+      docsUrl: 'https://devs.mapfre.com.ar/api-docs/documentacion/ws_autos/ws_descripcion_campos.md/tomador_asegurado/',
+      docsTableIndex: 3,
+    },
+    nacionalidades: {
+      fileName: 'nacionalidades.json',
+      endpoint: 'nacionalidades',
+      remoteName: null,
+      docsUrl: 'https://devs.mapfre.com.ar/api-docs/documentacion/ws_autos/ws_descripcion_campos.md/tomador_asegurado/',
+      docsTableIndex: 4,
+    },
+    condicion_iva: {
+      fileName: 'condicion_iva.json',
+      endpoint: 'condicion_iva',
+      remoteName: null,
+      docsUrl: 'https://devs.mapfre.com.ar/api-docs/documentacion/ws_autos/ws_descripcion_campos.md/tomador_asegurado/',
+      docsTableIndex: 5,
+    },
+  };
+}
+
 function tableMapFor(slug) {
-  return slug === 'atm' ? defaultAtmTableMap() : {};
+  if (slug === 'atm') return defaultAtmTableMap();
+  if (slug === 'mapfre') return defaultMapfreTableMap();
+  return {};
 }
 
 function getTableMeta(slug, table) {
@@ -330,6 +480,92 @@ function normalizeRemoteRowsByTable(table, rows) {
         cmarca: String(row.cmarca || '').trim(),
       }))
       .filter((row) => row.tau_codia && row.cmarca);
+  }
+
+  if (table === 'vigencia') {
+    return normalized
+      .map((row) => ({
+        codigo: String(row.codigo || '').trim(),
+        descripcion: String(row.descripcion || '').trim(),
+      }))
+      .filter((row) => row.codigo && row.descripcion);
+  }
+
+  if ([
+    'formas_pago',
+    'tipo_lugar_inspeccion',
+    'tipo_domicilio',
+    'color_vehiculo',
+    'formas_envio',
+    'tipos_envio',
+    'tipo_persona',
+    'sexo',
+    'estado_civil',
+    'tipo_documento',
+    'nacionalidades',
+    'condicion_iva',
+    'provincias',
+    'tarjetas_credito',
+  ].includes(table)) {
+    return normalized
+      .map((row) => ({
+        codigo: String(row.codigo || '').trim(),
+        descripcion: String(row.descripcion || '').trim(),
+      }))
+      .filter((row) => row.codigo && row.descripcion);
+  }
+
+  if (table === 'centros_externos') {
+    return normalized
+      .map((row) => ({
+        cod_tercer: String(row.cod_tercer || '').trim(),
+        nom_completo: String(row.nom_completo || '').trim(),
+        domicilio: String(row.domicilio || '').trim(),
+        nom_localidad: String(row.nom_localidad || '').trim(),
+        dia_hora: String(row.dia_hora || '').trim(),
+      }))
+      .filter((row) => row.cod_tercer && row.nom_completo);
+  }
+
+  if (table === 'monedas') {
+    return normalized
+      .map((row) => ({
+        codigo: String(row.codigo || '').trim(),
+        descripcion: String(row.descripcion || '').trim(),
+        simbolo: String(row.col_3 || row.simbolo || '').trim(),
+      }))
+      .filter((row) => row.codigo && row.descripcion);
+  }
+
+  if (table === 'entidades_bancarias') {
+    return normalized
+      .map((row) => ({
+        codigo: String(row.codigo || '').trim(),
+        descripcion: String(row.descripcion || '').trim(),
+      }))
+      .filter((row) => row.codigo && row.descripcion);
+  }
+
+  if (table === 'sucursales_bancarias') {
+    return normalized
+      .map((row) => ({
+        entidad: String(row.entidad || '').trim(),
+        codigo_sucursal: String(row.codigo_sucursal || '').trim(),
+        descripcion: String(row.descripcion || '').trim(),
+      }))
+      .filter((row) => row.entidad && row.codigo_sucursal && row.descripcion);
+  }
+
+  if (table === 'codigos_postales') {
+    return normalized
+      .map((row) => ({
+        codigo_postal: String(row.codigo_postal || row.codigoPostal || '').trim(),
+        codigo_mapfre: String(row.codigo_mapfre || row.codigoMapfre || '').trim(),
+        descripcion: String(row.descripcion || '').trim(),
+        codigo_provincia: String(row.codigo_provincia || row.cod_prov || '').trim(),
+        provincia: String(row.provincia || row.nom_prov || '').trim(),
+      }))
+      .filter((row) => row.codigo_postal && row.codigo_mapfre && row.descripcion);
   }
 
   return normalized;
@@ -496,6 +732,137 @@ function parseRemoteCatalogRaw(raw) {
   }
 }
 
+function decodeHtmlEntities(value) {
+  return String(value || '')
+    .replace(/&#(\d+);/g, (_m, code) => String.fromCharCode(Number(code)))
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;/gi, "'")
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+    .replace(/\u00C2/g, '')
+    .replace(/\u00A0/g, ' ')
+    .replace(/\uFFFD/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function repairMojibake(value) {
+  const text = String(value || '');
+  if (!/[ÃÂ]/.test(text)) return text;
+  try {
+    return Buffer.from(text, 'latin1').toString('utf8');
+  } catch {
+    return text;
+  }
+}
+
+function stripHtml(value) {
+  return repairMojibake(decodeHtmlEntities(String(value || '').replace(/<[^>]+>/g, ' ')));
+}
+
+function extractHtmlTables(html) {
+  const tables = [];
+  const regex = /<table\b[^>]*>([\s\S]*?)<\/table>/gi;
+  let match;
+  while ((match = regex.exec(String(html || '')))) {
+    tables.push(match[1]);
+  }
+  return tables;
+}
+
+function parseHtmlTable(tableHtml) {
+  const rowMatches = [...String(tableHtml || '').matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)];
+  const rows = rowMatches.map((rowMatch) => {
+    const cells = [...rowMatch[1].matchAll(/<t[hd]\b[^>]*>([\s\S]*?)<\/t[hd]>/gi)].map((cell) => stripHtml(cell[1]));
+    return cells.filter((cell) => cell !== '');
+  }).filter((cells) => cells.length > 0);
+  if (!rows.length) return [];
+
+  const headerRow = rows[0];
+  const hasHeader = headerRow.every((cell) => /[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]/.test(cell));
+  if (!hasHeader) {
+    return rows.map((cells) => cells.reduce((acc, value, index) => {
+      acc[`col_${index + 1}`] = value;
+      return acc;
+    }, {}));
+  }
+
+  const headers = headerRow.map((cell) => normalizeHeaderName(cell));
+  return rows.slice(1).map((cells) => headers.reduce((acc, key, index) => {
+    acc[key] = cells[index] ?? '';
+    return acc;
+  }, {}));
+}
+
+function extractMetaDescription(html) {
+  const match = String(html || '').match(/<meta name="description" content="([\s\S]*?)"/i);
+  return repairMojibake(decodeHtmlEntities(match?.[1] || ''));
+}
+
+function parseMapfreDocsTableByIndex(html, tableIndex) {
+  const tables = extractHtmlTables(html).map((item) => parseHtmlTable(item));
+  return Array.isArray(tables[tableIndex]) ? tables[tableIndex] : [];
+}
+
+function parseMapfreSucursalesBancariasFromMeta(html) {
+  const text = extractMetaDescription(html);
+  const startMarker = 'Sucursal bancaria';
+  const endMarker = 'Tarjeta de Crédito';
+  const startIndex = text.indexOf(startMarker);
+  if (startIndex < 0) return [];
+  const endIndex = text.indexOf(endMarker, startIndex + startMarker.length);
+  const section = (endIndex > startIndex ? text.slice(startIndex, endIndex) : text.slice(startIndex)).replace(/\|/g, ' | ');
+  const tokens = section.split(/\s+/).map((item) => item.trim()).filter(Boolean);
+  const pipeIndex = tokens.indexOf('|');
+  const dataTokens = pipeIndex >= 0 ? tokens.slice(pipeIndex + 1).filter((item) => item !== '—' && item !== '|') : tokens;
+  const rows = [];
+  for (let i = 0; i + 2 < dataTokens.length;) {
+    const entidad = dataTokens[i];
+    const codigoSucursal = dataTokens[i + 1];
+    if (!/^\d+$/.test(entidad) || !/^\d+$/.test(codigoSucursal)) {
+      i += 1;
+      continue;
+    }
+    i += 2;
+    const descripcionParts = [];
+    while (i < dataTokens.length && !/^\d+$/.test(dataTokens[i])) {
+      descripcionParts.push(dataTokens[i]);
+      i += 1;
+    }
+    const descripcion = descripcionParts.join(' ').trim();
+    if (entidad && codigoSucursal && descripcion) {
+      rows.push({
+        entidad,
+        codigo_sucursal: codigoSucursal,
+        descripcion,
+      });
+    }
+  }
+  return rows;
+}
+
+function parseMapfreDocs(table, html) {
+  const meta = getTableMeta('mapfre', table);
+  if (meta.docsSource === 'meta' && table === 'sucursales_bancarias') {
+    return parseMapfreSucursalesBancariasFromMeta(html);
+  }
+  if (Number.isInteger(meta.docsTableIndex)) {
+    return parseMapfreDocsTableByIndex(html, meta.docsTableIndex);
+  }
+  return [];
+}
+
+function fetchMapfreDocsHtml(url) {
+  const command = `(Invoke-WebRequest -UseBasicParsing '${String(url).replace(/'/g, "''")}').Content`;
+  return execFileSync(
+    'powershell.exe',
+    ['-NoProfile', '-Command', command],
+    { encoding: 'utf8', maxBuffer: 50 * 1024 * 1024 }
+  );
+}
+
 async function fetchFromHttpProvider(meta) {
   const url = buildAtmProviderUrl(meta.endpoint);
   if (!url) throw new Error('Falta ATM_CATALOG_BASE_URL para sync real');
@@ -556,10 +923,21 @@ async function fetchFromFtpProvider(meta) {
 }
 
 async function fetchFromProvider({ slug, table }) {
-  if (slug !== 'atm') throw new Error(`Proveedor real no implementado para ${slug}`);
   const meta = getTableMeta(slug, table);
-  const provider = String(process.env.ATM_CATALOG_PROVIDER || 'ftp').trim().toLowerCase();
-  return provider === 'http' ? fetchFromHttpProvider(meta) : fetchFromFtpProvider(meta);
+  if (slug === 'atm') {
+    const provider = String(process.env.ATM_CATALOG_PROVIDER || 'ftp').trim().toLowerCase();
+    return provider === 'http' ? fetchFromHttpProvider(meta) : fetchFromFtpProvider(meta);
+  }
+  if (slug === 'mapfre') {
+    if (!meta.docsUrl) throw new Error(`Proveedor real no implementado para ${slug}/${table}`);
+    const html = fetchMapfreDocsHtml(meta.docsUrl);
+    return {
+      sourceRaw: parseMapfreDocs(table, html),
+      sourcePath: meta.docsUrl,
+      sourceType: 'remote-docs',
+    };
+  }
+  throw new Error(`Proveedor real no implementado para ${slug}`);
 }
 
 async function fetchFromLocal({ dataRoot, slug, table }) {
@@ -579,7 +957,7 @@ function listTablesForCompany(dataRoot, slug) {
     endpoint: tableMap[table].endpoint,
     sourcePath: path.join(dataRoot, slug, 'diccionarios', tableMap[table].fileName),
     exists: fs.existsSync(path.join(dataRoot, slug, 'diccionarios', tableMap[table].fileName)),
-    remoteSupported: slug === 'atm',
+    remoteSupported: Boolean(tableMap[table].remoteName || tableMap[table].docsUrl),
   }));
 }
 

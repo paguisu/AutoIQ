@@ -1,0 +1,138 @@
+[
+  {
+    "codigo": "1",
+    "descripcion": "Acero"
+  },
+  {
+    "codigo": "2",
+    "descripcion": "Almendra"
+  },
+  {
+    "codigo": "3",
+    "descripcion": "Aluminio"
+  },
+  {
+    "codigo": "4",
+    "descripcion": "Amarillo"
+  },
+  {
+    "codigo": "5",
+    "descripcion": "Ambar"
+  },
+  {
+    "codigo": "6",
+    "descripcion": "Anaranjado"
+  },
+  {
+    "codigo": "7",
+    "descripcion": "Arena"
+  },
+  {
+    "codigo": "8",
+    "descripcion": "Azul"
+  },
+  {
+    "codigo": "9",
+    "descripcion": "Beige"
+  },
+  {
+    "codigo": "10",
+    "descripcion": "Blanco"
+  },
+  {
+    "codigo": "11",
+    "descripcion": "Bronce"
+  },
+  {
+    "codigo": "12",
+    "descripcion": "Champagne"
+  },
+  {
+    "codigo": "13",
+    "descripcion": "Caoba"
+  },
+  {
+    "codigo": "14",
+    "descripcion": "Celeste"
+  },
+  {
+    "codigo": "15",
+    "descripcion": "Cobre"
+  },
+  {
+    "codigo": "16",
+    "descripcion": "Crema"
+  },
+  {
+    "codigo": "17",
+    "descripcion": "Dorado"
+  },
+  {
+    "codigo": "18",
+    "descripcion": "Guinda"
+  },
+  {
+    "codigo": "19",
+    "descripcion": "Gris"
+  },
+  {
+    "codigo": "20",
+    "descripcion": "Jade"
+  },
+  {
+    "codigo": "21",
+    "descripcion": "Marron"
+  },
+  {
+    "codigo": "22",
+    "descripcion": "Morado"
+  },
+  {
+    "codigo": "23",
+    "descripcion": "Mostaza"
+  },
+  {
+    "codigo": "24",
+    "descripcion": "Negro"
+  },
+  {
+    "codigo": "25",
+    "descripcion": "Plateado"
+  },
+  {
+    "codigo": "26",
+    "descripcion": "Plomo"
+  },
+  {
+    "codigo": "27",
+    "descripcion": "Rojo"
+  },
+  {
+    "codigo": "28",
+    "descripcion": "Rosado"
+  },
+  {
+    "codigo": "29",
+    "descripcion": "Verde"
+  },
+  {
+    "codigo": "30",
+    "descripcion": "Granate"
+  },
+  {
+    "codigo": "31",
+    "descripcion": "Violeta"
+  },
+  {
+    "codigo": "32",
+    "descripcion": "Multicolor"
+  },
+  {
+    "codigo": "33",
+    "descripcion": "Otros"
+  },
+  {
+    "codigo": "34",
+    "descripcion": "Bordo"
+  }
+]

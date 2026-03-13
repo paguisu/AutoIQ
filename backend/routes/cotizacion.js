@@ -11,6 +11,16 @@ function asegurarDir(dir) {
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 }
 
+function readProcesoMetadata(id) {
+  try {
+    const p = path.join(process.cwd(), 'data', 'procesos', `proceso-${id}`, 'metadata.json');
+    if (!fs.existsSync(p)) return null;
+    return JSON.parse(fs.readFileSync(p, 'utf8'));
+  } catch {
+    return null;
+  }
+}
+
 /**
  * POST /cotizacion/iniciar
  * Body (JSON):
@@ -185,11 +195,22 @@ router.get('/listar', async (req, res) => {
     `;
     const [rows] = await db.execute(sqlListado, params);
 
+    const items = rows.map((row) => {
+      const meta = readProcesoMetadata(row.id) || {};
+      return {
+        ...row,
+        registros_total: meta.registros_total ?? null,
+        cotizaciones_skipped: meta.cotizaciones_skipped ?? 0,
+        aseguradoras: meta.aseguradoras ?? [],
+        limite: meta.limite ?? null,
+      };
+    });
+
     return res.json({
       total,
       limit: lim,
       offset: off,
-      items: rows,
+      items,
     });
   } catch (error) {
     console.error('Error en /cotizacion/listar:', error);

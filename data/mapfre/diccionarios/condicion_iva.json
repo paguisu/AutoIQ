@@ -1,0 +1,34 @@
+[
+  {
+    "codigo": "1",
+    "descripcion": "Responsable Inscripto"
+  },
+  {
+    "codigo": "2",
+    "descripcion": "Gran Contribuyente"
+  },
+  {
+    "codigo": "3",
+    "descripcion": "Rep. No Inscripto"
+  },
+  {
+    "codigo": "4",
+    "descripcion": "Exento"
+  },
+  {
+    "codigo": "5",
+    "descripcion": "Consumidor Final"
+  },
+  {
+    "codigo": "6",
+    "descripcion": "Tierra del Fuego-Ley 19640"
+  },
+  {
+    "codigo": "7",
+    "descripcion": "Resp. Monotributo"
+  },
+  {
+    "codigo": "8",
+    "descripcion": "Sujeto No Categorizado"
+  }
+]

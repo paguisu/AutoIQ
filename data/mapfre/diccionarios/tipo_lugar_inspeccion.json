@@ -1,0 +1,18 @@
+[
+  {
+    "codigo": "1",
+    "descripcion": "CENTRO EXTERNO"
+  },
+  {
+    "codigo": "5",
+    "descripcion": "INSPECCION DIGITAL EXTERNA"
+  },
+  {
+    "codigo": "6",
+    "descripcion": "PRODUCTOR"
+  },
+  {
+    "codigo": "8",
+    "descripcion": "GESTION COMERCIAL"
+  }
+]

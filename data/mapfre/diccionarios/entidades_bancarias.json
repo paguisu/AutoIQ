@@ -1,0 +1,418 @@
+[
+  {
+    "codigo": "0295",
+    "descripcion": "AMERICAN EXPRESS BANK LTD. S.A."
+  },
+  {
+    "codigo": "0005",
+    "descripcion": "BANCO ABN AMRO"
+  },
+  {
+    "codigo": "0297",
+    "descripcion": "BANCO BANEX S.A."
+  },
+  {
+    "codigo": "0067",
+    "descripcion": "BANCO BANSUD S.A."
+  },
+  {
+    "codigo": "0426",
+    "descripcion": "BANCO BICA"
+  },
+  {
+    "codigo": "0314",
+    "descripcion": "BANCO BISEL SOCIEDAD ANONIMA"
+  },
+  {
+    "codigo": "0336",
+    "descripcion": "BANCO BRADESCO ARGENTINA S.A."
+  },
+  {
+    "codigo": "0039",
+    "descripcion": "BANCO CAJA DE AHORRO S.A."
+  },
+  {
+    "codigo": "0319",
+    "descripcion": "BANCO CMF S.A"
+  },
+  {
+    "codigo": "0431",
+    "descripcion": "BANCO COINAG S.A."
+  },
+  {
+    "codigo": "0389",
+    "descripcion": "BANCO COLUMBIA"
+  },
+  {
+    "codigo": "0299",
+    "descripcion": "BANCO COMAFI S.A."
+  },
+  {
+    "codigo": "0191",
+    "descripcion": "BANCO CREDICOOP COOPERATIVO LIMITADO"
+  },
+  {
+    "codigo": "0133",
+    "descripcion": "BANCO CREDITO DE CUYO S.A."
+  },
+  {
+    "codigo": "0178",
+    "descripcion": "BANCO DE BALCARCE SOCIEDAD ANONIMA"
+  },
+  {
+    "codigo": "0092",
+    "descripcion": "BANCO DE CATAMARCA"
+  },
+  {
+    "codigo": "0094",
+    "descripcion": "BANCO DE CORRIENTES S.A."
+  },
+  {
+    "codigo": "0059",
+    "descripcion": "BANCO DE ENTRE RIOS S.A."
+  },
+  {
+    "codigo": "0315",
+    "descripcion": "BANCO DE FORMOSA S.A."
+  },
+  {
+    "codigo": "0007",
+    "descripcion": "BANCO DE GALICIA Y BUENOS AIRES S.A."
+  },
+  {
+    "codigo": "0324",
+    "descripcion": "BANCO DE JUJUY S.A."
+  },
+  {
+    "codigo": "0029",
+    "descripcion": "BANCO DE LA CIUDAD DE BUENOS AIRES"
+  },
+  {
+    "codigo": "0113",
+    "descripcion": "BANCO DE LA EDIFICADORA DE OLAVARRIA S.A"
+  },
+  {
+    "codigo": "0011",
+    "descripcion": "BANCO DE LA NACION ARGENTINA"
+  },
+  {
+    "codigo": "0093",
+    "descripcion": "BANCO DE LA PAMPA S.E.M."
+  },
+  {
+    "codigo": "0014",
+    "descripcion": "BANCO DE LA PROVINCIA DE BUENOS AIRES"
+  },
+  {
+    "codigo": "0020",
+    "descripcion": "BANCO DE LA PROVINCIA DE CORDOBA"
+  },
+  {
+    "codigo": "0269",
+    "descripcion": "BANCO DE LA REP. ORIENTAL DEL URUGUAY"
+  },
+  {
+    "codigo": "0045",
+    "descripcion": "BANCO DE SAN JUAN S.A."
+  },
+  {
+    "codigo": "0086",
+    "descripcion": "BANCO DE SANTA CRUZ S.A."
+  },
+  {
+    "codigo": "0321",
+    "descripcion": "BANCO DE SANTIAGO DEL ESTERO S.A."
+  },
+  {
+    "codigo": "0255",
+    "descripcion": "BANCO DE SUQUIA S.A."
+  },
+  {
+    "codigo": "0198",
+    "descripcion": "BANCO DE VALORES S.A."
+  },
+  {
+    "codigo": "0229",
+    "descripcion": "BANCO DEL BUEN AYRE S.A."
+  },
+  {
+    "codigo": "0083",
+    "descripcion": "BANCO DEL CHUBUT S.A."
+  },
+  {
+    "codigo": "0310",
+    "descripcion": "BANCO DEL SOL S.A."
+  },
+  {
+    "codigo": "0060",
+    "descripcion": "BANCO DEL TUCUMAN S.A."
+  },
+  {
+    "codigo": "0046",
+    "descripcion": "BANCO DO BRASIL SA"
+  },
+  {
+    "codigo": "0236",
+    "descripcion": "BANCO DO ESTADO DO SAO PABLO S.A."
+  },
+  {
+    "codigo": "0137",
+    "descripcion": "BANCO EMPRESARIO DE TUCUMAN COOP. LTDO."
+  },
+  {
+    "codigo": "0303",
+    "descripcion": "BANCO FINANSUR S.A"
+  },
+  {
+    "codigo": "0153",
+    "descripcion": "BANCO GENERAL DE NEGOCIOS S.A."
+  },
+  {
+    "codigo": "0044",
+    "descripcion": "BANCO HIPOTECARIO S.A."
+  },
+  {
+    "codigo": "0322",
+    "descripcion": "BANCO INDUSTRIAL S.A."
+  },
+  {
+    "codigo": "0259",
+    "descripcion": "BANCO ITAU ARGENTINA S.A."
+  },
+  {
+    "codigo": "0305",
+    "descripcion": "BANCO JULIO S.A."
+  },
+  {
+    "codigo": "0285",
+    "descripcion": "BANCO MACRO S.A."
+  },
+  {
+    "codigo": "0254",
+    "descripcion": "BANCO MARIVA S.A."
+  },
+  {
+    "codigo": "0341",
+    "descripcion": "BANCO MASVENTAS S.A"
+  },
+  {
+    "codigo": "0293",
+    "descripcion": "BANCO MERCURIO S.A."
+  },
+  {
+    "codigo": "0281",
+    "descripcion": "BANCO MERIDIAN S.A."
+  },
+  {
+    "codigo": "0148",
+    "descripcion": "BANCO MUNICIPAL DE LA PLATA"
+  },
+  {
+    "codigo": "0065",
+    "descripcion": "BANCO MUNICIPAL DE ROSARIO"
+  },
+  {
+    "codigo": "0034",
+    "descripcion": "BANCO PATAGONIA S.A"
+  },
+  {
+    "codigo": "0317",
+    "descripcion": "BANCO PATAGONIA S.A."
+  },
+  {
+    "codigo": "0301",
+    "descripcion": "BANCO PIANO S.A."
+  },
+  {
+    "codigo": "0306",
+    "descripcion": "BANCO PRIVADO DE INVERSIONES S.A."
+  },
+  {
+    "codigo": "0268",
+    "descripcion": "BANCO PROVINCIA DE TIERRA DEL FUEGO"
+  },
+  {
+    "codigo": "0097",
+    "descripcion": "BANCO PROVINCIA DEL NEUQUEN"
+  },
+  {
+    "codigo": "0079",
+    "descripcion": "BANCO REGIONAL DE CUYO S.A."
+  },
+  {
+    "codigo": "0247",
+    "descripcion": "BANCO ROELA S.A."
+  },
+  {
+    "codigo": "0277",
+    "descripcion": "BANCO SAENZ S.A."
+  },
+  {
+    "codigo": "0327",
+    "descripcion": "BANCO SAN MIGUEL DE TUCUMAN S.A."
+  },
+  {
+    "codigo": "0072",
+    "descripcion": "BANCO SANTANDER RIO S.A."
+  },
+  {
+    "codigo": "0006",
+    "descripcion": "BANCO SUDAMERIS ARGENTINA S.A."
+  },
+  {
+    "codigo": "0027",
+    "descripcion": "BANCO SUPERVILLE S.A."
+  },
+  {
+    "codigo": "0308",
+    "descripcion": "BANCO TRANSANDINO S.A."
+  },
+  {
+    "codigo": "0337",
+    "descripcion": "BANCO URQUIJO S.A."
+  },
+  {
+    "codigo": "0271",
+    "descripcion": "BANCO VELOX S.A."
+  },
+  {
+    "codigo": "0017",
+    "descripcion": "BBV BANCO FRANCES S.A."
+  },
+  {
+    "codigo": "0266",
+    "descripcion": "BNP PARIBAS SUCURSAL BUENOS AIRES"
+  },
+  {
+    "codigo": "0434",
+    "descripcion": "CAJA DE CREDITO CUENCA COOP. LTDA."
+  },
+  {
+    "codigo": "0016",
+    "descripcion": "CITYBANK N.A."
+  },
+  {
+    "codigo": "9999",
+    "descripcion": "COELSA"
+  },
+  {
+    "codigo": "8888",
+    "descripcion": "COELSA PRENDA"
+  },
+  {
+    "codigo": "0418",
+    "descripcion": "COFIBAL COMP. FINANCIERA S.A."
+  },
+  {
+    "codigo": "0410",
+    "descripcion": "COLUMBIA COMPANIA FINANCIERA S.A."
+  },
+  {
+    "codigo": "0408",
+    "descripcion": "COMPANIA FINANCIERA ARGENTINA S.A."
+  },
+  {
+    "codigo": "0002",
+    "descripcion": "Depósito interactivo Banco Galicia"
+  },
+  {
+    "codigo": "0003",
+    "descripcion": "Depósito interactivo Banco Santander Rio"
+  },
+  {
+    "codigo": "0325",
+    "descripcion": "DEUTSCHE BANK"
+  },
+  {
+    "codigo": "0417",
+    "descripcion": "FIDECA S.A. COMPANIA FINANCIERA"
+  },
+  {
+    "codigo": "0265",
+    "descripcion": "HEXAGON BANK ARGENTINA S.A."
+  },
+  {
+    "codigo": "0150",
+    "descripcion": "HSBC BANK ARGENTINA S.A."
+  },
+  {
+    "codigo": "0294",
+    "descripcion": "ING BANK N.V."
+  },
+  {
+    "codigo": "0329",
+    "descripcion": "KOOKMIN BANK, SUC. BS.AS."
+  },
+  {
+    "codigo": "0010",
+    "descripcion": "LLOYDS BANK (BLSA) LIMITED"
+  },
+  {
+    "codigo": "0414",
+    "descripcion": "MAS VENTAS S.A. COMPANIA FINANCIERA"
+  },
+  {
+    "codigo": "0326",
+    "descripcion": "MERCOBANK S.A."
+  },
+  {
+    "codigo": "5000",
+    "descripcion": "MERRILL LYNCH NUEVA YORK"
+  },
+  {
+    "codigo": "0413",
+    "descripcion": "MONTEMAR CIA. FINANCIERA S.A."
+  },
+  {
+    "codigo": "0415",
+    "descripcion": "MULTIFINANZAS CIA. FINANCIERA S.A."
+  },
+  {
+    "codigo": "0388",
+    "descripcion": "NUEVO BANCO BISEL"
+  },
+  {
+    "codigo": "0386",
+    "descripcion": "NUEVO BANCO DE ENTRE RIOS"
+  },
+  {
+    "codigo": "0309",
+    "descripcion": "NUEVO BANCO DE LA RIOJA S.A."
+  },
+  {
+    "codigo": "0330",
+    "descripcion": "NUEVO BANCO DE SANTA FE SOCIEDAD ANONIMA"
+  },
+  {
+    "codigo": "0311",
+    "descripcion": "NUEVO BANCO DEL CHACO S.A."
+  },
+  {
+    "codigo": "0387",
+    "descripcion": "NUEVO BANCO SUQUIA"
+  },
+  {
+    "codigo": "0043",
+    "descripcion": "SCOTIA BANK QUILMES S.A."
+  },
+  {
+    "codigo": "0402",
+    "descripcion": "SOCIEDAD ANONIMA DEL ATLANTICO CIA. FIN."
+  },
+  {
+    "codigo": "0015",
+    "descripcion": "STANDARD BANK ARGENTINA S.A."
+  },
+  {
+    "codigo": "0000",
+    "descripcion": "TARJETAS PAS"
+  },
+  {
+    "codigo": "0018",
+    "descripcion": "THE BANK OF TOKYO - MITSUBISHI UFJ, LTD"
+  },
+  {
+    "codigo": "0406",
+    "descripcion": "TUTELAR COMPANIA FINANCIERA S.A."
+  }
+]

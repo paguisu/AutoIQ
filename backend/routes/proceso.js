@@ -11,6 +11,12 @@ const db = require('../config/db');
 const { initPreprocesador } = require('../utils/preprocesado_helper');
 const { resolveAtmVehicleKind } = require('../utils/atm_tipo_vehiculo');
 const { resolveSumaAsegurada } = require('../utils/atm_infoauto');
+const {
+  buildMapfreEnvelope,
+  describeMapfreTipoMedioPago,
+  parseMapfreResponse,
+  resolveMapfreCodPostal,
+} = require('../services/mapfre/quote');
 
 function ensureDir(p) {
   if (!fs.existsSync(p)) fs.mkdirSync(p, { recursive: true });
@@ -102,6 +108,31 @@ function getCabecera(id) {
 function asegPath(slug) {
   return path.join(process.cwd(), 'data', slug);
 }
+
+function listAvailableAseguradoras() {
+  const dataRoot = path.join(process.cwd(), 'data');
+  if (!fs.existsSync(dataRoot)) return [];
+
+  return fs.readdirSync(dataRoot, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .filter((slug) => fs.existsSync(path.join(dataRoot, slug, 'aseguradora.json')))
+    .map((slug) => {
+      const cfgPath = path.join(dataRoot, slug, 'aseguradora.json');
+      try {
+        const cfg = JSON.parse(fs.readFileSync(cfgPath, 'utf8'));
+        return {
+          slug,
+          nombre_publico: cfg?.nombre_publico || slug.toUpperCase(),
+          activo: cfg?.activo !== false,
+        };
+      } catch {
+        return null;
+      }
+    })
+    .filter((item) => item && item.activo)
+    .sort((a, b) => a.nombre_publico.localeCompare(b.nombre_publico, 'es'));
+}
 async function loadAsegConfig(slug) {
   const cfgPath = path.join(asegPath(slug), 'aseguradora.json');
   const j = await readJsonStrict(cfgPath);
@@ -114,6 +145,14 @@ async function loadAsegConfig(slug) {
     j.plan = process.env.ATM_PLAN || j.plan;
     j.contacto_tecnico = process.env.ATM_CONTACTO_TECNICO || j.contacto_tecnico;
     j.contacto_comercial = process.env.ATM_CONTACTO_COMERCIAL || j.contacto_comercial;
+  }
+  if (slug === 'mapfre') {
+    j.base_url = process.env.MAPFRE_BASE_URL || j.base_url;
+    j.soap_path = process.env.MAPFRE_SOAP_PATH || j.soap_path;
+    j.codAgt = process.env.MAPFRE_COD_AGT || j.codAgt;
+    j.claveAcceso = process.env.MAPFRE_CLAVE_ACCESO || j.claveAcceso;
+    j.claveProcedencia = process.env.MAPFRE_CLAVE_PROCEDENCIA || j.claveProcedencia;
+    j.tipoFacturacion = process.env.MAPFRE_TIPO_FACTURACION || j.tipoFacturacion;
   }
   if (!j.base_url || !j.soap_path) throw new Error(`Config ${slug}: faltan base_url o soap_path`);
   const method = j.soap_method || j.SOAP_METHOD || 'AUTOS_Cotizar_PHP';
@@ -205,6 +244,14 @@ function resolveFormaPagoCodigo(cabecera) {
   ].includes(raw)) return '1';
 
   return '2';
+}
+
+function describeAtmFormaPago(codigo) {
+  const raw = String(codigo || '').trim();
+  if (raw === '2') return 'Tarjeta de crédito';
+  if (raw === '4') return 'CBU';
+  if (raw === '1' || raw === '3') return 'Efectivo';
+  return raw;
 }
 
 function resolveSumaGnc(cabecera, gncFlag) {
@@ -511,20 +558,29 @@ async function cotizarFila({
   const evDir = (proceso_id != null && slug != null && index != null)
     ? evidenciasDir(proceso_id, slug, index)
     : null;
+  const evPrefix = String(slug || 'aseguradora');
 
   if (evDir) {
     safeWriteJson(path.join(evDir, 'fila_input.json'), { fila, mapeos, cabecera_id: cabecera?.id ?? null });
   }
 
-  if (!cp) {
-    const out = { ok: false, error: 'Debe informar el código postal', operacion: '0', coberturas: [], raw: '' };
-    if (evDir) safeWriteJson(path.join(evDir, 'atm-error.json'), out);
-    return out;
-  }
-  if (!/^\d{4}$/.test(cp)) {
-    const out = { ok: false, error: 'Código postal inválido (debe ser numérico de 4 posiciones)', operacion: '0', coberturas: [], raw: '' };
-    if (evDir) safeWriteJson(path.join(evDir, 'atm-error.json'), out);
-    return out;
+  if (slug === 'mapfre') {
+    if (!resolveMapfreCodPostal(fila, cabecera)) {
+      const out = { ok: false, error: 'Mapfre requiere un código postal traducible por catálogo (CP y, si aplica, localidad/provincia)', operacion: '0', coberturas: [], raw: '' };
+      if (evDir) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
+      return out;
+    }
+  } else {
+    if (!cp) {
+      const out = { ok: false, error: 'Debe informar el código postal', operacion: '0', coberturas: [], raw: '' };
+      if (evDir) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
+      return out;
+    }
+    if (!/^\d{4}$/.test(cp)) {
+      const out = { ok: false, error: 'Código postal inválido (debe ser numérico de 4 posiciones)', operacion: '0', coberturas: [], raw: '' };
+      if (evDir) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
+      return out;
+    }
   }
 
   let usoCodigo = '';
@@ -570,8 +626,93 @@ async function cotizarFila({
       raw: '',
       used: { seccion, cod_infoauto: codia, soap_method: SOAP_METHOD }
     };
-    if (evDir) safeWriteJson(path.join(evDir, 'atm-skip.json'), outSkip);
+    if (evDir) safeWriteJson(path.join(evDir, `${evPrefix}-skip.json`), outSkip);
     return outSkip;
+  }
+
+  if (slug === 'mapfre') {
+    let envelope;
+    let requestMeta;
+    try {
+      const built = await buildMapfreEnvelope({
+        fila,
+        cabecera,
+        hoyFmt: hoy_fmt,
+        cfg: Aseg,
+        mapeos,
+      });
+      envelope = built.envelope;
+      requestMeta = built.requestMeta;
+    } catch (e) {
+      const out = { ok: false, error: e.message || String(e), operacion: '0', coberturas: [], raw: '' };
+      if (evDir) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
+      return out;
+    }
+
+    if (evDir) {
+      safeWriteFile(path.join(evDir, `${evPrefix}-soap_request.xml`), envelope);
+      safeWriteJson(path.join(evDir, `${evPrefix}-config-usada.json`), {
+        soap_url: SOAP_URL,
+        soap_method: SOAP_METHOD,
+        request: requestMeta,
+      });
+    }
+
+    try {
+      const resp = await axios.post(SOAP_URL, envelope, {
+        headers: { 'Content-Type': 'text/xml; charset=UTF-8', SOAPAction: SOAP_METHOD },
+        timeout: 20000,
+        validateStatus: () => true,
+      });
+
+      const rawResp = resp.data;
+      if (evDir) {
+        safeWriteFile(path.join(evDir, `${evPrefix}-raw_response.xml`), String(rawResp || ''));
+        safeWriteJson(path.join(evDir, `${evPrefix}-http.json`), { status: resp.status, ok: resp.status >= 200 && resp.status < 300 });
+      }
+
+      if (!(resp.status >= 200 && resp.status < 300)) {
+        const out = { ok: false, error: `HTTP ${resp.status}`, coberturas: [], raw: rawResp };
+        if (evDir) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
+        return out;
+      }
+
+      const parsed = parseMapfreResponse(rawResp);
+      parsed.used = {
+        ...(parsed.used || {}),
+        tipoMedioPagoSolicitado: requestMeta.tipoMedioPago,
+        tipoMedioPagoDescripcion: describeMapfreTipoMedioPago(requestMeta.tipoMedioPago),
+      };
+      if (Array.isArray(parsed.coberturas)) {
+        parsed.coberturas = parsed.coberturas.map((cob) => ({
+          ...cob,
+          formapago: requestMeta.tipoMedioPago,
+          formapago_descripcion: describeMapfreTipoMedioPago(requestMeta.tipoMedioPago),
+        }));
+      }
+      if (evDir) {
+        safeWriteJson(path.join(evDir, `${evPrefix}-parsed.json`), {
+          ok: parsed.ok,
+          operacion: parsed.operacion || '',
+          coberturas_len: Array.isArray(parsed.coberturas) ? parsed.coberturas.length : 0,
+        });
+        if (Array.isArray(parsed.coberturas) && parsed.coberturas.length) {
+          safeWriteJson(path.join(evDir, `${evPrefix}-coberturas.json`), parsed.coberturas);
+        }
+        if (!parsed.ok) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), parsed);
+      }
+      return parsed;
+    } catch (e) {
+      const out = { ok: false, error: e.message || 'axios error', coberturas: [], raw: '' };
+      if (evDir) {
+        safeWriteJson(path.join(evDir, `${evPrefix}-exception.json`), {
+          message: e?.message || String(e),
+          stack: e?.stack || null,
+        });
+        safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
+      }
+      return out;
+    }
   }
 
   const cerokm = cabecera?.cerokm === '1' ? '1' : '0';
@@ -614,12 +755,12 @@ async function cotizarFila({
 
     if (!cbuNumero) {
       const out = { ok: false, error: 'Forma de pago CBU (forma=4) requiere cbu_numero (o cbu_id con data/testing/cbus.json)', operacion: '0', coberturas: [], raw: '' };
-      if (evDir) safeWriteJson(path.join(evDir, 'atm-error.json'), out);
+      if (evDir) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
       return out;
     }
     if (!/^\d{22}$/.test(cbuNumero)) {
       const out = { ok: false, error: 'CBU inválido (debe ser numérico de 22 dígitos)', operacion: '0', coberturas: [], raw: '' };
-      if (evDir) safeWriteJson(path.join(evDir, 'atm-error.json'), out);
+      if (evDir) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
       return out;
     }
 
@@ -639,17 +780,17 @@ async function cotizarFila({
 
     if (!tNombre || !tNumero || !tVcto) {
       const out = { ok: false, error: 'Forma de pago TARJETA (forma=2) requiere tarjeta_nombre(código ws_au_tarjeta), tarjeta_numero y tarjeta_vcto (MMAAAA) en cabecera o en data/testing/tarjetas_credito.json', operacion: '0', coberturas: [], raw: '' };
-      if (evDir) safeWriteJson(path.join(evDir, 'atm-error.json'), out);
+      if (evDir) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
       return out;
     }
     if (!/^\d{13,19}$/.test(tNumero)) {
       const out = { ok: false, error: 'Número de tarjeta inválido (debe ser numérico 13-19 dígitos)', operacion: '0', coberturas: [], raw: '' };
-      if (evDir) safeWriteJson(path.join(evDir, 'atm-error.json'), out);
+      if (evDir) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
       return out;
     }
     if (!/^\d{6}$/.test(tVcto)) {
       const out = { ok: false, error: 'Vencimiento de tarjeta inválido (formato MMAAAA, 6 dígitos)', operacion: '0', coberturas: [], raw: '' };
-      if (evDir) safeWriteJson(path.join(evDir, 'atm-error.json'), out);
+      if (evDir) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
       return out;
     }
 
@@ -698,9 +839,9 @@ async function cotizarFila({
 </SOAP-ENV:Envelope>`.trim();
 
   if (evDir) {
-    safeWriteFile(path.join(evDir, 'atm-doc_in.xml'), docIn);
-    safeWriteFile(path.join(evDir, 'atm-soap_request.xml'), envelope);
-    safeWriteJson(path.join(evDir, 'atm-config-usada.json'), {
+    safeWriteFile(path.join(evDir, `${evPrefix}-doc_in.xml`), docIn);
+    safeWriteFile(path.join(evDir, `${evPrefix}-soap_request.xml`), envelope);
+    safeWriteJson(path.join(evDir, `${evPrefix}-config-usada.json`), {
       soap_url: SOAP_URL,
       soap_method: SOAP_METHOD,
       vendedor: Aseg?.vendedor ?? null,
@@ -718,7 +859,7 @@ async function cotizarFila({
   for (const sa of actions) {
     try {
       if (evDir) {
-        safeWriteFile(path.join(evDir, 'atm-soapaction.txt'), sa);
+        safeWriteFile(path.join(evDir, `${evPrefix}-soapaction.txt`), sa);
       }
 
       const resp = await axios.post(SOAP_URL, envelope, {
@@ -729,8 +870,8 @@ async function cotizarFila({
       rawResp = resp.data;
 
       if (evDir) {
-        safeWriteFile(path.join(evDir, 'atm-raw_response.xml'), String(rawResp || ''));
-        safeWriteJson(path.join(evDir, 'atm-http.json'), { status: resp.status, ok: resp.status >= 200 && resp.status < 300 });
+        safeWriteFile(path.join(evDir, `${evPrefix}-raw_response.xml`), String(rawResp || ''));
+        safeWriteJson(path.join(evDir, `${evPrefix}-http.json`), { status: resp.status, ok: resp.status >= 200 && resp.status < 300 });
       }
 
       if (resp.status >= 200 && resp.status < 300) {
@@ -781,9 +922,9 @@ async function cotizarFila({
         };
 
         if (evDir) {
-          safeWriteJson(path.join(evDir, 'atm-parsed.json'), parsedOut);
+          safeWriteJson(path.join(evDir, `${evPrefix}-parsed.json`), parsedOut);
           if (Array.isArray(coberturas) && coberturas.length) {
-            safeWriteJson(path.join(evDir, 'atm-coberturas.json'), coberturas);
+            safeWriteJson(path.join(evDir, `${evPrefix}-coberturas.json`), coberturas);
           }
         }
 
@@ -796,7 +937,7 @@ async function cotizarFila({
             used: { soapAction: sa },
             raw: rawResp,
           };
-          if (evDir) safeWriteJson(path.join(evDir, 'atm-error.json'), out);
+          if (evDir) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
           return out;
         }
 
@@ -805,7 +946,11 @@ async function cotizarFila({
           operacion: operacionFinal,
           suma_asegurada: sumaAsegurada,
           coberturas,
-          used: { soapAction: sa },
+          used: {
+            soapAction: sa,
+            formaPagoSolicitada: formaPago,
+            formaPagoDescripcion: describeAtmFormaPago(formaPago),
+          },
           raw: rawResp,
         };
       }
@@ -814,7 +959,7 @@ async function cotizarFila({
     } catch (e) {
       lastErr = e.message || 'axios error';
       if (evDir) {
-        safeWriteJson(path.join(evDir, 'atm-exception.json'), {
+        safeWriteJson(path.join(evDir, `${evPrefix}-exception.json`), {
           message: e?.message || String(e),
           stack: e?.stack || null,
         });
@@ -823,7 +968,7 @@ async function cotizarFila({
   }
 
   const out = { ok: false, error: lastErr, raw: rawResp };
-  if (evDir) safeWriteJson(path.join(evDir, 'atm-error.json'), out);
+  if (evDir) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
   return out;
 }
 
@@ -856,7 +1001,9 @@ router.post('/crear', express.json(), async (req, res) => {
     aseguradoras = aseguradoras.map((s) => String(s).toLowerCase().trim()).filter(Boolean);
 
     const limiteBody = Number(req.body?.limite);
-    const limite = Number.isFinite(limiteBody) ? Math.max(1, Math.min(limiteBody, 100)) : 5;
+    const limite = Number.isFinite(limiteBody) && limiteBody > 0
+      ? Math.max(1, Math.min(limiteBody, 100))
+      : null;
 
     const proceso_id = Date.now();
 
@@ -947,7 +1094,9 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
         historial_id,
         archivo,
         fecha: new Date().toISOString(),
-        limite: Number(req.body?.limite ?? 50),
+        limite: Number.isFinite(Number(req.body?.limite)) && Number(req.body?.limite) > 0
+          ? Math.max(1, Math.min(Number(req.body?.limite), 100))
+          : null,
         cabecera_id: cabeceraIdCompat,
         aseguradoras: req.body?.aseguradoras || req.body?.aseguradora || [],
         resultados: {}
@@ -971,11 +1120,6 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
       return res.status(400).json({ ok: false, error: `No existe el archivo combinado: ${absPath}` });
     }
 
-    const limiteBody = Number(req.body?.limite);
-    const limite = Number.isFinite(limiteBody)
-      ? Math.max(1, Math.min(limiteBody, 100))
-      : Math.max(1, Math.min(Number(meta.limite || 5), 100));
-
     let aseguradoras = req.body?.aseguradoras;
     if (typeof aseguradoras === 'string') aseguradoras = [aseguradoras];
     if (!Array.isArray(aseguradoras) || aseguradoras.length === 0) aseguradoras = meta.aseguradoras || ['atm'];
@@ -986,7 +1130,7 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
       estado: 'en curso',
       fecha_inicio: new Date().toISOString(),
       archivo: relPath,
-      limite,
+      limite: null,
       aseguradoras,
       registros_procesados: 0,
       cotizaciones_exitosas: 0,
@@ -1036,7 +1180,16 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
     // guardar total real (sirve para UI)
     await saveMetadata(proceso_id, { registros_total: filas.length });
 
-    const tomar = Math.min(limite, filas.length);
+    const limiteBody = Number(req.body?.limite);
+    const limite = Number.isFinite(limiteBody) && limiteBody > 0
+      ? Math.max(1, Math.min(limiteBody, 100))
+      : (Number.isFinite(Number(meta.limite)) && Number(meta.limite) > 0
+          ? Math.max(1, Math.min(Number(meta.limite), 100))
+          : filas.length);
+
+    await saveMetadata(proceso_id, { limite: limite || null });
+
+    const tomar = Math.min(limite || filas.length, filas.length);
 
     const resultadosPorAseg = {};
     let totalOk = 0;
@@ -1091,6 +1244,7 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
         });
 
         resultados.push({
+          aseguradora: slug,
           index: i,
           fila_preview: {
             infoautocod: fila_preparada.infoautocod ?? fila.infoautocod ?? fila.tau_codia ?? '',
@@ -1111,7 +1265,8 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
         }
 
         // evidencia “resumen” por fila (rápido de leer)
-        safeWriteJson(path.join(evidenciasDir(proceso_id, slug, i), 'atm-result.json'), {
+        safeWriteJson(path.join(evidenciasDir(proceso_id, slug, i), `${slug}-result.json`), {
+          aseguradora: slug,
           ok: resp.ok,
           operacion: resp.operacion ?? null,
           coberturas_len: Array.isArray(resp.coberturas) ? resp.coberturas.length : 0,
@@ -1269,6 +1424,19 @@ items.sort((a, b) => {
 });
     res.json({ ok: true, total: items.length, items });
   } catch (err) {
+    res.status(500).json({ ok: false, error: err.message || String(err) });
+  }
+});
+
+// =============================================================================
+// GET /proceso/aseguradoras-disponibles
+// =============================================================================
+router.get('/aseguradoras-disponibles', (_req, res) => {
+  try {
+    const items = listAvailableAseguradoras();
+    res.json({ ok: true, items });
+  } catch (err) {
+    console.error('Error en /proceso/aseguradoras-disponibles', err);
     res.status(500).json({ ok: false, error: err.message || String(err) });
   }
 });

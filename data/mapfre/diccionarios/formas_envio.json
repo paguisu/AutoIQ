@@ -1,0 +1,10 @@
+[
+  {
+    "codigo": "1",
+    "descripcion": "CORREO POSTAL"
+  },
+  {
+    "codigo": "2",
+    "descripcion": "CORREO ELECTRONICO"
+  }
+]

@@ -1,0 +1,152 @@
+[
+  {
+    "codigo": "1",
+    "descripcion": "PESOS",
+    "simbolo": ""
+  },
+  {
+    "codigo": "2",
+    "descripcion": "LIBRAS ESTERLINAS",
+    "simbolo": ""
+  },
+  {
+    "codigo": "3",
+    "descripcion": "MARCOS ALEMANES",
+    "simbolo": ""
+  },
+  {
+    "codigo": "4",
+    "descripcion": "FRANCOS FRANCESES",
+    "simbolo": ""
+  },
+  {
+    "codigo": "5",
+    "descripcion": "BONEX 1984",
+    "simbolo": ""
+  },
+  {
+    "codigo": "6",
+    "descripcion": "FRANCOS SUIZOS",
+    "simbolo": ""
+  },
+  {
+    "codigo": "7",
+    "descripcion": "BONEX 1989",
+    "simbolo": ""
+  },
+  {
+    "codigo": "8",
+    "descripcion": "BONEX 1987",
+    "simbolo": ""
+  },
+  {
+    "codigo": "9",
+    "descripcion": "UNIDAD DE FINANCIAMIENTO",
+    "simbolo": ""
+  },
+  {
+    "codigo": "10",
+    "descripcion": "BONEX 1982",
+    "simbolo": ""
+  },
+  {
+    "codigo": "11",
+    "descripcion": "UNIDAD DE CUENTA SEGUROS",
+    "simbolo": ""
+  },
+  {
+    "codigo": "12",
+    "descripcion": "PESETAS",
+    "simbolo": ""
+  },
+  {
+    "codigo": "13",
+    "descripcion": "YENS",
+    "simbolo": ""
+  },
+  {
+    "codigo": "14",
+    "descripcion": "PESOS Ley 25.561",
+    "simbolo": ""
+  },
+  {
+    "codigo": "15",
+    "descripcion": "PESOS URUGUAYOS",
+    "simbolo": ""
+  },
+  {
+    "codigo": "16",
+    "descripcion": "PESOS CHILENOS",
+    "simbolo": ""
+  },
+  {
+    "codigo": "17",
+    "descripcion": "REALES",
+    "simbolo": ""
+  },
+  {
+    "codigo": "18",
+    "descripcion": "BONOS (TUC.)",
+    "simbolo": ""
+  },
+  {
+    "codigo": "19",
+    "descripcion": "BONOS (JUJUY)",
+    "simbolo": ""
+  },
+  {
+    "codigo": "20",
+    "descripcion": "BONOS (CORDOBA)",
+    "simbolo": ""
+  },
+  {
+    "codigo": "21",
+    "descripcion": "BOCON",
+    "simbolo": ""
+  },
+  {
+    "codigo": "22",
+    "descripcion": "FLORINES HOLANDESES",
+    "simbolo": ""
+  },
+  {
+    "codigo": "23",
+    "descripcion": "BONOS PATACON",
+    "simbolo": ""
+  },
+  {
+    "codigo": "24",
+    "descripcion": "LECOP",
+    "simbolo": ""
+  },
+  {
+    "codigo": "25",
+    "descripcion": "LECOP CORDOBA",
+    "simbolo": ""
+  },
+  {
+    "codigo": "26",
+    "descripcion": "DOLARES ESTADOUNIDENSES",
+    "simbolo": ""
+  },
+  {
+    "codigo": "27",
+    "descripcion": "DOLAR OFICIAL",
+    "simbolo": ""
+  },
+  {
+    "codigo": "28",
+    "descripcion": "FEDERALES",
+    "simbolo": ""
+  },
+  {
+    "codigo": "29",
+    "descripcion": "EUROS",
+    "simbolo": ""
+  },
+  {
+    "codigo": "30",
+    "descripcion": "PETROM",
+    "simbolo": ""
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "codigo": "S",
+    "descripcion": "SOLTERO/A"
+  },
+  {
+    "codigo": "C",
+    "descripcion": "CASADO/A"
+  },
+  {
+    "codigo": "V",
+    "descripcion": "VIUDO/A"
+  },
+  {
+    "codigo": "D",
+    "descripcion": "DIVORCIADO/A"
+  },
+  {
+    "codigo": "E",
+    "descripcion": "SEPARADO/A"
+  },
+  {
+    "codigo": "H",
+    "descripcion": "UNION DE HECHO"
+  }
+]
