@@ -314,9 +314,26 @@ function defaultMapfreTableMap() {
   };
 }
 
+function defaultAllianzTableMap() {
+  return {
+    uso: { fileName: 'uso.json', endpoint: 'uso', remoteName: null },
+    tipo_vehiculo: { fileName: 'tipo_vehiculo.json', endpoint: 'tipo_vehiculo', remoteName: null },
+  };
+}
+
+function defaultExpertaTableMap() {
+  return {
+    uso: { fileName: 'uso.json', endpoint: 'uso', remoteName: null },
+    modalidad: { fileName: 'modalidad.json', endpoint: 'modalidad', remoteName: null },
+    iva: { fileName: 'iva.json', endpoint: 'iva', remoteName: null },
+  };
+}
+
 function tableMapFor(slug) {
   if (slug === 'atm') return defaultAtmTableMap();
   if (slug === 'mapfre') return defaultMapfreTableMap();
+  if (slug === 'allianz') return defaultAllianzTableMap();
+  if (slug === 'experta') return defaultExpertaTableMap();
   return {};
 }
 

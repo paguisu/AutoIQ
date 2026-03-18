@@ -1,0 +1,31 @@
+{
+  "nombre_publico": "Experta",
+  "sigla": "EXP",
+  "activo": false,
+  "base_url": "https://web-seguros-test.experta.com.ar",
+  "soap_path": "/cotizaciones",
+  "soap_method": "cotizaciones",
+  "soap_action": "",
+  "usuario": "prima",
+  "password": "fa29f2bff1ee2ba2b51b60798d1bc6b0",
+  "hashid": "87b36cb6-d119-4063-84bb-d0e8f411739c",
+  "producer_code": "3507",
+  "vigencia": "mensual",
+  "refacturacion": "mensual",
+  "descuento_comercial": "",
+  "clausula_ajuste": "5",
+  "parametros_extras": {
+    "formato_fecha_request": "dd/MM/yyyy",
+    "modalidad_default": "EX0",
+    "uso_default": "1",
+    "iva_default": "5",
+    "gnc_default": "N",
+    "valor_gnc_default": "",
+    "marca_default": "unespecified",
+    "modelo_default": "unespecified",
+    "version_default": "unespecified",
+    "con_recuperador_default": "N",
+    "max_concurrency": 1,
+    "min_interval_ms": 1200
+  }
+}

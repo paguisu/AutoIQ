@@ -4,6 +4,10 @@ const path = require('path');
 const fs = require('fs');
 const db = require('../config/db');
 const ejecutarCotizacion = require('../scripts/ejecutarCotizacion');
+const {
+  getCurrentAccessContext,
+  isOwnedByContext,
+} = require('../utils/access_control');
 
 const router = Router();
 
@@ -156,6 +160,7 @@ router.get('/estado/:id', async (req, res) => {
  */
 router.get('/listar', async (req, res) => {
   try {
+    const ctx = req.accessContext || getCurrentAccessContext();
     const estado = (req.query.estado || '').toString().trim();
     let limit = Number(req.query.limit);
     let offset = Number(req.query.offset);
@@ -175,14 +180,6 @@ router.get('/listar', async (req, res) => {
       params.push(estado);
     }
 
-    // Conteo total
-    const [countRows] = await db.execute(
-      `SELECT COUNT(*) AS total FROM procesos_cotizacion ${where}`,
-      params
-    );
-    const total = countRows[0]?.total || 0;
-
-    // Listado: limit/offset como literales (evita el error de mysqld_stmt_execute)
     const sqlListado = `
       SELECT
         id, nombre, nombre_cabecera, estado,
@@ -191,11 +188,10 @@ router.get('/listar', async (req, res) => {
       FROM procesos_cotizacion
       ${where}
       ORDER BY fecha_inicio DESC
-      LIMIT ${lim} OFFSET ${off}
     `;
     const [rows] = await db.execute(sqlListado, params);
 
-    const items = rows.map((row) => {
+    const filtered = rows.map((row) => {
       const meta = readProcesoMetadata(row.id) || {};
       return {
         ...row,
@@ -209,8 +205,12 @@ router.get('/listar', async (req, res) => {
         cotizaciones_skipped: meta.cotizaciones_skipped ?? 0,
         aseguradoras: meta.aseguradoras ?? [],
         limite: meta.limite ?? null,
+        organization_id: meta.organization_id || 'autoiq',
+        created_by_user_id: meta.created_by_user_id || 'superadmin-local',
       };
-    });
+    }).filter((item) => isOwnedByContext(item, ctx));
+    const total = filtered.length;
+    const items = filtered.slice(off, off + lim);
 
     return res.json({
       total,

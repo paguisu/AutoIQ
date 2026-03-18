@@ -1,0 +1,98 @@
+{
+  "organizaciones": [
+    {
+      "id": "autoiq",
+      "nombre": "AutoIQ",
+      "slug": "autoiq",
+      "activa": true,
+      "companias_habilitadas": [
+        "atm",
+        "mapfre",
+        "sancor",
+        "allianz"
+      ]
+    },
+    {
+      "id": "mapfre-org",
+      "nombre": "Mapfre",
+      "slug": "mapfre",
+      "activa": true,
+      "companias_habilitadas": [
+        "atm",
+        "mapfre"
+      ]
+    },
+    {
+      "id": "swiss-medical",
+      "nombre": "Swiss Medical",
+      "slug": "swiss-medical",
+      "activa": true,
+      "companias_habilitadas": [
+        "atm",
+        "sancor",
+        "allianz"
+      ]
+    }
+  ],
+  "roles": [
+    {
+      "id": "superadmin",
+      "nombre": "Superadministrador",
+      "activa": true,
+      "is_superadmin": true,
+      "pestañas": [
+        "*"
+      ]
+    },
+    {
+      "id": "usuario_generico",
+      "nombre": "Usuario genérico",
+      "activa": true,
+      "is_superadmin": false,
+      "pestañas": [
+        "inputs",
+        "cabecera",
+        "historico",
+        "procesos"
+      ]
+    }
+  ],
+  "usuarios": [
+    {
+      "id": "superadmin-local",
+      "nombre": "Super",
+      "apellido": "Admin",
+      "email": "superadmin@autoiq.local",
+      "organizacion_id": "autoiq",
+      "role_id": "superadmin",
+      "activo": true,
+      "pestañas_override": []
+    },
+    {
+      "id": "ezequiel-carra",
+      "nombre": "Ezequiel",
+      "apellido": "Carra",
+      "email": "carraez@mapfre.com",
+      "organizacion_id": "mapfre-org",
+      "role_id": "usuario_generico",
+      "activo": true,
+      "pestañas_override": [
+        "inputs",
+        "cabecera",
+        "historico",
+        "procesos"
+      ]
+    },
+    {
+      "id": "diego-schenquerman",
+      "nombre": "Diego",
+      "apellido": "Schenquerman",
+      "email": "diego.schenquerman@smg.com.ar",
+      "organizacion_id": "swiss-medical",
+      "role_id": "usuario_generico",
+      "activo": true,
+      "pestañas_override": []
+    }
+  ],
+  "updated_at": "2026-03-17T12:13:16.197Z"
+}

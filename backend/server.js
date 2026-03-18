@@ -12,6 +12,14 @@ const xlsx = require('xlsx');
 const fs = require('fs');
 const validarColumnas = require('./utils/validarColumnas');
 const serveIndex = require('serve-index');
+const {
+  appendActivity,
+  getCurrentAccessContext,
+  getHistorialOwner,
+  getUserDisplayName,
+  isOwnedByContext,
+  setHistorialOwner,
+} = require('./utils/access_control');
 
 // Combinador (ruta robusta)
 let combinarArchivos;
@@ -36,6 +44,10 @@ const PORT = process.env.PORT || 3000;
 // Middlewares básicos
 app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true }));
+app.use((req, _res, next) => {
+  req.accessContext = getCurrentAccessContext();
+  next();
+});
 
 // Asegurar carpetas necesarias
 const dirSubidos = path.join(__dirname, '../data/archivos_subidos');
@@ -192,10 +204,26 @@ app.post('/upload', upload.any(), async (req, res) => {
 
         const fecha = new Date();
         try {
-          await db.execute(
+          const [insertResult] = await db.execute(
             'INSERT INTO historial_combinaciones (nombre_archivo, ruta, fecha, cantidad_registros) VALUES (?, ?, ?, ?)',
             [nombreArchivo, rutaRelativa, fecha, totalCombinaciones]
           );
+          if (insertResult?.insertId) {
+            const ctx = req.accessContext || getCurrentAccessContext();
+            setHistorialOwner(insertResult.insertId, {
+              organization_id: ctx.currentOrganization?.id || 'autoiq',
+              user_id: ctx.currentUser?.id || 'superadmin-local',
+            });
+            appendActivity({
+              event: 'upload_combined_file',
+              entity_type: 'historial',
+              entity_id: String(insertResult.insertId),
+              details: {
+                archivo: nombreArchivo,
+                registros: totalCombinaciones,
+              },
+            });
+          }
         } catch (e) {
           jsonResp.mensajes.push(`ℹ️ Nota: no se guardó en historial (${e.message})`);
         }
@@ -232,10 +260,26 @@ app.post('/upload', upload.any(), async (req, res) => {
 
         const fecha = new Date();
         try {
-          await db.execute(
+          const [insertResult] = await db.execute(
             'INSERT INTO historial_combinaciones (nombre_archivo, ruta, fecha, cantidad_registros) VALUES (?, ?, ?, ?)',
             [nombreArchivo, rutaRelativa, fecha, rows.length]
           );
+          if (insertResult?.insertId) {
+            const ctx = req.accessContext || getCurrentAccessContext();
+            setHistorialOwner(insertResult.insertId, {
+              organization_id: ctx.currentOrganization?.id || 'autoiq',
+              user_id: ctx.currentUser?.id || 'superadmin-local',
+            });
+            appendActivity({
+              event: 'upload_taxative_file',
+              entity_type: 'historial',
+              entity_id: String(insertResult.insertId),
+              details: {
+                archivo: nombreArchivo,
+                registros: rows.length,
+              },
+            });
+          }
         } catch (e) {
           jsonResp.mensajes.push(`ℹ️ Nota: no se guardó en historial (taxativo) (${e.message})`);
         }
@@ -263,7 +307,19 @@ app.get('/historial', async (req, res) => {
     const [rows] = await db.execute(
       'SELECT id, nombre_archivo, ruta, DATE_FORMAT(fecha, "%Y-%m-%d %H:%i:%s") AS fecha, cantidad_registros FROM historial_combinaciones ORDER BY fecha DESC'
     );
-    res.json(rows);
+    const ctx = req.accessContext || getCurrentAccessContext();
+    const out = rows.filter((row) => {
+      const owner = getHistorialOwner(row.id) || { organization_id: 'autoiq', user_id: 'superadmin-local' };
+      return isOwnedByContext(owner, ctx);
+    }).map((row) => {
+      const owner = getHistorialOwner(row.id) || { organization_id: 'autoiq', user_id: 'superadmin-local' };
+      return {
+        ...row,
+        organization_id: owner.organization_id,
+        user_id: owner.user_id,
+      };
+    });
+    res.json(out);
   } catch (error) {
     console.error('Error al obtener historial:', error);
     res.status(500).json({ error: 'Error al obtener historial' });
@@ -285,6 +341,7 @@ app.use('/cabeceras', cabecerasRouter);
 // app.use('/aseguradoras', require('./routes/aseguradoras'));
 app.use('/aseguradoras', require('./routes/aseguradoras_params'))
 app.use('/catalogos', require('./routes/catalogos'));
+app.use('/admin', require('./routes/admin'));
 
 app.use('/preprocesado', require('./routes/preprocesado'));
 
@@ -296,4 +353,3 @@ if (require.main === module) {
 }
 
 module.exports = app;
-

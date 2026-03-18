@@ -2,6 +2,12 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const {
+  appendActivity,
+  getCurrentAccessContext,
+  getUserDisplayName,
+  isOwnedByContext,
+} = require('../utils/access_control');
 
 const router = express.Router();
 
@@ -45,9 +51,18 @@ function writeAll(db){
 const toStr = v => (v ?? '').toString().trim();
 
 // GET /cabeceras/listar  -> devuelve items
-router.get('/listar', (_req, res) => {
+router.get('/listar', (req, res) => {
   const db = readAll();
-  res.json(db.items);
+  const ctx = req.accessContext || getCurrentAccessContext();
+  const items = db.items
+    .map((item) => ({
+      organization_id: item.organization_id || 'autoiq',
+      created_by_user_id: item.created_by_user_id || 'superadmin-local',
+      created_by_name: item.created_by_name || '',
+      ...item,
+    }))
+    .filter((item) => isOwnedByContext(item, ctx));
+  res.json(items);
 });
 
 // GET /cabeceras/:id -> detalle
@@ -56,12 +71,17 @@ router.get('/:id', (req,res) => {
   const db = readAll();
   const cab = db.items.find(x => Number(x.id) === id);
   if(!cab) return res.status(404).json({ ok:false, error:'Cabecera no encontrada' });
+  const ctx = req.accessContext || getCurrentAccessContext();
+  if (!isOwnedByContext(cab, ctx)) {
+    return res.status(403).json({ ok:false, error:'No tenés acceso a esta cabecera' });
+  }
   res.json(cab);
 });
 
 // POST /cabeceras/crear -> crea nueva cabecera (siempre)
 router.post('/crear', express.json(), (req, res) => {
   const b = req.body || {};
+  const ctx = req.accessContext || getCurrentAccessContext();
 
   const cab = {
     id: 0,
@@ -113,7 +133,11 @@ router.post('/crear', express.json(), (req, res) => {
     cerokm: toStr(b.cerokm),
     suma: toStr(b.suma),
     uso_default: toStr(b.uso_default),
-    accesorios: toStr(b.accesorios)
+    accesorios: toStr(b.accesorios),
+    organization_id: ctx.currentOrganization?.id || 'autoiq',
+    created_by_user_id: ctx.currentUser?.id || 'superadmin-local',
+    created_by_name: getUserDisplayName(ctx.currentUser),
+    created_at: new Date().toISOString(),
   };
 
   const db = readAll();
@@ -124,6 +148,15 @@ router.post('/crear', express.json(), (req, res) => {
 
   db.items.push(cab);
   writeAll(db);
+  appendActivity({
+    event: 'cabecera_created',
+    entity_type: 'cabecera',
+    entity_id: String(cab.id),
+    details: {
+      nombre: cab.nombre,
+      organization_id: cab.organization_id,
+    },
+  });
   res.json({ ok:true, cabecera:cab });
 });
 
@@ -133,8 +166,18 @@ router.post('/eliminar/:id', (req, res) => {
   const db = readAll();
   const idx = db.items.findIndex(x => Number(x.id) === id);
   if(idx < 0) return res.status(404).json({ ok:false, error:'Cabecera no encontrada' });
+  const ctx = req.accessContext || getCurrentAccessContext();
+  if (!isOwnedByContext(db.items[idx], ctx)) {
+    return res.status(403).json({ ok:false, error:'No tenés acceso a esta cabecera' });
+  }
   const [removed] = db.items.splice(idx,1);
   writeAll(db);
+  appendActivity({
+    event: 'cabecera_deleted',
+    entity_type: 'cabecera',
+    entity_id: String(removed.id),
+    details: { nombre: removed.nombre || '' },
+  });
   res.json({ ok:true, removed });
 });
 

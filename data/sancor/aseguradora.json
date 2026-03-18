@@ -1,0 +1,42 @@
+{
+  "nombre_publico": "Sancor",
+  "activo": true,
+  "base_url": "https://external-pro-ws.gruposancorseguros.com",
+  "soap_path": "/Ssa/Channel/PriceSvc",
+  "soap_method": "NewVehicle",
+  "soap_action": "http://GrupoSancorSeguros/wsdl/service/PriceSvc/NewVehicle",
+  "auth_url": "https://external-pro-ws.gruposancorseguros.com:443/Ssa/SecuritySvc",
+  "auth_method": "GetToken",
+  "usuario": "pasesores911ws",
+  "password": "Psiivr223vce",
+  "system": "PolicyIssuance",
+  "connection": "Ceibo",
+  "quote_user": "pasesores911ws",
+  "producer_code": "234095",
+  "supervisor_code": "151557",
+  "parametros_extras": {
+    "value_capital_default": "0.00",
+    "currency_id": "1",
+    "insured_good": "0",
+    "iva_condition_id_default": "4",
+    "period_of_validity_id": "1",
+    "frequency_id": "5",
+    "fee_id": "0",
+    "product_id": "24",
+    "document_type_default": "D",
+    "use_particular": "2",
+    "use_comercial": "4",
+    "scoring_options": [
+      { "typeId": "3", "selectedOptionId": "1" },
+      { "typeId": "7", "selectedOptionId": "2" },
+      { "typeId": "8", "selectedOptionId": "1" }
+    ],
+    "discount_customizations": [
+      { "discountNumber": "1", "rate": "99" },
+      { "discountNumber": "4", "rate": "0" },
+      { "discountNumber": "58", "rate": "0" }
+    ],
+    "max_concurrency": 1,
+    "min_interval_ms": 1400
+  }
+}

@@ -85,6 +85,127 @@
       opacity: 1;
       transform: translateY(0);
     }
+    .admin-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+      gap:14px;
+    }
+    .admin-card{
+      border:1px solid #d9dce5;
+      border-radius:10px;
+      padding:14px;
+      background:#fafbfd;
+    }
+    .admin-card h3{
+      margin-top:0;
+    }
+    .admin-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin:10px 0 16px;
+    }
+    .admin-textarea{
+      width:100%;
+      min-height:220px;
+      font-family:Consolas, "Courier New", monospace;
+      font-size:13px;
+      box-sizing:border-box;
+    }
+    .muted{
+      color:#6b7280;
+    }
+    .row-inline{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .row-inline > *{
+      flex:1 1 220px;
+    }
+    .session-strip{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+      flex-wrap:wrap;
+      padding:10px 16px;
+      background:#f3f6ff;
+      border-bottom:1px solid #d7def2;
+    }
+    .session-strip strong{
+      color:#001470;
+    }
+    .session-box{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .session-box select{
+      min-width:260px;
+      margin:0;
+    }
+    .admin-list{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:10px;
+    }
+    .admin-list th,
+    .admin-list td{
+      border:1px solid #d9dce5;
+      padding:8px;
+      text-align:left;
+      vertical-align:top;
+    }
+    .admin-list th{
+      background:#f3f6ff;
+    }
+    .checkbox-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+      gap:6px 10px;
+      margin-top:6px;
+    }
+    .checkbox-grid label{
+      font-weight:normal;
+      margin:0;
+      display:flex;
+      align-items:center;
+      gap:6px;
+    }
+    .checkbox-grid input{
+      width:auto;
+      margin:0;
+    }
+    .access-grid{
+      display:grid;
+      grid-template-columns:minmax(360px, 1fr) minmax(420px, 1.15fr);
+      gap:14px;
+      align-items:start;
+    }
+    .access-grid .span-all{
+      grid-column:1 / -1;
+    }
+    .role-help{
+      margin-top:6px;
+      font-size:13px;
+      color:#5b6475;
+      background:#f6f8fc;
+      border:1px solid #d9dce5;
+      border-radius:8px;
+      padding:8px 10px;
+    }
+    @media (max-width: 980px){
+      .access-grid{
+        grid-template-columns:1fr;
+      }
+      .access-grid .span-all{
+        grid-column:auto;
+      }
+    }
   </style>
 </head>
 <body>
@@ -94,7 +215,20 @@
     <button class="tab-button" data-tab="cabecera">Cabecera</button>
     <button class="tab-button with-indicator" data-tab="historico" id="historicoTabButton">Histórico<span id="historicoInfoautoDot" class="tab-alert-dot"></span></button>
     <button class="tab-button" data-tab="base">Base Propia</button>
+    <button class="tab-button" data-tab="wsadmin">Compañías WS</button>
+    <button class="tab-button" data-tab="accesos">Accesos</button>
     <button class="tab-button" data-tab="procesos">Procesos en curso</button>
+  </div>
+  <div class="session-strip">
+    <div>
+      <strong>Sesión simulada</strong>
+      <span id="sessionSummary" class="muted">Cargando contexto…</span>
+    </div>
+    <div class="session-box">
+      <label for="session-user-select" style="font-weight:bold;">Usuario actual</label>
+      <select id="session-user-select"></select>
+      <button type="button" id="session-user-apply">Cambiar usuario</button>
+    </div>
   </div>
 
   <!-- ====== TAB: Inputs ====== -->
@@ -268,6 +402,201 @@
     </table>
   </div>
 
+  <!-- ====== TAB: Compañías WS ====== -->
+  <div id="wsadmin" class="tab-content">
+    <h2>Administración de Compañías WS</h2>
+    <div class="muted" style="margin-bottom:14px;">
+      Este espacio es solo para las compañías con las que AutoIQ transacciona por web service. Se edita por separado de usuarios, roles y organizaciones.
+    </div>
+
+    <div class="admin-actions">
+      <div style="min-width:280px; flex:1 1 320px;">
+        <label>Compañía</label>
+        <select id="ws-company-select"></select>
+      </div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button type="button" id="ws-company-refresh">Refrescar</button>
+        <button type="button" id="ws-company-save">Guardar cambios</button>
+      </div>
+    </div>
+
+    <div id="ws-company-status" class="muted" style="margin-bottom:12px;"></div>
+
+    <div class="admin-grid">
+      <div class="admin-card">
+        <h3>Identidad</h3>
+        <label>Slug</label>
+        <input type="text" id="ws-slug" readonly />
+        <label>Nombre público</label>
+        <input type="text" id="ws-nombre-publico" />
+        <label>Sigla</label>
+        <input type="text" id="ws-sigla" placeholder="ATM / MAP / SAN / SMG" />
+        <label>Activo</label>
+        <select id="ws-activo">
+          <option value="true">Sí</option>
+          <option value="false">No</option>
+        </select>
+      </div>
+
+      <div class="admin-card">
+        <h3>Endpoints</h3>
+        <label>Base URL</label>
+        <input type="text" id="ws-base-url" />
+        <label>SOAP / Path</label>
+        <input type="text" id="ws-soap-path" />
+        <label>Método</label>
+        <input type="text" id="ws-soap-method" />
+        <label>SOAP Action</label>
+        <input type="text" id="ws-soap-action" />
+        <label>Auth URL</label>
+        <input type="text" id="ws-auth-url" />
+        <label>Auth Método</label>
+        <input type="text" id="ws-auth-method" />
+      </div>
+
+      <div class="admin-card">
+        <h3>Credenciales</h3>
+        <label>Usuario</label>
+        <input type="text" id="ws-usuario" />
+        <label>Password / Clave</label>
+        <input type="text" id="ws-password" />
+        <label>Quote User</label>
+        <input type="text" id="ws-quote-user" />
+        <label>codAgt</label>
+        <input type="text" id="ws-codagt" />
+        <label>claveAcceso</label>
+        <input type="text" id="ws-clave-acceso" />
+        <label>claveProcedencia</label>
+        <input type="text" id="ws-clave-procedencia" />
+      </div>
+
+      <div class="admin-card">
+        <h3>Operación</h3>
+        <label>Productor / vendedor</label>
+        <input type="text" id="ws-producer-code" />
+        <label>Supervisor / organizador</label>
+        <input type="text" id="ws-supervisor-code" />
+        <label>Origen</label>
+        <input type="text" id="ws-origen" />
+        <label>Plan</label>
+        <input type="text" id="ws-plan" />
+        <label>Vigencia</label>
+        <input type="text" id="ws-vigencia" />
+        <label>Refacturación</label>
+        <input type="text" id="ws-refacturacion" />
+      </div>
+
+      <div class="admin-card">
+        <h3>Variables Comerciales</h3>
+        <label>Descuento comercial</label>
+        <input type="text" id="ws-descuento-comercial" placeholder="Ej: 20 / 99 / Ninguna" />
+        <label>Cláusula de ajuste</label>
+        <input type="text" id="ws-clausula-ajuste" placeholder="Ej: 20% / 0 / Automática" />
+        <label>Ajuste RC</label>
+        <input type="text" id="ws-ajuste-rc" />
+        <label>Ajuste casco</label>
+        <input type="text" id="ws-ajuste-casco" />
+        <label>Tipo de facturación</label>
+        <input type="text" id="ws-tipo-facturacion" />
+      </div>
+
+      <div class="admin-card" style="grid-column:1 / -1;">
+        <h3>Parámetros Extras</h3>
+        <div class="muted" style="margin-bottom:8px;">
+          JSON editable para campos específicos de cada compañía. Se guarda dentro de <code>parametros_extras</code>.
+        </div>
+        <textarea id="ws-parametros-extras" class="admin-textarea"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== TAB: Accesos ====== -->
+  <div id="accesos" class="tab-content">
+    <h2>Administración de Accesos</h2>
+    <div class="muted" style="margin-bottom:14px;">
+      Este espacio administra organizaciones, usuarios, permisos operativos y la sesión simulada. Se mantiene separado de las compañías y de sus parámetros de web service.
+    </div>
+
+    <div class="admin-actions">
+      <button type="button" id="access-refresh">Refrescar</button>
+      <span id="access-status" class="muted"></span>
+    </div>
+
+    <div class="access-grid">
+      <div class="admin-card">
+        <h3>Organizaciones</h3>
+        <div class="row-inline">
+          <div>
+            <label>Organización</label>
+            <select id="access-org-select"></select>
+          </div>
+          <div style="align-self:flex-end;">
+            <button type="button" id="access-org-new">Nueva organización</button>
+          </div>
+        </div>
+        <label>Nombre</label>
+        <input type="text" id="access-org-name" />
+        <label>Slug</label>
+        <input type="text" id="access-org-slug" />
+        <label>Activa</label>
+        <select id="access-org-active">
+          <option value="true">Sí</option>
+          <option value="false">No</option>
+        </select>
+        <label>Compañías habilitadas para la organización</label>
+        <div id="access-org-companies" class="checkbox-grid"></div>
+        <div class="admin-actions">
+          <button type="button" id="access-org-save">Guardar organización</button>
+        </div>
+        <table class="admin-list" id="access-org-table"></table>
+      </div>
+      <div class="admin-card">
+        <h3>Usuarios</h3>
+        <div class="row-inline">
+          <div>
+            <label>Usuario</label>
+            <select id="access-user-select"></select>
+          </div>
+          <div style="align-self:flex-end;">
+            <button type="button" id="access-user-new">Nuevo usuario</button>
+          </div>
+        </div>
+        <label>Nombre</label>
+        <input type="text" id="access-user-first-name" />
+        <label>Apellido</label>
+        <input type="text" id="access-user-last-name" />
+        <label>Email</label>
+        <input type="text" id="access-user-email" />
+        <label>Organización</label>
+        <select id="access-user-organization"></select>
+        <label>Rol</label>
+        <select id="access-user-role"></select>
+        <div id="access-role-help" class="role-help"></div>
+        <label>Activo</label>
+        <select id="access-user-active">
+          <option value="true">Sí</option>
+          <option value="false">No</option>
+        </select>
+        <label>Override opcional de pestañas</label>
+        <div id="access-user-tabs" class="checkbox-grid"></div>
+        <div class="admin-actions">
+          <button type="button" id="access-user-save">Guardar usuario</button>
+        </div>
+        <table class="admin-list" id="access-user-table"></table>
+      </div>
+      <div class="admin-card span-all">
+        <h3>Roles</h3>
+        <div class="muted" style="margin-bottom:8px;">Referencia de roles base disponibles en esta etapa.</div>
+        <table class="admin-list" id="access-role-table"></table>
+      </div>
+      <div class="admin-card span-all">
+        <h3>Actividad reciente</h3>
+        <div class="muted" style="margin-bottom:8px;">Trazabilidad operativa para futuras métricas y reportes.</div>
+        <table class="admin-list" id="access-activity-table"></table>
+      </div>
+    </div>
+  </div>
+
   <!-- ====== TAB: Procesos (integración de procesos.html) ====== -->
   <div id="procesos" class="tab-content">
     <h2>Procesos de Cotización</h2>
@@ -339,8 +668,108 @@
         if (tabId === "procesos") proc_cargar();  // auto-carga al entrar
         if (tabId === "cabecera") initCabeceraTab();
         if (tabId === "base") initCatalogosTab();
+        if (tabId === "wsadmin") initWsAdminTab();
+        if (tabId === "accesos") initAccessAdminTab();
       });
     });
+
+    const ACCESS_TAB_DEFS = [
+      { id:'inputs', label:'Inputs' },
+      { id:'cabecera', label:'Cabecera' },
+      { id:'historico', label:'Histórico' },
+      { id:'base', label:'Base propia' },
+      { id:'wsadmin', label:'Compañías WS' },
+      { id:'accesos', label:'Accesos' },
+      { id:'procesos', label:'Procesos en curso' },
+    ];
+    let sessionContext = null;
+    let sessionUsers = [];
+    let accessModel = { organizaciones: [], roles: [], usuarios: [] };
+    let accessCompanyChoices = [];
+    let accessSelectedOrgId = '';
+    let accessSelectedUserId = '';
+
+    function sessionCanAccess(tabId){
+      const tabs = Array.isArray(sessionContext?.visible_tabs) ? sessionContext.visible_tabs : ['*'];
+      return tabs.includes('*') || tabs.includes(tabId);
+    }
+
+    function applyTabVisibility(){
+      const hiddenTabs = [];
+      tabButtons.forEach((btn)=>{
+        const tabId = btn.dataset.tab;
+        const allowed = sessionCanAccess(tabId);
+        btn.style.display = allowed ? '' : 'none';
+        const panel = document.getElementById(tabId);
+        if(panel) panel.style.display = allowed ? '' : 'none';
+        if(!allowed) hiddenTabs.push(tabId);
+      });
+      const activeBtn = document.querySelector('.tab-button.active');
+      if(activeBtn && hiddenTabs.includes(activeBtn.dataset.tab)){
+        const firstVisible = Array.from(tabButtons).find((btn)=>btn.style.display !== 'none');
+        if(firstVisible) firstVisible.click();
+      }
+    }
+
+    function renderSessionSummary(){
+      const el = document.getElementById('sessionSummary');
+      if(!el) return;
+      if(!sessionContext){
+        el.textContent = 'Sin contexto cargado';
+        return;
+      }
+      const user = sessionContext.current_user || {};
+      const org = sessionContext.current_organization || {};
+      const role = sessionContext.current_role || {};
+      const fullName = [user.nombre, user.apellido].filter(Boolean).join(' ').trim() || user.email || user.id || 'Usuario';
+      el.textContent = `Trabajando como ${fullName} | Organización: ${org.nombre || org.id || '-'} | Rol: ${role.nombre || role.id || '-'}`;
+    }
+
+    function renderSessionUserOptions(){
+      const sel = document.getElementById('session-user-select');
+      if(!sel) return;
+      sel.innerHTML = sessionUsers.map((user)=>{
+        const fullName = [user.nombre, user.apellido].filter(Boolean).join(' ').trim() || user.email || user.id;
+        const role = user.role_id || '';
+        return `<option value="${user.id}">${escapeHtml(fullName)} | ${escapeHtml(user.organizacion_id || '')} | ${escapeHtml(role)}</option>`;
+      }).join('');
+      if(sessionContext?.current_user?.id){
+        sel.value = sessionContext.current_user.id;
+      }
+    }
+
+    async function loadSessionContext(){
+      const resp = await fetch('/admin/session');
+      const data = await resp.json();
+      if(!resp.ok || !data.ok) throw new Error(data.error || ('HTTP ' + resp.status));
+      sessionContext = data;
+      sessionUsers = Array.isArray(data.users) ? data.users : [];
+      renderSessionSummary();
+      renderSessionUserOptions();
+      applyTabVisibility();
+      return data;
+    }
+
+    async function changeSimulatedUser(){
+      const sel = document.getElementById('session-user-select');
+      const current_user_id = sel?.value || '';
+      if(!current_user_id) return;
+      const resp = await fetch('/admin/session', {
+        method:'PUT',
+        headers:{ 'Content-Type':'application/json' },
+        body: JSON.stringify({ current_user_id })
+      });
+      const data = await resp.json();
+      if(!resp.ok || !data.ok) throw new Error(data.error || ('HTTP ' + resp.status));
+      sessionContext = data;
+      sessionUsers = Array.isArray(data.users) ? data.users : sessionUsers;
+      renderSessionSummary();
+      renderSessionUserOptions();
+      applyTabVisibility();
+      await cargarHistorico();
+      if(document.getElementById('cabecera')?.classList.contains('active')) await initCabeceraTab();
+      if(document.getElementById('procesos')?.classList.contains('active')) await proc_cargar();
+    }
 
     /* ====== Histórico (igual que venías usando) ====== */
     async function cargarHistorico() {
@@ -928,6 +1357,422 @@
         catSetStatus(`Error inicializando catálogos: ${e.message || e}`);
       }
     }
+
+    /* ====== ADMIN COMPAÑÍAS WS ====== */
+    let wsAdminItems = [];
+    let wsAdminCurrent = null;
+
+    function wsSetStatus(msg, isError = false){
+      const el = document.getElementById('ws-company-status');
+      if(!el) return;
+      el.textContent = msg || '';
+      el.style.color = isError ? '#b71c1c' : '#6b7280';
+    }
+
+    function wsParseJsonArea(id){
+      const raw = (document.getElementById(id)?.value || '').trim();
+      if(!raw) return {};
+      return JSON.parse(raw);
+    }
+
+    function wsFillForm(config = {}, slug = ''){
+      wsAdminCurrent = JSON.parse(JSON.stringify(config || {}));
+      document.getElementById('ws-slug').value = slug || '';
+      document.getElementById('ws-nombre-publico').value = config.nombre_publico || '';
+      document.getElementById('ws-sigla').value = config.sigla || '';
+      document.getElementById('ws-activo').value = String(config.activo !== false);
+      document.getElementById('ws-base-url').value = config.base_url || '';
+      document.getElementById('ws-soap-path').value = config.soap_path || '';
+      document.getElementById('ws-soap-method').value = config.soap_method || '';
+      document.getElementById('ws-soap-action').value = config.soap_action || '';
+      document.getElementById('ws-auth-url').value = config.auth_url || '';
+      document.getElementById('ws-auth-method').value = config.auth_method || '';
+      document.getElementById('ws-usuario').value = config.usuario || '';
+      document.getElementById('ws-password').value = config.password || '';
+      document.getElementById('ws-quote-user').value = config.quote_user || '';
+      document.getElementById('ws-codagt').value = config.codAgt || '';
+      document.getElementById('ws-clave-acceso').value = config.claveAcceso || '';
+      document.getElementById('ws-clave-procedencia').value = config.claveProcedencia || '';
+      document.getElementById('ws-producer-code').value = config.producer_code || config.vendedor || '';
+      document.getElementById('ws-supervisor-code').value = config.supervisor_code || '';
+      document.getElementById('ws-origen').value = config.origen || '';
+      document.getElementById('ws-plan').value = config.plan || '';
+      document.getElementById('ws-vigencia').value = config.vigencia || '';
+      document.getElementById('ws-refacturacion').value = config.refacturacion || '';
+      document.getElementById('ws-descuento-comercial').value = config.descuento_comercial || config.parametros_extras?.descuento_comercial || '';
+      document.getElementById('ws-clausula-ajuste').value = config.clausula_ajuste || config.parametros_extras?.clausula_ajuste || '';
+      document.getElementById('ws-ajuste-rc').value = config.ajuste_rc ?? '';
+      document.getElementById('ws-ajuste-casco').value = config.ajuste_casco ?? '';
+      document.getElementById('ws-tipo-facturacion').value = config.tipoFacturacion || '';
+      document.getElementById('ws-parametros-extras').value = JSON.stringify(config.parametros_extras || {}, null, 2);
+    }
+
+    function wsBuildConfigFromForm(){
+      const next = JSON.parse(JSON.stringify(wsAdminCurrent || {}));
+      next.nombre_publico = document.getElementById('ws-nombre-publico').value.trim();
+      next.sigla = document.getElementById('ws-sigla').value.trim();
+      next.activo = document.getElementById('ws-activo').value === 'true';
+      next.base_url = document.getElementById('ws-base-url').value.trim();
+      next.soap_path = document.getElementById('ws-soap-path').value.trim();
+      next.soap_method = document.getElementById('ws-soap-method').value.trim();
+      next.soap_action = document.getElementById('ws-soap-action').value.trim();
+      next.auth_url = document.getElementById('ws-auth-url').value.trim();
+      next.auth_method = document.getElementById('ws-auth-method').value.trim();
+      next.usuario = document.getElementById('ws-usuario').value.trim();
+      next.password = document.getElementById('ws-password').value.trim();
+      next.quote_user = document.getElementById('ws-quote-user').value.trim();
+      next.codAgt = document.getElementById('ws-codagt').value.trim();
+      next.claveAcceso = document.getElementById('ws-clave-acceso').value.trim();
+      next.claveProcedencia = document.getElementById('ws-clave-procedencia').value.trim();
+      next.producer_code = document.getElementById('ws-producer-code').value.trim();
+      next.supervisor_code = document.getElementById('ws-supervisor-code').value.trim();
+      next.origen = document.getElementById('ws-origen').value.trim();
+      next.plan = document.getElementById('ws-plan').value.trim();
+      next.vigencia = document.getElementById('ws-vigencia').value.trim();
+      next.refacturacion = document.getElementById('ws-refacturacion').value.trim();
+      next.descuento_comercial = document.getElementById('ws-descuento-comercial').value.trim();
+      next.clausula_ajuste = document.getElementById('ws-clausula-ajuste').value.trim();
+      next.ajuste_rc = document.getElementById('ws-ajuste-rc').value.trim();
+      next.ajuste_casco = document.getElementById('ws-ajuste-casco').value.trim();
+      next.tipoFacturacion = document.getElementById('ws-tipo-facturacion').value.trim();
+      next.parametros_extras = wsParseJsonArea('ws-parametros-extras');
+      return next;
+    }
+
+    async function wsLoadCompanies(){
+      const out = await catFetchJson('/admin/aseguradoras');
+      wsAdminItems = Array.isArray(out.items) ? out.items : [];
+      const sel = document.getElementById('ws-company-select');
+      sel.innerHTML = wsAdminItems.map(item => `<option value="${item.slug}">${item.config?.nombre_publico || item.slug.toUpperCase()}</option>`).join('');
+      return wsAdminItems;
+    }
+
+    async function wsLoadCurrent(){
+      const sel = document.getElementById('ws-company-select');
+      const slug = sel.value;
+      if(!slug) return;
+      const out = await catFetchJson(`/admin/aseguradoras/${slug}`);
+      wsFillForm(out.config || {}, slug);
+      wsSetStatus(`Configuración cargada para ${out.config?.nombre_publico || slug.toUpperCase()}`);
+    }
+
+    async function initWsAdminTab(){
+      try{
+        await wsLoadCompanies();
+        const sel = document.getElementById('ws-company-select');
+        if(sel && sel.options.length > 0){
+          await wsLoadCurrent();
+          sel.onchange = () => wsLoadCurrent();
+        }
+        document.getElementById('ws-company-refresh').onclick = async () => {
+          await wsLoadCompanies();
+          await wsLoadCurrent();
+        };
+        document.getElementById('ws-company-save').onclick = async () => {
+          try{
+            const slug = document.getElementById('ws-slug').value.trim();
+            if(!slug) throw new Error('No hay compañía seleccionada');
+            const config = wsBuildConfigFromForm();
+            const out = await catFetchJson(`/admin/aseguradoras/${slug}`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ config }),
+            });
+            wsFillForm(out.config || config, slug);
+            wsSetStatus(`Configuración guardada para ${out.config?.nombre_publico || slug.toUpperCase()}`);
+          }catch(e){
+            wsSetStatus(`Error guardando: ${e.message || e}`, true);
+          }
+        };
+      }catch(e){
+        wsSetStatus(`Error inicializando compañías WS: ${e.message || e}`, true);
+      }
+    }
+
+    /* ====== ADMIN ACCESOS ====== */
+    function accessSetStatus(msg, isError = false){
+      const el = document.getElementById('access-status');
+      if(!el) return;
+      el.textContent = msg || '';
+      el.style.color = isError ? '#b71c1c' : '#6b7280';
+    }
+
+    function accessBuildCheckboxes(containerId, defs, selected){
+      const selectedSet = new Set(Array.isArray(selected) ? selected : []);
+      const html = defs.map((item)=>{
+        const checked = selectedSet.has(item.value) ? 'checked' : '';
+        return `<label><input type="checkbox" value="${item.value}" ${checked}> ${escapeHtml(item.label)}</label>`;
+      }).join('');
+      document.getElementById(containerId).innerHTML = html || '<span class="muted">Sin opciones</span>';
+    }
+
+    function accessReadCheckboxes(containerId){
+      const root = document.getElementById(containerId);
+      if(!root) return [];
+      return Array.from(root.querySelectorAll('input[type="checkbox"]:checked')).map((el)=>el.value);
+    }
+
+    function accessOrgDisplay(org){
+      return org?.nombre || org?.slug || org?.id || '';
+    }
+
+    function accessUserDisplay(user){
+      const name = [user?.nombre, user?.apellido].filter(Boolean).join(' ').trim();
+      return name || user?.email || user?.id || '';
+    }
+
+    function accessRenderOrganizationList(){
+      const sel = document.getElementById('access-org-select');
+      const items = Array.isArray(accessModel.organizaciones) ? accessModel.organizaciones : [];
+      sel.innerHTML = items.map((org)=>`<option value="${org.id}">${escapeHtml(accessOrgDisplay(org))}</option>`).join('');
+      if(!accessSelectedOrgId && items[0]) accessSelectedOrgId = items[0].id;
+      if(accessSelectedOrgId) sel.value = accessSelectedOrgId;
+
+      const rows = items.map((org)=>`
+        <tr>
+          <td>${escapeHtml(org.nombre || '')}</td>
+          <td>${escapeHtml(org.slug || '')}</td>
+          <td>${org.activa === false ? 'No' : 'Sí'}</td>
+          <td>${escapeHtml((org.companias_habilitadas || []).join(', '))}</td>
+        </tr>
+      `).join('');
+      document.getElementById('access-org-table').innerHTML = `
+        <tr><th>Nombre</th><th>Slug</th><th>Activa</th><th>Compañías habilitadas</th></tr>
+        ${rows || '<tr><td colspan="4" class="muted">Sin organizaciones</td></tr>'}
+      `;
+    }
+
+    function accessRenderRoleList(){
+      const rows = (accessModel.roles || []).map((role)=>`
+        <tr>
+          <td>${escapeHtml(role.nombre || role.id || '')}</td>
+          <td>${role.is_superadmin ? 'Acceso total al sistema' : 'Acceso operativo limitado a Inputs, Cabecera, Histórico y Procesos'}</td>
+          <td>${escapeHtml((role.pestañas || []).join(', '))}</td>
+        </tr>
+      `).join('');
+      document.getElementById('access-role-table').innerHTML = `
+        <tr><th>Rol</th><th>Descripción</th><th>Pestañas</th></tr>
+        ${rows || '<tr><td colspan="3" class="muted">Sin roles</td></tr>'}
+      `;
+    }
+
+    function accessUpdateRoleHelp(roleId){
+      const role = (accessModel.roles || []).find((item)=>item.id === roleId) || null;
+      const el = document.getElementById('access-role-help');
+      const roleSel = document.getElementById('access-user-role');
+      if(!el || !roleSel) return;
+      const text = role?.is_superadmin
+        ? 'Superadministrador: acceso total a pestañas, catálogos, compañías WS y administración de accesos.'
+        : 'Usuario genérico: acceso operativo a Inputs, Cabecera, Histórico y Procesos en curso. No ve Base propia, Compañías WS ni Accesos.';
+      el.textContent = text;
+      roleSel.title = text;
+    }
+
+    function accessRenderUserList(){
+      const sel = document.getElementById('access-user-select');
+      const items = Array.isArray(accessModel.usuarios) ? accessModel.usuarios : [];
+      sel.innerHTML = items.map((user)=>`<option value="${user.id}">${escapeHtml(accessUserDisplay(user))}</option>`).join('');
+      if(!accessSelectedUserId && items[0]) accessSelectedUserId = items[0].id;
+      if(accessSelectedUserId) sel.value = accessSelectedUserId;
+
+      const rows = items.map((user)=>{
+        const org = (accessModel.organizaciones || []).find((item)=>item.id === user.organizacion_id);
+        return `
+          <tr>
+            <td>${escapeHtml(accessUserDisplay(user))}</td>
+            <td>${escapeHtml(user.email || '')}</td>
+            <td>${escapeHtml(org?.nombre || user.organizacion_id || '')}</td>
+            <td>${escapeHtml(user.role_id || '')}</td>
+            <td>${user.activo === false ? 'No' : 'Sí'}</td>
+          </tr>
+        `;
+      }).join('');
+      document.getElementById('access-user-table').innerHTML = `
+        <tr><th>Usuario</th><th>Email</th><th>Organización</th><th>Rol</th><th>Activo</th></tr>
+        ${rows || '<tr><td colspan="5" class="muted">Sin usuarios</td></tr>'}
+      `;
+    }
+
+    function accessRenderActivity(items){
+      const rows = (items || []).map((item)=>`
+        <tr>
+          <td>${escapeHtml(String(item.at || '').replace('T',' ').replace('Z',''))}</td>
+          <td>${escapeHtml(item.user_name || item.user_email || item.user_id || '')}</td>
+          <td>${escapeHtml(item.organization_name || item.organization_id || '')}</td>
+          <td>${escapeHtml(item.event || '')}</td>
+          <td>${escapeHtml(item.entity_type || '')}</td>
+          <td>${escapeHtml(item.entity_id || '')}</td>
+        </tr>
+      `).join('');
+      document.getElementById('access-activity-table').innerHTML = `
+        <tr><th>Fecha</th><th>Usuario</th><th>Organización</th><th>Evento</th><th>Entidad</th><th>ID</th></tr>
+        ${rows || '<tr><td colspan="6" class="muted">Sin actividad reciente</td></tr>'}
+      `;
+    }
+
+    function accessFillOrganizationForm(){
+      accessRenderOrganizationList();
+      const org = (accessModel.organizaciones || []).find((item)=>item.id === accessSelectedOrgId) || {};
+      document.getElementById('access-org-name').value = org.nombre || '';
+      document.getElementById('access-org-slug').value = org.slug || '';
+      document.getElementById('access-org-active').value = String(org.activa !== false);
+      accessBuildCheckboxes(
+        'access-org-companies',
+        accessCompanyChoices.map((item)=>({ value:item.slug, label:item.config?.nombre_publico || item.slug.toUpperCase() })),
+        org.companias_habilitadas || []
+      );
+    }
+
+    function accessFillUserForm(){
+      accessRenderUserList();
+      const user = (accessModel.usuarios || []).find((item)=>item.id === accessSelectedUserId) || {};
+      document.getElementById('access-user-first-name').value = user.nombre || '';
+      document.getElementById('access-user-last-name').value = user.apellido || '';
+      document.getElementById('access-user-email').value = user.email || '';
+      document.getElementById('access-user-active').value = String(user.activo !== false);
+
+      const orgSel = document.getElementById('access-user-organization');
+      orgSel.innerHTML = (accessModel.organizaciones || []).map((org)=>`<option value="${org.id}">${escapeHtml(accessOrgDisplay(org))}</option>`).join('');
+      orgSel.value = user.organizacion_id || (accessModel.organizaciones[0]?.id || '');
+
+      const roleSel = document.getElementById('access-user-role');
+      roleSel.innerHTML = (accessModel.roles || []).map((role)=>`<option value="${role.id}">${escapeHtml(role.nombre || role.id)}</option>`).join('');
+      roleSel.value = user.role_id || (accessModel.roles[0]?.id || '');
+      accessUpdateRoleHelp(roleSel.value);
+
+      accessBuildCheckboxes(
+        'access-user-tabs',
+        ACCESS_TAB_DEFS.map((item)=>({ value:item.id, label:item.label })),
+        user.pestañas_override || []
+      );
+    }
+
+    function accessBuildOrganizationFromForm(){
+      const current = (accessModel.organizaciones || []).find((item)=>item.id === accessSelectedOrgId) || {};
+      const slug = (document.getElementById('access-org-slug').value || '').trim();
+      const normalizedSlug = slug || (document.getElementById('access-org-name').value || '').trim().toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      return {
+        ...current,
+        id: current.id || normalizedSlug,
+        nombre: document.getElementById('access-org-name').value.trim(),
+        slug: normalizedSlug,
+        activa: document.getElementById('access-org-active').value === 'true',
+        companias_habilitadas: accessReadCheckboxes('access-org-companies'),
+      };
+    }
+
+    function accessBuildUserFromForm(){
+      const current = (accessModel.usuarios || []).find((item)=>item.id === accessSelectedUserId) || {};
+      const email = document.getElementById('access-user-email').value.trim();
+      const id = current.id || email.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      return {
+        ...current,
+        id,
+        nombre: document.getElementById('access-user-first-name').value.trim(),
+        apellido: document.getElementById('access-user-last-name').value.trim(),
+        email,
+        organizacion_id: document.getElementById('access-user-organization').value,
+        role_id: document.getElementById('access-user-role').value,
+        activo: document.getElementById('access-user-active').value === 'true',
+        pestañas_override: accessReadCheckboxes('access-user-tabs'),
+      };
+    }
+
+    async function accessSaveModel(){
+      const out = await catFetchJson('/admin/acceso', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data: accessModel }),
+      });
+      accessModel = out.data || accessModel;
+      return out;
+    }
+
+    async function accessLoad(){
+      const out = await catFetchJson('/admin/acceso');
+      accessModel = out.data || { organizaciones: [], roles: [], usuarios: [] };
+      accessSelectedOrgId = accessSelectedOrgId || accessModel.organizaciones?.[0]?.id || '';
+      accessSelectedUserId = accessSelectedUserId || accessModel.usuarios?.[0]?.id || '';
+      accessCompanyChoices = (await catFetchJson('/admin/aseguradoras')).items || [];
+      accessRenderRoleList();
+      accessFillOrganizationForm();
+      accessFillUserForm();
+      accessRenderActivity(out.recent_activity || []);
+      accessSetStatus('Configuración de accesos cargada');
+    }
+
+    async function initAccessAdminTab(){
+      try{
+        await accessLoad();
+        document.getElementById('access-refresh').onclick = () => accessLoad();
+        document.getElementById('access-org-select').onchange = (e) => {
+          accessSelectedOrgId = e.target.value;
+          accessFillOrganizationForm();
+        };
+        document.getElementById('access-org-new').onclick = () => {
+          accessSelectedOrgId = '__new__';
+          document.getElementById('access-org-name').value = '';
+          document.getElementById('access-org-slug').value = '';
+          document.getElementById('access-org-active').value = 'true';
+          accessBuildCheckboxes(
+            'access-org-companies',
+            accessCompanyChoices.map((item)=>({ value:item.slug, label:item.config?.nombre_publico || item.slug.toUpperCase() })),
+            []
+          );
+        };
+        document.getElementById('access-org-save').onclick = async () => {
+          try{
+            const next = accessBuildOrganizationFromForm();
+            if(!next.nombre || !next.slug) throw new Error('Completá nombre y slug de la organización');
+            const items = Array.isArray(accessModel.organizaciones) ? [...accessModel.organizaciones] : [];
+            const idx = items.findIndex((item)=>item.id === next.id || item.slug === next.slug);
+            if(idx >= 0) items[idx] = next; else items.push(next);
+            accessModel.organizaciones = items;
+            accessSelectedOrgId = next.id;
+            await accessSaveModel();
+            await accessLoad();
+            accessSetStatus(`Organización guardada: ${next.nombre}`);
+          }catch(e){
+            accessSetStatus(`Error guardando organización: ${e.message || e}`, true);
+          }
+        };
+
+        document.getElementById('access-user-select').onchange = (e) => {
+          accessSelectedUserId = e.target.value;
+          accessFillUserForm();
+        };
+        document.getElementById('access-user-role').onchange = (e) => {
+          accessUpdateRoleHelp(e.target.value);
+        };
+        document.getElementById('access-user-new').onclick = () => {
+          accessSelectedUserId = '__new__';
+          document.getElementById('access-user-first-name').value = '';
+          document.getElementById('access-user-last-name').value = '';
+          document.getElementById('access-user-email').value = '';
+          document.getElementById('access-user-active').value = 'true';
+          accessFillUserForm();
+        };
+        document.getElementById('access-user-save').onclick = async () => {
+          try{
+            const next = accessBuildUserFromForm();
+            if(!next.nombre || !next.apellido || !next.email) throw new Error('Completá nombre, apellido y email');
+            const items = Array.isArray(accessModel.usuarios) ? [...accessModel.usuarios] : [];
+            const idx = items.findIndex((item)=>item.id === next.id);
+            if(idx >= 0) items[idx] = next; else items.push(next);
+            accessModel.usuarios = items;
+            accessSelectedUserId = next.id;
+            await accessSaveModel();
+            await accessLoad();
+            await loadSessionContext();
+            accessSetStatus(`Usuario guardado: ${accessUserDisplay(next)}`);
+          }catch(e){
+            accessSetStatus(`Error guardando usuario: ${e.message || e}`, true);
+          }
+        };
+      }catch(e){
+        accessSetStatus(`Error inicializando accesos: ${e.message || e}`, true);
+      }
+    }
 /* ====== PROCESOS (clonado/adaptado de procesos.html) ====== */
     const procEstadoEl = document.getElementById('proc-estado');
     const procLimitEl  = document.getElementById('proc-limit');
@@ -1085,9 +1930,22 @@
     });
 
     // Al cargar página, precarga Histórico para que esté listo
-    window.onload = () => {
-      cargarHistorico();
-      actualizarIndicadorInfoauto();
+    document.getElementById('session-user-apply').addEventListener('click', async ()=>{
+      try{
+        await changeSimulatedUser();
+      }catch(e){
+        alert(`No se pudo cambiar la sesión simulada: ${e.message || e}`);
+      }
+    });
+
+    window.onload = async () => {
+      try{
+        await loadSessionContext();
+      }catch(e){
+        console.error('No se pudo cargar la sesión simulada', e);
+      }
+      await cargarHistorico();
+      await actualizarIndicadorInfoauto();
     };
 
     /* Utilidad */

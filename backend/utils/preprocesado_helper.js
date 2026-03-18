@@ -12,6 +12,15 @@ async function readJson(absPath) {
   return JSON.parse(raw);
 }
 
+async function readJsonOptional(absPath, fallback) {
+  try {
+    return await readJson(absPath);
+  } catch (err) {
+    if (err && err.code === 'ENOENT') return fallback;
+    throw err;
+  }
+}
+
 function norm(s) {
   return (s ?? '').toString().trim().toLowerCase();
 }
@@ -30,8 +39,8 @@ async function getCabeceraByIdHTTP(id) {
 }
 
 async function cargarDiccionarios(slug) {
-  const uso = await readJson(dataPath(slug, 'diccionarios', 'uso.json'));
-  const tipoVeh = await readJson(dataPath(slug, 'diccionarios', 'tipo_vehiculo.json'));
+  const uso = await readJsonOptional(dataPath(slug, 'diccionarios', 'uso.json'), {});
+  const tipoVeh = await readJsonOptional(dataPath(slug, 'diccionarios', 'tipo_vehiculo.json'), {});
   return { uso, tipoVeh };
 }
 

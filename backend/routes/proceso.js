@@ -19,6 +19,29 @@ const {
   resolveMapfreCodPostal,
   resolveMapfrePostalMatch,
 } = require('../services/mapfre/quote');
+const {
+  getSancorToken,
+} = require('../services/sancor/auth');
+const {
+  buildSancorEnvelope,
+  parseSancorQuoteResponse,
+} = require('../services/sancor/quote');
+const {
+  buildAllianzEnvelope,
+  parseAllianzQuoteResponse,
+} = require('../services/allianz/quote');
+const {
+  buildExpertaPayload,
+  parseExpertaQuoteResponse,
+  resolveExpertaPaymentKey,
+} = require('../services/experta/quote');
+const {
+  appendActivity,
+  getCurrentAccessContext,
+  getHistorialOwner,
+  getUserDisplayName,
+  isOwnedByContext,
+} = require('../utils/access_control');
 
 function ensureDir(p) {
   if (!fs.existsSync(p)) fs.mkdirSync(p, { recursive: true });
@@ -106,6 +129,16 @@ function getCabecera(id) {
   }
 }
 
+function getRequestContext(req) {
+  return req.accessContext || getCurrentAccessContext();
+}
+
+function filterCompanyItemsByContext(items, ctx) {
+  if (ctx?.isSuperadmin) return items;
+  const allowed = new Set(Array.isArray(ctx?.allowedCompanySlugs) ? ctx.allowedCompanySlugs : []);
+  return items.filter((item) => allowed.has(String(item.slug || '').toLowerCase()));
+}
+
 // ===== Config y helpers por aseguradora (dinámico) =====
 function asegPath(slug) {
   return path.join(process.cwd(), 'data', slug);
@@ -155,6 +188,39 @@ async function loadAsegConfig(slug) {
     j.claveAcceso = process.env.MAPFRE_CLAVE_ACCESO || j.claveAcceso;
     j.claveProcedencia = process.env.MAPFRE_CLAVE_PROCEDENCIA || j.claveProcedencia;
     j.tipoFacturacion = process.env.MAPFRE_TIPO_FACTURACION || j.tipoFacturacion;
+  }
+  if (slug === 'sancor') {
+    j.base_url = process.env.SANCOR_BASE_URL || j.base_url;
+    j.soap_path = process.env.SANCOR_SOAP_PATH || j.soap_path;
+    j.soap_method = process.env.SANCOR_SOAP_METHOD || j.soap_method;
+    j.soap_action = process.env.SANCOR_SOAP_ACTION || j.soap_action;
+    j.auth_url = process.env.SANCOR_AUTH_URL || j.auth_url;
+    j.auth_method = process.env.SANCOR_AUTH_METHOD || j.auth_method;
+    j.usuario = process.env.SANCOR_USER || j.usuario;
+    j.password = process.env.SANCOR_PASS || j.password;
+    j.system = process.env.SANCOR_SYSTEM || j.system;
+    j.connection = process.env.SANCOR_CONNECTION || j.connection;
+    j.quote_user = process.env.SANCOR_QUOTE_USER || j.quote_user || j.usuario;
+    j.producer_code = process.env.SANCOR_PRODUCER_CODE || j.producer_code;
+    j.supervisor_code = process.env.SANCOR_SUPERVISOR_CODE || j.supervisor_code;
+  }
+  if (slug === 'allianz') {
+    j.base_url = process.env.ALLIANZ_BASE_URL || j.base_url;
+    j.soap_path = process.env.ALLIANZ_SOAP_PATH || j.soap_path;
+    j.soap_method = process.env.ALLIANZ_SOAP_METHOD || j.soap_method;
+    j.soap_action = process.env.ALLIANZ_SOAP_ACTION || j.soap_action;
+    j.usuario = process.env.ALLIANZ_USER || j.usuario;
+    j.password = process.env.ALLIANZ_PASS || j.password;
+    j.application = process.env.ALLIANZ_APPLICATION || j.application;
+    j.producer_code = process.env.ALLIANZ_PRODUCER_CODE || j.producer_code;
+  }
+  if (slug === 'experta') {
+    j.base_url = process.env.EXPERTA_BASE_URL || j.base_url;
+    j.soap_path = process.env.EXPERTA_API_PATH || j.soap_path;
+    j.usuario = process.env.EXPERTA_USER || j.usuario;
+    j.password = process.env.EXPERTA_PASS || j.password;
+    j.hashid = process.env.EXPERTA_HASHID || j.hashid;
+    j.producer_code = process.env.EXPERTA_PRODUCER_CODE || j.producer_code;
   }
   if (!j.base_url || !j.soap_path) throw new Error(`Config ${slug}: faltan base_url o soap_path`);
   const method = j.soap_method || j.SOAP_METHOD || 'AUTOS_Cotizar_PHP';
@@ -725,7 +791,7 @@ async function cotizarFila({
       if (evDir) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
       return out;
     }
-    if (!atmPostal?.cp || !/^\d{4}$/.test(String(atmPostal.cp))) {
+    if (slug === 'atm' && (!atmPostal?.cp || !/^\d{4}$/.test(String(atmPostal.cp)))) {
       const out = { ok: false, error: 'El código postal no es válido', operacion: '0', coberturas: [], raw: '' };
       if (evDir) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
       return out;
@@ -839,6 +905,304 @@ async function cotizarFila({
           formapago_descripcion: describeMapfreTipoMedioPago(requestMeta.tipoMedioPago),
         }));
       }
+      if (evDir) {
+        safeWriteJson(path.join(evDir, `${evPrefix}-parsed.json`), {
+          ok: parsed.ok,
+          operacion: parsed.operacion || '',
+          coberturas_len: Array.isArray(parsed.coberturas) ? parsed.coberturas.length : 0,
+        });
+        if (Array.isArray(parsed.coberturas) && parsed.coberturas.length) {
+          safeWriteJson(path.join(evDir, `${evPrefix}-coberturas.json`), parsed.coberturas);
+        }
+        if (!parsed.ok) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), parsed);
+      }
+      return parsed;
+    } catch (e) {
+      const out = { ok: false, error: e.message || 'axios error', coberturas: [], raw: '' };
+      if (evDir) {
+        safeWriteJson(path.join(evDir, `${evPrefix}-exception.json`), {
+          message: e?.message || String(e),
+          stack: e?.stack || null,
+        });
+        safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
+      }
+      return out;
+    }
+  }
+
+  if (slug === 'sancor') {
+    let tokenData;
+    let envelope;
+    let requestMeta;
+
+    try {
+      tokenData = await getSancorToken(Aseg);
+      const built = buildSancorEnvelope({
+        fila,
+        cabecera,
+        cfg: Aseg,
+        mapeos,
+        today: new Date(),
+      });
+      envelope = built.envelope;
+      requestMeta = built.requestMeta;
+    } catch (e) {
+      const out = { ok: false, error: e.message || String(e), operacion: '0', coberturas: [], raw: '' };
+      if (evDir) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
+      return out;
+    }
+
+    if (evDir) {
+      safeWriteFile(path.join(evDir, `${evPrefix}-soap_request.xml`), envelope);
+      safeWriteJson(path.join(evDir, `${evPrefix}-config-usada.json`), {
+        soap_url: SOAP_URL,
+        soap_method: SOAP_METHOD,
+        soap_action: Aseg.soap_action || null,
+        auth_url: Aseg.auth_url || null,
+        request: requestMeta,
+        tokenType: tokenData.tokenType,
+      });
+    }
+
+    try {
+      const resp = await axios.post(SOAP_URL, envelope, {
+        headers: {
+          'Content-Type': 'text/xml; charset=UTF-8',
+          SOAPAction: `"${Aseg.soap_action || SOAP_METHOD}"`,
+          User: Aseg.quote_user || Aseg.usuario,
+          TokenType: tokenData.tokenType || 'Bearer',
+          Token: tokenData.idToken || tokenData.accessToken,
+        },
+        timeout: 25000,
+        validateStatus: () => true,
+      });
+
+      const rawResp = resp.data;
+      if (evDir) {
+        safeWriteFile(path.join(evDir, `${evPrefix}-raw_response.xml`), String(rawResp || ''));
+        safeWriteJson(path.join(evDir, `${evPrefix}-http.json`), { status: resp.status, ok: resp.status >= 200 && resp.status < 300 });
+      }
+
+      if (!(resp.status >= 200 && resp.status < 300)) {
+        const out = { ok: false, error: `HTTP ${resp.status}`, coberturas: [], raw: rawResp };
+        if (evDir) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
+        return out;
+      }
+
+      const parsed = parseSancorQuoteResponse(rawResp);
+      parsed.used = {
+        ...(parsed.used || {}),
+        tokenType: tokenData.tokenType,
+        quoteUser: Aseg.quote_user || Aseg.usuario,
+        codPostal: requestMeta.codPostal,
+        codLocalidad: requestMeta.codLocalidad,
+        localidad: requestMeta.localidad,
+        provincia: requestMeta.provincia,
+        useId: requestMeta.useId,
+        vehicleCapital: requestMeta.capital,
+      };
+
+      if (evDir) {
+        safeWriteJson(path.join(evDir, `${evPrefix}-parsed.json`), {
+          ok: parsed.ok,
+          operacion: parsed.operacion || '',
+          coberturas_len: Array.isArray(parsed.coberturas) ? parsed.coberturas.length : 0,
+        });
+        if (Array.isArray(parsed.coberturas) && parsed.coberturas.length) {
+          safeWriteJson(path.join(evDir, `${evPrefix}-coberturas.json`), parsed.coberturas);
+        }
+        if (!parsed.ok) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), parsed);
+      }
+      return parsed;
+    } catch (e) {
+      const out = { ok: false, error: e.message || 'axios error', coberturas: [], raw: '' };
+      if (evDir) {
+        safeWriteJson(path.join(evDir, `${evPrefix}-exception.json`), {
+          message: e?.message || String(e),
+          stack: e?.stack || null,
+        });
+        safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
+      }
+      return out;
+    }
+  }
+
+  if (slug === 'allianz') {
+    let envelope;
+    let requestMeta;
+    try {
+      const built = await buildAllianzEnvelope({
+        fila,
+        cabecera,
+        cfg: Aseg,
+        mapeos,
+        usoDicc,
+        today: new Date(),
+      });
+      envelope = built.envelope;
+      requestMeta = built.requestMeta;
+    } catch (e) {
+      const out = { ok: false, error: e.message || String(e), operacion: '0', coberturas: [], raw: '' };
+      if (evDir) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
+      return out;
+    }
+
+    if (!String(Aseg.usuario || '').trim() || !String(Aseg.password || '').trim()) {
+      const out = { ok: false, error: 'Allianz requiere usuario y password WS configurados', operacion: '0', coberturas: [], raw: '' };
+      if (evDir) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
+      return out;
+    }
+    if (!String(Aseg.application || '').trim()) {
+      const out = { ok: false, error: 'Allianz requiere Application configurada en EBMHeader', operacion: '0', coberturas: [], raw: '' };
+      if (evDir) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
+      return out;
+    }
+
+    if (evDir) {
+      safeWriteFile(path.join(evDir, `${evPrefix}-soap_request.xml`), envelope);
+      safeWriteJson(path.join(evDir, `${evPrefix}-config-usada.json`), {
+        soap_url: SOAP_URL,
+        soap_method: SOAP_METHOD,
+        soap_action: Aseg.soap_action || SOAP_METHOD,
+        request: requestMeta,
+      });
+    }
+
+    try {
+      const resp = await axios.post(SOAP_URL, envelope, {
+        headers: {
+          'Content-Type': 'text/xml; charset=UTF-8',
+          SOAPAction: `"${Aseg.soap_action || SOAP_METHOD}"`,
+        },
+        timeout: 25000,
+        validateStatus: () => true,
+      });
+
+      const rawResp = resp.data;
+      if (evDir) {
+        safeWriteFile(path.join(evDir, `${evPrefix}-raw_response.xml`), String(rawResp || ''));
+        safeWriteJson(path.join(evDir, `${evPrefix}-http.json`), { status: resp.status, ok: resp.status >= 200 && resp.status < 300 });
+      }
+
+      if (!(resp.status >= 200 && resp.status < 300)) {
+        const out = { ok: false, error: `HTTP ${resp.status}`, coberturas: [], raw: rawResp };
+        if (evDir) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
+        return out;
+      }
+
+      const parsed = parseAllianzQuoteResponse(rawResp);
+      parsed.used = {
+        ...(parsed.used || {}),
+        tipoDePoliza: requestMeta.tipoDePoliza,
+        medioDePago: requestMeta.medioDePago,
+        cantidadDeCuotas: requestMeta.cantidadDeCuotas,
+        codigoPostal: requestMeta.codigoPostal,
+        codigoProvincia: requestMeta.codigoProvincia,
+        codigoDeProductor: requestMeta.codigoDeProductor,
+        clausulaDeAjuste: requestMeta.clausulaDeAjuste,
+      };
+
+      if (evDir) {
+        safeWriteJson(path.join(evDir, `${evPrefix}-parsed.json`), {
+          ok: parsed.ok,
+          operacion: parsed.operacion || '',
+          coberturas_len: Array.isArray(parsed.coberturas) ? parsed.coberturas.length : 0,
+        });
+        if (Array.isArray(parsed.coberturas) && parsed.coberturas.length) {
+          safeWriteJson(path.join(evDir, `${evPrefix}-coberturas.json`), parsed.coberturas);
+        }
+        if (!parsed.ok) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), parsed);
+      }
+      return parsed;
+    } catch (e) {
+      const out = { ok: false, error: e.message || 'axios error', coberturas: [], raw: '' };
+      if (evDir) {
+        safeWriteJson(path.join(evDir, `${evPrefix}-exception.json`), {
+          message: e?.message || String(e),
+          stack: e?.stack || null,
+        });
+        safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
+      }
+      return out;
+    }
+  }
+
+  if (slug === 'experta') {
+    let payload;
+    let requestMeta;
+    try {
+      const built = await buildExpertaPayload({
+        fila,
+        cabecera,
+        cfg: Aseg,
+        usoDicc,
+        today: new Date(),
+      });
+      payload = {
+        ...built.payload,
+        user: String(Aseg.usuario || '').trim(),
+        password: String(Aseg.password || '').trim(),
+        hashid: String(Aseg.hashid || '').trim(),
+      };
+      requestMeta = built.requestMeta;
+    } catch (e) {
+      const out = { ok: false, error: e.message || String(e), operacion: '0', coberturas: [], raw: '' };
+      if (evDir) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
+      return out;
+    }
+
+    if (!String(Aseg.usuario || '').trim() || !String(Aseg.password || '').trim() || !String(Aseg.hashid || '').trim()) {
+      const out = { ok: false, error: 'Experta requiere user, password y hashid configurados', operacion: '0', coberturas: [], raw: '' };
+      if (evDir) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
+      return out;
+    }
+
+    if (evDir) {
+      safeWriteJson(path.join(evDir, `${evPrefix}-request.json`), payload);
+      safeWriteJson(path.join(evDir, `${evPrefix}-config-usada.json`), {
+        url: SOAP_URL,
+        request: requestMeta,
+      });
+    }
+
+    try {
+      const resp = await axios.post(SOAP_URL, payload, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        timeout: 25000,
+        validateStatus: () => true,
+      });
+
+      const rawResp = resp.data;
+      if (evDir) {
+        safeWriteJson(path.join(evDir, `${evPrefix}-raw_response.json`), rawResp);
+        safeWriteJson(path.join(evDir, `${evPrefix}-http.json`), { status: resp.status, ok: resp.status >= 200 && resp.status < 300 });
+      }
+
+      if (!(resp.status >= 200 && resp.status < 300)) {
+        const out = { ok: false, error: `HTTP ${resp.status}`, coberturas: [], raw: rawResp };
+        if (evDir) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
+        return out;
+      }
+
+      if (typeof rawResp === 'string' && /^\s*<!doctype html/i.test(rawResp)) {
+        const out = { ok: false, error: 'Experta respondio HTML; falta confirmar URL base del API', coberturas: [], raw: rawResp };
+        if (evDir) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
+        return out;
+      }
+
+      const parsed = parseExpertaQuoteResponse(rawResp, {
+        selectedPriceKey: resolveExpertaPaymentKey(cabecera),
+      });
+      parsed.used = {
+        ...(parsed.used || {}),
+        codigoPostal: requestMeta.codigoPostal,
+        modalidad: requestMeta.modalidad,
+        iva: requestMeta.iva,
+        uso: requestMeta.uso,
+        porcentajeAjuste: requestMeta.porcentajeAjuste,
+      };
       if (evDir) {
         safeWriteJson(path.join(evDir, `${evPrefix}-parsed.json`), {
           ok: parsed.ok,
@@ -1129,6 +1493,7 @@ async function cotizarFila({
 // =============================================================================
 router.post('/crear', express.json(), async (req, res) => {
   try {
+    const ctx = getRequestContext(req);
     const historial_id = Number(req.body?.historial_id);
     const cabecera_id = Number(req.body?.cabecera_id);
     const nombre = (req.body?.nombre || '').toString().trim();
@@ -1138,9 +1503,16 @@ router.post('/crear', express.json(), async (req, res) => {
 
     const cabecera = getCabecera(cabecera_id);
     if (!cabecera) return res.status(404).json({ ok: false, error: `Cabecera ${cabecera_id} no encontrada` });
+    if (!isOwnedByContext(cabecera, ctx)) {
+      return res.status(403).json({ ok: false, error: 'No tenés acceso a esa cabecera' });
+    }
 
     const hist = await getHistorialItem(historial_id);
     if (!hist) return res.status(404).json({ ok: false, error: `Historial ${historial_id} no encontrado` });
+    const histOwner = getHistorialOwner(historial_id) || { organization_id: 'autoiq' };
+    if (!isOwnedByContext(histOwner, ctx)) {
+      return res.status(403).json({ ok: false, error: 'No tenés acceso a ese archivo histórico' });
+    }
 
     const { relPath, absPath } = resolveCombinedAbsPath(hist);
     if (!fs.existsSync(absPath)) {
@@ -1157,14 +1529,14 @@ router.post('/crear', express.json(), async (req, res) => {
       ? Math.max(1, Math.min(limiteBody, 100))
       : null;
 
-    const proceso_id = Date.now();
+      const proceso_id = Date.now();
 
     ensureDir(procesosRoot());
     ensureDir(procesoDir(proceso_id));
 
-    const meta = {
-      id: proceso_id,
-      nombre: nombre || `Proceso ${proceso_id}`,
+      const meta = {
+        id: proceso_id,
+        nombre: nombre || `Proceso ${proceso_id}`,
       estado: 'creado',
       historial_id,
       archivo: relPath,
@@ -1174,13 +1546,25 @@ router.post('/crear', express.json(), async (req, res) => {
       fecha_creacion: new Date().toISOString(),
       fecha_inicio: null,
       fecha_fin: null,
-      registros_total: Number(hist.cantidad_registros || 0) || null,
-      registros_procesados: 0,
-      cotizaciones_exitosas: 0,
-      cotizaciones_con_error: 0,
-    };
+        registros_total: Number(hist.cantidad_registros || 0) || null,
+        registros_procesados: 0,
+        cotizaciones_exitosas: 0,
+        cotizaciones_con_error: 0,
+        organization_id: ctx.currentOrganization?.id || 'autoiq',
+        created_by_user_id: ctx.currentUser?.id || 'superadmin-local',
+        created_by_name: getUserDisplayName(ctx.currentUser),
+      };
 
-    await writeJson(metadataPath(proceso_id), meta);
+      await writeJson(metadataPath(proceso_id), meta);
+      appendActivity({
+        event: 'proceso_created',
+        entity_type: 'proceso',
+        entity_id: String(proceso_id),
+        details: {
+          historial_id,
+          cabecera_id,
+        },
+      });
 
     return res.status(200).json({ ok: true, proceso_id, metadata: meta });
   } catch (err) {
@@ -1194,6 +1578,7 @@ router.post('/crear', express.json(), async (req, res) => {
 // =============================================================================
 router.post('/ejecutar/:id', express.json(), async (req, res) => {
   try {
+    const ctx = getRequestContext(req);
     const id = Number(req.params.id);
 
     let meta = await loadMetadata(id);
@@ -1207,9 +1592,16 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
 
       const cabeceraCompat = getCabecera(cabeceraIdCompat);
       if (!cabeceraCompat) return res.status(404).json({ ok: false, error: `Cabecera ${cabeceraIdCompat} no encontrada` });
+      if (!isOwnedByContext(cabeceraCompat, ctx)) {
+        return res.status(403).json({ ok: false, error: 'No tenés acceso a esa cabecera' });
+      }
 
       const hist = await getHistorialItem(historial_id);
       if (!hist) return res.status(404).json({ ok: false, error: `No existe el histórico ${historial_id}` });
+      const histOwner = getHistorialOwner(historial_id) || { organization_id: 'autoiq' };
+      if (!isOwnedByContext(histOwner, ctx)) {
+        return res.status(403).json({ ok: false, error: 'No tenés acceso a ese archivo histórico' });
+      }
 
       const archivo = hist?.archivo;
       if (!archivo) return res.status(400).json({ ok: false, error: `Histórico ${historial_id} sin archivo asociado` });
@@ -1251,7 +1643,10 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
           : null,
         cabecera_id: cabeceraIdCompat,
         aseguradoras: req.body?.aseguradoras || req.body?.aseguradora || [],
-        resultados: {}
+        resultados: {},
+        organization_id: ctx.currentOrganization?.id || 'autoiq',
+        created_by_user_id: ctx.currentUser?.id || 'superadmin-local',
+        created_by_name: getUserDisplayName(ctx.currentUser),
       };
 
       await fsp.writeFile(metaPath, JSON.stringify(meta, null, 2), 'utf8');
@@ -1263,9 +1658,16 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
 
     const cabecera = getCabecera(cabecera_id);
     if (!cabecera) return res.status(404).json({ ok: false, error: `Cabecera ${cabecera_id} no encontrada` });
+    if (!isOwnedByContext(cabecera, ctx)) {
+      return res.status(403).json({ ok: false, error: 'No tenés acceso a esa cabecera' });
+    }
 
     const hist = await getHistorialItem(historial_id);
     if (!hist) return res.status(404).json({ ok: false, error: `Historial ${historial_id} no encontrado` });
+    const histOwner = getHistorialOwner(historial_id) || { organization_id: 'autoiq' };
+    if (!isOwnedByContext(histOwner, ctx)) {
+      return res.status(403).json({ ok: false, error: 'No tenés acceso a ese archivo histórico' });
+    }
 
     const { relPath, absPath } = resolveCombinedAbsPath(hist);
     if (!fs.existsSync(absPath)) {
@@ -1276,7 +1678,17 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
     if (typeof aseguradoras === 'string') aseguradoras = [aseguradoras];
     if (!Array.isArray(aseguradoras) || aseguradoras.length === 0) aseguradoras = meta.aseguradoras || ['atm'];
     aseguradoras = aseguradoras.map((s) => String(s).toLowerCase().trim()).filter(Boolean);
-    if (aseguradoras.length === 0) aseguradoras = ['atm'];
+    const requestedAseguradoras = [...aseguradoras];
+    if (!ctx.isSuperadmin) {
+      const allowed = new Set(Array.isArray(ctx.allowedCompanySlugs) ? ctx.allowedCompanySlugs : []);
+      aseguradoras = aseguradoras.filter((slug) => allowed.has(slug));
+    }
+    if (aseguradoras.length === 0) {
+      return res.status(403).json({
+        ok: false,
+        error: `La organización actual no tiene aseguradoras habilitadas para ejecutar (${requestedAseguradoras.join(', ') || 'ninguna'})`,
+      });
+    }
 
     await saveMetadata(proceso_id, {
       estado: 'en curso',
@@ -1287,6 +1699,19 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
       registros_procesados: 0,
       cotizaciones_exitosas: 0,
       cotizaciones_con_error: 0,
+      organization_id: meta.organization_id || ctx.currentOrganization?.id || 'autoiq',
+      created_by_user_id: meta.created_by_user_id || ctx.currentUser?.id || 'superadmin-local',
+      created_by_name: meta.created_by_name || getUserDisplayName(ctx.currentUser),
+    });
+    appendActivity({
+      event: 'proceso_started',
+      entity_type: 'proceso',
+      entity_id: String(proceso_id),
+      details: {
+        historial_id,
+        cabecera_id,
+        aseguradoras,
+      },
     });
 
     ensureDir(procesoDir(proceso_id));
@@ -1428,9 +1853,9 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
           fila: fila_final,
           mapeos,
           filaPreview: {
-            infoautocod: fila_preparada.infoautocod ?? fila.infoautocod ?? fila.tau_codia ?? '',
+            infoautocod: fila_preparada.infoautocod ?? fila_preparada.codigo_infoauto ?? fila.infoautocod ?? fila.codigo_infoauto ?? fila.tau_codia ?? '',
             anio: fila_preparada.anio || fila_preparada.anofab || fila.anio || fila.anofab || '',
-            cp: fila_preparada.cp || fila_preparada.codigo_postal || fila.codigo_postal || fila.cp || '',
+            cp: fila_preparada.cp || fila_preparada.codigo_postal || fila_preparada.CP || fila.codigo_postal || fila.CP || fila.cp || '',
             uso_origen: fila.uso || fila.Uso || '',
           },
           ctx: { Aseg, SOAP_URL, SOAP_METHOD, usoDicc, hoy_fmt: hoy },
@@ -1572,6 +1997,7 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
 // =============================================================================
 router.get('/listar', async (req, res) => {
   try {
+    const ctx = getRequestContext(req);
     const base = procesosRoot();
     ensureDir(base);
 
@@ -1591,7 +2017,7 @@ router.get('/listar', async (req, res) => {
         continue;
       }
 
-      items.push({
+      const item = {
         id: meta.id,
         nombre: meta.nombre || `Proceso ${meta.id}`,
         estado: meta.estado || '',
@@ -1609,7 +2035,11 @@ router.get('/listar', async (req, res) => {
         cotizaciones_con_error: meta.cotizaciones_con_error ?? 0,
         cotizaciones_skipped: meta.cotizaciones_skipped ?? 0,
         carpeta: `data/procesos/proceso-${meta.id}/`,
-      });
+        organization_id: meta.organization_id || 'autoiq',
+        created_by_user_id: meta.created_by_user_id || 'superadmin-local',
+        created_by_name: meta.created_by_name || '',
+      };
+      if (isOwnedByContext(item, ctx)) items.push(item);
     }
 
 // Orden: más recientes primero (fecha_inicio DESC). Fallback: id DESC.
@@ -1630,7 +2060,8 @@ items.sort((a, b) => {
 // =============================================================================
 router.get('/aseguradoras-disponibles', (_req, res) => {
   try {
-    const items = listAvailableAseguradoras();
+    const ctx = getRequestContext(_req);
+    const items = filterCompanyItemsByContext(listAvailableAseguradoras(), ctx);
     res.json({ ok: true, items });
   } catch (err) {
     console.error('Error en /proceso/aseguradoras-disponibles', err);
@@ -1645,6 +2076,14 @@ router.get('/aseguradoras-disponibles', (_req, res) => {
 router.get('/excel/:id', async (req, res) => {
   try {
     const id = Number(req.params.id);
+    const ctx = getRequestContext(req);
+    const meta = await loadMetadata(id);
+    if (!meta) {
+      return res.status(404).json({ ok: false, error: 'No existe el proceso' });
+    }
+    if (!isOwnedByContext(meta, ctx)) {
+      return res.status(403).json({ ok: false, error: 'No tenés acceso a este proceso' });
+    }
     const dlDir = path.join(procesoDir(id), 'descargas');
     const outAbs = path.join(dlDir, `proceso-${id}-cotizaciones.xlsx`);
 
@@ -1657,6 +2096,12 @@ router.get('/excel/:id', async (req, res) => {
     }
 
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    appendActivity({
+      event: 'process_excel_downloaded',
+      entity_type: 'proceso',
+      entity_id: String(id),
+      details: {},
+    });
     return res.download(outAbs, `proceso-${id}-cotizaciones.xlsx`);
   } catch (err) {
     return res.status(500).json({ ok: false, error: err.message || String(err) });
@@ -1669,8 +2114,12 @@ router.get('/excel/:id', async (req, res) => {
 router.get('/estado/:id', async (req, res) => {
   try {
     const id = Number(req.params.id);
+    const ctx = getRequestContext(req);
     const meta = await loadMetadata(id);
     if (!meta) return res.status(404).json({ ok: false, error: 'No existe el proceso' });
+    if (!isOwnedByContext(meta, ctx)) {
+      return res.status(403).json({ ok: false, error: 'No tenés acceso a este proceso' });
+    }
 
     let resumen = null;
     const rp = resumenPath(id);
@@ -1690,6 +2139,12 @@ router.get('/estado/:id', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const id = Number(req.params.id);
+    const ctx = getRequestContext(req);
+    const meta = await loadMetadata(id);
+    if (!meta) return res.status(404).json({ ok: false, error: 'No existe el proceso' });
+    if (!isOwnedByContext(meta, ctx)) {
+      return res.status(403).json({ ok: false, error: 'No tenés acceso a este proceso' });
+    }
     const rp = resumenPath(id);
     if (!fs.existsSync(rp)) return res.status(404).json({ ok: false, error: 'No existe el proceso' });
     const j = JSON.parse(fs.readFileSync(rp, 'utf8'));
