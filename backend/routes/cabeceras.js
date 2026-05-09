@@ -49,6 +49,11 @@ function writeAll(db){
 }
 
 const toStr = v => (v ?? '').toString().trim();
+function rastreoActivo(b = {}) {
+  const raw = toStr(b.rastreo).toUpperCase();
+  if (['1', 'S', 'SI', 'CON', 'POSEE', 'A'].includes(raw)) return true;
+  return Boolean(toStr(b.rastreo_sistema || b.rastreoSistema));
+}
 
 // GET /cabeceras/listar  -> devuelve items
 router.get('/listar', (req, res) => {
@@ -120,8 +125,9 @@ router.post('/crear', express.json(), (req, res) => {
     // Uso: 1=Particular, 2=Comercial
     tipo_uso: ['1','2'].includes(toStr(b.tipo_uso)) ? toStr(b.tipo_uso) : '1',
 
-    // Rastreador (ATM)
-    rastreo: toStr(b.rastreo) === '1' ? '1' : '0',
+    // Rastreador
+    rastreo: rastreoActivo(b) ? '1' : '0',
+    rastreo_sistema: toStr(b.rastreo_sistema || b.rastreoSistema),
 
     // GNC (ATM) + suma asegurada GNC (nuevo, por ahora solo se persiste)
     gnc: toStr(b.gnc) === '1' ? '1' : '0',

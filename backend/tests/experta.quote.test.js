@@ -1,6 +1,7 @@
 const {
   buildExpertaPayload,
   parseExpertaQuoteResponse,
+  resolveExpertaConRecuperador,
   resolveExpertaPaymentKey,
 } = require('../services/experta/quote');
 
@@ -9,6 +10,12 @@ describe('Experta quote adapter', () => {
     expect(resolveExpertaPaymentKey({ medio_pago: 'Tarjeta de crédito' })).toBe('debito');
     expect(resolveExpertaPaymentKey({ medio_pago: 'CBU' })).toBe('debito');
     expect(resolveExpertaPaymentKey({ medio_pago: 'Efectivo' })).toBe('efectivo');
+  });
+
+  test('mapea rastreo de cabecera a conRecuperador', () => {
+    expect(resolveExpertaConRecuperador({ rastreo: '1' })).toBe('S');
+    expect(resolveExpertaConRecuperador({ rastreo: 'Posee' })).toBe('S');
+    expect(resolveExpertaConRecuperador({ rastreo: '0' })).toBe('N');
   });
 
   test('arma payload de Experta con credenciales y defaults', async () => {
@@ -47,6 +54,7 @@ describe('Experta quote adapter', () => {
       codInfoAuto: '460652',
       gnc: 'N',
       uso: '1',
+      conRecuperador: 'N',
       porcentajeAjuste: '5',
     });
     expect(payload).toMatchObject({
@@ -56,6 +64,7 @@ describe('Experta quote adapter', () => {
       marca: 'unespecified',
       modelo: 'unespecified',
       version: 'unespecified',
+      conRecuperador: 'N',
     });
   });
 

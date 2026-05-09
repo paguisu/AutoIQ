@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { XMLParser } = require('fast-xml-parser');
 const { resolveSumaAsegurada } = require('../../utils/atm_infoauto');
+const { resolveCompanyTracking } = require('../../utils/rastreo');
 
 const MAPFRE_CP_PATH = path.join(__dirname, '..', '..', '..', 'data', 'mapfre', 'diccionarios', 'codigos_postales.json');
 let postalCatalogCache = null;
@@ -352,7 +353,7 @@ async function buildMapfreEnvelope({ fila = {}, cabecera = {}, hoyFmt, cfg = {},
   const usoVehiculo = resolveMapfreUsoCodigo({ mapeos, fila, cabecera, cfg });
   const conGnc = cabecera?.gnc === '1' ? '1' : '0';
   const valorGnc = conGnc === '1' ? toMoneyString(cabecera?.suma_gnc || fila?.suma_gnc || 0) || '0' : '0';
-  const conLocalizador = cabecera?.rastreo === '1' ? '1' : '0';
+  const conLocalizador = String(resolveCompanyTracking(cabecera, 'mapfre', cfg).mappedValue || '0');
   const guardaGGe = String(cfg?.parametros_extras?.guarda_gge_default || '0');
   const requestXml = `<?xml version="1.0" encoding="UTF-8"?>
 <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/">

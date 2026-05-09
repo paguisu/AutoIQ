@@ -1,0 +1,105 @@
+{
+  "version": 1,
+  "default_sin_especificar": "sin_especificar",
+  "sistemas": {
+    "sin_rastreo": {
+      "label": "No posee",
+      "aliases": ["no", "no posee", "sin", "sin rastreo", "sin rastreador", "sin localizador", "0", "n"]
+    },
+    "sin_especificar": {
+      "label": "Posee, sin especificar",
+      "aliases": ["posee", "si", "s", "1", "con", "con rastreo", "con rastreador", "sin especificar"]
+    },
+    "lojack": {
+      "label": "Lo Jack",
+      "aliases": ["lo jack", "lojack"]
+    },
+    "tracer": {
+      "label": "Tracer",
+      "aliases": ["tracer"]
+    },
+    "ituran": {
+      "label": "Ituran",
+      "aliases": ["ituran", "ituran avl"]
+    },
+    "ubicar": {
+      "label": "Ubicar",
+      "aliases": ["ubicar"]
+    },
+    "pointer": {
+      "label": "Pointer",
+      "aliases": ["pointer"]
+    },
+    "datatrak": {
+      "label": "Datatrak",
+      "aliases": ["datatrak", "data trak"]
+    },
+    "micrograbado": {
+      "label": "Micrograbado",
+      "aliases": ["micrograbado", "micro grabado"]
+    },
+    "lojack_cia": {
+      "label": "Lo Jack a cargo compania",
+      "aliases": ["lo jack a cargo cia", "lojack a cargo cia", "lo jack a cargo compania"]
+    },
+    "tracer_cia": {
+      "label": "Tracer a cargo compania",
+      "aliases": ["tracer a cargo cia", "tracer a cargo compania"]
+    }
+  },
+  "companias": {
+    "allianz": {
+      "default_sin_especificar": "sin_especificar",
+      "mapeo": {
+        "sin_rastreo": { "tieneAlarma": false, "codigoTipoAlarma": "" },
+        "*": { "tieneAlarma": true, "codigoTipoAlarma": "LA" }
+      }
+    },
+    "experta": {
+      "default_sin_especificar": "sin_especificar",
+      "mapeo": {
+        "sin_rastreo": "N",
+        "*": "S"
+      }
+    },
+    "mapfre": {
+      "default_sin_especificar": "sin_especificar",
+      "mapeo": {
+        "sin_rastreo": "0",
+        "*": "1"
+      }
+    },
+    "atm": {
+      "default_sin_especificar": "sin_especificar",
+      "mapeo": {
+        "sin_rastreo": "N",
+        "*": "A"
+      }
+    },
+    "smg": {
+      "default_sin_especificar": "lojack",
+      "mapeo": {
+        "sin_rastreo": "0",
+        "lojack": "2",
+        "tracer": "3",
+        "pointer": "5",
+        "ituran": "6",
+        "ubicar": "7",
+        "lojack_cia": "14",
+        "tracer_cia": "20",
+        "micrograbado": "46"
+      }
+    },
+    "victoria": {
+      "default_sin_especificar": "lojack",
+      "mapeo": {
+        "sin_rastreo": null,
+        "tracer": 1,
+        "ituran": 2,
+        "datatrak": 3,
+        "ubicar": 4,
+        "lojack": 5
+      }
+    }
+  }
+}

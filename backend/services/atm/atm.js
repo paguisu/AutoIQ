@@ -9,6 +9,7 @@ const xlsx = require("xlsx");
 
 const { cotizarSoapDemo } = require("./client");
 const { loadAtmConfig } = require("./config");
+const { resolveCompanyTracking } = require("../../utils/rastreo");
 
 // -------------------- Helpers --------------------
 function ensureDir(p) {
@@ -141,6 +142,11 @@ function buildDocInATM(body, cfg) {
 
   const seccion = pick([body?.seccion, cfg.seccionDefault]) || "3";
   const plan = pick([body?.plan, cfg.planDefault]) || "";
+  const rastreoCodigo = String(
+    resolveCompanyTracking(body, "atm", cfg).mappedValue ||
+    cfg?.parametros_extras?.rastreo_codigo_con ||
+    "N"
+  ).trim() || "N";
 
   const aseguradoXml = buildAseguradoBlockFromBody(body);
 
@@ -159,6 +165,7 @@ function buildDocInATM(body, cfg) {
     <anofab>${anio}</anofab>
     <codpostal>${cp}</codpostal>
     <uso>${uso}</uso>
+    <rastreo>${rastreoCodigo}</rastreo>
     <seccion>${seccion}</seccion>
   </bien>`;
 

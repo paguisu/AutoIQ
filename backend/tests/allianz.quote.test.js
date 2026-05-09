@@ -2,6 +2,7 @@ const {
   buildAllianzEnvelope,
   parseAllianzQuoteResponse,
   resolveAllianzPayment,
+  resolveAllianzPostalCode,
 } = require('../services/allianz/quote');
 
 describe('Allianz quote adapter', () => {
@@ -43,7 +44,7 @@ describe('Allianz quote adapter', () => {
         producer_code: 'M22054',
         country: 'ARG',
         target: 'Allianz',
-        descuento_comercial: '20',
+        descuento_comercial: '-20',
         clausula_ajuste: '20',
         parametros_extras: {
           tipo_poliza_default: 'M',
@@ -84,6 +85,120 @@ describe('Allianz quote adapter', () => {
     expect(envelope).toContain('<con:medioDePago>T</con:medioDePago>');
     expect(envelope).toContain('<cot:codigoPostal>1005</cot:codigoPostal>');
     expect(envelope).toContain('<cot:codigoEsquema>001</cot:codigoEsquema>');
+  });
+
+  test('usa esquema 002 para recargos en Allianz', async () => {
+    const { envelope } = await buildAllianzEnvelope({
+      fila: {
+        infoautocod: '18461',
+        anio: '2012',
+        CP: '1005',
+      },
+      cabecera: {
+        medio_pago: 'Tarjeta de crédito',
+        fec_nac: '19850705',
+        sexo: 'M',
+        nrodoc: '11444777',
+        tipodoc: 'DNI',
+      },
+      cfg: {
+        usuario: 'demo-user',
+        password: 'demo-pass',
+        application: 'AutoIQ',
+        sender_username: 'sender@example.com',
+        producer_code: 'M22054',
+        descuento_comercial: '15',
+        parametros_extras: {
+          tipo_poliza_default: 'M',
+          medio_pago_default: 'T',
+          cantidad_cuotas_default: '1',
+          codigo_condicion_iva_default: '1',
+          codigo_condicion_iibb_default: '1',
+          tipo_documento_default: 'D',
+          codigo_provincia_default: '0',
+          valor_vehiculo_default: '0',
+        },
+      },
+      today: new Date('2026-03-17T12:00:00Z'),
+    });
+
+    expect(envelope).toContain('<cot:codigoEsquema>002</cot:codigoEsquema>');
+  });
+
+  test('aplica alias de codigo postal para San Martin Catamarca cuando Allianz no acepta el original', async () => {
+    expect(resolveAllianzPostalCode({
+      fila: {
+        CP: '4234',
+        Localidad: 'SAN MARTIN',
+        Provincia: 'Catamarca',
+      },
+      postalAliases: [
+        {
+          inputCodPostal: '4234',
+          inputLocalidad: 'San Martin',
+          inputProvincia: 'Catamarca',
+          codPostal: '4235',
+          reason: 'Alias de Allianz',
+        },
+      ],
+    })).toMatchObject({
+      codigoPostal: '4235',
+      originalCodigoPostal: '4234',
+      aliasApplied: true,
+      aliasReason: 'Alias de Allianz',
+    });
+
+    const { envelope, requestMeta } = await buildAllianzEnvelope({
+      fila: {
+        infoautocod: '120618',
+        anio: '2025',
+        CP: '4234',
+        Localidad: 'SAN MARTIN',
+        Provincia: 'Catamarca',
+      },
+      cabecera: {
+        medio_pago: 'Tarjeta de crédito',
+        fec_nac: '19860413',
+        sexo: 'M',
+        tipodoc: 'DNI',
+        iva: 'CF',
+      },
+      cfg: {
+        usuario: 'demo-user',
+        password: 'demo-pass',
+        application: 'AutoIQ',
+        sender_username: 'sender@example.com',
+        producer_code: 'M22054',
+        parametros_extras: {
+          tipo_poliza_default: 'M',
+          medio_pago_default: 'T',
+          cantidad_cuotas_default: '1',
+          codigo_condicion_iva_default: '1',
+          codigo_condicion_iibb_default: '1',
+          tipo_documento_default: 'D',
+          codigo_provincia_default: '0',
+          valor_vehiculo_default: '0',
+        },
+      },
+      postalAliases: [
+        {
+          inputCodPostal: '4234',
+          inputLocalidad: 'San Martin',
+          inputProvincia: 'Catamarca',
+          codPostal: '4235',
+          reason: 'Alias de Allianz',
+        },
+      ],
+      today: new Date('2026-04-14T12:00:00Z'),
+    });
+
+    expect(requestMeta).toMatchObject({
+      codigoPostal: '4235',
+      codigoPostalOriginal: '4234',
+      codigoPostalAliasApplied: true,
+      codigoPostalAliasReason: 'Alias de Allianz',
+    });
+    expect(envelope).toContain('<cot:codigoPostal>4235</cot:codigoPostal>');
   });
 
   test('parsea una respuesta exitosa de Allianz', () => {

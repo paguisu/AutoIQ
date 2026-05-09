@@ -1,6 +1,11 @@
+const fs = require('fs');
+const path = require('path');
 const { XMLParser } = require('fast-xml-parser');
+const { resolveCompanyTracking } = require('../../utils/rastreo');
 
 const parser = new XMLParser({ ignoreAttributes: false, trimValues: true, removeNSPrefix: true });
+let postalAliasCache = null;
+const POSTAL_ALIASES_JSON_PATH = path.join(process.cwd(), 'data', 'allianz', 'diccionarios', 'codigo_postal_aliases.json');
 
 function escapeXml(value) {
   return String(value ?? '')
@@ -34,6 +39,80 @@ function normalizeText(value) {
     .replace(/\p{Diacritic}/gu, '')
     .replace(/\s+/g, ' ')
     .toUpperCase();
+}
+
+function normalizeAllianzPostalAliases(rows) {
+  return Array.isArray(rows)
+    ? rows.map((item) => ({
+        inputCodPostal: String(item?.inputCodPostal || '').trim(),
+        inputLocalidad: normalizeText(item?.inputLocalidad || ''),
+        inputProvincia: normalizeText(item?.inputProvincia || ''),
+        codPostal: String(item?.codPostal || '').trim(),
+        reason: String(item?.reason || '').trim(),
+      })).filter((item) => item.codPostal)
+    : [];
+}
+
+function loadAllianzPostalAliases(customAliases) {
+  if (Array.isArray(customAliases)) return normalizeAllianzPostalAliases(customAliases);
+  if (postalAliasCache) return postalAliasCache;
+  try {
+    if (!fs.existsSync(POSTAL_ALIASES_JSON_PATH)) {
+      postalAliasCache = [];
+      return postalAliasCache;
+    }
+    const raw = JSON.parse(fs.readFileSync(POSTAL_ALIASES_JSON_PATH, 'utf8'));
+    postalAliasCache = normalizeAllianzPostalAliases(raw);
+    return postalAliasCache;
+  } catch {
+    postalAliasCache = [];
+    return postalAliasCache;
+  }
+}
+
+function resolveAllianzPostalCode({ fila = {}, cabecera = {}, postalAliases } = {}) {
+  const originalCodigoPostal = pick([
+    fila?.codigo_postal,
+    fila?.codpostal,
+    fila?.CP,
+    fila?.cp,
+    cabecera?.cp,
+  ]).replace(/\D+/g, '').slice(0, 7);
+  if (!originalCodigoPostal) {
+    return {
+      codigoPostal: '',
+      originalCodigoPostal: '',
+      aliasApplied: false,
+      aliasReason: '',
+    };
+  }
+
+  const localidad = normalizeText(pick([
+    fila?.localidad,
+    fila?.Localidad,
+    fila?.ciudad,
+    fila?.Ciudad,
+    cabecera?.localidad,
+  ]));
+  const provincia = normalizeText(pick([
+    fila?.provincia,
+    fila?.Provincia,
+    cabecera?.provincia,
+  ]));
+
+  const alias = loadAllianzPostalAliases(postalAliases).find((item) => {
+    if (item.inputCodPostal && item.inputCodPostal !== originalCodigoPostal) return false;
+    if (item.inputLocalidad && item.inputLocalidad !== localidad) return false;
+    if (item.inputProvincia && item.inputProvincia !== provincia) return false;
+    return true;
+  });
+
+  return {
+    codigoPostal: alias?.codPostal || originalCodigoPostal,
+    originalCodigoPostal,
+    aliasApplied: Boolean(alias?.codPostal && alias.codPostal !== originalCodigoPostal),
+    aliasReason: alias?.reason || '',
+  };
 }
 
 function normalizeIsoDate(value) {
@@ -153,7 +232,8 @@ function buildDiscountXml(cfg = {}) {
   if (!value) return '';
   const amount = Number(value.replace(',', '.'));
   if (!Number.isFinite(amount) || amount === 0) return '';
-  const codigoEsquema = amount > 0 ? '001' : '002';
+  // Allianz documenta 001 para rebaja y 002 para recargo.
+  const codigoEsquema = amount < 0 ? '001' : '002';
   const valor = Math.abs(amount);
   return `
                <cot:ListaEsquemasComerciales>
@@ -169,7 +249,15 @@ function buildDiscountXml(cfg = {}) {
                </cot:ListaEsquemasComerciales>`.trimEnd();
 }
 
-async function buildAllianzEnvelope({ fila = {}, cabecera = {}, cfg = {}, mapeos = {}, usoDicc = {}, today = new Date() } = {}) {
+async function buildAllianzEnvelope({
+  fila = {},
+  cabecera = {},
+  cfg = {},
+  mapeos = {},
+  usoDicc = {},
+  today = new Date(),
+  postalAliases,
+} = {}) {
   const codigoMarcaModelo = pick([
     fila?.infoautocod,
     fila?.tau_codia,
@@ -181,7 +269,8 @@ async function buildAllianzEnvelope({ fila = {}, cabecera = {}, cfg = {}, mapeos
     fila?.infoauto,
   ]);
   const anioFabricacion = pick([fila?.anio, fila?.anofab, fila?.ANO, fila?.Anio, fila?.ano]);
-  const codigoPostal = pick([fila?.codigo_postal, fila?.codpostal, fila?.CP, fila?.cp, cabecera?.cp]).replace(/\D+/g, '').slice(0, 7);
+  const postal = resolveAllianzPostalCode({ fila, cabecera, postalAliases });
+  const codigoPostal = postal.codigoPostal;
   const numeroDocumento = pick([cabecera?.nrodoc, cabecera?.numeroDocumento, fila?.nrodoc]).replace(/\D+/g, '');
 
   if (!codigoMarcaModelo) throw new Error('Allianz requiere codigoMarcaModelo');
@@ -195,8 +284,9 @@ async function buildAllianzEnvelope({ fila = {}, cabecera = {}, cfg = {}, mapeos
   const fechaNacimiento = normalizeIsoDate(cabecera?.fec_nac);
   const valorVehiculo = resolveAllianzVehicleValue(fila, cfg);
   const clausula = String(cfg?.clausula_ajuste || cfg?.parametros_extras?.clausula_ajuste || '').trim();
-  const hasTracking = cabecera?.rastreo === '1';
-  const alarmType = hasTracking ? 'LA' : '';
+  const tracking = resolveCompanyTracking(cabecera, 'allianz', cfg);
+  const hasTracking = Boolean(tracking.mappedValue?.tieneAlarma);
+  const alarmType = tracking.mappedValue?.codigoTipoAlarma || '';
   const discountXml = buildDiscountXml(cfg);
   const application = String(cfg?.application || '').trim();
   const username = String(cfg?.usuario || '').trim();
@@ -271,6 +361,9 @@ ${discountXml ? `               ${discountXml}` : ''}
       medioDePago: payment.medioDePago,
       cantidadDeCuotas: payment.cantidadDeCuotas,
       codigoPostal,
+      codigoPostalOriginal: postal.originalCodigoPostal,
+      codigoPostalAliasApplied: postal.aliasApplied,
+      codigoPostalAliasReason: postal.aliasReason,
       codigoProvincia: String(cfg?.parametros_extras?.codigo_provincia_default || '0'),
       codigoDeProductor: String(cfg?.producer_code || ''),
       clausulaDeAjuste: clausula,
@@ -351,4 +444,5 @@ module.exports = {
   buildAllianzEnvelope,
   parseAllianzQuoteResponse,
   resolveAllianzPayment,
+  resolveAllianzPostalCode,
 };

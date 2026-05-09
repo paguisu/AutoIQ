@@ -1,3 +1,10 @@
+const {
+  resolveExpertaIva: resolveExpertaIvaFromCommons,
+  resolveExpertaPostalCode: resolveExpertaPostalCodeFromCommons,
+  resolveExpertaVehicleCatalog,
+} = require('./commons');
+const { resolveCompanyTracking } = require('../../utils/rastreo');
+
 function pick(values) {
   for (const value of values) {
     if (value != null && String(value).trim() !== '') return String(value).trim();
@@ -36,7 +43,7 @@ function resolveExpertaUso({ fila = {}, cabecera = {}, usoDicc = {} }) {
   return String(usoDicc.particular || '1');
 }
 
-function resolveExpertaIva({ cabecera = {}, cfg = {} }) {
+function resolveExpertaIvaFallback({ cabecera = {}, cfg = {} }) {
   const raw = normalizeText(cabecera?.iva);
   const map = {
     CF: '5',
@@ -51,7 +58,7 @@ function resolveExpertaIva({ cabecera = {}, cfg = {} }) {
   return map[raw] || String(cfg?.parametros_extras?.iva_default || '5');
 }
 
-function resolveExpertaPostalCode(fila = {}, cabecera = {}, cfg = {}) {
+function resolveExpertaPostalCodeFallback(fila = {}, cabecera = {}, cfg = {}) {
   const direct = pick([fila?.codigo_postal, fila?.codpostal, fila?.CP, fila?.cp, cabecera?.cp]);
   if (/^\d{7}$/.test(direct)) return direct;
   if (/^\d{4}$/.test(direct)) return `${direct}000`;
@@ -70,8 +77,20 @@ function resolveExpertaPaymentKey(cabecera = {}) {
   return 'debito';
 }
 
-async function buildExpertaPayload({ fila = {}, cabecera = {}, cfg = {}, usoDicc = {}, today = new Date() } = {}) {
-  const codInfoAuto = pick([
+function resolveExpertaConRecuperador(cabecera = {}, cfg = {}) {
+  const tracking = resolveCompanyTracking(cabecera, 'experta', cfg);
+  return String(tracking.mappedValue || cfg?.parametros_extras?.con_recuperador_default || 'N').trim() || 'N';
+}
+
+async function buildExpertaPayload({
+  fila = {},
+  cabecera = {},
+  cfg = {},
+  usoDicc = {},
+  today = new Date(),
+  token = '',
+} = {}) {
+  let codInfoAuto = pick([
     fila?.infoautocod,
     fila?.tau_codia,
     fila?.codigo_infoauto,
@@ -82,7 +101,28 @@ async function buildExpertaPayload({ fila = {}, cabecera = {}, cfg = {}, usoDicc
     fila?.infoauto,
   ]);
   const anio = pick([fila?.anio, fila?.anofab, fila?.ANO, fila?.Anio, fila?.ano]);
-  const codigoPostal = resolveExpertaPostalCode(fila, cabecera, cfg);
+  const postal = token
+    ? await resolveExpertaPostalCodeFromCommons({ fila, cabecera, cfg, token }).catch(() => ({ codigoPostal: resolveExpertaPostalCodeFallback(fila, cabecera, cfg), source: 'fallback' }))
+    : { codigoPostal: resolveExpertaPostalCodeFallback(fila, cabecera, cfg), source: 'fallback' };
+  const ivaResolved = token
+    ? await resolveExpertaIvaFromCommons({ cabecera, cfg, token }).catch(() => ({ iva: resolveExpertaIvaFallback({ cabecera, cfg }), source: 'fallback' }))
+    : { iva: resolveExpertaIvaFallback({ cabecera, cfg }), source: 'fallback' };
+  const vehicleCatalog = await resolveExpertaVehicleCatalog({
+    fila,
+    cabecera,
+    cfg,
+    token,
+    codInfoAuto,
+    anio,
+  }).catch(() => ({
+    marca: pick([fila?.marca, cfg?.parametros_extras?.marca_default || 'unespecified']),
+    modelo: pick([fila?.modelo, cfg?.parametros_extras?.modelo_default || 'unespecified']),
+    version: pick([fila?.version, cfg?.parametros_extras?.version_default || 'unespecified']),
+    codInfoAuto: String(codInfoAuto || ''),
+    source: 'fallback',
+  }));
+  const codigoPostal = postal.codigoPostal;
+  codInfoAuto = String(vehicleCatalog.codInfoAuto || codInfoAuto || '').trim();
 
   if (!codInfoAuto) throw new Error('Experta requiere codInfoAuto');
   if (!anio) throw new Error('Experta requiere anio');
@@ -97,22 +137,22 @@ async function buildExpertaPayload({ fila = {}, cabecera = {}, cfg = {}, usoDicc
     productor: String(cfg?.producer_code || ''),
     modalidad: String(cfg?.parametros_extras?.modalidad_default || 'EX0'),
     fechaVigencia: formatDdMmYyyy(today),
-    iva: resolveExpertaIva({ cabecera, cfg }),
+    iva: ivaResolved.iva,
     codigoPostal,
     anio: String(anio),
     ceroKM: cabecera?.cerokm === '1' ? 'S' : 'N',
     codInfoAuto: String(codInfoAuto),
     gnc: hasGnc ? '501' : String(cfg?.parametros_extras?.gnc_default || 'N'),
-    valorGnc: hasGnc ? String(valorGnc || '') : '',
-    marca: pick([fila?.marca, cfg?.parametros_extras?.marca_default || 'unespecified']),
-    modelo: pick([fila?.modelo, cfg?.parametros_extras?.modelo_default || 'unespecified']),
+    marca: pick([vehicleCatalog.marca, fila?.marca, cfg?.parametros_extras?.marca_default || 'unespecified']),
+    modelo: pick([vehicleCatalog.modelo, fila?.modelo, cfg?.parametros_extras?.modelo_default || 'unespecified']),
     uso: resolveExpertaUso({ fila, cabecera, usoDicc }),
-    version: pick([fila?.version, cfg?.parametros_extras?.version_default || 'unespecified']),
-    conRecuperador: cabecera?.rastreo === '1' ? 'S' : String(cfg?.parametros_extras?.con_recuperador_default || 'N'),
+    version: pick([vehicleCatalog.version, fila?.version, cfg?.parametros_extras?.version_default || 'unespecified']),
+    conRecuperador: resolveExpertaConRecuperador(cabecera, cfg),
   };
 
   const ajuste = pick([cfg?.clausula_ajuste, cfg?.parametros_extras?.porcentaje_ajuste_default]);
   if (ajuste) payload.porcentajeAjuste = ajuste;
+  if (hasGnc && valorGnc) payload.valorGnc = String(valorGnc);
 
   return {
     payload,
@@ -124,10 +164,16 @@ async function buildExpertaPayload({ fila = {}, cabecera = {}, cfg = {}, usoDicc
       codigoPostal: payload.codigoPostal,
       anio: payload.anio,
       codInfoAuto: payload.codInfoAuto,
+      marca: payload.marca,
+      modelo: payload.modelo,
+      version: payload.version,
       gnc: payload.gnc,
       uso: payload.uso,
       conRecuperador: payload.conRecuperador,
       porcentajeAjuste: payload.porcentajeAjuste || '',
+      cpSource: postal.source,
+      ivaSource: ivaResolved.source,
+      vehicleSource: vehicleCatalog.source,
     },
   };
 }
@@ -188,8 +234,9 @@ function parseExpertaQuoteResponse(data, { selectedPriceKey = 'debito' } = {}) {
 module.exports = {
   buildExpertaPayload,
   parseExpertaQuoteResponse,
-  resolveExpertaIva,
+  resolveExpertaIva: resolveExpertaIvaFallback,
   resolveExpertaPaymentKey,
-  resolveExpertaPostalCode,
+  resolveExpertaPostalCode: resolveExpertaPostalCodeFallback,
+  resolveExpertaConRecuperador,
   resolveExpertaUso,
 };
