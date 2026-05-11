@@ -10,6 +10,7 @@ const xlsx = require("xlsx");
 const { cotizarSoapDemo } = require("./client");
 const { loadAtmConfig } = require("./config");
 const { resolveCompanyTracking } = require("../../utils/rastreo");
+const { resolveVehicleZeroKm } = require("../../utils/zero_km");
 
 // -------------------- Helpers --------------------
 function ensureDir(p) {
@@ -147,6 +148,7 @@ function buildDocInATM(body, cfg) {
     cfg?.parametros_extras?.rastreo_codigo_con ||
     "N"
   ).trim() || "N";
+  const cerokm = resolveVehicleZeroKm(body) === "1" ? "S" : "N";
 
   const aseguradoXml = buildAseguradoBlockFromBody(body);
 
@@ -166,6 +168,7 @@ function buildDocInATM(body, cfg) {
     <codpostal>${cp}</codpostal>
     <uso>${uso}</uso>
     <rastreo>${rastreoCodigo}</rastreo>
+    <cerokm>${cerokm}</cerokm>
     <seccion>${seccion}</seccion>
   </bien>`;
 

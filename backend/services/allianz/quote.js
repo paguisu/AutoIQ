@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { XMLParser } = require('fast-xml-parser');
 const { resolveCompanyTracking } = require('../../utils/rastreo');
+const { isVehicleZeroKm } = require('../../utils/zero_km');
 
 const parser = new XMLParser({ ignoreAttributes: false, trimValues: true, removeNSPrefix: true });
 let postalAliasCache = null;
@@ -249,6 +250,19 @@ function buildDiscountXml(cfg = {}) {
                </cot:ListaEsquemasComerciales>`.trimEnd();
 }
 
+function buildAdditionalXml(additional = {}) {
+  if (additional?.codigoDeAdicional) {
+    return `
+               <cot:ListaAdicionales>
+                  <cot:Adicional>
+                     <cot:codigoDeAdicional>${escapeXml(additional.codigoDeAdicional)}</cot:codigoDeAdicional>
+                  </cot:Adicional>
+               </cot:ListaAdicionales>`.trimEnd();
+  }
+  if (additional?.sendEmptyList) return '               <cot:ListaAdicionales/>';
+  return '';
+}
+
 async function buildAllianzEnvelope({
   fila = {},
   cabecera = {},
@@ -257,6 +271,7 @@ async function buildAllianzEnvelope({
   usoDicc = {},
   today = new Date(),
   postalAliases,
+  additional = {},
 } = {}) {
   const codigoMarcaModelo = pick([
     fila?.infoautocod,
@@ -288,6 +303,7 @@ async function buildAllianzEnvelope({
   const hasTracking = Boolean(tracking.mappedValue?.tieneAlarma);
   const alarmType = tracking.mappedValue?.codigoTipoAlarma || '';
   const discountXml = buildDiscountXml(cfg);
+  const additionalXml = buildAdditionalXml(additional);
   const application = String(cfg?.application || '').trim();
   const username = String(cfg?.usuario || '').trim();
   const password = String(cfg?.password || '').trim();
@@ -320,7 +336,7 @@ async function buildAllianzEnvelope({
                   <cot:anioFabricacion>${escapeXml(anioFabricacion)}</cot:anioFabricacion>
                   <cot:valorVehiculo>${escapeXml(valorVehiculo)}</cot:valorVehiculo>
                   <cot:codigoDeUso>${escapeXml(resolveAllianzUseCode({ fila, cabecera, mapeos, usoDicc }))}</cot:codigoDeUso>
-                  <cot:es0Km>${cabecera?.cerokm === '1' ? 'true' : 'false'}</cot:es0Km>
+                  <cot:es0Km>${isVehicleZeroKm(fila) ? 'true' : 'false'}</cot:es0Km>
                   <cot:tieneAlarma>${hasTracking || cfg?.parametros_extras?.use_alarm_default === true ? 'true' : 'false'}</cot:tieneAlarma>
                   ${alarmType ? `<cot:codigoTipoAlarma>${alarmType}</cot:codigoTipoAlarma>` : ''}
                </cot:VehiculoACotizar>
@@ -338,6 +354,7 @@ async function buildAllianzEnvelope({
                   ${fechaNacimiento ? `<con:fechaNacimientoAsegurado>${escapeXml(fechaNacimiento)}</con:fechaNacimientoAsegurado>` : ''}
                   <con:sexoDelAsegurado>${escapeXml(resolveAllianzGender(cabecera))}</con:sexoDelAsegurado>
                </con:CondicionesContratacion>
+${additionalXml ? `               ${additionalXml}` : ''}
                <cot:UbicacionDelRiesgo>
                   <cot:codigoPostal>${escapeXml(codigoPostal)}</cot:codigoPostal>
                   <cot:codigoProvincia>${escapeXml(cfg?.parametros_extras?.codigo_provincia_default || '0')}</cot:codigoProvincia>
@@ -369,6 +386,13 @@ ${discountXml ? `               ${discountXml}` : ''}
       clausulaDeAjuste: clausula,
       fechaDesde,
       fechaHasta,
+      adicionalCodigo: additional?.codigoDeAdicional || '',
+      adicionalDescripcion: additional?.descripcion || '',
+      listaAdicionales: additional?.codigoDeAdicional
+        ? 'con_adicional'
+        : additional?.sendEmptyList
+          ? 'vacia'
+          : 'no_enviada',
     },
   };
 }
@@ -445,4 +469,5 @@ module.exports = {
   parseAllianzQuoteResponse,
   resolveAllianzPayment,
   resolveAllianzPostalCode,
+  buildAdditionalXml,
 };

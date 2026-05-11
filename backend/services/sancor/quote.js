@@ -1,6 +1,7 @@
 const path = require('path');
 const xlsx = require('xlsx');
 const { XMLParser } = require('fast-xml-parser');
+const { isVehicleZeroKm } = require('../../utils/zero_km');
 
 let localityCatalogCache = null;
 const parser = new XMLParser({ ignoreAttributes: false, trimValues: true, removeNSPrefix: true });
@@ -286,7 +287,7 @@ function buildSancorEnvelope({ fila = {}, cabecera = {}, cfg = {}, mapeos = {}, 
             <d:HasGNC>${cabecera?.gnc === '1' ? '1' : '0'}</d:HasGNC>
           </d:GNCInformation>
           <d:HasAuxiliaryTires>true</d:HasAuxiliaryTires>
-          <d:IsOkm>${cabecera?.cerokm === '1' ? 'true' : 'false'}</d:IsOkm>
+          <d:IsOkm>${isVehicleZeroKm(fila) ? 'true' : 'false'}</d:IsOkm>
         </a:Vehicle>
         ${buildScoringXml(cfg)}
       </Price>

@@ -4,6 +4,7 @@ const {
   resolveExpertaVehicleCatalog,
 } = require('./commons');
 const { resolveCompanyTracking } = require('../../utils/rastreo');
+const { isVehicleZeroKm } = require('../../utils/zero_km');
 
 function pick(values) {
   for (const value of values) {
@@ -140,7 +141,7 @@ async function buildExpertaPayload({
     iva: ivaResolved.iva,
     codigoPostal,
     anio: String(anio),
-    ceroKM: cabecera?.cerokm === '1' ? 'S' : 'N',
+    ceroKM: isVehicleZeroKm(fila) ? 'S' : 'N',
     codInfoAuto: String(codInfoAuto),
     gnc: hasGnc ? '501' : String(cfg?.parametros_extras?.gnc_default || 'N'),
     marca: pick([vehicleCatalog.marca, fila?.marca, cfg?.parametros_extras?.marca_default || 'unespecified']),

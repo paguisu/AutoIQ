@@ -3,6 +3,7 @@ const {
   parseAllianzQuoteResponse,
   resolveAllianzPayment,
   resolveAllianzPostalCode,
+  buildAdditionalXml,
 } = require('../services/allianz/quote');
 
 describe('Allianz quote adapter', () => {
@@ -24,6 +25,7 @@ describe('Allianz quote adapter', () => {
         infoautocod: '18461',
         anio: '2012',
         CP: '1005',
+        cerokm: '1',
       },
       cabecera: {
         medio_pago: 'Tarjeta de crédito',
@@ -32,7 +34,6 @@ describe('Allianz quote adapter', () => {
         nrodoc: '11444777',
         tipodoc: 'DNI',
         rastreo: '1',
-        cerokm: '1',
         iva: 'CF',
         uso: 'Particular',
       },
@@ -81,10 +82,66 @@ describe('Allianz quote adapter', () => {
     expect(envelope).toContain('<ebm:Application>AutoIQ</ebm:Application>');
     expect(envelope).toContain('<cot:codigoDeProductor>M22054</cot:codigoDeProductor>');
     expect(envelope).toContain('<cot:codigoMarcaModelo>18461</cot:codigoMarcaModelo>');
+    expect(envelope).toContain('<cot:es0Km>true</cot:es0Km>');
     expect(envelope).toContain('<con:tipoDePoliza>M</con:tipoDePoliza>');
     expect(envelope).toContain('<con:medioDePago>T</con:medioDePago>');
     expect(envelope).toContain('<cot:codigoPostal>1005</cot:codigoPostal>');
     expect(envelope).toContain('<cot:codigoEsquema>001</cot:codigoEsquema>');
+  });
+
+  test('permite armar variantes con y sin adicional de granizo', async () => {
+    const base = {
+      fila: {
+        infoautocod: '18461',
+        anio: '2012',
+        CP: '1005',
+      },
+      cabecera: {
+        medio_pago: 'Tarjeta de crédito',
+        fec_nac: '19850705',
+        sexo: 'M',
+      },
+      cfg: {
+        usuario: 'demo-user',
+        password: 'demo-pass',
+        application: 'AutoIQ',
+        sender_username: 'sender@example.com',
+        producer_code: 'M22054',
+        parametros_extras: {
+          tipo_poliza_default: 'M',
+          medio_pago_default: 'T',
+          cantidad_cuotas_default: '1',
+          codigo_condicion_iva_default: '1',
+          codigo_condicion_iibb_default: '1',
+          tipo_documento_default: 'D',
+          codigo_provincia_default: '0',
+          valor_vehiculo_default: '0',
+        },
+      },
+      today: new Date('2026-03-17T12:00:00Z'),
+    };
+
+    const withoutGranizo = await buildAllianzEnvelope({
+      ...base,
+      additional: { sendEmptyList: true },
+    });
+    const withGranizo = await buildAllianzEnvelope({
+      ...base,
+      additional: { codigoDeAdicional: '001', descripcion: 'Granizo' },
+    });
+
+    expect(withoutGranizo.envelope).toContain('<cot:ListaAdicionales/>');
+    expect(withoutGranizo.requestMeta).toMatchObject({
+      listaAdicionales: 'vacia',
+      adicionalCodigo: '',
+    });
+    expect(withGranizo.envelope).toContain('<cot:codigoDeAdicional>001</cot:codigoDeAdicional>');
+    expect(withGranizo.requestMeta).toMatchObject({
+      listaAdicionales: 'con_adicional',
+      adicionalCodigo: '001',
+      adicionalDescripcion: 'Granizo',
+    });
+    expect(buildAdditionalXml({ codigoDeAdicional: '001' })).toContain('<cot:codigoDeAdicional>001</cot:codigoDeAdicional>');
   });
 
   test('usa esquema 002 para recargos en Allianz', async () => {

@@ -20,12 +20,11 @@ describe('Experta quote adapter', () => {
 
   test('arma payload de Experta con credenciales y defaults', async () => {
     const { payload, requestMeta } = await buildExpertaPayload({
-      fila: { infoautocod: '460652', anio: '2011', CP: '1426' },
+      fila: { infoautocod: '460652', anio: '2011', CP: '1426', cerokm: '0' },
       cabecera: {
         medio_pago: 'Tarjeta de crédito',
         uso: 'Particular',
         iva: 'CF',
-        cerokm: '0',
         rastreo: '0',
       },
       cfg: {
@@ -65,6 +64,7 @@ describe('Experta quote adapter', () => {
       modelo: 'unespecified',
       version: 'unespecified',
       conRecuperador: 'N',
+      ceroKM: 'N',
     });
   });
 

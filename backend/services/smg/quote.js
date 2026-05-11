@@ -1,5 +1,6 @@
 const { XMLParser } = require('fast-xml-parser');
 const { resolveCompanyTracking } = require('../../utils/rastreo');
+const { isVehicleZeroKm } = require('../../utils/zero_km');
 
 const parser = new XMLParser({ ignoreAttributes: false, trimValues: true, removeNSPrefix: true });
 
@@ -278,7 +279,7 @@ function buildSmgEnvelope({ fila = {}, cabecera = {}, cfg = {}, mapeos = {}, sum
     nCodUsoVeh: normalizeInteger(resolveSmgUseCode({ fila, cabecera, mapeos, cfg }), '1'),
     nCodPostal: normalizeInteger(codigoPostal, '0'),
     nCodProvincia: normalizeInteger(resolveSmgProvinceCode(fila, cabecera, cfg), '2'),
-    n0km: boolFlag(cabecera?.cerokm) ? '-1' : '0',
+    n0km: isVehicleZeroKm(fila) ? '-1' : '0',
     nMontoGNC: cabecera?.gnc === '1' ? normalizeInteger(pick([cabecera?.suma_gnc, fila?.suma_gnc]), '0') : '0',
     nMontoAireAcond: normalizeInteger(pick([cabecera?.suma_aire_acond, fila?.suma_aire_acond]), '0'),
     nMontoLlantas: normalizeInteger(pick([cabecera?.suma_llantas, fila?.suma_llantas]), '0'),

@@ -3,6 +3,7 @@ const path = require('path');
 const { XMLParser } = require('fast-xml-parser');
 const { resolveSumaAsegurada } = require('../../utils/atm_infoauto');
 const { resolveCompanyTracking } = require('../../utils/rastreo');
+const { isVehicleZeroKm } = require('../../utils/zero_km');
 
 const MAPFRE_CP_PATH = path.join(__dirname, '..', '..', '..', 'data', 'mapfre', 'diccionarios', 'codigos_postales.json');
 let postalCatalogCache = null;
@@ -364,7 +365,7 @@ async function buildMapfreEnvelope({ fila = {}, cabecera = {}, hoyFmt, cfg = {},
       <usoVehiculo>${escapeXml(usoVehiculo)}</usoVehiculo>
       <codInfoauto>${escapeXml(codInfoauto)}</codInfoauto>
       <anio>${escapeXml(anio)}</anio>
-      <ceroKm>${cabecera?.cerokm === '1' ? '1' : '0'}</ceroKm>
+      <ceroKm>${isVehicleZeroKm(fila) ? '1' : '0'}</ceroKm>
       <valorVeh>${escapeXml(valorVeh)}</valorVeh>
       <conGNC>${conGnc}</conGNC>
       <valorGNC>${escapeXml(valorGnc)}</valorGNC>

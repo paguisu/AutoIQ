@@ -13,6 +13,12 @@ const { resolveAtmVehicleKind } = require('../utils/atm_tipo_vehiculo');
 const { resolveSumaAsegurada } = require('../utils/atm_infoauto');
 const { resolveCompanyTracking } = require('../utils/rastreo');
 const {
+  applyZeroKmToVehicle,
+  normalizeZeroKmFlag,
+  pickZeroKmValue,
+  resolveVehicleZeroKm,
+} = require('../utils/zero_km');
+const {
   buildMapfreEnvelope,
   describeMapfreTipoMedioPago,
   isMapfrePostalMatchSafe,
@@ -205,6 +211,10 @@ function sanitizeCabeceraOverride(value) {
     const next = String(value[key]).trim();
     if (!next) continue;
     sanitized[key] = next;
+  }
+  const zeroKmOverride = pickZeroKmValue(value);
+  if (zeroKmOverride !== '') {
+    sanitized.cerokm = normalizeZeroKmFlag(zeroKmOverride);
   }
   return Object.keys(sanitized).length ? sanitized : null;
 }
@@ -2721,25 +2731,6 @@ async function cotizarFila({
   }
 
   if (slug === 'allianz') {
-    let envelope;
-    let requestMeta;
-    try {
-      const built = await buildAllianzEnvelope({
-        fila,
-        cabecera,
-        cfg: Aseg,
-        mapeos,
-        usoDicc,
-        today: new Date(),
-      });
-      envelope = built.envelope;
-      requestMeta = built.requestMeta;
-    } catch (e) {
-      const out = { ok: false, error: e.message || String(e), operacion: '0', coberturas: [], raw: '' };
-      if (evDir) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
-      return out;
-    }
-
     if (!String(Aseg.usuario || '').trim() || !String(Aseg.password || '').trim()) {
       const out = { ok: false, error: 'Allianz requiere usuario y password WS configurados', operacion: '0', coberturas: [], raw: '' };
       if (evDir) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
@@ -2751,73 +2742,181 @@ async function cotizarFila({
       return out;
     }
 
-    if (evDir) {
-      safeWriteFile(path.join(evDir, `${evPrefix}-soap_request.xml`), envelope);
-      safeWriteJson(path.join(evDir, `${evPrefix}-config-usada.json`), {
-        soap_url: SOAP_URL,
-        soap_method: SOAP_METHOD,
-        soap_action: Aseg.soap_action || SOAP_METHOD,
-        request: requestMeta,
-      });
+    const variants = [
+      { key: 'sin_granizo', granizo: false, additional: { sendEmptyList: true } },
+      { key: 'con_granizo', granizo: true, additional: { codigoDeAdicional: '001', descripcion: 'Granizo' } },
+    ];
+    const branchResults = [];
+
+    const runAllianzVariant = async (variant) => {
+      let envelope;
+      let requestMeta;
+      try {
+        const built = await buildAllianzEnvelope({
+          fila,
+          cabecera,
+          cfg: Aseg,
+          mapeos,
+          usoDicc,
+          today: new Date(),
+          additional: variant.additional,
+        });
+        envelope = built.envelope;
+        requestMeta = built.requestMeta;
+      } catch (e) {
+        return {
+          ok: false,
+          error: e.message || String(e),
+          operacion: '0',
+          coberturas: [],
+          raw: '',
+          used: { variant: variant.key, granizo: variant.granizo },
+        };
+      }
+
+      if (evDir) {
+        safeWriteFile(path.join(evDir, `${evPrefix}-${variant.key}-soap_request.xml`), envelope);
+        safeWriteJson(path.join(evDir, `${evPrefix}-${variant.key}-config-usada.json`), {
+          soap_url: SOAP_URL,
+          soap_method: SOAP_METHOD,
+          soap_action: Aseg.soap_action || SOAP_METHOD,
+          request: requestMeta,
+        });
+      }
+
+      try {
+        const resp = await axios.post(SOAP_URL, envelope, {
+          headers: {
+            'Content-Type': 'text/xml; charset=UTF-8',
+            SOAPAction: `"${Aseg.soap_action || SOAP_METHOD}"`,
+          },
+          timeout: 25000,
+          validateStatus: () => true,
+        });
+
+        const rawResp = resp.data;
+        if (evDir) {
+          safeWriteFile(path.join(evDir, `${evPrefix}-${variant.key}-raw_response.xml`), String(rawResp || ''));
+          safeWriteJson(path.join(evDir, `${evPrefix}-${variant.key}-http.json`), { status: resp.status, ok: resp.status >= 200 && resp.status < 300 });
+        }
+
+        if (!(resp.status >= 200 && resp.status < 300)) {
+          return {
+            ok: false,
+            error: `HTTP ${resp.status}`,
+            coberturas: [],
+            raw: rawResp,
+            used: { variant: variant.key, granizo: variant.granizo, ...requestMeta },
+          };
+        }
+
+        const parsed = parseAllianzQuoteResponse(rawResp);
+        parsed.coberturas = Array.isArray(parsed.coberturas)
+          ? parsed.coberturas.map((cobertura) => ({
+              ...cobertura,
+              granizo: variant.granizo,
+              codigoDeAdicional: requestMeta.adicionalCodigo,
+              descripcionAdicional: requestMeta.adicionalDescripcion,
+              varianteCotizacion: variant.key,
+            }))
+          : [];
+        parsed.used = {
+          ...(parsed.used || {}),
+          variant: variant.key,
+          granizo: variant.granizo,
+          tipoDePoliza: requestMeta.tipoDePoliza,
+          medioDePago: requestMeta.medioDePago,
+          cantidadDeCuotas: requestMeta.cantidadDeCuotas,
+          codigoPostal: requestMeta.codigoPostal,
+          codigoProvincia: requestMeta.codigoProvincia,
+          codigoDeProductor: requestMeta.codigoDeProductor,
+          clausulaDeAjuste: requestMeta.clausulaDeAjuste,
+          adicionalCodigo: requestMeta.adicionalCodigo,
+          adicionalDescripcion: requestMeta.adicionalDescripcion,
+          listaAdicionales: requestMeta.listaAdicionales,
+        };
+
+        if (evDir) {
+          safeWriteJson(path.join(evDir, `${evPrefix}-${variant.key}-parsed.json`), {
+            ok: parsed.ok,
+            operacion: parsed.operacion || '',
+            coberturas_len: Array.isArray(parsed.coberturas) ? parsed.coberturas.length : 0,
+          });
+          if (Array.isArray(parsed.coberturas) && parsed.coberturas.length) {
+            safeWriteJson(path.join(evDir, `${evPrefix}-${variant.key}-coberturas.json`), parsed.coberturas);
+          }
+          if (!parsed.ok) safeWriteJson(path.join(evDir, `${evPrefix}-${variant.key}-error.json`), parsed);
+        }
+        return parsed;
+      } catch (e) {
+        const out = { ok: false, error: e.message || 'axios error', coberturas: [], raw: '' };
+        if (evDir) {
+          safeWriteJson(path.join(evDir, `${evPrefix}-${variant.key}-exception.json`), {
+            message: e?.message || String(e),
+            stack: e?.stack || null,
+          });
+          safeWriteJson(path.join(evDir, `${evPrefix}-${variant.key}-error.json`), out);
+        }
+        return {
+          ...out,
+          used: { variant: variant.key, granizo: variant.granizo, ...(requestMeta || {}) },
+        };
+      }
+    };
+
+    for (const variant of variants) {
+      branchResults.push({ variant, result: await runAllianzVariant(variant) });
     }
 
-    try {
-      const resp = await axios.post(SOAP_URL, envelope, {
-        headers: {
-          'Content-Type': 'text/xml; charset=UTF-8',
-          SOAPAction: `"${Aseg.soap_action || SOAP_METHOD}"`,
-        },
-        timeout: 25000,
-        validateStatus: () => true,
-      });
-
-      const rawResp = resp.data;
-      if (evDir) {
-        safeWriteFile(path.join(evDir, `${evPrefix}-raw_response.xml`), String(rawResp || ''));
-        safeWriteJson(path.join(evDir, `${evPrefix}-http.json`), { status: resp.status, ok: resp.status >= 200 && resp.status < 300 });
-      }
-
-      if (!(resp.status >= 200 && resp.status < 300)) {
-        const out = { ok: false, error: `HTTP ${resp.status}`, coberturas: [], raw: rawResp };
-        if (evDir) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
-        return out;
-      }
-
-      const parsed = parseAllianzQuoteResponse(rawResp);
-      parsed.used = {
-        ...(parsed.used || {}),
-        tipoDePoliza: requestMeta.tipoDePoliza,
-        medioDePago: requestMeta.medioDePago,
-        cantidadDeCuotas: requestMeta.cantidadDeCuotas,
-        codigoPostal: requestMeta.codigoPostal,
-        codigoProvincia: requestMeta.codigoProvincia,
-        codigoDeProductor: requestMeta.codigoDeProductor,
-        clausulaDeAjuste: requestMeta.clausulaDeAjuste,
-      };
-
-      if (evDir) {
-        safeWriteJson(path.join(evDir, `${evPrefix}-parsed.json`), {
-          ok: parsed.ok,
-          operacion: parsed.operacion || '',
-          coberturas_len: Array.isArray(parsed.coberturas) ? parsed.coberturas.length : 0,
-        });
-        if (Array.isArray(parsed.coberturas) && parsed.coberturas.length) {
-          safeWriteJson(path.join(evDir, `${evPrefix}-coberturas.json`), parsed.coberturas);
-        }
-        if (!parsed.ok) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), parsed);
-      }
-      return parsed;
-    } catch (e) {
-      const out = { ok: false, error: e.message || 'axios error', coberturas: [], raw: '' };
-      if (evDir) {
-        safeWriteJson(path.join(evDir, `${evPrefix}-exception.json`), {
-          message: e?.message || String(e),
-          stack: e?.stack || null,
-        });
-        safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
-      }
+    const successful = branchResults.filter((item) => item.result?.ok);
+    if (!successful.length) {
+      const error = branchResults.map((item) => `${item.variant.key}: ${item.result?.error || 'sin respuesta'}`).join(' | ');
+      const out = { ok: false, error, operacion: '0', coberturas: [], raw: '' };
+      if (evDir) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
       return out;
     }
+
+    const combinedCoberturas = successful.flatMap((item) => item.result.coberturas || []);
+    const operaciones = branchResults
+      .map((item) => item.result?.operacion)
+      .filter(Boolean);
+    const parsed = {
+      ok: true,
+      operacion: operaciones.join('|'),
+      suma_asegurada: combinedCoberturas[0]?.sumaAsegurada || '',
+      coberturas: combinedCoberturas,
+      raw: '',
+      used: {
+        variants: branchResults.map((item) => ({
+          variant: item.variant.key,
+          ok: Boolean(item.result?.ok),
+          operacion: item.result?.operacion || '',
+          error: item.result?.error || '',
+          coberturas_len: Array.isArray(item.result?.coberturas) ? item.result.coberturas.length : 0,
+          granizo: item.variant.granizo,
+        })),
+      },
+    };
+
+    if (evDir) {
+      safeWriteJson(path.join(evDir, `${evPrefix}-parsed.json`), {
+        ok: parsed.ok,
+        operacion: parsed.operacion || '',
+        coberturas_len: Array.isArray(parsed.coberturas) ? parsed.coberturas.length : 0,
+        variants: parsed.used.variants,
+      });
+      safeWriteJson(path.join(evDir, `${evPrefix}-coberturas.json`), parsed.coberturas);
+      safeWriteJson(path.join(evDir, `${evPrefix}-result.json`), {
+        aseguradora: slug,
+        ok: parsed.ok,
+        pending: false,
+        operacion: parsed.operacion || '',
+        coberturas_len: parsed.coberturas.length,
+        error: null,
+        used: parsed.used,
+      });
+    }
+    return parsed;
   }
 
   if (slug === 'experta') {
@@ -3500,7 +3599,7 @@ async function cotizarFila({
     }
   }
 
-  const cerokm = cabecera?.cerokm === '1' ? '1' : '0';
+  const cerokm = resolveVehicleZeroKm(fila) === '1' ? 'S' : 'N';
   const tipo_uso = ['1', '2'].includes(String(cabecera?.tipo_uso || ''))
     ? String(cabecera.tipo_uso)
     : '1';
@@ -3816,6 +3915,8 @@ async function ejecutarProceso({
   }
 
   const filas = await readFilasFromFile(absPath);
+  const procesoOrigen = classifyProcessOrigin({ ...(meta || {}), archivo: relPath });
+  const zeroKmProceso = pickZeroKmValue(meta?.cabecera_override || {});
   if (!Array.isArray(filas) || filas.length === 0) {
     const resumenVacio = {
       id: proceso_id,
@@ -3964,7 +4065,10 @@ async function ejecutarProceso({
     for (const i of indexes) {
       const fila = filas[i] || {};
       const { fila_preparada, mapeos } = await procesarFila(fila);
-      const fila_final = { ...fila, ...fila_preparada };
+      let fila_final = { ...fila, ...fila_preparada };
+      fila_final = procesoOrigen === 'seguros911'
+        ? applyZeroKmToVehicle(fila_final, zeroKmProceso)
+        : applyZeroKmToVehicle(fila_final, resolveVehicleZeroKm(fila_final));
       if ((fila_final.CP === '' || fila_final.CP == null) && (fila.CP != null && String(fila.CP).trim() !== '')) {
         fila_final.CP = fila.CP;
       }
@@ -4394,7 +4498,7 @@ router.post('/ejecutar/:id', express.json(), async (req, res) => {
     const outcome = await ejecutarProceso({
       ctx,
       proceso_id,
-      meta,
+      meta: { ...meta, cabecera_override: cabeceraOverride },
       historial_id,
       cabecera_id,
       cabecera: cabeceraEfectiva,

@@ -17,10 +17,10 @@ describe('SMG quote adapter', () => {
         CP: '1650',
         provincia: 'Buenos Aires',
         suma: '25190000',
+        cerokm: '1',
       },
       cabecera: {
         uso: 'Particular',
-        cerokm: '1',
         gnc: '0',
       },
       cfg: {

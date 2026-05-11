@@ -1,5 +1,6 @@
 const { victoriaGet } = require('./client');
 const { resolveCompanyTracking } = require('../../utils/rastreo');
+const { isVehicleZeroKm } = require('../../utils/zero_km');
 
 const companyCache = new Map();
 
@@ -675,7 +676,7 @@ async function buildVictoriaPayload({
     propietarioVehiculo,
     poseeSiniestros: false,
     adicionalKm: false,
-    ceroKm: String(cabecera?.cerokm || fila?.cerokm || '0').trim() === '1',
+    ceroKm: isVehicleZeroKm(fila),
     gnc: String(cabecera?.gnc || fila?.gnc || '0').trim() === '1',
     ...resolveVictoriaTracking({ cabecera, cfg }),
     sumaAsegurada: Number(suma?.sumaAsegurada || 0),
