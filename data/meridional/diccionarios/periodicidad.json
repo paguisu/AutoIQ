@@ -1,0 +1,14 @@
+[
+  {
+    "idPeriodo": 1,
+    "descripcion": "SEMESTRAL"
+  },
+  {
+    "idPeriodo": 2,
+    "descripcion": "ANUAL"
+  },
+  {
+    "idPeriodo": 3,
+    "descripcion": "MENSUAL"
+  }
+]

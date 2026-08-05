@@ -1,0 +1,406 @@
+{
+  "global": [
+    {
+      "containsAny": [
+        "B - DANOS TOTALES UNICAMENTE"
+      ],
+      "group": {
+        "code": "B",
+        "description": "Danos Totales"
+      }
+    },
+    {
+      "containsAny": [
+        "B1 - PERDIDA TOTAL POR INCENDIO Y ROBO"
+      ],
+      "group": {
+        "code": "B1",
+        "description": "Danos Totales por Robo e Incendio (sin AT)"
+      }
+    },
+    {
+      "containsAny": [
+        "C1 - PERDIDA TOTAL Y PARC. POR INC. Y ROBO"
+      ],
+      "group": {
+        "code": "C1",
+        "description": "Danos totales y parciales por Robo e Incendio (sin AT)"
+      }
+    },
+    {
+      "containsAny": [
+        "ROBO E INCENDIO TOTAL Y/O PARCIAL + ACCIDENTE TOTAL"
+      ],
+      "group": {
+        "code": "C",
+        "description": "Terceros Completos"
+      }
+    },
+    {
+      "containsAny": [
+        "TERCEROS COMPLETOS BLACK"
+      ],
+      "group": {
+        "code": "C Premium",
+        "description": "Terceros Completos Premium"
+      }
+    },
+    {
+      "containsAny": [
+        "T. COMPLETO L C/RASTREADOR",
+        "T COMPLETO L C/RASTREADOR"
+      ],
+      "group": {
+        "code": "C",
+        "description": "Terceros Completos"
+      }
+    },
+    {
+      "containsAny": [
+        "T. COMPLETO L",
+        "T COMPLETO L"
+      ],
+      "group": {
+        "code": "C",
+        "description": "Terceros Completos"
+      }
+    },
+    {
+      "containsAny": [
+        "T. COMPLETO XL + GRANIZO FULL(EXTRA LARGE)",
+        "TERCEROS COMPLETO XL + GRANIZO FULL(EXTRA LARGE)"
+      ],
+      "group": {
+        "code": "C Premium",
+        "description": "Terceros Completos Premium"
+      }
+    },
+    {
+      "containsAny": [
+        "T. COMPLETO XL + GRANIZO",
+        "TERCEROS COMPLETO XL + GRANIZO"
+      ],
+      "group": {
+        "code": "C++",
+        "description": "Terceros Completos con cristales y granizo"
+      }
+    },
+    {
+      "containsAny": [
+        "T. COMPLETO XL C/RASTREADOR",
+        "T COMPLETO XL C/RASTREADOR"
+      ],
+      "group": {
+        "code": "C",
+        "description": "Terceros Completos"
+      }
+    },
+    {
+      "containsAny": [
+        "T. COMPLETO XL",
+        "T COMPLETO XL"
+      ],
+      "group": {
+        "code": "C",
+        "description": "Terceros Completos"
+      }
+    },
+    {
+      "containsAny": [
+        "XL FRANQUICIA FIJA"
+      ],
+      "group": {
+        "code": "DF",
+        "description": "Todo Riesgo con franquicia fija"
+      }
+    }
+  ],
+  "aseguradoras": {
+    "mapfre": [
+      {
+        "productoCodigos": [
+          "3101"
+        ],
+        "group": {
+          "code": "A",
+          "description": "Responsabilidad Civil"
+        }
+      },
+      {
+        "productoCodigos": [
+          "1402"
+        ],
+        "group": {
+          "code": "C",
+          "description": "Terceros Completos"
+        }
+      },
+      {
+        "productoCodigos": [
+          "1408"
+        ],
+        "group": {
+          "code": "C++",
+          "description": "Terceros Completos con cristales y granizo"
+        }
+      },
+      {
+        "productoCodigos": [
+          "1409"
+        ],
+        "group": {
+          "code": "C+",
+          "description": "Terceros Completos con granizo"
+        }
+      },
+      {
+        "productoCodigos": [
+          "1410"
+        ],
+        "group": {
+          "code": "C",
+          "description": "Terceros Completos"
+        }
+      },
+      {
+        "productoCodigos": [
+          "1209"
+        ],
+        "group": {
+          "code": "C Premium",
+          "description": "Terceros Completos Premium"
+        }
+      },
+      {
+        "productoCodigos": [
+          "4409"
+        ],
+        "containsAny": [
+          "FRANQUICIA VARIABLE",
+          "TODO AUTO"
+        ],
+        "group": {
+          "code": "DV",
+          "description": "Todo Riesgo con franquicia variable"
+        }
+      }
+    ],
+    "allianz": [
+      {
+        "containsAny": [
+          "D4 - RC. T.R. CON FCIA"
+        ],
+        "group": {
+          "code": "DV",
+          "description": "Todo Riesgo con franquicia variable"
+        }
+      },
+      {
+        "containsAny": [
+          "C - DEST.TOTAL INC. Y ROBO PARC. Y TOTAL"
+        ],
+        "group": {
+          "code": "C",
+          "description": "Terceros Completos"
+        }
+      },
+      {
+        "containsAny": [
+          "C2 - DEST.TOTAL INC. Y ROBO PARC. Y TOTAL"
+        ],
+        "group": {
+          "code": "C",
+          "description": "Terceros Completos"
+        }
+      },
+      {
+        "containsAny": [
+          "C4 - DEST.TOTAL INC. Y ROBO PARC. Y TOTAL"
+        ],
+        "group": {
+          "code": "C Premium",
+          "description": "Terceros Completos Premium"
+        }
+      }
+    ],
+    "experta": [
+      {
+        "containsAny": [
+          "XL FRANQUICIA FIJA"
+        ],
+        "group": {
+          "code": "DF",
+          "description": "Todo Riesgo con franquicia fija"
+        }
+      },
+      {
+        "containsAny": [
+          "T. COMPLETO XL + GRANIZO FULL(EXTRA LARGE)",
+          "TERCEROS COMPLETO XL + GRANIZO FULL(EXTRA LARGE)"
+        ],
+        "group": {
+          "code": "C Premium",
+          "description": "Terceros Completos Premium"
+        }
+      },
+      {
+        "containsAny": [
+          "T. COMPLETO XL + GRANIZO",
+          "TERCEROS COMPLETO XL + GRANIZO"
+        ],
+        "group": {
+          "code": "C++",
+          "description": "Terceros Completos con cristales y granizo"
+        }
+      },
+      {
+        "containsAny": [
+          "T. COMPLETO XL",
+          "TERCEROS COMPLETO XL"
+        ],
+        "group": {
+          "code": "C",
+          "description": "Terceros Completos"
+        }
+      },
+      {
+        "containsAny": [
+          "T. COMPLETO L",
+          "TERCEROS COMPLETO L"
+        ],
+        "group": {
+          "code": "C",
+          "description": "Terceros Completos"
+        }
+      }
+    ],
+    "atm": [
+      {
+        "containsAny": [
+          "TERCEROS COMPLETOS PLUS"
+        ],
+        "group": {
+          "code": "C",
+          "description": "Terceros Completos"
+        }
+      },
+      {
+        "containsAny": [
+          "TERCEROS COMPLETOS PREMIUM"
+        ],
+        "group": {
+          "code": "C++",
+          "description": "Terceros Completos con cristales y granizo"
+        }
+      },
+      {
+        "containsAny": [
+          "TERCEROS COMPLETOS BLACK"
+        ],
+        "group": {
+          "code": "C Premium",
+          "description": "Terceros Completos Premium"
+        }
+      },
+      {
+        "productoCodigos": [
+          "X"
+        ],
+        "group": {
+          "code": "A",
+          "description": "Responsabilidad Civil"
+        }
+      }
+    ],
+    "rivadavia": [
+      {
+        "productoCodigos": [
+          "C"
+        ],
+        "group": {
+          "code": "C",
+          "description": "Terceros Completos"
+        }
+      },
+      {
+        "productoCodigos": [
+          "D"
+        ],
+        "containsAny": [
+          "S/FRANQUIC"
+        ],
+        "group": {
+          "code": "DF",
+          "description": "Todo Riesgo con franquicia fija"
+        }
+      },
+      {
+        "productoCodigos": [
+          "M"
+        ],
+        "group": {
+          "code": "C++",
+          "description": "Terceros Completos con cristales y granizo"
+        }
+      },
+      {
+        "productoCodigos": [
+          "MX"
+        ],
+        "group": {
+          "code": "C Premium",
+          "description": "Terceros Completos Premium"
+        }
+      },
+      {
+        "productoCodigos": [
+          "P"
+        ],
+        "group": {
+          "code": "C+",
+          "description": "Terceros Completos con granizo"
+        }
+      }
+    ],
+    "sancor": [
+      {
+        "containsAny": [
+          "AUTO MAX 6"
+        ],
+        "group": {
+          "code": "C",
+          "description": "Terceros Completos"
+        }
+      },
+      {
+        "containsAny": [
+          "AUTO PREMIUM MAX"
+        ],
+        "group": {
+          "code": "C Premium",
+          "description": "Terceros Completos Premium"
+        }
+      }
+    ],
+    "victoria": [
+      {
+        "containsAny": [
+          "R.C. / Incendio t / Robo t"
+        ],
+        "group": {
+          "code": "B1",
+          "description": "Danos Totales por Robo e Incendio (sin AT)"
+        }
+      },
+      {
+        "containsAny": [
+          "R.C. / Incendio t / Robo t / Daños t"
+        ],
+        "group": {
+          "code": "B",
+          "description": "Danos Totales"
+        }
+      }
+    ]
+  }
+}

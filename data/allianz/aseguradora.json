@@ -15,7 +15,7 @@
   "producer_code": "M22054",
   "vigencia": "mensual",
   "refacturacion": "mensual",
-  "descuento_comercial": "",
+  "descuento_comercial": "-15",
   "clausula_ajuste": "",
   "parametros_extras": {
     "formato_fecha_request": "yyyy-MM-dd",
@@ -28,8 +28,24 @@
     "codigo_provincia_default": "0",
     "codigo_zona_riesgo_default": "",
     "valor_vehiculo_default": "0",
+    "attributes_soap_path": "/Vehiculo/Externo/Atributos/AtrVehiculoExtReqABCS",
+    "accessories_soap_action": "http://xmlns.allianz.com.ar/Core/EBS/Vehiculo/ObtenerAccesoriosVehiculo",
     "use_alarm_default": false,
     "max_concurrency": 1,
     "min_interval_ms": 1200
-  }
+  },
+  "auth_url": "",
+  "auth_method": "",
+  "quote_user": "",
+  "codAgt": "",
+  "claveAcceso": "",
+  "claveProcedencia": "",
+  "supervisor_code": "",
+  "origen": "",
+  "plan": "",
+  "ajuste_rc": "",
+  "ajuste_casco": "",
+  "tipoFacturacion": "Mensual",
+  "updated_at": "2026-04-22T16:56:34.592Z",
+  "slug": "allianz"
 }

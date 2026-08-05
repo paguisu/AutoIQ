@@ -1,7 +1,14 @@
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const { normalizeRecords, buildDiff, syncTable, getTableStatus } = require('../services/catalogos');
+const {
+  normalizeRecords,
+  buildAllianzAccessoriesEnvelope,
+  buildDiff,
+  parseAllianzAccessoriesResponse,
+  syncTable,
+  getTableStatus,
+} = require('../services/catalogos');
 
 describe('catalogos service', () => {
   test('normalizeRecords convierte objeto diccionario a filas con codigo', () => {
@@ -142,6 +149,72 @@ describe('catalogos service', () => {
       descripcion: 'ACURA',
       seccion: '3',
     });
+  });
+
+  test('parsea catálogo remoto de accesorios Allianz', () => {
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+  <soapenv:Body>
+    <atr:ObtenerAccesoriosVehiculoResponseEBM xmlns:atr="http://xmlns.allianz.com.ar/Core/EBM/Vehiculo/AtrVehiculo">
+      <ebm:ReturnCode xmlns:ebm="http://xmlns.allianz.com.ar/CommonCore/EBM">0</ebm:ReturnCode>
+      <atr:DataArea>
+        <atr:ObtenerAccesoriosVehiculoResponse>
+          <atr:cantidadPaginas>2</atr:cantidadPaginas>
+          <atr:cantidadRegistros>30</atr:cantidadRegistros>
+          <atr:ListaAccesorioVehiculo>
+            <acc:AccesorioVehiculo xmlns:acc="http://xmlns.allianz.com.ar/Core/EBO/Allianz/AccesorioVehiculo">
+              <acc:codigoAccesorio>20</acc:codigoAccesorio>
+              <acc:descripcionAccesorio>GNC</acc:descripcionAccesorio>
+            </acc:AccesorioVehiculo>
+          </atr:ListaAccesorioVehiculo>
+        </atr:ObtenerAccesoriosVehiculoResponse>
+      </atr:DataArea>
+    </atr:ObtenerAccesoriosVehiculoResponseEBM>
+  </soapenv:Body>
+</soapenv:Envelope>`;
+
+    expect(buildAllianzAccessoriesEnvelope({
+      usuario: 'u',
+      password: 'p',
+      application: 'AutoIQ',
+      sender_username: 'sender',
+    }, { page: 2, pageSize: 50 })).toContain('<atr:numeroPagina>2</atr:numeroPagina>');
+
+    expect(parseAllianzAccessoriesResponse(xml)).toEqual({
+      cantidadPaginas: 2,
+      cantidadRegistros: 30,
+      rows: [{ codigo: '20', descripcion: 'GNC' }],
+    });
+  });
+
+  test('syncTable remoto de accesorios Allianz persiste accesorios.json', async () => {
+    const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'autoiq-catalogos-'));
+    const dataRoot = path.join(tmpRoot, 'data');
+    const catalogRoot = path.join(dataRoot, 'catalogos');
+    fs.mkdirSync(path.join(dataRoot, 'allianz'), { recursive: true });
+
+    const out = await syncTable({
+      dataRoot,
+      catalogRoot,
+      slug: 'allianz',
+      table: 'accesorios',
+      source: 'remote',
+      providerFetch: async () => ({
+        sourceRaw: [
+          { codigo: '20', descripcion: 'GNC' },
+          { codigo: '21', descripcion: 'EQUIPO DE FRIO' },
+        ],
+        sourcePath: 'https://wbs.allianzonline.com.ar/accesorios',
+        sourceType: 'remote-soap',
+      }),
+    });
+
+    const persisted = JSON.parse(fs.readFileSync(path.join(dataRoot, 'allianz', 'diccionarios', 'accesorios.json'), 'utf8'));
+    expect(out.profile.totalRows).toBe(2);
+    expect(persisted).toEqual([
+      { codigo: '20', descripcion: 'GNC' },
+      { codigo: '21', descripcion: 'EQUIPO DE FRIO' },
+    ]);
   });
 
   test('getTableStatus informa si la tabla pertenece al mes en curso', async () => {

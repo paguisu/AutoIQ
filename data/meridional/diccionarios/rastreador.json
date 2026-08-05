@@ -1,0 +1,38 @@
+[
+  {
+    "idRastreador": 1,
+    "descripcion": "No Posee/No Informa"
+  },
+  {
+    "idRastreador": 16,
+    "descripcion": "Ubicar - A cargo del Cliente"
+  },
+  {
+    "idRastreador": 17,
+    "descripcion": "Ubicar - A cargo de la Compañía"
+  },
+  {
+    "idRastreador": 23,
+    "descripcion": "Pointer - A cargo del Cliente"
+  },
+  {
+    "idRastreador": 24,
+    "descripcion": "Pointer - A cargo de la Compañía"
+  },
+  {
+    "idRastreador": 25,
+    "descripcion": "Lo-Jack - A cargo del Cliente"
+  },
+  {
+    "idRastreador": 26,
+    "descripcion": "Lo-Jack - A cargo de la Compañía"
+  },
+  {
+    "idRastreador": 32,
+    "descripcion": "Ituran - A cargo del Cliente"
+  },
+  {
+    "idRastreador": 33,
+    "descripcion": "Ituran - A cargo de la Compañía"
+  }
+]

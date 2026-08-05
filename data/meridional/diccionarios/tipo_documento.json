@@ -1,0 +1,30 @@
+[
+  {
+    "codTipoDoc": 0,
+    "descripcion": "CI"
+  },
+  {
+    "codTipoDoc": 80,
+    "descripcion": "CUIT"
+  },
+  {
+    "codTipoDoc": 89,
+    "descripcion": "LE"
+  },
+  {
+    "codTipoDoc": 90,
+    "descripcion": "LC"
+  },
+  {
+    "codTipoDoc": 94,
+    "descripcion": "PAS"
+  },
+  {
+    "codTipoDoc": 96,
+    "descripcion": "DNI"
+  },
+  {
+    "codTipoDoc": 99,
+    "descripcion": "CUIL"
+  }
+]

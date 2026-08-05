@@ -1,0 +1,27 @@
+[
+  {
+    "idClausulaAjuste": 1,
+    "descripcion": 0,
+    "valor": 0
+  },
+  {
+    "idClausulaAjuste": 2,
+    "descripcion": 0.2,
+    "valor": 20
+  },
+  {
+    "idClausulaAjuste": 3,
+    "descripcion": 0.3,
+    "valor": 30
+  },
+  {
+    "idClausulaAjuste": 4,
+    "descripcion": 0.4,
+    "valor": 40
+  },
+  {
+    "idClausulaAjuste": 5,
+    "descripcion": 0.5,
+    "valor": 50
+  }
+]

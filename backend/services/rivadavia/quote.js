@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const { rivadaviaGet } = require('./client');
 const {
   getRivadaviaTipoVehiculoInferido,
@@ -42,6 +44,165 @@ function formatIsoDate(value) {
   const dt = value instanceof Date ? value : new Date(value);
   if (Number.isNaN(dt.getTime())) return '';
   return dt.toISOString().slice(0, 10);
+}
+
+function formatSoapDate(value) {
+  return formatIsoDate(value).replace(/-/g, '');
+}
+
+function xmlEscape(value) {
+  return String(value == null ? '' : value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&apos;');
+}
+
+function normalizeDecimalText(value, fallback = '0.9') {
+  const raw = pick([value, fallback]).replace(',', '.');
+  const numeric = Number(raw);
+  if (!Number.isFinite(numeric)) return fallback;
+  return String(raw).trim();
+}
+
+function onlyDigits(value) {
+  return String(value ?? '').replace(/[^\d]/g, '');
+}
+
+let postalCatalogCache = null;
+
+function getPostalCatalog() {
+  if (postalCatalogCache) return postalCatalogCache;
+  try {
+    const file = path.resolve(__dirname, '../../../data/experta/diccionarios/localidades.json');
+    postalCatalogCache = JSON.parse(fs.readFileSync(file, 'utf8'));
+  } catch (_err) {
+    postalCatalogCache = {};
+  }
+  return postalCatalogCache;
+}
+
+function mapPostalCatalogProvinciaToRivadaviaSoap(provinciaId) {
+  const map = {
+    '1': '2', // Capital Federal en Experta -> CodigoProvincia Rivadavia SOAP.
+    '2': '1', // Buenos Aires en Experta -> CodigoProvincia Rivadavia SOAP.
+  };
+  return map[String(provinciaId || '').trim()] || '';
+}
+
+function resolveRivadaviaSoapProvincia(row = {}, cabecera = {}, cfg = {}) {
+  const codigoPostal = onlyDigits(pick([
+    row?.cp,
+    row?.CP,
+    row?.codigo_postal,
+    row?.codigoPostal,
+    cabecera?.cp,
+    cabecera?.codigo_postal,
+    cabecera?.codigoPostal,
+  ]));
+  const localidad = normalizeText(pick([
+    row?.localidad,
+    row?.Localidad,
+    row?.desc_localidad,
+    cabecera?.localidad,
+  ]));
+  const rawProvincia = normalizeText(pick([
+    row?.provincia,
+    row?.Provincia,
+    row?.desc_provincia,
+    row?.nom_prov,
+    cabecera?.provincia,
+  ]));
+  const map = {
+    'BUENOS AIRES': '1',
+    CABA: '2',
+    'CAPITAL FEDERAL': '2',
+    CATAMARCA: '3',
+    CORDOBA: '4',
+    CORRIENTES: '5',
+    CHACO: '6',
+    CHUBUT: '7',
+    'ENTRE RIOS': '8',
+    FORMOSA: '9',
+    JUJUY: '10',
+    'LA PAMPA': '11',
+    'LA RIOJA': '12',
+    MENDOZA: '13',
+    MISIONES: '14',
+    NEUQUEN: '15',
+    'RIO NEGRO': '16',
+    SALTA: '17',
+    'SAN JUAN': '18',
+    'SAN LUIS': '19',
+    'SANTA CRUZ': '20',
+    'SANTA FE': '21',
+    'SANTIAGO DEL ESTERO': '22',
+    'TIERRA DEL FUEGO': '23',
+    TUCUMAN: '24',
+  };
+  const rowCode = map[rawProvincia] || '';
+  const rows = codigoPostal ? (getPostalCatalog()[codigoPostal] || []) : [];
+  let catalogProvinceId = '';
+  let catalogSource = '';
+
+  if (rows.length) {
+    const matched = localidad
+      ? rows.find((item) => {
+        const itemLocalidad = normalizeText(item?.localidad);
+        return itemLocalidad === localidad || itemLocalidad.includes(localidad) || localidad.includes(itemLocalidad);
+      })
+      : null;
+    if (matched?.provinciaId) {
+      catalogProvinceId = String(matched.provinciaId);
+      catalogSource = 'postal_localidad';
+    } else {
+      const provinceIds = [...new Set(rows.map((item) => String(item?.provinciaId || '').trim()).filter(Boolean))];
+      if (provinceIds.length === 1) {
+        catalogProvinceId = provinceIds[0];
+        catalogSource = 'postal_unica';
+      }
+    }
+  }
+
+  const catalogCode = mapPostalCatalogProvinciaToRivadaviaSoap(catalogProvinceId);
+  if (catalogCode) {
+    return {
+      codigoProvincia: catalogCode,
+      source: catalogSource,
+      rawProvincia,
+      codigoPostal,
+      localidad,
+      catalogProvinceId,
+      rowCode,
+      conflict: Boolean(rowCode && rowCode !== catalogCode),
+    };
+  }
+
+  const fallbackCode = String(cfg?.parametros_extras?.codigo_provincia_soap_default || '1');
+  return {
+    codigoProvincia: rowCode || fallbackCode,
+    source: rowCode ? 'row' : 'fallback',
+    rawProvincia,
+    codigoPostal,
+    localidad,
+    catalogProvinceId: '',
+    rowCode,
+    conflict: false,
+  };
+}
+
+function resolveRivadaviaGncAmount({ fila = {}, cabecera = {} } = {}) {
+  return onlyDigits(pick([
+    fila?.suma_gnc,
+    fila?.sumaGnc,
+    fila?.valor_gnc,
+    fila?.valorGnc,
+    cabecera?.suma_gnc,
+    cabecera?.sumaGnc,
+    cabecera?.valor_gnc,
+    cabecera?.valorGnc,
+  ]));
 }
 
 function getCodigoInfoAuto(fila = {}) {
@@ -205,6 +366,34 @@ function mapRivadaviaProvincia(row = {}, cabecera = {}, cfg = {}) {
   return map[raw] || String(cfg?.parametros_extras?.provincia_default || 'BUENOS_AIRES');
 }
 
+function mapRivadaviaSoapProvincia(row = {}, cabecera = {}, cfg = {}) {
+  return resolveRivadaviaSoapProvincia(row, cabecera, cfg).codigoProvincia;
+}
+
+function resolveRivadaviaCoeficients({ fila = {}, cabecera = {}, cfg = {} } = {}) {
+  const rc = normalizeDecimalText(pick([
+    fila?.rivadavia_coef_rc,
+    fila?.coeficiente_rc,
+    fila?.coef_rc,
+    cabecera?.rivadavia_coef_rc,
+    cabecera?.coeficiente_rc,
+    cabecera?.coef_rc,
+    cfg?.ajuste_rc,
+    cfg?.parametros_extras?.coef_rc_default,
+  ]), '0.9');
+  const casco = normalizeDecimalText(pick([
+    fila?.rivadavia_coef_casco,
+    fila?.coeficiente_casco,
+    fila?.coef_casco,
+    cabecera?.rivadavia_coef_casco,
+    cabecera?.coeficiente_casco,
+    cabecera?.coef_casco,
+    cfg?.ajuste_casco,
+    cfg?.parametros_extras?.coef_casco_default,
+  ]), rc);
+  return { coefRC: rc, coefCasco: casco };
+}
+
 function resolveTipoVehiculoCode({ fila = {}, mapeos = {}, cfg = {}, overrideTipoVehiculo = '' }) {
   if (overrideTipoVehiculo) return String(overrideTipoVehiculo).trim();
 
@@ -345,6 +534,7 @@ async function buildRivadaviaPayload({
     overrideTipoUso,
   });
   const sumaAsegurada = await resolveSumaAsegurada({ fila, cfg });
+  const gncAmount = cabecera?.gnc === '1' ? resolveRivadaviaGncAmount({ fila, cabecera }) : '';
   const payload = {
     nroProductor: String(cfg?.producer_code || '').trim(),
     claveProductor: String(cfg?.producer_password || '').trim(),
@@ -371,7 +561,7 @@ async function buildRivadaviaPayload({
       provincia: mapRivadaviaProvincia(fila, cabecera, cfg),
       codigoPostal: String(codigoPostal),
       gnc: cabecera?.gnc === '1' ? 'POSEE_GNC' : String(cfg?.parametros_extras?.gnc_default || 'NO_POSEE_GNC'),
-      sumaAseguradaAccesorios: '0',
+      sumaAseguradaAccesorios: gncAmount || '0',
       sumaAseguradaEquipaje: '0',
       alarmaSatelital: resolveRivadaviaAlarmaSatelital(cabecera, cfg),
     },
@@ -404,6 +594,201 @@ async function buildRivadaviaPayload({
       formaPago: payload.datoAsegurado.formaPago,
       condicionIVA: payload.datoAsegurado.condicionIVA,
       alarmaSatelital: payload.datoPoliza.alarmaSatelital,
+    },
+  };
+}
+
+async function buildRivadaviaSoapPayload({
+  fila = {},
+  cabecera = {},
+  cfg = {},
+  mapeos = {},
+  today = new Date(),
+  overrideTipoVehiculo = '',
+  overrideTipoUso = '',
+  attemptSource = 'initial',
+} = {}) {
+  const built = await buildRivadaviaPayload({
+    fila,
+    cabecera,
+    cfg,
+    mapeos,
+    today,
+    overrideTipoVehiculo,
+    overrideTipoUso,
+    attemptSource,
+  });
+  const jsonPayload = built.payload;
+  const { coefRC, coefCasco } = resolveRivadaviaCoeficients({ fila, cabecera, cfg });
+  const fechaNacimiento = pick([
+    fila?.fecha_nacimiento,
+    fila?.fechaNacimiento,
+    fila?.fec_nac,
+    cabecera?.fecha_nacimiento,
+    cabecera?.fechaNacimiento,
+    '0',
+  ]);
+  const condicionIva = pick([
+    fila?.rivadavia_condicion_iva,
+    cabecera?.rivadavia_condicion_iva,
+    cfg?.parametros_extras?.condicion_iva_soap_default,
+    '1',
+  ]);
+  const provinciaSoap = resolveRivadaviaSoapProvincia(fila, cabecera, cfg);
+  const soapPayload = {
+    NroProductor: jsonPayload.nroProductor,
+    Clave: jsonPayload.claveProductor,
+    Matricula: '0',
+    TipoDocumento: '0',
+    NroDocumento: '0',
+    CUIL: '0',
+    CUIT: '0',
+    Poliza: '0',
+    CodInfoAuto: jsonPayload.datoVehiculo.codigoInfoAuto,
+    CodVehiculo: jsonPayload.datoVehiculo.codigoVehiculo,
+    ModeloAnio: jsonPayload.datoVehiculo.modeloAnio,
+    SumaAsegurada: jsonPayload.datoVehiculo.sumaAsegurada,
+    Ajuste: jsonPayload.datoVehiculo.porcentajeAjuste,
+    PoseeGNC: String(cabecera?.gnc) === '1' ? '2' : '1',
+    SumaAseguradaAccesorios: jsonPayload.datoPoliza.sumaAseguradaAccesorios,
+    SumaAseguradaEquipaje: jsonPayload.datoPoliza.sumaAseguradaEquipaje,
+    Asientos: '0',
+    AlarmaSatelital: jsonPayload.datoPoliza.alarmaSatelital === 'SIN_ALARMA' ? '0' : '1',
+    Subrogado: '0',
+    Vinculada01: '0',
+    Vinculada02: '0',
+    Vinculada03: '0',
+    Vinculada04: '0',
+    Vinculada05: '0',
+    FechaNacimiento: fechaNacimiento,
+    CoefRC: coefRC,
+    CoefCasco: coefCasco,
+    CondicionIVA: condicionIva,
+    CondicionIB: pick([cfg?.parametros_extras?.condicion_ib_soap_default, '1']),
+    PersonaJuridica: 'N',
+    VigDesde: formatSoapDate(jsonPayload.datoPoliza.fechaVigenciaDesde),
+    VigHasta: formatSoapDate(jsonPayload.datoPoliza.fechaVigenciaHasta),
+    FormaPago: pick([cfg?.parametros_extras?.forma_pago_soap_default, '3']),
+    CantCuotas: jsonPayload.datoPoliza.cantidadCuotas,
+    Facturacion: pick([cfg?.parametros_extras?.facturacion_soap_default, '5']),
+    CodigoProvincia: provinciaSoap.codigoProvincia,
+    CodigoPostal: jsonPayload.datoPoliza.codigoPostal,
+    PorcBonif: pick([cfg?.parametros_extras?.porc_bonif_default, '0']),
+    AniosSinSiniestros: pick([cfg?.parametros_extras?.anios_sin_siniestros_default, '0']),
+  };
+
+  return {
+    payload: soapPayload,
+    envelope: buildRivadaviaSoapEnvelope(soapPayload),
+    requestMeta: {
+      ...built.requestMeta,
+      soap: true,
+      coefRC,
+      coefCasco,
+      codigoProvinciaSoap: soapPayload.CodigoProvincia,
+      codigoProvinciaSoapSource: provinciaSoap.source,
+      codigoProvinciaSoapConflict: provinciaSoap.conflict,
+      codigoProvinciaSoapRowCode: provinciaSoap.rowCode,
+      codigoProvinciaSoapRawProvincia: provinciaSoap.rawProvincia,
+      codigoProvinciaSoapLocalidad: provinciaSoap.localidad,
+      codigoProvinciaSoapPostalCatalogProvinceId: provinciaSoap.catalogProvinceId,
+      formaPagoSoap: soapPayload.FormaPago,
+      facturacionSoap: soapPayload.Facturacion,
+    },
+  };
+}
+
+function buildRivadaviaSoapEnvelope(payload = {}) {
+  const tag = (name, type, value) => `        <${name} xsi:type="${type}">${xmlEscape(value)}</${name}>`;
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="urn:emision_poliza">
+  <SOAP-ENV:Body>
+    <tns:solicitudCotizacion xmlns:tns="urn:emision_poliza">
+      <Solicitud xsi:type="tns:Solicitud_cotizacion">
+${[
+    tag('NroProductor', 'xsd:long', payload.NroProductor),
+    tag('Clave', 'xsd:string', payload.Clave),
+    tag('Matricula', 'xsd:long', payload.Matricula),
+    tag('TipoDocumento', 'xsd:int', payload.TipoDocumento),
+    tag('NroDocumento', 'xsd:long', payload.NroDocumento),
+    tag('CUIL', 'xsd:long', payload.CUIL),
+    tag('CUIT', 'xsd:long', payload.CUIT),
+    tag('Poliza', 'xsd:long', payload.Poliza),
+    tag('CodInfoAuto', 'xsd:string', payload.CodInfoAuto),
+    tag('CodVehiculo', 'xsd:int', payload.CodVehiculo),
+    tag('ModeloAnio', 'xsd:int', payload.ModeloAnio),
+    tag('SumaAsegurada', 'xsd:float', payload.SumaAsegurada),
+    tag('Ajuste', 'xsd:int', payload.Ajuste),
+    tag('PoseeGNC', 'xsd:int', payload.PoseeGNC),
+    tag('SumaAseguradaAccesorios', 'xsd:long', payload.SumaAseguradaAccesorios),
+    tag('SumaAseguradaEquipaje', 'xsd:long', payload.SumaAseguradaEquipaje),
+    tag('Asientos', 'xsd:int', payload.Asientos),
+    tag('AlarmaSatelital', 'xsd:int', payload.AlarmaSatelital),
+    tag('Subrogado', 'xsd:int', payload.Subrogado),
+    tag('Vinculada01', 'xsd:string', payload.Vinculada01),
+    tag('Vinculada02', 'xsd:string', payload.Vinculada02),
+    tag('Vinculada03', 'xsd:string', payload.Vinculada03),
+    tag('Vinculada04', 'xsd:string', payload.Vinculada04),
+    tag('Vinculada05', 'xsd:string', payload.Vinculada05),
+    tag('FechaNacimiento', 'xsd:long', payload.FechaNacimiento),
+    tag('CoefRC', 'xsd:string', payload.CoefRC),
+    tag('CoefCasco', 'xsd:string', payload.CoefCasco),
+    tag('CondicionIVA', 'xsd:int', payload.CondicionIVA),
+    tag('CondicionIB', 'xsd:int', payload.CondicionIB),
+    tag('PersonaJuridica', 'xsd:string', payload.PersonaJuridica),
+    tag('VigDesde', 'xsd:long', payload.VigDesde),
+    tag('VigHasta', 'xsd:long', payload.VigHasta),
+    tag('FormaPago', 'xsd:int', payload.FormaPago),
+    tag('CantCuotas', 'xsd:int', payload.CantCuotas),
+    tag('Facturacion', 'xsd:int', payload.Facturacion),
+    tag('CodigoProvincia', 'xsd:int', payload.CodigoProvincia),
+    tag('CodigoPostal', 'xsd:int', payload.CodigoPostal),
+    tag('PorcBonif', 'xsd:string', payload.PorcBonif),
+    tag('AniosSinSiniestros', 'xsd:int', payload.AniosSinSiniestros),
+  ].join('\n')}
+      </Solicitud>
+    </tns:solicitudCotizacion>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>`;
+}
+
+function parseSoapMoney(value) {
+  const text = String(value || '').trim().replace(/^0+/, '').replace(',', '.');
+  return text || '0';
+}
+
+function parseRivadaviaSoapQuoteResponse(data, _cfg = {}, requestMeta = {}) {
+  const xml = String(data || '');
+  const errors = [...xml.matchAll(/<item[^>]*xsi:type="xsd:string"[^>]*>([^<]+)<\/item>/g)].map((match) => match[1]);
+  const coberturas = [...xml.matchAll(/<item[\s\S]*?<NroPresupuesto[^>]*>([^<]*)<\/NroPresupuesto>[\s\S]*?<Plan[^>]*>([^<]*)<\/Plan>[\s\S]*?<PremioTotal[^>]*>([^<]*)<\/PremioTotal>[\s\S]*?<Contado[^>]*>([^<]*)<\/Contado>[\s\S]*?<CuotaMensual[^>]*>([^<]*)<\/CuotaMensual>[\s\S]*?<\/item>/g)]
+    .map((match) => ({
+      codigoDeCobertura: String(match[2] || '').trim(),
+      descripcionDeCobertura: String(match[2] || '').trim(),
+      codigoDeProducto: String(match[2] || '').trim(),
+      descripcionDeProducto: String(match[2] || '').trim(),
+      importePremio: parseSoapMoney(match[3]),
+      importePremioContado: parseSoapMoney(match[4]),
+      importeCuota: parseSoapMoney(match[5]),
+      plan: String(match[2] || '').trim(),
+      nroPresupuesto: String(match[1] || '').trim(),
+    }));
+  const operacion = coberturas[0]?.nroPresupuesto || '';
+  return {
+    ok: coberturas.length > 0,
+    operacion,
+    coberturas,
+    error: coberturas.length ? '' : (errors.join('; ') || 'Rivadavia SOAP respondio sin coberturas'),
+    raw: data,
+    used: {
+      fechaVigenciaDesde: requestMeta.fechaVigenciaDesde || '',
+      tipoVehiculo: requestMeta.tipoVehiculo || '',
+      tipoUso: requestMeta.tipoUso || '',
+      codigoVehiculo: requestMeta.codigoVehiculo || '',
+      sumaAsegurada: requestMeta.sumaAsegurada || '',
+      descripcionTipoVehiculo: requestMeta.descripcionTipoVehiculo || '',
+      attemptSource: requestMeta.attemptSource || '',
+      coefRC: requestMeta.coefRC || '',
+      coefCasco: requestMeta.coefCasco || '',
     },
   };
 }
@@ -462,10 +847,15 @@ async function parseRivadaviaQuoteResponse(data, cfg = {}, requestMeta = {}) {
 module.exports = {
   buildRivadaviaAttemptPlan,
   buildRivadaviaPayload,
+  buildRivadaviaSoapEnvelope,
+  buildRivadaviaSoapPayload,
   mapRivadaviaFormaPago,
   mapRivadaviaIva,
   mapRivadaviaProvincia,
+  mapRivadaviaSoapProvincia,
+  parseRivadaviaSoapQuoteResponse,
   parseRivadaviaQuoteResponse,
+  resolveRivadaviaCoeficients,
   resolveRivadaviaAlarmaSatelital,
   resolveCodigoVehiculo,
   resolveSumaAsegurada,

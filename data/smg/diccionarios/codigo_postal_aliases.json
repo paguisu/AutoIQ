@@ -1,0 +1,10 @@
+[
+  {
+    "inputCodPostal": "9421",
+    "inputLocalidad": "FRIGORIFICO CAP",
+    "inputProvincia": "TIERRA DEL FUEGO",
+    "smgCodPostal": "9420",
+    "smgLocalidadReferencia": "RIO GRANDE",
+    "source": "smg_ws_no_reconoce_9421"
+  }
+]

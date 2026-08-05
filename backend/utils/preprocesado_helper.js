@@ -2,6 +2,7 @@
 const fs = require('fs/promises');
 const path = require('path');
 const { resolveAtmVehicleKind } = require('./atm_tipo_vehiculo');
+const { inferirTipoVehiculo } = require('./inferencias');
 
 function dataPath(...p) {
   return path.join(process.cwd(), 'data', ...p);
@@ -62,6 +63,14 @@ async function completarYMapear({ fila, cabecera, dicc, slug }) {
   if (atmVehicle?.isMoto === true) {
     out.tipo_vehiculo = 'Moto';
     fuentes.tipo_vehiculo = 'atm_catalogo';
+  }
+
+  if (!out.tipo_vehiculo || norm(out.tipo_vehiculo) === 'null') {
+    const inferido = await inferirTipoVehiculo(out).catch(() => '');
+    if (inferido) {
+      out.tipo_vehiculo = inferido;
+      fuentes.tipo_vehiculo = 'inferencias';
+    }
   }
 
   if (!out.tipo_vehiculo || norm(out.tipo_vehiculo) === 'null') {
@@ -126,4 +135,9 @@ async function initPreprocesador({ slug = 'atm', cabecera_id = null } = {}) {
   };
 }
 
-module.exports = { initPreprocesador };
+module.exports = {
+  cargarDiccionarios,
+  completarYMapear,
+  getCabeceraByIdHTTP,
+  initPreprocesador,
+};

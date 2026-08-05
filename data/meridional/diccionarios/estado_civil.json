@@ -1,0 +1,22 @@
+[
+  {
+    "idEstadoCivil": 1,
+    "descripcion": "CASADO"
+  },
+  {
+    "idEstadoCivil": 2,
+    "descripcion": "SOLTERO"
+  },
+  {
+    "idEstadoCivil": 4,
+    "descripcion": "SEPARADO / DIVORCIADO"
+  },
+  {
+    "idEstadoCivil": 5,
+    "descripcion": "VIUDO  "
+  },
+  {
+    "idEstadoCivil": 99,
+    "descripcion": "NO INFORMA"
+  }
+]

@@ -1,0 +1,73 @@
+{
+  "nombre_publico": "Provincia Seguros",
+  "sigla": "PROV",
+  "activo": true,
+  "base_url": "https://apimprod.provinciaseguros.com.ar/PS",
+  "soap_path": "/PS-COTIZACION/2.2/cotizar",
+  "soap_method": "cotizar",
+  "auth_url": "https://authp.provinciaseguros.com.ar/auth/realms/ps/protocol/openid-connect/token",
+  "grant_type": "password",
+  "client_id": "ps2",
+  "client_secret": "a0ab7e18-baea-4d38-b22e-f61184960745",
+  "api_key": "84630d93-d8c2-40b3-ad3d-b82773c092b5",
+  "usuario": "pasnovencientosonce.srl@provinciaseguros.com",
+  "password": "123456",
+  "vigencia": "multi-ramo",
+  "refacturacion": "segun ramo",
+  "descuento_comercial": "",
+  "clausula_ajuste": "",
+  "ajuste_rc": "",
+  "ajuste_casco": "",
+  "tipoFacturacion": "F",
+  "slug": "provincia",
+  "parametros_extras": {
+    "ramo_default": "4",
+    "dni_default": "88955598",
+    "nombre_default": "AUTOIQ",
+    "email_default": "cotizaciones@autoiq.local",
+    "celular_default": "1100000000",
+    "canal_default": "PAS",
+    "tipo_persona_default": "F",
+    "condicion_iva_default": "CF",
+    "moneda_default": "01",
+    "tipo_facturacion_default": "F",
+    "modo_calculo_default": "N",
+    "max_concurrency": 1,
+    "min_interval_ms": 1000,
+    "ramos": {
+      "4": {
+        "descripcion": "Automotores",
+        "producto_default": "04100",
+        "vigencia": "E",
+        "vigencia_tecnica": "A",
+        "medio_de_pago": "2",
+        "origen_de_pago": "VISO",
+        "plan_de_pago": "1",
+        "tipo_default": "1",
+        "uso_default": "1",
+        "genero_default": "M",
+        "clausula_ajuste": "10",
+        "bonif_adicional": "1",
+        "limite_rc": "1",
+        "limite_mercosur": "4",
+        "robo_contenido": "S",
+        "cob_adic_comerciales": "N",
+        "monto_accesorios": "0"
+      },
+      "16": {
+        "descripcion": "Accidentes Personales",
+        "producto_default": "16005",
+        "vigencia": "A",
+        "vigencia_tecnica": "",
+        "medio_de_pago": "3",
+        "origen_de_pago": "PDIR",
+        "plan_de_pago": "161",
+        "asegura_titular_conyugue": "N",
+        "promociones": [
+          "AS01"
+        ]
+      }
+    }
+  },
+  "updated_at": "2026-04-23T00:00:00.000Z"
+}

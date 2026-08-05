@@ -1,0 +1,30 @@
+[
+  {
+    "CNDIVA": 1,
+    "DESCRP": "Responsable Inscripto"
+  },
+  {
+    "CNDIVA": 2,
+    "DESCRP": "Responsable No Inscripto"
+  },
+  {
+    "CNDIVA": 4,
+    "DESCRP": "Consumidor Final"
+  },
+  {
+    "CNDIVA": 6,
+    "DESCRP": "Excento"
+  },
+  {
+    "CNDIVA": 9,
+    "DESCRP": "Monotributista"
+  },
+  {
+    "CNDIVA": 10,
+    "DESCRP": "No categorizado"
+  },
+  {
+    "CNDIVA": 99,
+    "DESCRP": "Gran contribuyente"
+  }
+]

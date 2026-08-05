@@ -5,6 +5,9 @@ const { Writable } = require('stream');
 const { execFileSync } = require('child_process');
 const axios = require('axios');
 const ftp = require('basic-ftp');
+const { XMLParser } = require('fast-xml-parser');
+
+const xmlParser = new XMLParser({ ignoreAttributes: false, trimValues: true, removeNSPrefix: true });
 
 function ensureDir(p) {
   if (!fs.existsSync(p)) fs.mkdirSync(p, { recursive: true });
@@ -311,6 +314,7 @@ function defaultMapfreTableMap() {
       docsUrl: 'https://devs.mapfre.com.ar/api-docs/documentacion/ws_autos/ws_descripcion_campos.md/tomador_asegurado/',
       docsTableIndex: 5,
     },
+    localidad_aliases: { fileName: 'localidad_aliases.json', endpoint: 'localidad_aliases', remoteName: null },
   };
 }
 
@@ -318,6 +322,8 @@ function defaultAllianzTableMap() {
   return {
     uso: { fileName: 'uso.json', endpoint: 'uso', remoteName: null },
     tipo_vehiculo: { fileName: 'tipo_vehiculo.json', endpoint: 'tipo_vehiculo', remoteName: null },
+    accesorios: { fileName: 'accesorios.json', endpoint: 'accesorios', remoteName: 'ObtenerAccesoriosVehiculo' },
+    codigo_postal_aliases: { fileName: 'codigo_postal_aliases.json', endpoint: 'codigo_postal_aliases', remoteName: null },
   };
 }
 
@@ -326,6 +332,57 @@ function defaultExpertaTableMap() {
     uso: { fileName: 'uso.json', endpoint: 'uso', remoteName: null },
     modalidad: { fileName: 'modalidad.json', endpoint: 'modalidad', remoteName: null },
     iva: { fileName: 'iva.json', endpoint: 'iva', remoteName: null },
+    marcas: { fileName: 'marcas.json', endpoint: 'marcas', remoteName: null },
+    modelos: { fileName: 'modelos.json', endpoint: 'modelos', remoteName: null },
+    versiones: { fileName: 'versiones.json', endpoint: 'versiones', remoteName: null },
+    localidades: { fileName: 'localidades.json', endpoint: 'localidades', remoteName: null },
+  };
+}
+
+function defaultProvinciaTableMap() {
+  return {
+    uso: { fileName: 'uso.json', endpoint: 'uso', remoteName: null },
+    brand_cache: { fileName: 'brand_cache.json', endpoint: 'brand_cache', remoteName: null },
+    model_cache: { fileName: 'model_cache.json', endpoint: 'model_cache', remoteName: null },
+  };
+}
+
+function defaultRivadaviaTableMap() {
+  return {
+    uso: { fileName: 'uso.json', endpoint: 'uso', remoteName: null },
+    tipo_vehiculo: { fileName: 'tipo_vehiculo.json', endpoint: 'tipo_vehiculo', remoteName: null },
+    infoauto_tipo_vehiculo: {
+      fileName: 'infoauto_tipo_vehiculo.json',
+      endpoint: 'infoauto_tipo_vehiculo',
+      remoteName: null,
+    },
+  };
+}
+
+function defaultSancorTableMap() {
+  return {
+    uso: { fileName: 'uso.json', endpoint: 'uso', remoteName: null },
+    tipo_vehiculo: { fileName: 'tipo_vehiculo.json', endpoint: 'tipo_vehiculo', remoteName: null },
+    localidad_aliases: { fileName: 'localidad_aliases.json', endpoint: 'localidad_aliases', remoteName: null },
+  };
+}
+
+function defaultSmgTableMap() {
+  return {
+    uso: { fileName: 'uso.json', endpoint: 'uso', remoteName: null },
+    tipo_vehiculo: { fileName: 'tipo_vehiculo.json', endpoint: 'tipo_vehiculo', remoteName: null },
+  };
+}
+
+function defaultVictoriaTableMap() {
+  return {
+    uso: { fileName: 'uso.json', endpoint: 'uso', remoteName: null },
+  };
+}
+
+function defaultNacionTableMap() {
+  return {
+    uso: { fileName: 'uso.json', endpoint: 'uso', remoteName: null },
   };
 }
 
@@ -334,6 +391,12 @@ function tableMapFor(slug) {
   if (slug === 'mapfre') return defaultMapfreTableMap();
   if (slug === 'allianz') return defaultAllianzTableMap();
   if (slug === 'experta') return defaultExpertaTableMap();
+  if (slug === 'provincia') return defaultProvinciaTableMap();
+  if (slug === 'rivadavia') return defaultRivadaviaTableMap();
+  if (slug === 'sancor') return defaultSancorTableMap();
+  if (slug === 'smg') return defaultSmgTableMap();
+  if (slug === 'victoria') return defaultVictoriaTableMap();
+  if (slug === 'nacion') return defaultNacionTableMap();
   return {};
 }
 
@@ -880,6 +943,149 @@ function fetchMapfreDocsHtml(url) {
   );
 }
 
+function escapeXml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+function asArray(value) {
+  if (value == null) return [];
+  return Array.isArray(value) ? value : [value];
+}
+
+function asText(value) {
+  return value == null ? '' : String(value).trim();
+}
+
+function readCompanyConfig(slug) {
+  const cfgPath = path.join(process.cwd(), 'data', slug, 'aseguradora.json');
+  return JSON.parse(fs.readFileSync(cfgPath, 'utf8'));
+}
+
+function buildAllianzAccessoriesEnvelope(cfg = {}, { page = 1, pageSize = 100, codigoAccesorio = '' } = {}) {
+  const username = String(cfg?.usuario || '').trim();
+  const password = String(cfg?.password || '').trim();
+  const application = String(cfg?.application || '').trim();
+  const senderUsername = String(cfg?.sender_username || username).trim();
+  const country = String(cfg?.country || 'ARG').trim();
+  const target = String(cfg?.target || 'Allianz').trim();
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:atr="http://xmlns.allianz.com.ar/Core/EBM/Vehiculo/AtrVehiculo"
+                  xmlns:ebm="http://xmlns.allianz.com.ar/CommonCore/EBM">
+   <soapenv:Header>
+      <user>${escapeXml(username)}</user>
+      <pwd>${escapeXml(password)}</pwd>
+   </soapenv:Header>
+   <soapenv:Body>
+      <atr:ObtenerAccesoriosVehiculoEBM>
+         <ebm:EBMHeader>
+            <ebm:Sender>
+               <ebm:userName>${escapeXml(senderUsername)}</ebm:userName>
+               <ebm:Application>${escapeXml(application)}</ebm:Application>
+               <ebm:Country>${escapeXml(country)}</ebm:Country>
+            </ebm:Sender>
+            <ebm:Target>${escapeXml(target)}</ebm:Target>
+         </ebm:EBMHeader>
+         <atr:DataArea>
+            <atr:ObtenerAccesoriosVehiculo>
+               <atr:codigoAccesorio>${escapeXml(codigoAccesorio)}</atr:codigoAccesorio>
+               <atr:paginacion>
+                  <atr:numeroPagina>${escapeXml(page)}</atr:numeroPagina>
+                  <atr:cantidadRegistros>${escapeXml(pageSize)}</atr:cantidadRegistros>
+               </atr:paginacion>
+            </atr:ObtenerAccesoriosVehiculo>
+         </atr:DataArea>
+      </atr:ObtenerAccesoriosVehiculoEBM>
+   </soapenv:Body>
+</soapenv:Envelope>`.trim();
+}
+
+function parseAllianzAccessoriesResponse(xml) {
+  const parsed = xmlParser.parse(String(xml || ''));
+  const body = parsed?.Envelope?.Body || {};
+  const fault = body?.Fault;
+  if (fault) throw new Error(asText(fault?.faultstring || 'SOAP Fault Allianz accesorios'));
+
+  const response = body?.ObtenerAccesoriosVehiculoResponseEBM;
+  if (!response) throw new Error('Respuesta Allianz accesorios inválida');
+
+  const returnCode = asText(response?.ReturnCode);
+  const returnMessage = asText(response?.ReturnMessage);
+  const errorCode = asText(response?.ErrorCode);
+  if (returnCode && returnCode !== '0') {
+    throw new Error(returnMessage || errorCode || `Allianz accesorios ReturnCode=${returnCode}`);
+  }
+
+  const data = response?.DataArea?.ObtenerAccesoriosVehiculoResponse || {};
+  const rows = asArray(data?.ListaAccesorioVehiculo?.AccesorioVehiculo)
+    .map((item) => ({
+      codigo: asText(item?.codigoAccesorio),
+      descripcion: asText(item?.descripcionAccesorio),
+    }))
+    .filter((item) => item.codigo && item.descripcion);
+
+  return {
+    cantidadPaginas: Number(data?.cantidadPaginas || 1) || 1,
+    cantidadRegistros: Number(data?.cantidadRegistros || rows.length) || rows.length,
+    rows,
+  };
+}
+
+async function fetchAllianzAccessoriesProvider() {
+  const cfg = readCompanyConfig('allianz');
+  const baseUrl = String(cfg?.base_url || '').replace(/\/+$/, '');
+  const soapPath = String(
+    cfg?.parametros_extras?.attributes_soap_path ||
+    cfg?.attributes_soap_path ||
+    '/Vehiculo/Externo/Atributos/AtrVehiculoExtReqABCS'
+  ).trim();
+  if (!baseUrl || !soapPath) throw new Error('Allianz requiere base_url y attributes_soap_path para sincronizar accesorios');
+  if (!String(cfg?.usuario || '').trim() || !String(cfg?.password || '').trim()) {
+    throw new Error('Allianz requiere usuario y password para sincronizar accesorios');
+  }
+
+  const url = `${baseUrl}${soapPath}`;
+  const pageSize = Number(cfg?.parametros_extras?.catalog_page_size || 100) || 100;
+  const timeout = Number(cfg?.parametros_extras?.catalog_timeout_ms || 30000) || 30000;
+  const soapAction = String(
+    cfg?.parametros_extras?.accessories_soap_action ||
+    'http://xmlns.allianz.com.ar/Core/EBS/Vehiculo/ObtenerAccesoriosVehiculo'
+  );
+  const rowsByCode = new Map();
+  let cantidadPaginas = 1;
+
+  for (let page = 1; page <= cantidadPaginas; page += 1) {
+    const envelope = buildAllianzAccessoriesEnvelope(cfg, { page, pageSize });
+    // eslint-disable-next-line no-await-in-loop
+    const resp = await axios.post(url, envelope, {
+      headers: {
+        'Content-Type': 'text/xml; charset=UTF-8',
+        SOAPAction: `"${soapAction}"`,
+      },
+      timeout,
+      validateStatus: () => true,
+    });
+    if (!(resp.status >= 200 && resp.status < 300)) {
+      throw new Error(`Allianz accesorios HTTP ${resp.status}`);
+    }
+    const parsed = parseAllianzAccessoriesResponse(resp.data);
+    cantidadPaginas = Math.max(1, parsed.cantidadPaginas);
+    for (const row of parsed.rows) rowsByCode.set(row.codigo, row);
+  }
+
+  return {
+    sourceRaw: [...rowsByCode.values()].sort((a, b) => Number(a.codigo) - Number(b.codigo)),
+    sourcePath: url,
+    sourceType: 'remote-soap',
+  };
+}
+
 async function fetchFromHttpProvider(meta) {
   const url = buildAtmProviderUrl(meta.endpoint);
   if (!url) throw new Error('Falta ATM_CATALOG_BASE_URL para sync real');
@@ -953,6 +1159,9 @@ async function fetchFromProvider({ slug, table }) {
       sourcePath: meta.docsUrl,
       sourceType: 'remote-docs',
     };
+  }
+  if (slug === 'allianz' && table === 'accesorios') {
+    return fetchAllianzAccessoriesProvider();
   }
   throw new Error(`Proveedor real no implementado para ${slug}`);
 }
@@ -1107,7 +1316,9 @@ module.exports = {
   listTablesForCompany,
   getTableStatus,
   normalizeRecords,
+  buildAllianzAccessoriesEnvelope,
   buildDiff,
+  parseAllianzAccessoriesResponse,
   syncTable,
   readReport,
 };

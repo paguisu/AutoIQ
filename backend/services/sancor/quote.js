@@ -1,11 +1,14 @@
+const fs = require('fs');
 const path = require('path');
 const xlsx = require('xlsx');
 const { XMLParser } = require('fast-xml-parser');
 const { isVehicleZeroKm } = require('../../utils/zero_km');
 
 let localityCatalogCache = null;
+let localityAliasCache = null;
 const parser = new XMLParser({ ignoreAttributes: false, trimValues: true, removeNSPrefix: true });
 const LOCALIDADES_XLSX_PATH = path.join(process.cwd(), 'web_services', 'Sancor', 'Localidades.xlsx');
+const LOCALIDAD_ALIASES_JSON_PATH = path.join(process.cwd(), 'data', 'sancor', 'diccionarios', 'localidad_aliases.json');
 
 function escapeXml(value) {
   return String(value ?? '')
@@ -71,6 +74,40 @@ function loadSancorLocalityCatalog(customCatalog) {
   return localityCatalogCache;
 }
 
+function loadSancorLocalityAliases(customAliases) {
+  if (Array.isArray(customAliases)) return customAliases;
+  if (localityAliasCache) return localityAliasCache;
+  try {
+    if (!fs.existsSync(LOCALIDAD_ALIASES_JSON_PATH)) {
+      localityAliasCache = [];
+      return localityAliasCache;
+    }
+    const raw = JSON.parse(fs.readFileSync(LOCALIDAD_ALIASES_JSON_PATH, 'utf8'));
+    localityAliasCache = Array.isArray(raw)
+      ? raw.map((item) => ({
+          inputCodPostal: String(item?.inputCodPostal || '').trim(),
+          inputLocalidad: String(item?.inputLocalidad || '').trim(),
+          inputProvincia: String(item?.inputProvincia || '').trim(),
+          codPostal: String(item?.codPostal || '').trim(),
+          codLocalidad: String(item?.codLocalidad || '').trim(),
+          localidad: String(item?.localidad || '').trim(),
+          codProvincia: String(item?.codProvincia || '').trim(),
+          provincia: String(item?.provincia || '').trim(),
+          _inputCp: String(item?.inputCodPostal || '').trim(),
+          _inputLoc: normalizeText(item?.inputLocalidad || ''),
+          _inputProv: normalizeText(item?.inputProvincia || ''),
+          _loc: normalizeText(item?.localidad || ''),
+          _prov: normalizeText(item?.provincia || ''),
+          matchType: 'alias',
+        }))
+      : [];
+    return localityAliasCache;
+  } catch {
+    localityAliasCache = [];
+    return localityAliasCache;
+  }
+}
+
 function levenshteinDistance(a, b) {
   const left = String(a || '');
   const right = String(b || '');
@@ -113,6 +150,7 @@ function pickLocalityEntry(candidates, localidadNorm) {
 
 function resolveSancorLocalidad(row = {}, cabecera = {}, options = {}) {
   const catalog = loadSancorLocalityCatalog(options.localityCatalog);
+  const aliases = loadSancorLocalityAliases(options.localityAliases);
   const cp = pick([row?.codigo_postal, row?.codpostal, row?.CP, row?.cp, row?.CodigoPostal]).replace(/\D+/g, '').slice(0, 4);
   const localidadNorm = normalizeText(pick([
     row?.localidad,
@@ -134,6 +172,25 @@ function resolveSancorLocalidad(row = {}, cabecera = {}, options = {}) {
   }
   const chosen = pickLocalityEntry(candidates, localidadNorm);
   if (chosen) return chosen;
+
+  const alias = aliases.find((item) => {
+    if (item._inputLoc && item._inputLoc !== localidadNorm) return false;
+    if (item._inputProv && item._inputProv !== provinciaNorm) return false;
+    if (item._inputCp && item._inputCp !== cp) return false;
+    return true;
+  });
+  if (alias) {
+    return {
+      codPostal: alias.codPostal,
+      codLocalidad: alias.codLocalidad,
+      localidad: alias.localidad,
+      codProvincia: alias.codProvincia,
+      provincia: alias.provincia,
+      _loc: alias._loc,
+      _prov: alias._prov,
+      matchType: alias.matchType || 'alias',
+    };
+  }
   return null;
 }
 
@@ -194,7 +251,15 @@ function buildScoringXml(cfg = {}) {
   ].join('\n');
 }
 
-function buildSancorEnvelope({ fila = {}, cabecera = {}, cfg = {}, mapeos = {}, today = new Date(), localityCatalog } = {}) {
+function buildSancorEnvelope({
+  fila = {},
+  cabecera = {},
+  cfg = {},
+  mapeos = {},
+  today = new Date(),
+  localityCatalog,
+  localityAliases,
+} = {}) {
   const codInfoautoRaw = pick([
     fila?.infoautocod,
     fila?.tau_codia,
@@ -207,8 +272,9 @@ function buildSancorEnvelope({ fila = {}, cabecera = {}, cfg = {}, mapeos = {}, 
   ]);
   const codInfoauto = normalizeSancorInfoautoCode(codInfoautoRaw);
   const anio = pick([fila?.anio, fila?.anofab, fila?.ANO, fila?.Anio, fila?.ano]);
-  const localidad = resolveSancorLocalidad(fila, cabecera, { localityCatalog });
-  const cp = pick([fila?.codigo_postal, fila?.codpostal, fila?.CP, fila?.cp, fila?.CodigoPostal]).replace(/\D+/g, '').slice(0, 4);
+  const localidad = resolveSancorLocalidad(fila, cabecera, { localityCatalog, localityAliases });
+  const cpOriginal = pick([fila?.codigo_postal, fila?.codpostal, fila?.CP, fila?.cp, fila?.CodigoPostal]).replace(/\D+/g, '').slice(0, 4);
+  const cp = String(localidad?.codPostal || cpOriginal).trim();
 
   if (!codInfoauto) throw new Error('Sancor requiere código InfoAuto');
   if (!anio) throw new Error('Sancor requiere año del vehículo');
@@ -301,10 +367,12 @@ function buildSancorEnvelope({ fila = {}, cabecera = {}, cfg = {}, mapeos = {}, 
       codInfoauto,
       anio,
       codPostal: cp,
+      codPostalOriginal: cpOriginal,
       codLocalidad: localidad.codLocalidad,
       localidad: localidad.localidad,
       provincia: localidad.provincia,
       codProvincia: localidad.codProvincia,
+      localidadMatchType: localidad.matchType || '',
       useId,
       ivaConditionId,
       capital,
@@ -321,9 +389,153 @@ function asText(value) {
   return value == null ? '' : String(value);
 }
 
+function toNumber(value) {
+  if (value == null || value === '') return null;
+  if (typeof value === 'number') return Number.isFinite(value) ? value : null;
+  const raw = String(value).trim();
+  if (!raw) return null;
+
+  const compact = raw.replace(/\s+/g, '');
+  const lastDot = compact.lastIndexOf('.');
+  const lastComma = compact.lastIndexOf(',');
+
+  let normalized = compact;
+  if (lastDot >= 0 && lastComma >= 0) {
+    if (lastDot > lastComma) {
+      normalized = compact.replace(/,/g, '');
+    } else {
+      normalized = compact.replace(/\./g, '').replace(',', '.');
+    }
+  } else if (lastComma >= 0) {
+    normalized = compact.replace(',', '.');
+  }
+
+  const num = Number(normalized);
+  return Number.isFinite(num) ? num : null;
+}
+
+function formatMoney(value, decimals = 2) {
+  const num = toNumber(value);
+  if (num == null) return '';
+  return num
+    .toFixed(decimals)
+    .replace(/\.00$/, '')
+    .replace(/(\.\d*?[1-9])0+$/, '$1');
+}
+
+function summarizeSancorPlanResults(results = []) {
+  const items = asArray(results);
+  let primaMonthly = 0;
+  let primaAnnual = 0;
+  let totalMonthly = 0;
+  let totalAnnual = 0;
+  let impuestosMonthly = 0;
+  let impuestosAnnual = 0;
+  let ivaMonthly = 0;
+  let ivaAnnual = 0;
+  let hasPrima = false;
+  let hasTotal = false;
+  let hasImpuestos = false;
+  let hasIva = false;
+
+  for (const item of items) {
+    const detail = asText(item?.Detail);
+    const detailType = asText(item?.DetailType);
+    const description = asText(item?.Description);
+    const monthly = toNumber(item?.PurePremiumMonthly);
+    const annual = toNumber(item?.PurePremium);
+
+    if (monthly != null) {
+      totalMonthly += monthly;
+      hasTotal = true;
+    }
+    if (annual != null) {
+      totalAnnual += annual;
+      hasTotal = true;
+    }
+
+    if (detail === 'Prima') {
+      if (monthly != null) {
+        primaMonthly += monthly;
+        hasPrima = true;
+      }
+      if (annual != null) {
+        primaAnnual += annual;
+        hasPrima = true;
+      }
+    }
+
+    if (detailType === 'Impuesto') {
+      if (monthly != null) {
+        impuestosMonthly += monthly;
+        hasImpuestos = true;
+      }
+      if (annual != null) {
+        impuestosAnnual += annual;
+        hasImpuestos = true;
+      }
+    }
+
+    if (/IVA/i.test(detail) || /IVA/i.test(description)) {
+      if (monthly != null) {
+        ivaMonthly += monthly;
+        hasIva = true;
+      }
+      if (annual != null) {
+        ivaAnnual += annual;
+        hasIva = true;
+      }
+    }
+  }
+
+  return {
+    hasPrima,
+    hasTotal,
+    hasImpuestos,
+    hasIva,
+    primaMonthly: hasPrima ? primaMonthly : null,
+    primaAnnual: hasPrima ? primaAnnual : null,
+    totalMonthly: hasTotal ? totalMonthly : null,
+    totalAnnual: hasTotal ? totalAnnual : null,
+    impuestosMonthly: hasImpuestos ? impuestosMonthly : null,
+    impuestosAnnual: hasImpuestos ? impuestosAnnual : null,
+    ivaMonthly: hasIva ? ivaMonthly : null,
+    ivaAnnual: hasIva ? ivaAnnual : null,
+    primaMonthlyText: hasPrima ? formatMoney(primaMonthly) : '',
+    primaAnnualText: hasPrima ? formatMoney(primaAnnual) : '',
+    totalMonthlyText: hasTotal ? formatMoney(totalMonthly) : '',
+    totalAnnualText: hasTotal ? formatMoney(totalAnnual) : '',
+    impuestosMonthlyText: hasImpuestos ? formatMoney(impuestosMonthly) : '',
+    impuestosAnnualText: hasImpuestos ? formatMoney(impuestosAnnual) : '',
+    ivaMonthlyText: hasIva ? formatMoney(ivaMonthly) : '',
+    ivaAnnualText: hasIva ? formatMoney(ivaAnnual) : '',
+  };
+}
+
 function parseSancorQuoteResponse(xml) {
-  const parsed = parser.parse(String(xml || ''));
+  const raw = String(xml || '');
+  const parsed = parser.parse(raw);
   const body = parsed?.Envelope?.Body || {};
+  const fault = body?.Fault || {};
+  const faultCode = asText(fault?.faultcode || fault?.Code?.Value);
+  const faultString = asText(fault?.faultstring || fault?.Reason?.Text);
+  if (faultCode || faultString) {
+    const businessFault = /BUSINESSERROR/i.test(faultString) || /INVALID PARAMETERS/i.test(faultString);
+    const message = String(faultString || faultCode || 'SOAP Fault Sancor')
+      .replace(/^BusinessError\s*-\s*/i, '')
+      .trim();
+    return {
+      ok: false,
+      error: message,
+      operacion: '0',
+      coberturas: [],
+      raw,
+      technical_error: !businessFault,
+      retryable: !businessFault,
+      pending: !businessFault,
+      faultcode: faultCode,
+    };
+  }
   const response = body?.NewVehicle_Rs || {};
   const result = response?.Result || {};
   const plans = asArray(response?.Plans?.Plan);
@@ -331,23 +543,62 @@ function parseSancorQuoteResponse(xml) {
   const errorMsg = asText(result?.ErrorMsg);
 
   if (errorCode && errorCode !== 'SOA-GSS-0000') {
-    return { ok: false, error: errorMsg || errorCode, coberturas: [], raw: xml };
+    const businessFault = /^SOA-GSS-04/.test(errorCode) || /INVALID/i.test(errorMsg);
+    return {
+      ok: false,
+      error: errorMsg || errorCode,
+      coberturas: [],
+      raw,
+      technical_error: !businessFault,
+      retryable: !businessFault,
+      pending: !businessFault,
+      faultcode: errorCode,
+    };
   }
 
-  const coberturas = plans.map((plan) => ({
-    module: asText(plan?.Module),
-    shortDescr: asText(plan?.ShortDescr),
-    longDescr: asText(plan?.LongDescr),
-    premiumMonthly: asText(plan?.PremiumMonthly),
-    premium: asText(plan?.Premium),
-    success: asText(plan?.Success),
-    outStandard: asText(plan?.OutStandard),
-    hasTrackingEquipment: asText(plan?.HasTrackingEquipment),
-    vehicleValuation: asText(plan?.VehicleValuation),
-    pricingId: asText(plan?.PricingId),
-    pricingIdAPF: asText(plan?.PricingIdAPF),
-    resultados: asArray(plan?.Results?.Result),
-  }));
+  const coberturas = plans.map((plan) => {
+    const resultados = asArray(plan?.Results?.Result);
+    const summary = summarizeSancorPlanResults(resultados);
+    const primaTotal = plan?.PrimaTotal || {};
+    const taxBases = [plan?.TaxBases, ...asArray(plan?.TaxBases?.TaxBase)];
+    const premioMensual = pick([asText(plan?.PremiumMonthly), summary.totalMonthlyText]);
+    const premioAnual = pick([asText(plan?.Premium), summary.totalAnnualText]);
+    const primaMensual = pick([asText(primaTotal?.PurePremiumMonthlyTotal), summary.primaMonthlyText, premioMensual]);
+    const primaAnual = pick([asText(primaTotal?.PurePremiumTotal), summary.primaAnnualText, premioAnual]);
+    const ivaTaxBaseMonthly = pick(taxBases.map((item) => asText(item?.IvaMonthly)));
+    const ivaTaxBase = pick(taxBases.map((item) => asText(item?.Iva)));
+
+    return {
+      module: asText(plan?.Module),
+      shortDescr: asText(plan?.ShortDescr),
+      longDescr: asText(plan?.LongDescr),
+      premiumMonthly: asText(plan?.PremiumMonthly),
+      premium: asText(plan?.Premium),
+      prima: primaMensual,
+      premio: premioMensual,
+      importePrima: primaMensual,
+      importePremio: premioMensual,
+      importeIVA: summary.ivaMonthlyText,
+      importeTotalImpuestos: summary.impuestosMonthlyText,
+      purePremiumMonthlyTotal: asText(primaTotal?.PurePremiumMonthlyTotal),
+      purePremiumTotal: asText(primaTotal?.PurePremiumTotal),
+      ivaTaxBaseMonthly,
+      ivaTaxBase,
+      ivaMonthly: summary.ivaMonthlyText,
+      ivaAnnual: summary.ivaAnnualText,
+      impuestosMonthly: summary.impuestosMonthlyText,
+      impuestosAnnual: summary.impuestosAnnualText,
+      primaAnnual: primaAnual,
+      premioAnnual: premioAnual,
+      success: asText(plan?.Success),
+      outStandard: asText(plan?.OutStandard),
+      hasTrackingEquipment: asText(plan?.HasTrackingEquipment),
+      vehicleValuation: asText(plan?.VehicleValuation),
+      pricingId: asText(plan?.PricingId),
+      pricingIdAPF: asText(plan?.PricingIdAPF),
+      resultados,
+    };
+  });
 
   return {
     ok: true,
@@ -356,7 +607,7 @@ function parseSancorQuoteResponse(xml) {
     relationQuotationId: asText(response?.Price?.RelationQuotationId),
     suma_asegurada: asText(coberturas[0]?.vehicleValuation),
     coberturas,
-    raw: xml,
+    raw,
   };
 }
 
@@ -366,4 +617,5 @@ module.exports = {
   normalizeSancorInfoautoCode,
   parseSancorQuoteResponse,
   resolveSancorLocalidad,
+  summarizeSancorPlanResults,
 };

@@ -79,6 +79,34 @@ describe('Victoria quote adapter', () => {
       importePrima: '178260.27',
       importePremio: '227118.74',
       importeCuota: '227118.74',
+      premiumMonthly: '227118.74',
+      premium: '227118.74',
+    });
+  });
+
+  test('expone cuota como premio mensual cuando Victoria devuelve premio de vigencia', () => {
+    const out = parseVictoriaQuoteResponse({
+      vehiculo: {
+        sumaAsegurada: 1234567,
+        listaCoberturas: [
+          {
+            numero: 1,
+            nombre: 'Responsabilidad civil',
+            calculos: {
+              premio: 242460.12,
+              cuota: 48906.18,
+            },
+          },
+        ],
+      },
+    });
+
+    expect(out.ok).toBe(true);
+    expect(out.coberturas[0]).toMatchObject({
+      importePremio: '242460.12',
+      importeCuota: '48906.18',
+      premiumMonthly: '48906.18',
+      premium: '242460.12',
     });
   });
 

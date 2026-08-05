@@ -37,6 +37,13 @@ describe('Mapfre quote adapter', () => {
       provincia: 'TIERRA DEL FUEGO',
     },
     {
+      codigo_postal: '4234',
+      codigo_mapfre: '4234004',
+      descripcion: 'SAN MARTIN (TAPSO-D ANCASTI)',
+      codigo_provincia: '2',
+      provincia: 'CATAMARCA',
+    },
+    {
       codigo_postal: '3514',
       codigo_mapfre: '3514000',
       descripcion: 'FONTANA',
@@ -85,6 +92,32 @@ describe('Mapfre quote adapter', () => {
 
     expect(match?.matchType).toBe('contiene');
     expect(isMapfrePostalMatchSafe(match)).toBe(false);
+  });
+
+  test('acepta aliases explicitos de domicilio para Mapfre', () => {
+    const match = resolveMapfrePostalMatch(
+      { CP: '4234', localidad: 'SAN MARTIN', provincia: 'Catamarca' },
+      {},
+      {
+        postalCatalog,
+        postalAliases: [
+          {
+            codigo_postal: '4234',
+            provincia: 'Catamarca',
+            localidad: 'SAN MARTIN',
+            codigo_mapfre: '4234004',
+          },
+        ],
+      }
+    );
+
+    expect(match).toMatchObject({
+      codigo_mapfre: '4234004',
+      codigo_provincia: '2',
+      descripcion: 'SAN MARTIN (TAPSO-D ANCASTI)',
+      matchType: 'alias',
+    });
+    expect(isMapfrePostalMatchSafe(match)).toBe(true);
   });
 
   test('arma el request SOAP con datos principales de Mapfre', async () => {
@@ -142,6 +175,48 @@ describe('Mapfre quote adapter', () => {
     expect(envelope).toContain('<codProv>1</codProv>');
     expect(envelope).toContain('<tipoMedioPago>TC</tipoMedioPago>');
     expect(envelope).toContain('<codAgt>21062</codAgt>');
+  });
+
+  test('envia valorGNC como entero para Mapfre', async () => {
+    const { envelope, requestMeta } = await buildMapfreEnvelope({
+      fila: {
+        infoautocod: '450420',
+        anio: '2023',
+        CP: '1650',
+        localidad: 'SAN MARTIN',
+        provincia: 'Buenos Aires',
+        suma: '25190000',
+      },
+      cabecera: {
+        fec_nac: '19840311',
+        sexo: 'M',
+        medio_pago: 'Tarjeta de crédito',
+        tipopersona: 'F',
+        iva: 'CF',
+        gnc: '1',
+        suma_gnc: '300000',
+        rastreo: '0',
+      },
+      hoyFmt: '12032026',
+      cfg: {
+        codAgt: '21062',
+        claveAcceso: '21NOVEC0',
+        claveProcedencia: '',
+        tipoFacturacion: 'M',
+        parametros_extras: {
+          moneda: '1',
+          cobertura_default: '0',
+          cod_prov_default: '0',
+          porcentaje_ajuste_default: '',
+        },
+      },
+      mapeos: { uso_codigo: '1' },
+      postalCatalog,
+    });
+
+    expect(requestMeta.conGNC).toBe('1');
+    expect(envelope).toContain('<valorGNC>300000</valorGNC>');
+    expect(envelope).not.toContain('<valorGNC>300000.00</valorGNC>');
   });
 
   test('parsea una respuesta exitosa de Mapfre con varias coberturas', () => {

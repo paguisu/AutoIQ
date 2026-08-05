@@ -1,0 +1,26 @@
+[
+  {
+    "id": 14401,
+    "nombre": "GENERAL MADARIAGA",
+    "provincia": "BUENOS AIRES",
+    "codigo_postal": 7163
+  },
+  {
+    "id": 230611,
+    "nombre": "CATRIEL",
+    "provincia": "RIO NEGRO",
+    "codigo_postal": 8307
+  },
+  {
+    "id": 1268,
+    "nombre": "CABA Barracas",
+    "provincia": "CAPITAL FEDERAL",
+    "codigo_postal": 1005
+  },
+  {
+    "id": 16408,
+    "nombre": "TEMPERLEY",
+    "provincia": "BUENOS AIRES",
+    "codigo_postal": 1834
+  }
+]

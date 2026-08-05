@@ -1,0 +1,38 @@
+[
+  {
+    "idUsos": 1,
+    "descripcion": "PARTICULAR",
+    "estado": "A",
+    "selTipoCarga": 0
+  },
+  {
+    "idUsos": 2,
+    "descripcion": "COMERCIAL",
+    "estado": "A",
+    "selTipoCarga": 0
+  },
+  {
+    "idUsos": 4,
+    "descripcion": "CARGA PELIGROSA",
+    "estado": "A",
+    "selTipoCarga": 1
+  },
+  {
+    "idUsos": 5,
+    "descripcion": "CARGA PELIGROSA PK",
+    "estado": "A",
+    "selTipoCarga": 1
+  },
+  {
+    "idUsos": 28,
+    "descripcion": "COMERCIAL CARGA GENERAL",
+    "estado": "A",
+    "selTipoCarga": 1
+  },
+  {
+    "idUsos": 29,
+    "descripcion": "COMERCIAL CARGA PELIGROSA",
+    "estado": "A",
+    "selTipoCarga": 1
+  }
+]

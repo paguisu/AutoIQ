@@ -50,7 +50,7 @@ function defaultAccessControl() {
         nombre: 'AutoIQ',
         slug: 'autoiq',
         activa: true,
-        companias_habilitadas: ['atm', 'mapfre', 'sancor', 'allianz'],
+        companias_habilitadas: ['atm', 'mapfre', 'sancor', 'allianz', 'provincia'],
       },
       {
         id: 'mapfre-org',
@@ -64,7 +64,7 @@ function defaultAccessControl() {
         nombre: 'Swiss Medical',
         slug: 'swiss-medical',
         activa: true,
-        companias_habilitadas: ['atm', 'mapfre', 'sancor', 'allianz'],
+        companias_habilitadas: ['atm', 'mapfre', 'sancor', 'allianz', 'provincia'],
       },
     ],
     roles: [
@@ -74,6 +74,15 @@ function defaultAccessControl() {
         activa: true,
         is_superadmin: true,
         pestañas: ['*'],
+        capabilities: ['*'],
+      },
+      {
+        id: 'supervisor',
+        nombre: 'Supervisor',
+        activa: true,
+        is_superadmin: false,
+        pestañas: ['inputs', 'cabecera', 'historico', 'base', 'condiciones', 'procesos'],
+        capabilities: ['seguros911_view', 'seguros911_catalog_manage'],
       },
       {
         id: 'usuario_generico',
@@ -81,6 +90,7 @@ function defaultAccessControl() {
         activa: true,
         is_superadmin: false,
         pestañas: ['inputs', 'cabecera', 'historico', 'procesos'],
+        capabilities: [],
       },
     ],
     usuarios: [
@@ -91,6 +101,16 @@ function defaultAccessControl() {
         email: 'superadmin@autoiq.local',
         organizacion_id: 'autoiq',
         role_id: 'superadmin',
+        activo: true,
+        pestañas_override: [],
+      },
+      {
+        id: 'supervisor-local',
+        nombre: 'Supervisor',
+        apellido: 'Seguros911',
+        email: 'supervisor@autoiq.local',
+        organizacion_id: 'autoiq',
+        role_id: 'supervisor',
         activo: true,
         pestañas_override: [],
       },
@@ -143,12 +163,18 @@ function normalizeRole(role) {
     : Array.isArray(role.permisos)
       ? role.permisos.map((x) => String(x || '').trim()).filter(Boolean)
       : [];
+  const capabilities = Array.isArray(role.capabilities)
+    ? role.capabilities.map((x) => String(x || '').trim()).filter(Boolean)
+    : Array.isArray(role.permisos_especiales)
+      ? role.permisos_especiales.map((x) => String(x || '').trim()).filter(Boolean)
+      : [];
   return {
     id,
     nombre: String(role.nombre || id).trim(),
     activa: role.activa !== false,
     is_superadmin: role.is_superadmin === true || pestañas.includes('*'),
     pestañas,
+    capabilities,
   };
 }
 
@@ -247,11 +273,14 @@ function getCurrentAccessContext() {
   const currentRole = access.roles.find((item) => item.id === currentUser?.role_id && item.activa !== false) || access.roles[0] || null;
   const currentOrganization = access.organizaciones.find((item) => item.id === currentUser?.organizacion_id && item.activa !== false) || access.organizaciones[0] || null;
   const isSuperadmin = currentRole?.is_superadmin === true;
+  const capabilities = Array.isArray(currentRole?.capabilities) ? currentRole.capabilities : [];
   const visibleTabs = Array.isArray(currentUser?.pestañas_override) && currentUser.pestañas_override.length > 0
     ? currentUser.pestañas_override
     : Array.isArray(currentRole?.pestañas) && currentRole.pestañas.length > 0
       ? currentRole.pestañas
       : ['inputs', 'cabecera', 'historico', 'procesos'];
+  const canViewSeguros911Flag = isSuperadmin || capabilities.includes('*') || capabilities.includes('seguros911_view') || capabilities.includes('seguros911_catalog_manage');
+  const canManageSeguros911CatalogFlag = isSuperadmin || capabilities.includes('*') || capabilities.includes('seguros911_catalog_manage');
 
   return {
     session,
@@ -260,7 +289,11 @@ function getCurrentAccessContext() {
     currentRole,
     currentOrganization,
     isSuperadmin,
+    isSupervisor: currentRole?.id === 'supervisor',
+    capabilities,
     visibleTabs,
+    canViewSeguros911: canViewSeguros911Flag,
+    canManageSeguros911Catalog: canManageSeguros911CatalogFlag,
     allowedCompanySlugs: isSuperadmin
       ? null
       : Array.isArray(currentOrganization?.companias_habilitadas)
@@ -276,6 +309,14 @@ function canAccessTab(ctx, tabId) {
 
 function requireSuperadmin(ctx) {
   return !!ctx?.isSuperadmin;
+}
+
+function canViewSeguros911(ctx) {
+  return !!ctx?.canViewSeguros911;
+}
+
+function canManageSeguros911Catalog(ctx) {
+  return !!ctx?.canManageSeguros911Catalog;
 }
 
 function appendActivity(event) {
@@ -352,7 +393,9 @@ function isOwnedByContext(record, ctx) {
 
 module.exports = {
   appendActivity,
+  canManageSeguros911Catalog,
   canAccessTab,
+  canViewSeguros911,
   defaultAccessControl,
   getAccessControl,
   getCurrentAccessContext,

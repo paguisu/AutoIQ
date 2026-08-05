@@ -5,6 +5,7 @@ const {
   parseSmgQuoteResponse,
   redactSmgEnvelope,
   resolveSmgProvinceCode,
+  resolveSmgPostalCode,
   resolveSmgUseCode,
 } = require('../services/smg/quote');
 
@@ -150,6 +151,42 @@ describe('SMG quote adapter', () => {
     expect(resolveSmgUseCode({ fila: { uso: 'Particular' } })).toBe('1');
     expect(resolveSmgProvinceCode({ provincia: 'Tierra del Fuego' }, {}, {})).toBe('23');
     expect(resolveSmgProvinceCode({ Provincia: 'CABA' }, {}, {})).toBe('1');
+  });
+
+  test('aplica alias de codigo postal para Frigorifico CAP en SMG', () => {
+    const postal = resolveSmgPostalCode({
+      CP: '9421',
+      Localidad: 'FRIGORIFICO CAP',
+      Provincia: 'Tierra del Fuego',
+    });
+
+    expect(postal).toMatchObject({
+      cp: '9420',
+      originalCp: '9421',
+      aliasApplied: true,
+    });
+
+    const { envelope, requestMeta } = buildSmgEnvelope({
+      fila: {
+        infoautocod: '120618',
+        anio: '2025',
+        CP: '9421',
+        Localidad: 'FRIGORIFICO CAP',
+        Provincia: 'Tierra del Fuego',
+      },
+      cabecera: { uso: 'Particular', cerokm: '0', gnc: '0' },
+      cfg: { soap_method: 'Cotizar_Autos', codAgt: '6645', cod_tipo_poliza: '1' },
+      mapeos: { uso_codigo: '1' },
+      sumaAseguradaOverride: '30135000',
+    });
+
+    expect(requestMeta).toMatchObject({
+      nCodPostal: '9420',
+      codPostalOriginal: '9421',
+      codPostalAliasAplicado: true,
+      codPostalAliasFuente: 'smg_ws_no_reconoce_9421',
+    });
+    expect(envelope).toContain('<nCodPostal>9420</nCodPostal>');
   });
 
   test('arma y parsea el lookup de suma asegurada de SMG', () => {

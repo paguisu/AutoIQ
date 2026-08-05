@@ -14,6 +14,7 @@ const validarColumnas = require('./utils/validarColumnas');
 const serveIndex = require('serve-index');
 const {
   appendActivity,
+  canViewSeguros911,
   getCurrentAccessContext,
   getHistorialOwner,
   getUserDisplayName,
@@ -37,6 +38,7 @@ const atmRouter = require('./services/atm/atm');
 const cotizacionRouter = require('./routes/cotizacion');
 const procesoRouter = require('./routes/proceso');
 const cabecerasRouter = require('./routes/cabeceras'); // <— NUEVO
+const commercialConditionsRouter = require('./routes/commercial_conditions');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -53,9 +55,71 @@ app.use((req, _res, next) => {
 const dirSubidos = path.join(__dirname, '../data/archivos_subidos');
 const dirCombinados = path.join(__dirname, '../data/combinados');
 const dirDescargas = path.join(__dirname, '../frontend/descargas');
-[dirSubidos, dirCombinados, dirDescargas].forEach((d) => {
+const dirHistorialDetalle = path.join(__dirname, '../data/historial_detalle');
+[dirSubidos, dirCombinados, dirDescargas, dirHistorialDetalle].forEach((d) => {
   if (!fs.existsSync(d)) fs.mkdirSync(d, { recursive: true });
 });
+
+function historialDetallePath(id) {
+  return path.join(dirHistorialDetalle, `historial-${Number(id)}.json`);
+}
+
+function saveHistorialDetalle(id, detail) {
+  try {
+    fs.writeFileSync(historialDetallePath(id), JSON.stringify(detail, null, 2), 'utf8');
+  } catch (err) {
+    console.warn(`No se pudo guardar historial_detalle ${id}:`, err?.message || err);
+  }
+}
+
+function readHistorialDetalle(id) {
+  try {
+    const p = historialDetallePath(id);
+    if (!fs.existsSync(p)) return null;
+    return JSON.parse(fs.readFileSync(p, 'utf8'));
+  } catch {
+    return null;
+  }
+}
+
+function buildHistorialInputsLabel(detail) {
+  if (!detail || typeof detail !== 'object') return '';
+  const custom = String(detail.nombre_input || '').trim();
+  if (custom) return custom;
+  if (detail.tipo === 'combinatorio') {
+    const veh = String(detail.archivo_vehiculos_original || '').trim();
+    const cp = String(detail.archivo_cp_original || '').trim();
+    if (veh || cp) return [veh, cp].filter(Boolean).join(' + ');
+  }
+  if (detail.tipo === 'taxativo') {
+    return String(detail.archivo_unico_original || '').trim();
+  }
+  return '';
+}
+
+function classifyHistorialOrigin(row, detail) {
+  const nombreArchivo = String(row?.nombre_archivo || '').trim().toLowerCase();
+  const tipoDetalle = String(detail?.tipo || '').trim().toLowerCase();
+
+  if (
+    nombreArchivo.startsWith('cotizador-publico-') ||
+    tipoDetalle === 'servicio_publico' ||
+    tipoDetalle === 'cotizador_publico' ||
+    tipoDetalle === 'seguros911'
+  ) {
+    return 'seguros911';
+  }
+
+  if (nombreArchivo.startsWith('combinado-') || tipoDetalle === 'combinatorio') {
+    return 'masivo_combinatorio';
+  }
+
+  if (nombreArchivo.startsWith('taxativo-') || tipoDetalle === 'taxativo') {
+    return 'masivo_taxativo';
+  }
+
+  return 'otro';
+}
 
 // Multer storage + fileFilter
 const storage = multer.diskStorage({
@@ -118,6 +182,7 @@ app.post('/upload', upload.any(), async (req, res) => {
 
   try {
     const files = req.files || [];
+    const nombreInput = String(req.body?.nombreInput || '').trim();
 
     const fileVeh = pickFile(files, ['archivoVehiculos', 'archivoVehiculo', 'vehiculos', 'vehiculo']);
     const fileCP = pickFile(files, ['archivoCP', 'codigosPostales', 'codigoPostal', 'cp']);
@@ -209,6 +274,15 @@ app.post('/upload', upload.any(), async (req, res) => {
             [nombreArchivo, rutaRelativa, fecha, totalCombinaciones]
           );
           if (insertResult?.insertId) {
+            saveHistorialDetalle(insertResult.insertId, {
+              tipo: 'combinatorio',
+              nombre_input: nombreInput,
+              archivo_generado: nombreArchivo,
+              archivo_vehiculos_original: fileVeh.originalname || '',
+              archivo_cp_original: fileCP.originalname || '',
+              archivo_vehiculos_subido: path.basename(fileVeh.path || ''),
+              archivo_cp_subido: path.basename(fileCP.path || ''),
+            });
             const ctx = req.accessContext || getCurrentAccessContext();
             setHistorialOwner(insertResult.insertId, {
               organization_id: ctx.currentOrganization?.id || 'autoiq',
@@ -265,6 +339,13 @@ app.post('/upload', upload.any(), async (req, res) => {
             [nombreArchivo, rutaRelativa, fecha, rows.length]
           );
           if (insertResult?.insertId) {
+            saveHistorialDetalle(insertResult.insertId, {
+              tipo: 'taxativo',
+              nombre_input: nombreInput,
+              archivo_generado: nombreArchivo,
+              archivo_unico_original: fileUnico.originalname || '',
+              archivo_unico_subido: path.basename(fileUnico.path || ''),
+            });
             const ctx = req.accessContext || getCurrentAccessContext();
             setHistorialOwner(insertResult.insertId, {
               organization_id: ctx.currentOrganization?.id || 'autoiq',
@@ -308,17 +389,33 @@ app.get('/historial', async (req, res) => {
       'SELECT id, nombre_archivo, ruta, DATE_FORMAT(fecha, "%Y-%m-%d %H:%i:%s") AS fecha, cantidad_registros FROM historial_combinaciones ORDER BY fecha DESC'
     );
     const ctx = req.accessContext || getCurrentAccessContext();
-    const out = rows.filter((row) => {
+    const out = rows.map((row) => {
       const owner = getHistorialOwner(row.id) || { organization_id: 'autoiq', user_id: 'superadmin-local' };
-      return isOwnedByContext(owner, ctx);
-    }).map((row) => {
-      const owner = getHistorialOwner(row.id) || { organization_id: 'autoiq', user_id: 'superadmin-local' };
+      const detail = readHistorialDetalle(row.id);
+      const historial_origen = classifyHistorialOrigin(row, detail);
       return {
         ...row,
-        organization_id: owner.organization_id,
-        user_id: owner.user_id,
+        owner,
+        detail,
+        historial_origen,
       };
-    });
+    }).filter((row) => {
+      if (!isOwnedByContext(row.owner, ctx)) return false;
+      if (row.historial_origen === 'seguros911' && !canViewSeguros911(ctx)) return false;
+      return true;
+    }).map((row) => ({
+      id: row.id,
+      nombre_archivo: row.nombre_archivo,
+      ruta: row.ruta,
+      fecha: row.fecha,
+      cantidad_registros: row.cantidad_registros,
+      inputs: row.detail,
+      inputs_label: buildHistorialInputsLabel(row.detail),
+      historial_origen: row.historial_origen,
+      es_cotizacion_webapp: row.historial_origen === 'seguros911',
+      organization_id: row.owner.organization_id,
+      user_id: row.owner.user_id,
+    }));
     res.json(out);
   } catch (error) {
     console.error('Error al obtener historial:', error);
@@ -336,6 +433,7 @@ app.use('/atm', atmRouter);
 app.use('/cotizacion', cotizacionRouter);
 app.use('/proceso', procesoRouter);
 app.use('/cabeceras', cabecerasRouter);
+app.use('/commercial-conditions', commercialConditionsRouter);
 
 // ✅ Dejar una sola fuente de /aseguradoras (evita doble mount)
 // app.use('/aseguradoras', require('./routes/aseguradoras'));

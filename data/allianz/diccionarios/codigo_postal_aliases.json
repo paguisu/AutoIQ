@@ -1,0 +1,9 @@
+[
+  {
+    "inputCodPostal": "4234",
+    "inputLocalidad": "San Martin",
+    "inputProvincia": "Catamarca",
+    "codPostal": "4235",
+    "reason": "Allianz no acepta 4234 para San Martin (Tapso-Dpto. Ancasti); se remapea a 4235 para cotizar."
+  }
+]

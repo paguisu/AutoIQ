@@ -1,0 +1,18 @@
+[
+  {
+    "idOcupacion": 1,
+    "descripcion": "CAMIONERO"
+  },
+  {
+    "idOcupacion": 2,
+    "descripcion": "ADMINISTRATIVO"
+  },
+  {
+    "idOcupacion": 3,
+    "descripcion": "PERSONAL AGRICOLA"
+  },
+  {
+    "idOcupacion": 4,
+    "descripcion": "NO INFORMA"
+  }
+]

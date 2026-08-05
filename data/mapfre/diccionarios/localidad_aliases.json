@@ -1,0 +1,26 @@
+[
+  {
+    "codigo_postal": "1650",
+    "provincia": "Buenos Aires",
+    "localidad": "GENERAL SAN MARTIN",
+    "codigo_mapfre": "1650001",
+    "descripcion_mapfre": "SAN MARTIN",
+    "motivo": "Alias operativo validado para recuperar proceso 172"
+  },
+  {
+    "codigo_postal": "4234",
+    "provincia": "Catamarca",
+    "localidad": "SAN MARTIN",
+    "codigo_mapfre": "4234004",
+    "descripcion_mapfre": "SAN MARTIN (TAPSO-D ANCASTI)",
+    "motivo": "Alias operativo validado para recuperar proceso 172"
+  },
+  {
+    "codigo_postal": "4711",
+    "provincia": "Catamarca",
+    "localidad": "EL BOLSON",
+    "codigo_mapfre": "4711030",
+    "descripcion_mapfre": "EL BOLSON (LOS VARELA-D AMBATO)",
+    "motivo": "Alias operativo validado para recuperar proceso 172"
+  }
+]

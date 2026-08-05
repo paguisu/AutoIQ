@@ -1,0 +1,2511 @@
+{
+  "2023|N|AUDI|A1": [
+    {
+      "codigo": "1153",
+      "descripcion": "AUDI A1 SPORTBACK 30T STRONIC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 60534
+    },
+    {
+      "codigo": "1152",
+      "descripcion": "AUDI A1 SPORTBACK 35T STRONIC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 60533
+    },
+    {
+      "codigo": "8008",
+      "descripcion": "AUDI A1 SPORTBACK 40T S LINE STRONIC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 60564
+    }
+  ],
+  "2023|N|CHEVROLET|CRUZE": [
+    {
+      "codigo": "1996",
+      "descripcion": "CHEVROLET CRUZE 1.4 4P LT CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 120503
+    },
+    {
+      "codigo": "4274",
+      "descripcion": "CHEVROLET CRUZE 1.4 4P LT AT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 120612
+    },
+    {
+      "codigo": "1998",
+      "descripcion": "CHEVROLET CRUZE 1.4 4P LTZ AT CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 120506
+    },
+    {
+      "codigo": "4271",
+      "descripcion": "CHEVROLET CRUZE 1.4 4P MIDNIGHT AT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 120614
+    },
+    {
+      "codigo": "2189",
+      "descripcion": "CHEVROLET CRUZE 1.4 4P PREMIERAT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 120565
+    },
+    {
+      "codigo": "2127",
+      "descripcion": "CHEVROLET CRUZE 1.4 5P LT CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 120539
+    },
+    {
+      "codigo": "4275",
+      "descripcion": "CHEVROLET CRUZE 1.4 5P LT AT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 120613
+    },
+    {
+      "codigo": "2129",
+      "descripcion": "CHEVROLET CRUZE 1.4 5P LTZ AT CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 120537
+    },
+    {
+      "codigo": "2190",
+      "descripcion": "CHEVROLET CRUZE 1.4 5P PREMIERAT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 120566
+    },
+    {
+      "codigo": "4272",
+      "descripcion": "CHEVROLET CRUZE 1.4 5P RS AT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 120615
+    }
+  ],
+  "2023|N|MERCEDES BENZ|C 300": [
+    {
+      "codigo": "5922",
+      "descripcion": "MERCEDES BENZ C 300 AMG LINE MHEV L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 280641
+    },
+    {
+      "codigo": "8162",
+      "descripcion": "MERCEDES BENZ C 300 CABRIOLET",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 280596
+    },
+    {
+      "codigo": "8092",
+      "descripcion": "MERCEDES BENZ C 300 CITY AT COUPE CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 280585
+    }
+  ],
+  "2023|N|NISSAN|KICKS": [
+    {
+      "codigo": "7190",
+      "descripcion": "NISSAN KICKS 1.6 ADVANCE CVT L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300261
+    },
+    {
+      "codigo": "7189",
+      "descripcion": "NISSAN KICKS 1.6 ADVANCE L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300260
+    },
+    {
+      "codigo": "7191",
+      "descripcion": "NISSAN KICKS 1.6 ADVANCE PLUSCVT L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300262
+    },
+    {
+      "codigo": "7193",
+      "descripcion": "NISSAN KICKS 1.6 EXCLUSIVE CVT L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300263
+    },
+    {
+      "codigo": "7194",
+      "descripcion": "NISSAN KICKS 1.6 SENSE L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300259
+    },
+    {
+      "codigo": "21110",
+      "descripcion": "NISSAN KICKS 1.6 X-PLAY CVT NFT L/21",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300247
+    },
+    {
+      "codigo": "7312",
+      "descripcion": "NISSAN KICKS 1.6 X-PLAY II CVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300265
+    }
+  ],
+  "2023|N|NISSAN|VERSA": [
+    {
+      "codigo": "4230",
+      "descripcion": "NISSAN VERSA 1.6 ADVANCE AT L/21",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300231
+    },
+    {
+      "codigo": "8281",
+      "descripcion": "NISSAN VERSA 1.6 ADVANCE CVT L/23",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300268
+    },
+    {
+      "codigo": "4228",
+      "descripcion": "NISSAN VERSA 1.6 ADVANCE L/21",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300230
+    },
+    {
+      "codigo": "8280",
+      "descripcion": "NISSAN VERSA 1.6 ADVANCE L/23",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300267
+    },
+    {
+      "codigo": "4229",
+      "descripcion": "NISSAN VERSA 1.6 EXCLUSIVE CVT L/21",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300232
+    },
+    {
+      "codigo": "8282",
+      "descripcion": "NISSAN VERSA 1.6 EXCLUSIVE CVT L/23",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300269
+    },
+    {
+      "codigo": "4232",
+      "descripcion": "NISSAN VERSA 1.6 SENSE CVT L/21",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300234
+    },
+    {
+      "codigo": "4231",
+      "descripcion": "NISSAN VERSA 1.6 SENSE L/21",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300233
+    },
+    {
+      "codigo": "8279",
+      "descripcion": "NISSAN VERSA 1.6 SENSE L/23",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300266
+    }
+  ],
+  "2025|N|TOYOTA|COROLLA": [
+    {
+      "codigo": "9342",
+      "descripcion": "TOYOTA COROLLA 1.8 SE-G L/23 CVT HYBRID",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450464
+    },
+    {
+      "codigo": "10347",
+      "descripcion": "TOYOTA COROLLA 1.8 SEG L/25 CVT HYBRID SAFETY",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450503
+    },
+    {
+      "codigo": "9343",
+      "descripcion": "TOYOTA COROLLA 1.8 XEI L/23 CVT HYBRID",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450465
+    },
+    {
+      "codigo": "10348",
+      "descripcion": "TOYOTA COROLLA 1.8 XEI L/25 CVT HYBRID SAFETY",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450504
+    },
+    {
+      "codigo": "18518",
+      "descripcion": "TOYOTA COROLLA 2.0 GR SPORT CVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450403
+    },
+    {
+      "codigo": "10350",
+      "descripcion": "TOYOTA COROLLA 2.0 GR SPORT CVT L/25 SAFETY",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450506
+    },
+    {
+      "codigo": "9347",
+      "descripcion": "TOYOTA COROLLA 2.0 GR-SPORT CVT L/23",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450469
+    },
+    {
+      "codigo": "9346",
+      "descripcion": "TOYOTA COROLLA 2.0 SE-G L/23 CVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450468
+    },
+    {
+      "codigo": "10349",
+      "descripcion": "TOYOTA COROLLA 2.0 SEG L/25 CVT SAFETY",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450505
+    },
+    {
+      "codigo": "9345",
+      "descripcion": "TOYOTA COROLLA 2.0 XEI L/23 CVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450467
+    },
+    {
+      "codigo": "10351",
+      "descripcion": "TOYOTA COROLLA 2.0 XEI L/25 CVT SAFETY",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450507
+    },
+    {
+      "codigo": "18490",
+      "descripcion": "TOYOTA COROLLA 2.0 XLI CVT L/20",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450351
+    },
+    {
+      "codigo": "9344",
+      "descripcion": "TOYOTA COROLLA 2.0 XLI L/23 CVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450466
+    },
+    {
+      "codigo": "10352",
+      "descripcion": "TOYOTA COROLLA 2.0 XLI L/25 CVT SAFETY",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450508
+    },
+    {
+      "codigo": "10357",
+      "descripcion": "TOYOTA COROLLA CROSS 1.8 SEG HEV E-CVT L/25",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450513
+    },
+    {
+      "codigo": "9748",
+      "descripcion": "TOYOTA COROLLA CROSS 1.8 SEG HV E-CVT L/24",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450480
+    },
+    {
+      "codigo": "9746",
+      "descripcion": "TOYOTA COROLLA CROSS 1.8 XEI HV E-CVT L/24",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450478
+    },
+    {
+      "codigo": "10356",
+      "descripcion": "TOYOTA COROLLA CROSS 1.8 XEI HV E-CVT L/25",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450512
+    },
+    {
+      "codigo": "10358",
+      "descripcion": "TOYOTA COROLLA CROSS 2.0 GR SPORT CVT L/25",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450514
+    },
+    {
+      "codigo": "9749",
+      "descripcion": "TOYOTA COROLLA CROSS 2.0 GR-SPORT CVT L/24",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450481
+    },
+    {
+      "codigo": "9747",
+      "descripcion": "TOYOTA COROLLA CROSS 2.0 SEG CVT L/24",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450479
+    },
+    {
+      "codigo": "10355",
+      "descripcion": "TOYOTA COROLLA CROSS 2.0 SEG CVT L/25",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450511
+    },
+    {
+      "codigo": "9745",
+      "descripcion": "TOYOTA COROLLA CROSS 2.0 XEI CVT L/24",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450477
+    },
+    {
+      "codigo": "10354",
+      "descripcion": "TOYOTA COROLLA CROSS 2.0 XEI CVT L/25",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450510
+    },
+    {
+      "codigo": "9744",
+      "descripcion": "TOYOTA COROLLA CROSS 2.0 XLI CVT L/24",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450476
+    },
+    {
+      "codigo": "10353",
+      "descripcion": "TOYOTA COROLLA CROSS 2.0 XLI CVT L/25",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450509
+    },
+    {
+      "codigo": "18523",
+      "descripcion": "TOYOTA COROLLA CROSS SEG HV 1.8 ECVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450406
+    }
+  ],
+  "2023|N|TOYOTA|COROLLA": [
+    {
+      "codigo": "9342",
+      "descripcion": "TOYOTA COROLLA 1.8 SE-G L/23 CVT HYBRID",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450464
+    },
+    {
+      "codigo": "18489",
+      "descripcion": "TOYOTA COROLLA 1.8 SEG CVT HYBRYD L/20",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450346
+    },
+    {
+      "codigo": "18491",
+      "descripcion": "TOYOTA COROLLA 1.8 XEI CVT HYBRID L/20",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450352
+    },
+    {
+      "codigo": "9343",
+      "descripcion": "TOYOTA COROLLA 1.8 XEI L/23 CVT HYBRID",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450465
+    },
+    {
+      "codigo": "18518",
+      "descripcion": "TOYOTA COROLLA 2.0 GR SPORT CVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450403
+    },
+    {
+      "codigo": "9347",
+      "descripcion": "TOYOTA COROLLA 2.0 GR-SPORT CVT L/23",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450469
+    },
+    {
+      "codigo": "9346",
+      "descripcion": "TOYOTA COROLLA 2.0 SE-G L/23 CVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450468
+    },
+    {
+      "codigo": "18488",
+      "descripcion": "TOYOTA COROLLA 2.0 SEG CVT L/20",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450347
+    },
+    {
+      "codigo": "18494",
+      "descripcion": "TOYOTA COROLLA 2.0 XEI CVT L/20",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450355
+    },
+    {
+      "codigo": "18493",
+      "descripcion": "TOYOTA COROLLA 2.0 XEI L/20",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450354
+    },
+    {
+      "codigo": "9345",
+      "descripcion": "TOYOTA COROLLA 2.0 XEI L/23 CVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450467
+    },
+    {
+      "codigo": "18490",
+      "descripcion": "TOYOTA COROLLA 2.0 XLI CVT L/20",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450351
+    },
+    {
+      "codigo": "18492",
+      "descripcion": "TOYOTA COROLLA 2.0 XLI L/20",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450353
+    },
+    {
+      "codigo": "9344",
+      "descripcion": "TOYOTA COROLLA 2.0 XLI L/23 CVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450466
+    },
+    {
+      "codigo": "4317",
+      "descripcion": "TOYOTA COROLLA CROSS 2.0 GR-SPORT CVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450435
+    },
+    {
+      "codigo": "18522",
+      "descripcion": "TOYOTA COROLLA CROSS SEG 2.0 CVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450408
+    },
+    {
+      "codigo": "18523",
+      "descripcion": "TOYOTA COROLLA CROSS SEG HV 1.8 ECVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450406
+    },
+    {
+      "codigo": "18520",
+      "descripcion": "TOYOTA COROLLA CROSS XEI 2.0 CVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450409
+    },
+    {
+      "codigo": "18521",
+      "descripcion": "TOYOTA COROLLA CROSS XEI HV 1.8 ECVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450407
+    },
+    {
+      "codigo": "18519",
+      "descripcion": "TOYOTA COROLLA CROSS XLI 2.0 CVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450410
+    }
+  ],
+  "2023|N|PEUGEOT|208": [
+    {
+      "codigo": "12868",
+      "descripcion": "PEUGEOT 208 ACTIVE 1.6 L/20",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320762
+    },
+    {
+      "codigo": "12869",
+      "descripcion": "PEUGEOT 208 ACTIVE 1.6 TIP.L/20",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320763
+    },
+    {
+      "codigo": "12874",
+      "descripcion": "PEUGEOT 208 ALLURE 1.6 L/20",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320764
+    },
+    {
+      "codigo": "12875",
+      "descripcion": "PEUGEOT 208 ALLURE 1.6 TIP.L/20",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320765
+    },
+    {
+      "codigo": "12876",
+      "descripcion": "PEUGEOT 208 FELINE 1.6 TIP.L/20",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320766
+    },
+    {
+      "codigo": "12878",
+      "descripcion": "PEUGEOT 208 L/20 1.2 T GT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320767
+    },
+    {
+      "codigo": "4491",
+      "descripcion": "PEUGEOT 208 L/20 1.6 STYLE",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320775
+    },
+    {
+      "codigo": "4492",
+      "descripcion": "PEUGEOT 208 L/20 1.6 STYLE TIPTRONIC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320776
+    },
+    {
+      "codigo": "12866",
+      "descripcion": "PEUGEOT 208 L/20 LIKE 1.2",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320760
+    },
+    {
+      "codigo": "6505",
+      "descripcion": "PEUGEOT 208 L/22 1.6 ROADTRIP",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320781
+    },
+    {
+      "codigo": "6506",
+      "descripcion": "PEUGEOT 208 L/22 1.6 ROADTRIPTIPTRONIC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320782
+    },
+    {
+      "codigo": "7315",
+      "descripcion": "PEUGEOT 208 L/23 1.6 ACTIVE PACK",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320786
+    },
+    {
+      "codigo": "7318",
+      "descripcion": "PEUGEOT 208 L/23 1.6 ACTIVE PACK TIPTRONIC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320787
+    },
+    {
+      "codigo": "7319",
+      "descripcion": "PEUGEOT 208 L/23 1.6 ALLURE PACK",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320788
+    },
+    {
+      "codigo": "7320",
+      "descripcion": "PEUGEOT 208 L/23 1.6 ALLURE PACK TIPTRONIC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320789
+    },
+    {
+      "codigo": "8931",
+      "descripcion": "PEUGEOT 208 L/23 1.6 ROADTRIP",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320794
+    },
+    {
+      "codigo": "99107",
+      "descripcion": "PEUGEOT 208 L/23 1.6 ROADTRIPTIPTRONIC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320795
+    },
+    {
+      "codigo": "8498",
+      "descripcion": "PEUGEOT 208 L/23 1.6 STYLE",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320792
+    },
+    {
+      "codigo": "8499",
+      "descripcion": "PEUGEOT 208 L/23 1.6 STYLE TIPTRONIC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320793
+    },
+    {
+      "codigo": "7262",
+      "descripcion": "PEUGEOT 208 L/23 LIKE 1.2 PACK",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320785
+    },
+    {
+      "codigo": "12867",
+      "descripcion": "PEUGEOT 208 LIKE 1.6 PACK L/20",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320761
+    }
+  ],
+  "2024|N|TOYOTA|COROLLA": [
+    {
+      "codigo": "9342",
+      "descripcion": "TOYOTA COROLLA 1.8 SE-G L/23 CVT HYBRID",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450464,
+      "moto": "N"
+    },
+    {
+      "codigo": "9343",
+      "descripcion": "TOYOTA COROLLA 1.8 XEI L/23 CVT HYBRID",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450465,
+      "moto": "N"
+    },
+    {
+      "codigo": "18518",
+      "descripcion": "TOYOTA COROLLA 2.0 GR SPORT CVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450403,
+      "moto": "N"
+    },
+    {
+      "codigo": "9347",
+      "descripcion": "TOYOTA COROLLA 2.0 GR-SPORT CVT L/23",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450469,
+      "moto": "N"
+    },
+    {
+      "codigo": "9346",
+      "descripcion": "TOYOTA COROLLA 2.0 SE-G L/23 CVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450468,
+      "moto": "N"
+    },
+    {
+      "codigo": "9345",
+      "descripcion": "TOYOTA COROLLA 2.0 XEI L/23 CVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450467,
+      "moto": "N"
+    },
+    {
+      "codigo": "18490",
+      "descripcion": "TOYOTA COROLLA 2.0 XLI CVT L/20",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450351,
+      "moto": "N"
+    },
+    {
+      "codigo": "9344",
+      "descripcion": "TOYOTA COROLLA 2.0 XLI L/23 CVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450466,
+      "moto": "N"
+    },
+    {
+      "codigo": "9748",
+      "descripcion": "TOYOTA COROLLA CROSS 1.8 SEG HV E-CVT L/24",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450480,
+      "moto": "N"
+    },
+    {
+      "codigo": "9746",
+      "descripcion": "TOYOTA COROLLA CROSS 1.8 XEI HV E-CVT L/24",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450478,
+      "moto": "N"
+    },
+    {
+      "codigo": "4317",
+      "descripcion": "TOYOTA COROLLA CROSS 2.0 GR-SPORT CVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450435,
+      "moto": "N"
+    },
+    {
+      "codigo": "9749",
+      "descripcion": "TOYOTA COROLLA CROSS 2.0 GR-SPORT CVT L/24",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450481,
+      "moto": "N"
+    },
+    {
+      "codigo": "9747",
+      "descripcion": "TOYOTA COROLLA CROSS 2.0 SEG CVT L/24",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450479,
+      "moto": "N"
+    },
+    {
+      "codigo": "9745",
+      "descripcion": "TOYOTA COROLLA CROSS 2.0 XEI CVT L/24",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450477,
+      "moto": "N"
+    },
+    {
+      "codigo": "9744",
+      "descripcion": "TOYOTA COROLLA CROSS 2.0 XLI CVT L/24",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450476,
+      "moto": "N"
+    },
+    {
+      "codigo": "18522",
+      "descripcion": "TOYOTA COROLLA CROSS SEG 2.0 CVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450408,
+      "moto": "N"
+    },
+    {
+      "codigo": "18523",
+      "descripcion": "TOYOTA COROLLA CROSS SEG HV 1.8 ECVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450406,
+      "moto": "N"
+    },
+    {
+      "codigo": "18520",
+      "descripcion": "TOYOTA COROLLA CROSS XEI 2.0 CVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450409,
+      "moto": "N"
+    },
+    {
+      "codigo": "18521",
+      "descripcion": "TOYOTA COROLLA CROSS XEI HV 1.8 ECVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450407,
+      "moto": "N"
+    },
+    {
+      "codigo": "18519",
+      "descripcion": "TOYOTA COROLLA CROSS XLI 2.0 CVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450410,
+      "moto": "N"
+    }
+  ],
+  "2023|N|PEUGEOT|2008": [
+    {
+      "codigo": "6378",
+      "descripcion": "PEUGEOT 2008 1.6 FELINE L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320778,
+      "moto": "N"
+    },
+    {
+      "codigo": "6381",
+      "descripcion": "PEUGEOT 2008 1.6 FELINE TIPTRONIC L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320779,
+      "moto": "N"
+    },
+    {
+      "codigo": "6382",
+      "descripcion": "PEUGEOT 2008 1.6 SPORT THP TIPTRONIC L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320780,
+      "moto": "N"
+    }
+  ],
+  "2024|N|FIAT|CRONOS": [
+    {
+      "codigo": "6139",
+      "descripcion": "FIAT CRONOS 1.3 DRIVE CVT L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 170860,
+      "moto": "N"
+    },
+    {
+      "codigo": "9253",
+      "descripcion": "FIAT CRONOS 1.3 DRIVE GSE CVT",
+      "cantidadInfoauto": 0,
+      "codigoInfoauto": 0,
+      "moto": "N"
+    },
+    {
+      "codigo": "9337",
+      "descripcion": "FIAT CRONOS 1.3 DRIVE GSE PK PLUS CVT L/23",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 170879,
+      "moto": "N"
+    },
+    {
+      "codigo": "7690",
+      "descripcion": "FIAT CRONOS 1.3 DRIVE GSE PK PLUS L/23",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 170866,
+      "moto": "N"
+    },
+    {
+      "codigo": "6138",
+      "descripcion": "FIAT CRONOS 1.3 DRIVE L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 170859,
+      "moto": "N"
+    },
+    {
+      "codigo": "7689",
+      "descripcion": "FIAT CRONOS 1.3 GSE LIKE L/23",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 170865,
+      "moto": "N"
+    },
+    {
+      "codigo": "7633",
+      "descripcion": "FIAT CRONOS 1.3 GSE STILE L/23",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 170867,
+      "moto": "N"
+    },
+    {
+      "codigo": "6141",
+      "descripcion": "FIAT CRONOS 1.3 PRECISION CVTL/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 170862,
+      "moto": "N"
+    }
+  ],
+  "2025|N|VOLKSWAGEN|POLO": [
+    {
+      "codigo": "10455",
+      "descripcion": "VOLKSWAGEN POLO 1.0 170 TSI COMFORTLINE AT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 460994,
+      "moto": "N"
+    },
+    {
+      "codigo": "99110",
+      "descripcion": "VOLKSWAGEN POLO 1.0 170 TSI HIGHLINE AT L/23",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 460957,
+      "moto": "N"
+    },
+    {
+      "codigo": "99111",
+      "descripcion": "VOLKSWAGEN POLO 1.4 GTS 250 TSI L/23",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 460958,
+      "moto": "N"
+    },
+    {
+      "codigo": "99109",
+      "descripcion": "VOLKSWAGEN POLO 1.6 MSI L/23",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 460956,
+      "moto": "N"
+    },
+    {
+      "codigo": "8250",
+      "descripcion": "VOLKSWAGEN POLO 1.6 MSI TRACKL/23",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 460954,
+      "moto": "N"
+    }
+  ],
+  "2025|N|FORD|TERRITORY": [
+    {
+      "codigo": "9852",
+      "descripcion": "FORD TERRITORY 1.5T TREND HYBRID",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 180826,
+      "moto": "N"
+    },
+    {
+      "codigo": "7852",
+      "descripcion": "FORD TERRITORY 1.8T SEL",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 180782,
+      "moto": "N"
+    },
+    {
+      "codigo": "10627",
+      "descripcion": "FORD TERRITORY 1.8T SEL L/25",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 180820,
+      "moto": "N"
+    },
+    {
+      "codigo": "7853",
+      "descripcion": "FORD TERRITORY 1.8T TITANIUM",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 180783,
+      "moto": "N"
+    },
+    {
+      "codigo": "10628",
+      "descripcion": "FORD TERRITORY 1.8T TITANIUM L/25",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 180821,
+      "moto": "N"
+    }
+  ],
+  "2025|N|CITROEN|C 4 CACTUS 1.6 THP SHINE AT L/23": [],
+  "2022|N|RENAULT|DUSTER": [
+    {
+      "codigo": "23496",
+      "descripcion": "RENAULT DUSTER 1.3T 4X4 ICONIC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360856,
+      "moto": "N"
+    },
+    {
+      "codigo": "23500",
+      "descripcion": "RENAULT DUSTER 1.3T ICONIC CVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360860,
+      "moto": "N"
+    },
+    {
+      "codigo": "23497",
+      "descripcion": "RENAULT DUSTER 1.3T OUTSIDER CVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360857,
+      "moto": "N"
+    },
+    {
+      "codigo": "23498",
+      "descripcion": "RENAULT DUSTER 1.6 INTENS CVTL/21",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360858,
+      "moto": "N"
+    },
+    {
+      "codigo": "23501",
+      "descripcion": "RENAULT DUSTER 1.6 INTENS L/21",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360861,
+      "moto": "N"
+    },
+    {
+      "codigo": "23499",
+      "descripcion": "RENAULT DUSTER 1.6 ZEN/LIFE L/21",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360859,
+      "moto": "N"
+    },
+    {
+      "codigo": "6286",
+      "descripcion": "RENAULT DUSTER OROCH 1.3T 4X4OUTSIDER",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360868,
+      "moto": "N"
+    },
+    {
+      "codigo": "6285",
+      "descripcion": "RENAULT DUSTER OROCH 1.3T ICONIC CVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360867,
+      "moto": "N"
+    },
+    {
+      "codigo": "23481",
+      "descripcion": "RENAULT DUSTER OROCH 1.6 DYNAMIQUE L/20",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360841,
+      "moto": "N"
+    },
+    {
+      "codigo": "6284",
+      "descripcion": "RENAULT DUSTER OROCH 1.6 EMOTION SCE",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360866,
+      "moto": "N"
+    },
+    {
+      "codigo": "23480",
+      "descripcion": "RENAULT DUSTER OROCH 1.6 OUTSIDER L/20",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360840,
+      "moto": "N"
+    },
+    {
+      "codigo": "23495",
+      "descripcion": "RENAULT DUSTER OROCH 1.6 PROFESIONAL L/20",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360855,
+      "moto": "N"
+    },
+    {
+      "codigo": "23479",
+      "descripcion": "RENAULT DUSTER OROCH 2.0 4X4 DYNAMIQUE L/20",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360839,
+      "moto": "N"
+    },
+    {
+      "codigo": "23483",
+      "descripcion": "RENAULT DUSTER OROCH 2.0 4X4 OUTSIDER L/20",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360843,
+      "moto": "N"
+    },
+    {
+      "codigo": "23488",
+      "descripcion": "RENAULT DUSTER OROCH 2.0 DYNAMIQUE L/20",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360846,
+      "moto": "N"
+    },
+    {
+      "codigo": "23484",
+      "descripcion": "RENAULT DUSTER OROCH 2.0 OUTSIDER L/20",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360844,
+      "moto": "N"
+    },
+    {
+      "codigo": "23482",
+      "descripcion": "RENAULT DUSTER OROCH 2.0 PRIVILEGE L/20",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360842,
+      "moto": "N"
+    }
+  ],
+  "2023|N|CITROEN|C 4 CACTUS 1.6 VTI FEEL PK PLUS BT AT6": [],
+  "2023|N|CHEVROLET|TRACKER": [
+    {
+      "codigo": "6500",
+      "descripcion": "CHEVROLET TRACKER 1.2T AT L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 120618,
+      "moto": "N"
+    },
+    {
+      "codigo": "6499",
+      "descripcion": "CHEVROLET TRACKER 1.2T L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 120617,
+      "moto": "N"
+    },
+    {
+      "codigo": "6501",
+      "descripcion": "CHEVROLET TRACKER 1.2T LTZ ATL/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 120619,
+      "moto": "N"
+    },
+    {
+      "codigo": "6502",
+      "descripcion": "CHEVROLET TRACKER 1.2T PREMIERAT L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 120620,
+      "moto": "N"
+    }
+  ],
+  "2025|N|TOYOTA|YARIS": [
+    {
+      "codigo": "10561",
+      "descripcion": "TOYOTA YARIS 1.6T GR L/25",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450516,
+      "moto": "N"
+    },
+    {
+      "codigo": "10562",
+      "descripcion": "TOYOTA YARIS 1.6T GR L/25 AT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450517,
+      "moto": "N"
+    },
+    {
+      "codigo": "18527",
+      "descripcion": "TOYOTA YARIS 3P GR 1.6T",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450414,
+      "moto": "N"
+    },
+    {
+      "codigo": "18538",
+      "descripcion": "TOYOTA YARIS 4P XLS CVT L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450425,
+      "moto": "N"
+    },
+    {
+      "codigo": "18537",
+      "descripcion": "TOYOTA YARIS 4P XLS L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450424,
+      "moto": "N"
+    },
+    {
+      "codigo": "18539",
+      "descripcion": "TOYOTA YARIS 4P XLS PK CVT L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450426,
+      "moto": "N"
+    },
+    {
+      "codigo": "18545",
+      "descripcion": "TOYOTA YARIS 5P S CVT L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450431,
+      "moto": "N"
+    },
+    {
+      "codigo": "10269",
+      "descripcion": "TOYOTA YARIS 5P XLS CVT +",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450502,
+      "moto": "N"
+    },
+    {
+      "codigo": "18543",
+      "descripcion": "TOYOTA YARIS 5P XLS CVT L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450429,
+      "moto": "N"
+    },
+    {
+      "codigo": "18542",
+      "descripcion": "TOYOTA YARIS 5P XLS L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450428,
+      "moto": "N"
+    },
+    {
+      "codigo": "18544",
+      "descripcion": "TOYOTA YARIS 5P XLS PK CVT L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450430,
+      "moto": "N"
+    },
+    {
+      "codigo": "9341",
+      "descripcion": "TOYOTA YARIS 5P XS CVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450463,
+      "moto": "N"
+    },
+    {
+      "codigo": "18541",
+      "descripcion": "TOYOTA YARIS 5P XS L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450427,
+      "moto": "N"
+    }
+  ],
+  "2022|N|TOYOTA|YARIS": [
+    {
+      "codigo": "18527",
+      "descripcion": "TOYOTA YARIS 3P GR 1.6T",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450414,
+      "moto": "N"
+    },
+    {
+      "codigo": "18513",
+      "descripcion": "TOYOTA YARIS 4P XLS CVT L/20",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450382,
+      "moto": "N"
+    },
+    {
+      "codigo": "18538",
+      "descripcion": "TOYOTA YARIS 4P XLS CVT L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450425,
+      "moto": "N"
+    },
+    {
+      "codigo": "18510",
+      "descripcion": "TOYOTA YARIS 4P XLS L/20",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450380,
+      "moto": "N"
+    },
+    {
+      "codigo": "18537",
+      "descripcion": "TOYOTA YARIS 4P XLS L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450424,
+      "moto": "N"
+    },
+    {
+      "codigo": "18511",
+      "descripcion": "TOYOTA YARIS 4P XLS PK CVT L/20",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450381,
+      "moto": "N"
+    },
+    {
+      "codigo": "18539",
+      "descripcion": "TOYOTA YARIS 4P XLS PK CVT L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450426,
+      "moto": "N"
+    },
+    {
+      "codigo": "18507",
+      "descripcion": "TOYOTA YARIS 5P S CVT L/20",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450376,
+      "moto": "N"
+    },
+    {
+      "codigo": "18545",
+      "descripcion": "TOYOTA YARIS 5P S CVT L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450431,
+      "moto": "N"
+    },
+    {
+      "codigo": "18512",
+      "descripcion": "TOYOTA YARIS 5P XLS CVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450383,
+      "moto": "N"
+    },
+    {
+      "codigo": "18543",
+      "descripcion": "TOYOTA YARIS 5P XLS CVT L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450429,
+      "moto": "N"
+    },
+    {
+      "codigo": "18508",
+      "descripcion": "TOYOTA YARIS 5P XLS L/20",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450378,
+      "moto": "N"
+    },
+    {
+      "codigo": "18542",
+      "descripcion": "TOYOTA YARIS 5P XLS L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450428,
+      "moto": "N"
+    },
+    {
+      "codigo": "18503",
+      "descripcion": "TOYOTA YARIS 5P XLS PK CVT L/20",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450377,
+      "moto": "N"
+    },
+    {
+      "codigo": "18544",
+      "descripcion": "TOYOTA YARIS 5P XLS PK CVT L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450430,
+      "moto": "N"
+    },
+    {
+      "codigo": "18504",
+      "descripcion": "TOYOTA YARIS 5P XS L/20",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450374,
+      "moto": "N"
+    },
+    {
+      "codigo": "18541",
+      "descripcion": "TOYOTA YARIS 5P XS L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450427,
+      "moto": "N"
+    }
+  ],
+  "2025|N|NISSAN|KICKS": [
+    {
+      "codigo": "7190",
+      "descripcion": "NISSAN KICKS 1.6 ADVANCE CVT L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300261,
+      "moto": "N"
+    },
+    {
+      "codigo": "7191",
+      "descripcion": "NISSAN KICKS 1.6 ADVANCE PLUSCVT L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300262,
+      "moto": "N"
+    },
+    {
+      "codigo": "7193",
+      "descripcion": "NISSAN KICKS 1.6 EXCLUSIVE CVT L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300263,
+      "moto": "N"
+    },
+    {
+      "codigo": "10522",
+      "descripcion": "NISSAN KICKS 1.6 PLAY ADVANCECVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300279,
+      "moto": "N"
+    },
+    {
+      "codigo": "10523",
+      "descripcion": "NISSAN KICKS 1.6 PLAY ADVANCECVT PLUS",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300280,
+      "moto": "N"
+    },
+    {
+      "codigo": "10524",
+      "descripcion": "NISSAN KICKS 1.6 PLAY EXCLUSIVE CVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300281,
+      "moto": "N"
+    },
+    {
+      "codigo": "10521",
+      "descripcion": "NISSAN KICKS 1.6 PLAY SENSE",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300278,
+      "moto": "N"
+    },
+    {
+      "codigo": "7194",
+      "descripcion": "NISSAN KICKS 1.6 SENSE L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300259,
+      "moto": "N"
+    },
+    {
+      "codigo": "9481",
+      "descripcion": "NISSAN KICKS 1.6 X-PLAY III CVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300273,
+      "moto": "N"
+    }
+  ],
+  "2022|N|CHEVROLET|CRUZE": [
+    {
+      "codigo": "1996",
+      "descripcion": "CHEVROLET CRUZE 1.4 4P LT CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 120503,
+      "moto": "N"
+    },
+    {
+      "codigo": "4274",
+      "descripcion": "CHEVROLET CRUZE 1.4 4P LT AT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 120612,
+      "moto": "N"
+    },
+    {
+      "codigo": "1998",
+      "descripcion": "CHEVROLET CRUZE 1.4 4P LTZ AT CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 120506,
+      "moto": "N"
+    },
+    {
+      "codigo": "4271",
+      "descripcion": "CHEVROLET CRUZE 1.4 4P MIDNIGHT AT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 120614,
+      "moto": "N"
+    },
+    {
+      "codigo": "2189",
+      "descripcion": "CHEVROLET CRUZE 1.4 4P PREMIERAT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 120565,
+      "moto": "N"
+    },
+    {
+      "codigo": "2127",
+      "descripcion": "CHEVROLET CRUZE 1.4 5P LT CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 120539,
+      "moto": "N"
+    },
+    {
+      "codigo": "4275",
+      "descripcion": "CHEVROLET CRUZE 1.4 5P LT AT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 120613,
+      "moto": "N"
+    },
+    {
+      "codigo": "2129",
+      "descripcion": "CHEVROLET CRUZE 1.4 5P LTZ AT CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 120537,
+      "moto": "N"
+    },
+    {
+      "codigo": "2190",
+      "descripcion": "CHEVROLET CRUZE 1.4 5P PREMIERAT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 120566,
+      "moto": "N"
+    },
+    {
+      "codigo": "4272",
+      "descripcion": "CHEVROLET CRUZE 1.4 5P RS AT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 120615,
+      "moto": "N"
+    }
+  ],
+  "2023|N|FORD|ECO SPORT 1.5 TITANIUM        L/18": [],
+  "2022|N|PEUGEOT|308": [
+    {
+      "codigo": "12832",
+      "descripcion": "PEUGEOT 308 1.6 ALLURE PACK CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320737,
+      "moto": "N"
+    },
+    {
+      "codigo": "12831",
+      "descripcion": "PEUGEOT 308 HDI ALLURE PACK CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320736,
+      "moto": "N"
+    },
+    {
+      "codigo": "12457",
+      "descripcion": "PEUGEOT 308 HDI FELINE CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320646,
+      "moto": "N"
+    },
+    {
+      "codigo": "12863",
+      "descripcion": "PEUGEOT 308 THP ALLURE PLUS STIPTRONIC CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320748,
+      "moto": "N"
+    },
+    {
+      "codigo": "12748",
+      "descripcion": "PEUGEOT 308 THP FELINE TIPTRONIC CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320696,
+      "moto": "N"
+    }
+  ],
+  "2024|N|FIAT|STRADA": [
+    {
+      "codigo": "10055",
+      "descripcion": "FIAT STRADA 1.0T RANCH CVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 170886,
+      "moto": "N"
+    },
+    {
+      "codigo": "9721",
+      "descripcion": "FIAT STRADA 1.0T ULTRA CVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 170884,
+      "moto": "N"
+    },
+    {
+      "codigo": "9477",
+      "descripcion": "FIAT STRADA 1.3 FIRE FLY FREEDOM CD",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 170881,
+      "moto": "N"
+    },
+    {
+      "codigo": "23847",
+      "descripcion": "FIAT STRADA 1.3 FIRE FLY VOLCANO CD",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 170831,
+      "moto": "N"
+    },
+    {
+      "codigo": "8278",
+      "descripcion": "FIAT STRADA 1.3 FIRE FLY VOLCANO CVT CD",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 170871,
+      "moto": "N"
+    },
+    {
+      "codigo": "7156",
+      "descripcion": "FIAT STRADA 1.3 FIRE RANCH CVTCD",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 170864,
+      "moto": "N"
+    },
+    {
+      "codigo": "23848",
+      "descripcion": "FIAT STRADA 1.4 FIRE ENDURANCE CD",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 170833,
+      "moto": "N"
+    },
+    {
+      "codigo": "23846",
+      "descripcion": "FIAT STRADA 1.4 FIRE ENDURANCE PLUS CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 170832,
+      "moto": "N"
+    },
+    {
+      "codigo": "23849",
+      "descripcion": "FIAT STRADA 1.4 FIRE FREEDOM CD",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 170834,
+      "moto": "N"
+    },
+    {
+      "codigo": "9121",
+      "descripcion": "FIAT STRADA 1.4 FIRE FREEDOM TECH CD",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 170872,
+      "moto": "N"
+    }
+  ],
+  "2017|N|PEUGEOT|308": [
+    {
+      "codigo": "12449",
+      "descripcion": "PEUGEOT 308 1.6 ACTIVE CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320638
+    },
+    {
+      "codigo": "12452",
+      "descripcion": "PEUGEOT 308 1.6 ALLURE GPS CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320640
+    },
+    {
+      "codigo": "12750",
+      "descripcion": "PEUGEOT 308 2.0 ALLURE PLUS CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320694
+    },
+    {
+      "codigo": "12759",
+      "descripcion": "PEUGEOT 308 GTI S CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320712
+    },
+    {
+      "codigo": "12762",
+      "descripcion": "PEUGEOT 308 GTI S FRANCHE CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320713
+    },
+    {
+      "codigo": "12456",
+      "descripcion": "PEUGEOT 308 HDI ALLURE GPS CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320645
+    },
+    {
+      "codigo": "12455",
+      "descripcion": "PEUGEOT 308 HDI ALLURE/COMFORT CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320644
+    },
+    {
+      "codigo": "12457",
+      "descripcion": "PEUGEOT 308 HDI FELINE CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320646
+    },
+    {
+      "codigo": "12749",
+      "descripcion": "PEUGEOT 308 THP FELINE CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320695
+    },
+    {
+      "codigo": "12748",
+      "descripcion": "PEUGEOT 308 THP FELINE TIPTRONIC CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320696
+    }
+  ],
+  "2026|N|FIAT|CRONOS": [
+    {
+      "codigo": "3972",
+      "descripcion": "FIAT CRONOS 1.3 DRIVE GSE CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 170810,
+      "moto": "N"
+    },
+    {
+      "codigo": "10513",
+      "descripcion": "FIAT CRONOS 1.3 DRIVE PK PLUSCVT L/25",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 170891,
+      "moto": "N"
+    },
+    {
+      "codigo": "10512",
+      "descripcion": "FIAT CRONOS 1.3 DRIVE PK PLUSL/25",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 170890,
+      "moto": "N"
+    },
+    {
+      "codigo": "10510",
+      "descripcion": "FIAT CRONOS 1.3 LIKE L/25",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 170889,
+      "moto": "N"
+    },
+    {
+      "codigo": "10514",
+      "descripcion": "FIAT CRONOS 1.3 PRECISION CVTL/25",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 170892,
+      "moto": "N"
+    }
+  ],
+  "2023|N|TOYOTA|YARIS": [
+    {
+      "codigo": "18527",
+      "descripcion": "TOYOTA YARIS 3P GR 1.6T",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450414,
+      "moto": "N"
+    },
+    {
+      "codigo": "18538",
+      "descripcion": "TOYOTA YARIS 4P XLS CVT L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450425,
+      "moto": "N"
+    },
+    {
+      "codigo": "18537",
+      "descripcion": "TOYOTA YARIS 4P XLS L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450424,
+      "moto": "N"
+    },
+    {
+      "codigo": "18539",
+      "descripcion": "TOYOTA YARIS 4P XLS PK CVT L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450426,
+      "moto": "N"
+    },
+    {
+      "codigo": "18545",
+      "descripcion": "TOYOTA YARIS 5P S CVT L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450431,
+      "moto": "N"
+    },
+    {
+      "codigo": "18543",
+      "descripcion": "TOYOTA YARIS 5P XLS CVT L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450429,
+      "moto": "N"
+    },
+    {
+      "codigo": "18542",
+      "descripcion": "TOYOTA YARIS 5P XLS L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450428,
+      "moto": "N"
+    },
+    {
+      "codigo": "18544",
+      "descripcion": "TOYOTA YARIS 5P XLS PK CVT L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450430,
+      "moto": "N"
+    },
+    {
+      "codigo": "9341",
+      "descripcion": "TOYOTA YARIS 5P XS CVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450463,
+      "moto": "N"
+    },
+    {
+      "codigo": "18541",
+      "descripcion": "TOYOTA YARIS 5P XS L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 450427,
+      "moto": "N"
+    }
+  ],
+  "2026|N|ALFA ROMEO|STELVIO": [
+    {
+      "codigo": "20108",
+      "descripcion": "ALFA ROMEO STELVIO 2.0T 280HPAWD AT CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 30140,
+      "moto": "N"
+    }
+  ],
+  "2026|S|FIAT|CRONOS": [
+    {
+      "codigo": "3972",
+      "descripcion": "FIAT CRONOS 1.3 DRIVE GSE CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 170810,
+      "moto": "N"
+    },
+    {
+      "codigo": "10513",
+      "descripcion": "FIAT CRONOS 1.3 DRIVE PK PLUSCVT L/25",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 170891,
+      "moto": "N"
+    },
+    {
+      "codigo": "10512",
+      "descripcion": "FIAT CRONOS 1.3 DRIVE PK PLUSL/25",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 170890,
+      "moto": "N"
+    },
+    {
+      "codigo": "10510",
+      "descripcion": "FIAT CRONOS 1.3 LIKE L/25",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 170889,
+      "moto": "N"
+    },
+    {
+      "codigo": "10514",
+      "descripcion": "FIAT CRONOS 1.3 PRECISION CVTL/25",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 170892,
+      "moto": "N"
+    }
+  ],
+  "2023|N|RENAULT|KANGOO": [
+    {
+      "codigo": "23472",
+      "descripcion": "RENAULT KANGOO 1.6 LIFE SCE CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360813,
+      "moto": "N"
+    },
+    {
+      "codigo": "36777",
+      "descripcion": "RENAULT KANGOO 2 EX.L/18 1.6 CONFORT SCE CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360807,
+      "moto": "N"
+    },
+    {
+      "codigo": "36778",
+      "descripcion": "RENAULT KANGOO EX.L/18 1.6 CONFORT SCE 5AS CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360808,
+      "moto": "N"
+    },
+    {
+      "codigo": "36779",
+      "descripcion": "RENAULT KANGOO EX.L/18 1.6 EMOTION SCE CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360809,
+      "moto": "N"
+    },
+    {
+      "codigo": "36781",
+      "descripcion": "RENAULT KANGOO EX.L/18 1.6 EMOTION SCE 5AS CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360810,
+      "moto": "N"
+    },
+    {
+      "codigo": "36775",
+      "descripcion": "RENAULT KANGOO EX.L/18 DCI CONFORT CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360811,
+      "moto": "N"
+    },
+    {
+      "codigo": "36776",
+      "descripcion": "RENAULT KANGOO EX.L/18 DCI CONFORT 5AS CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360812,
+      "moto": "N"
+    },
+    {
+      "codigo": "23474",
+      "descripcion": "RENAULT KANGOO STEPWAY DCI L/18 CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360816,
+      "moto": "N"
+    },
+    {
+      "codigo": "23473",
+      "descripcion": "RENAULT KANGOO STEPWAY SCE L/18 CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360815,
+      "moto": "N"
+    },
+    {
+      "codigo": "8861",
+      "descripcion": "RENAULT KANGOO ZE",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360804,
+      "moto": "N"
+    },
+    {
+      "codigo": "36799",
+      "descripcion": "RENAULT KANGOO ZE MAXI",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360805,
+      "moto": "N"
+    },
+    {
+      "codigo": "23471",
+      "descripcion": "RENAULT KANGOO ZEN SCE L/18 CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360814,
+      "moto": "N"
+    }
+  ],
+  "2024|N|CITROEN|C 4 CACTUS 1.6 VTI FEEL + L/23 AT": [],
+  "2025|N|FORD|KUGA": [
+    {
+      "codigo": "9284",
+      "descripcion": "FORD KUGA 2.5 HYBRID 4X4 PLATINUM AT L/23",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 180794,
+      "moto": "N"
+    }
+  ],
+  "2026|N|HONDA|CIVIC": [
+    {
+      "codigo": "10256",
+      "descripcion": "HONDA CIVIC 2.0 HYBRID ADVANCED",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 190199,
+      "moto": "N"
+    }
+  ],
+  "2024|N|NISSAN|KICKS": [
+    {
+      "codigo": "7190",
+      "descripcion": "NISSAN KICKS 1.6 ADVANCE CVT L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300261,
+      "moto": "N"
+    },
+    {
+      "codigo": "7191",
+      "descripcion": "NISSAN KICKS 1.6 ADVANCE PLUSCVT L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300262,
+      "moto": "N"
+    },
+    {
+      "codigo": "7193",
+      "descripcion": "NISSAN KICKS 1.6 EXCLUSIVE CVT L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300263,
+      "moto": "N"
+    },
+    {
+      "codigo": "7194",
+      "descripcion": "NISSAN KICKS 1.6 SENSE L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300259,
+      "moto": "N"
+    },
+    {
+      "codigo": "7312",
+      "descripcion": "NISSAN KICKS 1.6 X-PLAY II CVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300265,
+      "moto": "N"
+    },
+    {
+      "codigo": "9481",
+      "descripcion": "NISSAN KICKS 1.6 X-PLAY III CVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300273,
+      "moto": "N"
+    }
+  ],
+  "2020|N|FORD|FOCUS": [
+    {
+      "codigo": "5811",
+      "descripcion": "FORD FOCUS 1.6 4P S L/16 CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 180640,
+      "moto": "N"
+    },
+    {
+      "codigo": "5804",
+      "descripcion": "FORD FOCUS 1.6 5P S L/16 CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 180634,
+      "moto": "N"
+    },
+    {
+      "codigo": "5846",
+      "descripcion": "FORD FOCUS 2.0 4P SE AT L/16 CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 180704,
+      "moto": "N"
+    },
+    {
+      "codigo": "5812",
+      "descripcion": "FORD FOCUS 2.0 4P SE L/16 CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 180641,
+      "moto": "N"
+    },
+    {
+      "codigo": "5813",
+      "descripcion": "FORD FOCUS 2.0 4P SE PLUS L/16 CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 180642,
+      "moto": "N"
+    },
+    {
+      "codigo": "5814",
+      "descripcion": "FORD FOCUS 2.0 4P SE PLUS POWERSHIFT L/16 CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 180643,
+      "moto": "N"
+    },
+    {
+      "codigo": "5815",
+      "descripcion": "FORD FOCUS 2.0 4P TITANIUM L/16 CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 180644,
+      "moto": "N"
+    },
+    {
+      "codigo": "5816",
+      "descripcion": "FORD FOCUS 2.0 4P TITANIUM POWERSHIFT L/16 CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 180645,
+      "moto": "N"
+    },
+    {
+      "codigo": "5847",
+      "descripcion": "FORD FOCUS 2.0 5P SE AT L/16 CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 180705,
+      "moto": "N"
+    },
+    {
+      "codigo": "5805",
+      "descripcion": "FORD FOCUS 2.0 5P SE L/16 CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 180635,
+      "moto": "N"
+    },
+    {
+      "codigo": "5806",
+      "descripcion": "FORD FOCUS 2.0 5P SE PLUS L/16 CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 180636,
+      "moto": "N"
+    },
+    {
+      "codigo": "5807",
+      "descripcion": "FORD FOCUS 2.0 5P SE PLUS POWERSHIFT L/16 CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 180637,
+      "moto": "N"
+    },
+    {
+      "codigo": "5808",
+      "descripcion": "FORD FOCUS 2.0 5P TITANIUM L/16 CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 180638,
+      "moto": "N"
+    },
+    {
+      "codigo": "5809",
+      "descripcion": "FORD FOCUS 2.0 5P TITANIUM POWERSHIFT L/16 CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 180639,
+      "moto": "N"
+    }
+  ],
+  "2026|N|NISSAN|KICKS": [
+    {
+      "codigo": "9911",
+      "descripcion": "NISSAN KICKS 1.0T ADVANCE DCT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300285,
+      "moto": "N"
+    },
+    {
+      "codigo": "9912",
+      "descripcion": "NISSAN KICKS 1.0T EXCLUSIVE DCT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300286,
+      "moto": "N"
+    },
+    {
+      "codigo": "9910",
+      "descripcion": "NISSAN KICKS 1.0T SENSE DCT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300284,
+      "moto": "N"
+    },
+    {
+      "codigo": "7190",
+      "descripcion": "NISSAN KICKS 1.6 ADVANCE CVT L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300261,
+      "moto": "N"
+    },
+    {
+      "codigo": "7191",
+      "descripcion": "NISSAN KICKS 1.6 ADVANCE PLUSCVT L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300262,
+      "moto": "N"
+    },
+    {
+      "codigo": "7193",
+      "descripcion": "NISSAN KICKS 1.6 EXCLUSIVE CVT L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300263,
+      "moto": "N"
+    },
+    {
+      "codigo": "10522",
+      "descripcion": "NISSAN KICKS 1.6 PLAY ADVANCECVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300279,
+      "moto": "N"
+    },
+    {
+      "codigo": "10523",
+      "descripcion": "NISSAN KICKS 1.6 PLAY ADVANCECVT PLUS",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300280,
+      "moto": "N"
+    },
+    {
+      "codigo": "10521",
+      "descripcion": "NISSAN KICKS 1.6 PLAY SENSE",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300278,
+      "moto": "N"
+    },
+    {
+      "codigo": "7194",
+      "descripcion": "NISSAN KICKS 1.6 SENSE L/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 300259,
+      "moto": "N"
+    }
+  ],
+  "2026|N|CHRYSLER|COMPASS": [
+    {
+      "codigo": "9737",
+      "descripcion": "CHRYSLER COMPASS 1.3T LIMITEDAT L/24",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 130222,
+      "moto": "N"
+    },
+    {
+      "codigo": "9738",
+      "descripcion": "CHRYSLER COMPASS 1.3T SERIE-SAT L/24",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 130223,
+      "moto": "N"
+    },
+    {
+      "codigo": "9734",
+      "descripcion": "CHRYSLER COMPASS 1.3T SPORT AT L/24",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 130219,
+      "moto": "N"
+    },
+    {
+      "codigo": "10552",
+      "descripcion": "CHRYSLER COMPASS 2.0T BLACKHAWK AWD AT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 130236,
+      "moto": "N"
+    }
+  ],
+  "2025|N|VOLKSWAGEN|NIVUS": [
+    {
+      "codigo": "24820",
+      "descripcion": "VOLKSWAGEN NIVUS 170 TSI",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 460939,
+      "moto": "N"
+    },
+    {
+      "codigo": "10407",
+      "descripcion": "VOLKSWAGEN NIVUS 170 TSI L/25",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 460989,
+      "moto": "N"
+    },
+    {
+      "codigo": "24791",
+      "descripcion": "VOLKSWAGEN NIVUS 200 TSI COMFORTLINE AT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 460929,
+      "moto": "N"
+    },
+    {
+      "codigo": "10408",
+      "descripcion": "VOLKSWAGEN NIVUS 200 TSI COMFORTLINE L/25",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 460990,
+      "moto": "N"
+    },
+    {
+      "codigo": "24792",
+      "descripcion": "VOLKSWAGEN NIVUS 200 TSI HIGHLINE AT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 460930,
+      "moto": "N"
+    },
+    {
+      "codigo": "10410",
+      "descripcion": "VOLKSWAGEN NIVUS 200 TSI HIGHLINE AT L/25",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 460992,
+      "moto": "N"
+    },
+    {
+      "codigo": "10411",
+      "descripcion": "VOLKSWAGEN NIVUS 200 TSI OUTFIT L/25",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 460993,
+      "moto": "N"
+    },
+    {
+      "codigo": "10409",
+      "descripcion": "VOLKSWAGEN NIVUS 200 TSI TRENDLINE L/25 AT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 460991,
+      "moto": "N"
+    }
+  ],
+  "2026|N|RENAULT|DUSTER": [
+    {
+      "codigo": "9588",
+      "descripcion": "RENAULT DUSTER 1.3T 4X4 ICONIC L/24",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360889,
+      "moto": "N"
+    },
+    {
+      "codigo": "9587",
+      "descripcion": "RENAULT DUSTER 1.3T ICONIC CVT L/24",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360888,
+      "moto": "N"
+    },
+    {
+      "codigo": "9589",
+      "descripcion": "RENAULT DUSTER 1.6 INTENS L/24",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360890,
+      "moto": "N"
+    },
+    {
+      "codigo": "6286",
+      "descripcion": "RENAULT DUSTER OROCH 1.3T 4X4OUTSIDER",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360868,
+      "moto": "N"
+    },
+    {
+      "codigo": "6285",
+      "descripcion": "RENAULT DUSTER OROCH 1.3T ICONIC CVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360867,
+      "moto": "N"
+    },
+    {
+      "codigo": "6284",
+      "descripcion": "RENAULT DUSTER OROCH 1.6 EMOTION SCE",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360866,
+      "moto": "N"
+    }
+  ],
+  "2024|N|RENAULT|CAPTUR": [
+    {
+      "codigo": "30335",
+      "descripcion": "RENAULT CAPTUR 1.6 BOSE CVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360824,
+      "moto": "N"
+    },
+    {
+      "codigo": "30304",
+      "descripcion": "RENAULT CAPTUR 1.6 INTENS CVT CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360802,
+      "moto": "N"
+    },
+    {
+      "codigo": "30267",
+      "descripcion": "RENAULT CAPTUR 2.0 INTENS CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360788,
+      "moto": "N"
+    },
+    {
+      "codigo": "30266",
+      "descripcion": "RENAULT CAPTUR 2.0 ZEN CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360789,
+      "moto": "N"
+    }
+  ],
+  "2025|N|CHEVROLET|CRUZE": [
+    {
+      "codigo": "4274",
+      "descripcion": "CHEVROLET CRUZE 1.4 4P LT AT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 120612,
+      "moto": "N"
+    },
+    {
+      "codigo": "1998",
+      "descripcion": "CHEVROLET CRUZE 1.4 4P LTZ AT CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 120506,
+      "moto": "N"
+    },
+    {
+      "codigo": "2189",
+      "descripcion": "CHEVROLET CRUZE 1.4 4P PREMIERAT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 120565,
+      "moto": "N"
+    },
+    {
+      "codigo": "4275",
+      "descripcion": "CHEVROLET CRUZE 1.4 5P LT AT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 120613,
+      "moto": "N"
+    },
+    {
+      "codigo": "2190",
+      "descripcion": "CHEVROLET CRUZE 1.4 5P PREMIERAT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 120566,
+      "moto": "N"
+    }
+  ],
+  "2025|N|FIAT|CRONOS": [
+    {
+      "codigo": "3972",
+      "descripcion": "FIAT CRONOS 1.3 DRIVE GSE CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 170810,
+      "moto": "N"
+    },
+    {
+      "codigo": "9337",
+      "descripcion": "FIAT CRONOS 1.3 DRIVE GSE PK PLUS CVT L/23",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 170879,
+      "moto": "N"
+    },
+    {
+      "codigo": "7690",
+      "descripcion": "FIAT CRONOS 1.3 DRIVE GSE PK PLUS L/23",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 170866,
+      "moto": "N"
+    },
+    {
+      "codigo": "10513",
+      "descripcion": "FIAT CRONOS 1.3 DRIVE PK PLUSCVT L/25",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 170891,
+      "moto": "N"
+    },
+    {
+      "codigo": "10512",
+      "descripcion": "FIAT CRONOS 1.3 DRIVE PK PLUSL/25",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 170890,
+      "moto": "N"
+    },
+    {
+      "codigo": "7689",
+      "descripcion": "FIAT CRONOS 1.3 GSE LIKE L/23",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 170865,
+      "moto": "N"
+    },
+    {
+      "codigo": "7633",
+      "descripcion": "FIAT CRONOS 1.3 GSE STILE L/23",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 170867,
+      "moto": "N"
+    },
+    {
+      "codigo": "10510",
+      "descripcion": "FIAT CRONOS 1.3 LIKE L/25",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 170889,
+      "moto": "N"
+    },
+    {
+      "codigo": "6141",
+      "descripcion": "FIAT CRONOS 1.3 PRECISION CVTL/22",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 170862,
+      "moto": "N"
+    },
+    {
+      "codigo": "10514",
+      "descripcion": "FIAT CRONOS 1.3 PRECISION CVTL/25",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 170892,
+      "moto": "N"
+    }
+  ],
+  "2025|N|CHRYSLER|COMPASS": [],
+  "2026|N|RENAULT|KANGOO": [
+    {
+      "codigo": "9787",
+      "descripcion": "RENAULT KANGOO E-TECH",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360892,
+      "moto": "N"
+    },
+    {
+      "codigo": "14992",
+      "descripcion": "RENAULT KANGOO EX. 1.6 SCE TERMICO C/EQ.FRIO L/24",
+      "cantidadInfoauto": 0,
+      "codigoInfoauto": 0,
+      "moto": "N"
+    },
+    {
+      "codigo": "9490",
+      "descripcion": "RENAULT KANGOO EX. SCE 5AS L/24",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360887,
+      "moto": "N"
+    },
+    {
+      "codigo": "9489",
+      "descripcion": "RENAULT KANGOO EX. SCE L/24",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360886,
+      "moto": "N"
+    },
+    {
+      "codigo": "23473",
+      "descripcion": "RENAULT KANGOO STEPWAY SCE L/18 CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360815,
+      "moto": "N"
+    },
+    {
+      "codigo": "23471",
+      "descripcion": "RENAULT KANGOO ZEN SCE L/18 CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 360814,
+      "moto": "N"
+    }
+  ],
+  "2024|N|PEUGEOT|208": [
+    {
+      "codigo": "12876",
+      "descripcion": "PEUGEOT 208 1.6 FELINE TIPTRONIC L/20",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320766,
+      "moto": "N"
+    },
+    {
+      "codigo": "12867",
+      "descripcion": "PEUGEOT 208 1.6 LIKE PK L/20",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320761,
+      "moto": "N"
+    },
+    {
+      "codigo": "10049",
+      "descripcion": "PEUGEOT 208 ALLURE PK T200 AM25",
+      "cantidadInfoauto": 0,
+      "codigoInfoauto": 0,
+      "moto": "N"
+    },
+    {
+      "codigo": "7262",
+      "descripcion": "PEUGEOT 208 L/23 1.2 LIKE PK",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320785,
+      "moto": "N"
+    },
+    {
+      "codigo": "7315",
+      "descripcion": "PEUGEOT 208 L/23 1.6 ACTIVE PK",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320786,
+      "moto": "N"
+    },
+    {
+      "codigo": "7318",
+      "descripcion": "PEUGEOT 208 L/23 1.6 ACTIVE PK TIPTRONIC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320787,
+      "moto": "N"
+    },
+    {
+      "codigo": "7319",
+      "descripcion": "PEUGEOT 208 L/23 1.6 ALLURE PK",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320788,
+      "moto": "N"
+    },
+    {
+      "codigo": "7320",
+      "descripcion": "PEUGEOT 208 L/23 1.6 ALLURE PK TIPTRONIC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320789,
+      "moto": "N"
+    },
+    {
+      "codigo": "8931",
+      "descripcion": "PEUGEOT 208 L/23 1.6 ROADTRIP",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320794,
+      "moto": "N"
+    },
+    {
+      "codigo": "99107",
+      "descripcion": "PEUGEOT 208 L/23 1.6 ROADTRIPTIPTRONIC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320795,
+      "moto": "N"
+    },
+    {
+      "codigo": "8498",
+      "descripcion": "PEUGEOT 208 L/23 1.6 STYLE",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320792,
+      "moto": "N"
+    },
+    {
+      "codigo": "8499",
+      "descripcion": "PEUGEOT 208 L/23 1.6 STYLE TIPTRONIC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320793,
+      "moto": "N"
+    },
+    {
+      "codigo": "10060",
+      "descripcion": "PEUGEOT 208 L/24 1.0T ALLURE PK CVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320800,
+      "moto": "N"
+    },
+    {
+      "codigo": "9840",
+      "descripcion": "PEUGEOT 208 L/24 1.0T GT CVT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320801,
+      "moto": "N"
+    },
+    {
+      "codigo": "10058",
+      "descripcion": "PEUGEOT 208 L/24 1.6 ACTIVE",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320796,
+      "moto": "N"
+    },
+    {
+      "codigo": "10048",
+      "descripcion": "PEUGEOT 208 L/24 1.6 ALLURE",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320797,
+      "moto": "N"
+    },
+    {
+      "codigo": "10059",
+      "descripcion": "PEUGEOT 208 L/24 1.6 ALLURE AT",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320798,
+      "moto": "N"
+    },
+    {
+      "codigo": "10057",
+      "descripcion": "PEUGEOT 208 L/24 1.6 ALLURE PK",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 320799,
+      "moto": "N"
+    }
+  ]
+}

@@ -1,0 +1,4187 @@
+{
+  "version": 24,
+  "updated_at": "2026-08-05T18:14:29.983Z",
+  "companies": [
+    {
+      "id": "allianz",
+      "slug": "allianz",
+      "label": "Allianz",
+      "active": true,
+      "display_order": 10
+    },
+    {
+      "id": "atm",
+      "slug": "atm",
+      "label": "ATM",
+      "active": true,
+      "display_order": 20
+    },
+    {
+      "id": "experta",
+      "slug": "experta",
+      "label": "Experta",
+      "active": true,
+      "display_order": 30
+    },
+    {
+      "id": "mapfre",
+      "slug": "mapfre",
+      "label": "Mapfre",
+      "active": true,
+      "display_order": 40
+    },
+    {
+      "id": "meridional",
+      "slug": "meridional",
+      "label": "Meridional",
+      "active": true,
+      "display_order": 50
+    },
+    {
+      "id": "provincia",
+      "slug": "provincia",
+      "label": "Provincia",
+      "active": true,
+      "display_order": 60
+    },
+    {
+      "id": "rivadavia",
+      "slug": "rivadavia",
+      "label": "Rivadavia",
+      "active": true,
+      "display_order": 70
+    },
+    {
+      "id": "sancor",
+      "slug": "sancor",
+      "label": "Sancor",
+      "active": true,
+      "display_order": 80
+    },
+    {
+      "id": "smg",
+      "slug": "smg",
+      "label": "SMG",
+      "active": true,
+      "display_order": 90
+    },
+    {
+      "id": "victoria",
+      "slug": "victoria",
+      "label": "Victoria",
+      "active": true,
+      "display_order": 100
+    }
+  ],
+  "concepts": [
+    {
+      "id": "medio_pago",
+      "code": "medio_pago",
+      "label": "Medio de pago",
+      "group": "Medio de pago",
+      "ui_type": "selector",
+      "active": true,
+      "supports_default_autoiq": true,
+      "supports_default_seguros911": true,
+      "quote_override_role": "Sí",
+      "description": "Cabecera masiva gana sobre default."
+    },
+    {
+      "id": "origen_pago",
+      "code": "origen_pago",
+      "label": "Origen de pago",
+      "group": "Medio de pago",
+      "ui_type": "selector",
+      "active": true,
+      "supports_default_autoiq": true,
+      "supports_default_seguros911": true,
+      "quote_override_role": "No habitual",
+      "description": "Visible sólo si la compañía lo necesita."
+    },
+    {
+      "id": "institucion_financiera",
+      "code": "institucion_financiera",
+      "label": "Institución financiera",
+      "group": "Medio de pago",
+      "ui_type": "selector",
+      "active": true,
+      "supports_default_autoiq": true,
+      "supports_default_seguros911": true,
+      "quote_override_role": "No habitual",
+      "description": "Visible sólo si acompaña forma de pago."
+    },
+    {
+      "id": "vigencia_poliza",
+      "code": "vigencia_poliza",
+      "label": "Vigencia de póliza",
+      "group": "Facturación/Vigencia",
+      "ui_type": "selector",
+      "active": true,
+      "supports_default_autoiq": true,
+      "supports_default_seguros911": true,
+      "quote_override_role": "Supervisor",
+      "description": "Duración contractual."
+    },
+    {
+      "id": "refacturacion",
+      "code": "refacturacion",
+      "label": "Refacturación",
+      "group": "Facturación/Vigencia",
+      "ui_type": "selector",
+      "active": true,
+      "supports_default_autoiq": true,
+      "supports_default_seguros911": true,
+      "quote_override_role": "Supervisor",
+      "description": "Frecuencia de recálculo del premio."
+    },
+    {
+      "id": "cuotas",
+      "code": "cuotas",
+      "label": "Cuotas",
+      "group": "Facturación/Vigencia",
+      "ui_type": "number_or_selector",
+      "active": true,
+      "supports_default_autoiq": true,
+      "supports_default_seguros911": true,
+      "quote_override_role": "Supervisor",
+      "description": "Puede derivarse de vigencia/refacturación."
+    },
+    {
+      "id": "rastreador_alarma",
+      "code": "rastreador_alarma",
+      "label": "Rastreador/Alarma",
+      "group": "Rastreador/Alarma",
+      "ui_type": "selector",
+      "active": true,
+      "supports_default_autoiq": true,
+      "supports_default_seguros911": true,
+      "quote_override_role": "Supervisor",
+      "description": "Unifica localizador, alarma satelital, equipo de rastreo y prestador satelital."
+    },
+    {
+      "id": "prestador_satelital",
+      "code": "prestador_satelital",
+      "label": "Prestador satelital",
+      "group": "Rastreador/Alarma",
+      "ui_type": "selector",
+      "active": true,
+      "supports_default_autoiq": true,
+      "supports_default_seguros911": true,
+      "quote_override_role": "Supervisor",
+      "description": "Sólo visible en compañías que lo pidan."
+    },
+    {
+      "id": "uso",
+      "code": "uso",
+      "label": "Uso",
+      "group": "Riesgo / vehículo",
+      "ui_type": "selector",
+      "active": true,
+      "supports_default_autoiq": true,
+      "supports_default_seguros911": true,
+      "quote_override_role": "No habitual",
+      "description": "Cabecera masiva gana."
+    },
+    {
+      "id": "ocupacion",
+      "code": "ocupacion",
+      "label": "Ocupación",
+      "group": "Riesgo / vehículo",
+      "ui_type": "selector",
+      "active": true,
+      "supports_default_autoiq": true,
+      "supports_default_seguros911": true,
+      "quote_override_role": "No habitual",
+      "description": "Sólo visible si la compañía lo pide."
+    },
+    {
+      "id": "tipo_vehiculo",
+      "code": "tipo_vehiculo",
+      "label": "Tipo de vehículo",
+      "group": "Riesgo / vehículo",
+      "ui_type": "selector",
+      "active": true,
+      "supports_default_autoiq": true,
+      "supports_default_seguros911": true,
+      "quote_override_role": "No habitual",
+      "description": "Absorbe clase/categoría cuando el WS la usa para clasificar vehículo o riesgo."
+    },
+    {
+      "id": "gnc",
+      "code": "gnc",
+      "label": "GNC",
+      "group": "Riesgo / vehículo",
+      "ui_type": "selector_plus_amount",
+      "active": true,
+      "supports_default_autoiq": true,
+      "supports_default_seguros911": true,
+      "quote_override_role": "No",
+      "description": "Cabecera masiva gana."
+    },
+    {
+      "id": "garage_guardado",
+      "code": "garage_guardado",
+      "label": "Garage / guardado",
+      "group": "Riesgo / vehículo",
+      "ui_type": "boolean",
+      "active": true,
+      "supports_default_autoiq": true,
+      "supports_default_seguros911": true,
+      "quote_override_role": "No habitual",
+      "description": "Unifica garage y guardado en garage."
+    },
+    {
+      "id": "asistencia",
+      "code": "asistencia",
+      "label": "Asistencia",
+      "group": "Coberturas adicionales",
+      "ui_type": "selector",
+      "active": true,
+      "supports_default_autoiq": true,
+      "supports_default_seguros911": true,
+      "quote_override_role": "Supervisor",
+      "description": "Sólo en compañías con opción comercial."
+    },
+    {
+      "id": "clausula_ajuste",
+      "code": "clausula_ajuste",
+      "label": "Cláusula de ajuste",
+      "group": "Ajustes",
+      "ui_type": "percent_selector",
+      "active": true,
+      "supports_default_autoiq": true,
+      "supports_default_seguros911": true,
+      "quote_override_role": "Supervisor",
+      "description": "Cláusula usada para ajustar suma asegurada."
+    },
+    {
+      "id": "variacion_32080",
+      "code": "variacion_32080",
+      "label": "Variación 32080",
+      "group": "Ajustes",
+      "ui_type": "percent_selector",
+      "active": true,
+      "supports_default_autoiq": true,
+      "supports_default_seguros911": true,
+      "quote_override_role": "Supervisor",
+      "description": "Concepto separado identificado en Victoria."
+    },
+    {
+      "id": "coeficiente_rc",
+      "code": "coeficiente_rc",
+      "label": "Coeficiente RC",
+      "group": "Ajustes",
+      "ui_type": "decimal",
+      "active": true,
+      "supports_default_autoiq": true,
+      "supports_default_seguros911": true,
+      "quote_override_role": "Supervisor",
+      "description": "Ingreso numérico, especialmente Rivadavia."
+    },
+    {
+      "id": "coeficiente_casco",
+      "code": "coeficiente_casco",
+      "label": "Coeficiente Casco",
+      "group": "Ajustes",
+      "ui_type": "decimal",
+      "active": true,
+      "supports_default_autoiq": true,
+      "supports_default_seguros911": true,
+      "quote_override_role": "Supervisor",
+      "description": "Ingreso numérico, especialmente Rivadavia."
+    },
+    {
+      "id": "descuento_comercial",
+      "code": "descuento_comercial",
+      "label": "Descuento comercial",
+      "group": "Palancas comerciales",
+      "ui_type": "percent",
+      "active": true,
+      "supports_default_autoiq": true,
+      "supports_default_seguros911": true,
+      "quote_override_role": "Vendedor",
+      "description": "Descuento base/comercial por compañía."
+    },
+    {
+      "id": "descuento_seguro_nuevo",
+      "code": "descuento_seguro_nuevo",
+      "label": "Descuento por seguro nuevo",
+      "group": "Palancas comerciales",
+      "ui_type": "percent",
+      "active": true,
+      "supports_default_autoiq": true,
+      "supports_default_seguros911": true,
+      "quote_override_role": "Vendedor",
+      "description": "Separado porque no aplica igual en renovación."
+    },
+    {
+      "id": "descuento_no_siniestralidad",
+      "code": "descuento_no_siniestralidad",
+      "label": "Descuento por no siniestralidad",
+      "group": "Palancas comerciales",
+      "ui_type": "percent",
+      "active": true,
+      "supports_default_autoiq": true,
+      "supports_default_seguros911": true,
+      "quote_override_role": "Vendedor",
+      "description": "Separado porque depende de historial."
+    },
+    {
+      "id": "descuento_especial",
+      "code": "descuento_especial",
+      "label": "Descuento especial",
+      "group": "Palancas comerciales",
+      "ui_type": "percent",
+      "active": true,
+      "supports_default_autoiq": true,
+      "supports_default_seguros911": true,
+      "quote_override_role": "Vendedor",
+      "description": "Independiente del descuento por no siniestralidad."
+    },
+    {
+      "id": "comision",
+      "code": "comision",
+      "label": "Comisión",
+      "group": "Palancas comerciales",
+      "ui_type": "percent",
+      "active": true,
+      "supports_default_autoiq": true,
+      "supports_default_seguros911": true,
+      "quote_override_role": "Supervisor",
+      "description": "Editable si WS lo permite."
+    },
+    {
+      "id": "plan_comercial",
+      "code": "plan_comercial",
+      "label": "Plan comercial",
+      "group": "Palancas comerciales",
+      "ui_type": "selector",
+      "active": true,
+      "supports_default_autoiq": true,
+      "supports_default_seguros911": true,
+      "quote_override_role": "Supervisor",
+      "description": "Hoy identificado para SMG."
+    }
+  ],
+  "profiles": [
+    {
+      "id": "default_seguros911",
+      "code": "DEFAULT_SEGUROS911",
+      "label": "Default Seguros911",
+      "profile_type": "default"
+    }
+  ],
+  "users": [
+    {
+      "id": "superadmin-local",
+      "source_system": "autoiq",
+      "external_user_id": "superadmin-local",
+      "display_name": "Super Admin",
+      "email": "superadmin@autoiq.local",
+      "role": "superadmin",
+      "active": true
+    }
+  ],
+  "user_company_settings": [],
+  "values": [
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "atm",
+      "concept_code": "medio_pago",
+      "visible_value": "Tarjeta de crédito",
+      "ws_code": null,
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "atm",
+      "concept_code": "vigencia_poliza",
+      "visible_value": "Anual",
+      "ws_code": "A",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "atm",
+      "concept_code": "refacturacion",
+      "visible_value": "Mensual",
+      "ws_code": null,
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "atm",
+      "concept_code": "cuotas",
+      "visible_value": "12",
+      "ws_code": "12",
+      "numeric_value": 12,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "atm",
+      "concept_code": "rastreador_alarma",
+      "visible_value": "Sin Rastreador/Alarma",
+      "ws_code": "N",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "atm",
+      "concept_code": "uso",
+      "visible_value": "Particular",
+      "ws_code": "0101",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "atm",
+      "concept_code": "gnc",
+      "visible_value": "Sin GNC",
+      "ws_code": "0",
+      "numeric_value": 0,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "atm",
+      "concept_code": "clausula_ajuste",
+      "visible_value": "Sin ajuste",
+      "ws_code": "0",
+      "numeric_value": 0,
+      "source": "api",
+      "updated_by": "superadmin-local",
+      "updated_at": "2026-08-05T18:01:36.926Z"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "atm",
+      "concept_code": "descuento_comercial",
+      "visible_value": "30%",
+      "ws_code": "30",
+      "numeric_value": 30,
+      "source": "api",
+      "updated_by": "superadmin-local",
+      "updated_at": "2026-08-05T18:14:29.982Z"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "allianz",
+      "concept_code": "medio_pago",
+      "visible_value": "Tarjeta de crédito",
+      "ws_code": "T",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "allianz",
+      "concept_code": "vigencia_poliza",
+      "visible_value": "Mensual",
+      "ws_code": "M",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "allianz",
+      "concept_code": "refacturacion",
+      "visible_value": "Mensual",
+      "ws_code": "M",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "allianz",
+      "concept_code": "cuotas",
+      "visible_value": "1",
+      "ws_code": "1",
+      "numeric_value": 1,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "allianz",
+      "concept_code": "rastreador_alarma",
+      "visible_value": "Sin Rastreador/Alarma",
+      "ws_code": "false",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "allianz",
+      "concept_code": "uso",
+      "visible_value": "Particular",
+      "ws_code": "1",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "allianz",
+      "concept_code": "gnc",
+      "visible_value": "Sin GNC",
+      "ws_code": "ACCESSORY_NONE",
+      "numeric_value": 0,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "allianz",
+      "concept_code": "clausula_ajuste",
+      "visible_value": "Sin ajuste",
+      "ws_code": "0",
+      "numeric_value": 0,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "allianz",
+      "concept_code": "descuento_comercial",
+      "visible_value": "-15%",
+      "ws_code": "-15",
+      "numeric_value": 15,
+      "source": "api",
+      "updated_by": "superadmin-local",
+      "updated_at": "2026-08-05T18:14:29.982Z"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "experta",
+      "concept_code": "medio_pago",
+      "visible_value": "Tarjeta de crédito",
+      "ws_code": "debito",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "experta",
+      "concept_code": "uso",
+      "visible_value": "Particular",
+      "ws_code": "1",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "experta",
+      "concept_code": "gnc",
+      "visible_value": "Sin GNC",
+      "ws_code": "N",
+      "numeric_value": 0,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "experta",
+      "concept_code": "clausula_ajuste",
+      "visible_value": "5%",
+      "ws_code": "5",
+      "numeric_value": 5,
+      "source": "api",
+      "updated_by": "superadmin-local",
+      "updated_at": "2026-08-05T18:01:36.926Z"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "experta",
+      "concept_code": "comision",
+      "visible_value": "EX0 (20/25%)",
+      "ws_code": "EX0",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "mapfre",
+      "concept_code": "medio_pago",
+      "visible_value": "Tarjeta de crédito",
+      "ws_code": null,
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "mapfre",
+      "concept_code": "refacturacion",
+      "visible_value": "Mensual",
+      "ws_code": "M",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "mapfre",
+      "concept_code": "rastreador_alarma",
+      "visible_value": "Sin Rastreador/Alarma",
+      "ws_code": "0",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "mapfre",
+      "concept_code": "uso",
+      "visible_value": "Particular",
+      "ws_code": "1",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "mapfre",
+      "concept_code": "gnc",
+      "visible_value": "Sin GNC",
+      "ws_code": "0",
+      "numeric_value": 0,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "mapfre",
+      "concept_code": "garage_guardado",
+      "visible_value": "Sí",
+      "ws_code": "true",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "mapfre",
+      "concept_code": "clausula_ajuste",
+      "visible_value": "Sin ajuste",
+      "ws_code": null,
+      "numeric_value": 0,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "provincia",
+      "concept_code": "medio_pago",
+      "visible_value": "Tarjeta de crédito",
+      "ws_code": "2",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "provincia",
+      "concept_code": "origen_pago",
+      "visible_value": "Visa otros bancos",
+      "ws_code": "VISO",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "provincia",
+      "concept_code": "vigencia_poliza",
+      "visible_value": "Anual",
+      "ws_code": "A",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "provincia",
+      "concept_code": "refacturacion",
+      "visible_value": "Mensual",
+      "ws_code": "F",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "provincia",
+      "concept_code": "cuotas",
+      "visible_value": "1 cuota",
+      "ws_code": "1",
+      "numeric_value": 1,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "provincia",
+      "concept_code": "rastreador_alarma",
+      "visible_value": "Sin Rastreador/Alarma",
+      "ws_code": "0",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "provincia",
+      "concept_code": "uso",
+      "visible_value": "Particular",
+      "ws_code": "1",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "provincia",
+      "concept_code": "gnc",
+      "visible_value": "Sin GNC",
+      "ws_code": "0",
+      "numeric_value": 0,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "provincia",
+      "concept_code": "clausula_ajuste",
+      "visible_value": "Sin ajuste",
+      "ws_code": "0",
+      "numeric_value": 0,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "provincia",
+      "concept_code": "descuento_comercial",
+      "visible_value": "15%",
+      "ws_code": "15",
+      "numeric_value": 15,
+      "source": "api",
+      "updated_by": "superadmin-local",
+      "updated_at": "2026-08-05T18:01:36.926Z"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "provincia",
+      "concept_code": "comision",
+      "visible_value": "15%",
+      "ws_code": "15",
+      "numeric_value": 15,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "rivadavia",
+      "concept_code": "medio_pago",
+      "visible_value": "Tarjeta de crédito",
+      "ws_code": "COBRADOR",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "rivadavia",
+      "concept_code": "refacturacion",
+      "visible_value": "Trimestral",
+      "ws_code": "TRIMESTRAL",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "rivadavia",
+      "concept_code": "cuotas",
+      "visible_value": "3",
+      "ws_code": "3",
+      "numeric_value": 3,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "rivadavia",
+      "concept_code": "rastreador_alarma",
+      "visible_value": "Sin Rastreador/Alarma",
+      "ws_code": "SIN_ALARMA",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "rivadavia",
+      "concept_code": "uso",
+      "visible_value": "Particular",
+      "ws_code": "1",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "rivadavia",
+      "concept_code": "tipo_vehiculo",
+      "visible_value": "Auto",
+      "ws_code": "1",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "rivadavia",
+      "concept_code": "gnc",
+      "visible_value": "Sin GNC",
+      "ws_code": "NO_POSEE_GNC",
+      "numeric_value": 0,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "rivadavia",
+      "concept_code": "clausula_ajuste",
+      "visible_value": "30%",
+      "ws_code": "30",
+      "numeric_value": 30,
+      "source": "api",
+      "updated_by": "superadmin-local",
+      "updated_at": "2026-08-05T18:01:36.926Z"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "rivadavia",
+      "concept_code": "coeficiente_rc",
+      "visible_value": "0.9",
+      "ws_code": "0.9",
+      "numeric_value": 0.9,
+      "source": "api",
+      "updated_by": "superadmin-local",
+      "updated_at": "2026-08-05T18:14:29.982Z"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "rivadavia",
+      "concept_code": "coeficiente_casco",
+      "visible_value": "0.9",
+      "ws_code": "0.9",
+      "numeric_value": 0.9,
+      "source": "api",
+      "updated_by": "superadmin-local",
+      "updated_at": "2026-08-05T18:14:29.982Z"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "smg",
+      "concept_code": "medio_pago",
+      "visible_value": "Tarjeta de crédito",
+      "ws_code": null,
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "smg",
+      "concept_code": "refacturacion",
+      "visible_value": "Mensual",
+      "ws_code": "6",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "smg",
+      "concept_code": "cuotas",
+      "visible_value": "1",
+      "ws_code": "1",
+      "numeric_value": 1,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "smg",
+      "concept_code": "rastreador_alarma",
+      "visible_value": "Sin Rastreador/Alarma",
+      "ws_code": "0",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "smg",
+      "concept_code": "uso",
+      "visible_value": "Particular",
+      "ws_code": "1",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "smg",
+      "concept_code": "tipo_vehiculo",
+      "visible_value": "Auto",
+      "ws_code": "1",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "smg",
+      "concept_code": "gnc",
+      "visible_value": "Sin GNC",
+      "ws_code": "0",
+      "numeric_value": 0,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "smg",
+      "concept_code": "clausula_ajuste",
+      "visible_value": "Sin cláusula",
+      "ws_code": "1",
+      "numeric_value": 0,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "smg",
+      "concept_code": "descuento_comercial",
+      "visible_value": "-15%",
+      "ws_code": "-15",
+      "numeric_value": 15,
+      "source": "api",
+      "updated_by": "superadmin-local",
+      "updated_at": "2026-08-05T18:14:29.982Z"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "smg",
+      "concept_code": "asistencia",
+      "visible_value": "Sí",
+      "ws_code": "-1",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "smg",
+      "concept_code": "plan_comercial",
+      "visible_value": "Plan Normal",
+      "ws_code": "1",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "sancor",
+      "concept_code": "vigencia_poliza",
+      "visible_value": "Anual",
+      "ws_code": "1",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "sancor",
+      "concept_code": "refacturacion",
+      "visible_value": "Mensual",
+      "ws_code": "5",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "sancor",
+      "concept_code": "cuotas",
+      "visible_value": "Sin cuotas (mensual)",
+      "ws_code": "0",
+      "numeric_value": 0,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "sancor",
+      "concept_code": "uso",
+      "visible_value": "Particular",
+      "ws_code": "2",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "sancor",
+      "concept_code": "gnc",
+      "visible_value": "Sin GNC",
+      "ws_code": "0",
+      "numeric_value": 0,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "sancor",
+      "concept_code": "garage_guardado",
+      "visible_value": "Sí",
+      "ws_code": "1",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "sancor",
+      "concept_code": "clausula_ajuste",
+      "visible_value": "Ninguna",
+      "ws_code": null,
+      "numeric_value": 0,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "sancor",
+      "concept_code": "descuento_no_siniestralidad",
+      "visible_value": "99",
+      "ws_code": "99",
+      "numeric_value": 99,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "sancor",
+      "concept_code": "descuento_especial",
+      "visible_value": "48",
+      "ws_code": "48",
+      "numeric_value": 48,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "victoria",
+      "concept_code": "medio_pago",
+      "visible_value": "Tarjeta de crédito",
+      "ws_code": "2",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "victoria",
+      "concept_code": "vigencia_poliza",
+      "visible_value": "Trimestral",
+      "ws_code": "4",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "victoria",
+      "concept_code": "refacturacion",
+      "visible_value": "Mensual",
+      "ws_code": "Mensual",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "victoria",
+      "concept_code": "cuotas",
+      "visible_value": "Contado",
+      "ws_code": "1",
+      "numeric_value": 1,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "victoria",
+      "concept_code": "rastreador_alarma",
+      "visible_value": "Sin Rastreador/Alarma",
+      "ws_code": "false|0",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "victoria",
+      "concept_code": "uso",
+      "visible_value": "Particular",
+      "ws_code": "1",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "victoria",
+      "concept_code": "gnc",
+      "visible_value": "Sin GNC",
+      "ws_code": "false",
+      "numeric_value": 0,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "victoria",
+      "concept_code": "clausula_ajuste",
+      "visible_value": "0%",
+      "ws_code": "1",
+      "numeric_value": 0,
+      "source": "api",
+      "updated_by": "superadmin-local",
+      "updated_at": "2026-08-05T18:01:36.926Z"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "victoria",
+      "concept_code": "variacion_32080",
+      "visible_value": "-10%",
+      "ws_code": "6",
+      "numeric_value": -10,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "victoria",
+      "concept_code": "descuento_comercial",
+      "visible_value": "-10%",
+      "ws_code": "-10",
+      "numeric_value": 10,
+      "source": "api",
+      "updated_by": "superadmin-local",
+      "updated_at": "2026-08-05T18:14:29.982Z"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "victoria",
+      "concept_code": "descuento_seguro_nuevo",
+      "visible_value": "25%",
+      "ws_code": "25",
+      "numeric_value": 25,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "meridional",
+      "concept_code": "ocupacion",
+      "visible_value": "No informa",
+      "ws_code": "NO_INFORMA",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "meridional",
+      "concept_code": "medio_pago",
+      "visible_value": "Tarjeta de crédito",
+      "ws_code": "TA",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "meridional",
+      "concept_code": "refacturacion",
+      "visible_value": "Cuatrimestral",
+      "ws_code": "4",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "meridional",
+      "concept_code": "cuotas",
+      "visible_value": "4",
+      "ws_code": "4",
+      "numeric_value": 4,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "meridional",
+      "concept_code": "rastreador_alarma",
+      "visible_value": "Sin Rastreador/Alarma",
+      "ws_code": "1",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "meridional",
+      "concept_code": "uso",
+      "visible_value": "Particular",
+      "ws_code": "1",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "meridional",
+      "concept_code": "gnc",
+      "visible_value": "Sin GNC",
+      "ws_code": "ACCESSORY_NONE",
+      "numeric_value": 0,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "meridional",
+      "concept_code": "clausula_ajuste",
+      "visible_value": "50%",
+      "ws_code": "5",
+      "numeric_value": 50,
+      "source": "api",
+      "updated_by": "superadmin-local",
+      "updated_at": "2026-08-05T18:01:36.926Z"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "meridional",
+      "concept_code": "comision",
+      "visible_value": "18%",
+      "ws_code": "18",
+      "numeric_value": 18,
+      "source": "matriz_funcional_v2"
+    }
+  ],
+  "options": [
+    {
+      "company_slug": "atm",
+      "concept_code": "medio_pago",
+      "visible_label": "Tarjeta de crédito",
+      "ws_code": null,
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "vigencia_poliza",
+      "visible_label": "Anual",
+      "ws_code": "A",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "refacturacion",
+      "visible_label": "Mensual",
+      "ws_code": null,
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "cuotas",
+      "visible_label": "12",
+      "ws_code": "12",
+      "numeric_value": 12,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "rastreador_alarma",
+      "visible_label": "Sin Rastreador/Alarma",
+      "ws_code": "N",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "rastreador_alarma",
+      "visible_label": "Con Rastreador/Alarma",
+      "ws_code": "S",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "gnc",
+      "visible_label": "Sin GNC",
+      "ws_code": "0",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "gnc",
+      "visible_label": "Con GNC",
+      "ws_code": "1",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "uso",
+      "visible_label": "AUTO/JEEP/SUV PARTICULARES Y FAMILIARES",
+      "ws_code": "0101",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "uso",
+      "visible_label": "AUTO/JEEP/SUV COMERCIAL",
+      "ws_code": "010102",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "uso",
+      "visible_label": "AUTO TS PARTICULAR",
+      "ws_code": "010103",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "uso",
+      "visible_label": "AUTO TS COMERCIAL",
+      "ws_code": "010104",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "uso",
+      "visible_label": "ALTA GAMA PARTICULAR",
+      "ws_code": "1717",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "uso",
+      "visible_label": "PICK UP A PARTICULAR",
+      "ws_code": "1110",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "uso",
+      "visible_label": "PICK UP A COMERCIAL TRANSPORTE DE BIENES",
+      "ws_code": "1212",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "uso",
+      "visible_label": "JEEP Y PICK UP B PARTICULAR",
+      "ws_code": "1414",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "uso",
+      "visible_label": "JEEP Y PICK UP B COMERCIAL TRANSPORTE DE BIENES",
+      "ws_code": "1515",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "uso",
+      "visible_label": "MOTO HASTA 125 C.C. PARTICULAR",
+      "ws_code": "4262",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "uso",
+      "visible_label": "MOTO HASTA 125 C.C. COMERCIAL",
+      "ws_code": "5272",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "uso",
+      "visible_label": "MOTO DE 126 A 250 C.C. PARTICULAR",
+      "ws_code": "4263",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "uso",
+      "visible_label": "MOTO DE 126 A 250 C.C. COMERCIAL",
+      "ws_code": "5273",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "uso",
+      "visible_label": "MOTO DE MAS DE 250 C.C. PARTICULAR",
+      "ws_code": "4264",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "uso",
+      "visible_label": "MOTO DE MAS DE 250 C.C. COMERCIAL",
+      "ws_code": "5274",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "uso",
+      "visible_label": "CUATRICICLO ATV PARTICULAR",
+      "ws_code": "6265",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "uso",
+      "visible_label": "MOTO ELECTRICA PARTICULAR",
+      "ws_code": "2261",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "uso",
+      "visible_label": "MOTO ELECTRICA COMERCIAL",
+      "ws_code": "5271",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "uso",
+      "visible_label": "CUATRICICLO UTV PARTICULAR",
+      "ws_code": "6266",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "uso",
+      "visible_label": "MOTO BLACK PARTICULAR",
+      "ws_code": "060701",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "uso",
+      "visible_label": "MOTO BLACK COMERCIAL",
+      "ws_code": "060702",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "uso",
+      "visible_label": "TRICICLO PARTICULAR",
+      "ws_code": "4268",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "uso",
+      "visible_label": "TRICICLO COMERCIAL",
+      "ws_code": "5278",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "uso",
+      "visible_label": "BICICLETA ELECTRICA PARTICULAR",
+      "ws_code": "4561",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "uso",
+      "visible_label": "SCOOTER PARTICULAR",
+      "ws_code": "061001",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "uso",
+      "visible_label": "SCOOTER COMERCIAL",
+      "ws_code": "061002",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "uso",
+      "visible_label": "MOTOS HONDA HASTA 125 CC.",
+      "ws_code": "061101",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "uso",
+      "visible_label": "TRAILER",
+      "ws_code": "1818",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "clausula_ajuste",
+      "visible_label": "Sin ajuste",
+      "ws_code": "0",
+      "numeric_value": 0,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "clausula_ajuste",
+      "visible_label": "10%",
+      "ws_code": "010",
+      "numeric_value": 10,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "clausula_ajuste",
+      "visible_label": "20%",
+      "ws_code": "020",
+      "numeric_value": 20,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "descuento_comercial",
+      "visible_label": "0%",
+      "ws_code": "0",
+      "numeric_value": 0,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "descuento_comercial",
+      "visible_label": "5%",
+      "ws_code": "5",
+      "numeric_value": 5,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "descuento_comercial",
+      "visible_label": "10%",
+      "ws_code": "10",
+      "numeric_value": 10,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "descuento_comercial",
+      "visible_label": "15%",
+      "ws_code": "15",
+      "numeric_value": 15,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "descuento_comercial",
+      "visible_label": "20%",
+      "ws_code": "20",
+      "numeric_value": 20,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "descuento_comercial",
+      "visible_label": "25%",
+      "ws_code": "25",
+      "numeric_value": 25,
+      "active": true
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "descuento_comercial",
+      "visible_label": "30%",
+      "ws_code": "30",
+      "numeric_value": 30,
+      "active": true
+    },
+    {
+      "company_slug": "allianz",
+      "concept_code": "medio_pago",
+      "visible_label": "Tarjeta de crédito",
+      "ws_code": "T",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "allianz",
+      "concept_code": "medio_pago",
+      "visible_label": "Efectivo",
+      "ws_code": "E",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "allianz",
+      "concept_code": "vigencia_poliza",
+      "visible_label": "Mensual",
+      "ws_code": "M",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "allianz",
+      "concept_code": "vigencia_poliza",
+      "visible_label": "Semestral",
+      "ws_code": "S",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "allianz",
+      "concept_code": "vigencia_poliza",
+      "visible_label": "Anual",
+      "ws_code": "A",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "allianz",
+      "concept_code": "vigencia_poliza",
+      "visible_label": "Período",
+      "ws_code": "P",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "allianz",
+      "concept_code": "refacturacion",
+      "visible_label": "Mensual",
+      "ws_code": "M",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "allianz",
+      "concept_code": "cuotas",
+      "visible_label": "1",
+      "ws_code": "1",
+      "numeric_value": 1,
+      "active": true
+    },
+    {
+      "company_slug": "allianz",
+      "concept_code": "rastreador_alarma",
+      "visible_label": "Sin Rastreador/Alarma",
+      "ws_code": "false",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "allianz",
+      "concept_code": "rastreador_alarma",
+      "visible_label": "Con Rastreador/Alarma",
+      "ws_code": "true",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "allianz",
+      "concept_code": "uso",
+      "visible_label": "Particular",
+      "ws_code": "1",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "allianz",
+      "concept_code": "uso",
+      "visible_label": "Comercial",
+      "ws_code": "2",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "allianz",
+      "concept_code": "uso",
+      "visible_label": "Local",
+      "ws_code": "3",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "allianz",
+      "concept_code": "uso",
+      "visible_label": "Rutero",
+      "ws_code": "4",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "allianz",
+      "concept_code": "gnc",
+      "visible_label": "Sin GNC",
+      "ws_code": "ACCESSORY_NONE",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "allianz",
+      "concept_code": "gnc",
+      "visible_label": "Con GNC",
+      "ws_code": "ACCESSORY_GNC",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "allianz",
+      "concept_code": "clausula_ajuste",
+      "visible_label": "Sin ajuste",
+      "ws_code": "0",
+      "numeric_value": 0,
+      "active": true
+    },
+    {
+      "company_slug": "allianz",
+      "concept_code": "descuento_comercial",
+      "visible_label": "-15%",
+      "ws_code": "-15",
+      "numeric_value": 15,
+      "active": true
+    },
+    {
+      "company_slug": "allianz",
+      "concept_code": "descuento_comercial",
+      "visible_label": "-10%",
+      "ws_code": "-10",
+      "numeric_value": 10,
+      "active": true
+    },
+    {
+      "company_slug": "allianz",
+      "concept_code": "descuento_comercial",
+      "visible_label": "-5%",
+      "ws_code": "-5",
+      "numeric_value": 5,
+      "active": true
+    },
+    {
+      "company_slug": "allianz",
+      "concept_code": "descuento_comercial",
+      "visible_label": "0%",
+      "ws_code": "0",
+      "numeric_value": 0,
+      "active": true
+    },
+    {
+      "company_slug": "allianz",
+      "concept_code": "descuento_comercial",
+      "visible_label": "5%",
+      "ws_code": "5",
+      "numeric_value": 5,
+      "active": true
+    },
+    {
+      "company_slug": "allianz",
+      "concept_code": "descuento_comercial",
+      "visible_label": "10%",
+      "ws_code": "10",
+      "numeric_value": 10,
+      "active": true
+    },
+    {
+      "company_slug": "allianz",
+      "concept_code": "descuento_comercial",
+      "visible_label": "15%",
+      "ws_code": "15",
+      "numeric_value": 15,
+      "active": true
+    },
+    {
+      "company_slug": "experta",
+      "concept_code": "medio_pago",
+      "visible_label": "Tarjeta de crédito",
+      "ws_code": "debito",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "experta",
+      "concept_code": "medio_pago",
+      "visible_label": "CBU / débito en cuenta",
+      "ws_code": "debito",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "experta",
+      "concept_code": "medio_pago",
+      "visible_label": "Efectivo",
+      "ws_code": "efectivo",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "experta",
+      "concept_code": "uso",
+      "visible_label": "Particular",
+      "ws_code": "1",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "experta",
+      "concept_code": "uso",
+      "visible_label": "Comercial",
+      "ws_code": "10",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "experta",
+      "concept_code": "gnc",
+      "visible_label": "Sin GNC",
+      "ws_code": "N",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "experta",
+      "concept_code": "gnc",
+      "visible_label": "Con GNC",
+      "ws_code": "501",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "experta",
+      "concept_code": "clausula_ajuste",
+      "visible_label": "5%",
+      "ws_code": "5",
+      "numeric_value": 5,
+      "active": true
+    },
+    {
+      "company_slug": "experta",
+      "concept_code": "clausula_ajuste",
+      "visible_label": "10%",
+      "ws_code": "10",
+      "numeric_value": 10,
+      "active": true
+    },
+    {
+      "company_slug": "experta",
+      "concept_code": "clausula_ajuste",
+      "visible_label": "20%",
+      "ws_code": "20",
+      "numeric_value": 20,
+      "active": true
+    },
+    {
+      "company_slug": "experta",
+      "concept_code": "comision",
+      "visible_label": "EX0 (20/25%)",
+      "ws_code": "EX0",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "mapfre",
+      "concept_code": "medio_pago",
+      "visible_label": "Tarjeta de crédito",
+      "ws_code": "TC",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "mapfre",
+      "concept_code": "medio_pago",
+      "visible_label": "CBU / débito en cuenta",
+      "ws_code": "DC",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "mapfre",
+      "concept_code": "medio_pago",
+      "visible_label": "Efectivo",
+      "ws_code": "AG",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "mapfre",
+      "concept_code": "medio_pago",
+      "visible_label": "Productor",
+      "ws_code": "PR",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "mapfre",
+      "concept_code": "refacturacion",
+      "visible_label": "Mensual",
+      "ws_code": "M",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "mapfre",
+      "concept_code": "rastreador_alarma",
+      "visible_label": "Sin Rastreador/Alarma",
+      "ws_code": "0",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "mapfre",
+      "concept_code": "rastreador_alarma",
+      "visible_label": "Con Rastreador/Alarma",
+      "ws_code": "1",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "mapfre",
+      "concept_code": "uso",
+      "visible_label": "Particular",
+      "ws_code": "1",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "mapfre",
+      "concept_code": "uso",
+      "visible_label": "Comercial",
+      "ws_code": "7",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "mapfre",
+      "concept_code": "gnc",
+      "visible_label": "Sin GNC",
+      "ws_code": "0",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "mapfre",
+      "concept_code": "gnc",
+      "visible_label": "Con GNC",
+      "ws_code": "1",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "mapfre",
+      "concept_code": "garage_guardado",
+      "visible_label": "Sí",
+      "ws_code": "true",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "mapfre",
+      "concept_code": "garage_guardado",
+      "visible_label": "No",
+      "ws_code": "false",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "mapfre",
+      "concept_code": "clausula_ajuste",
+      "visible_label": "Sin ajuste",
+      "ws_code": null,
+      "numeric_value": 0,
+      "active": true
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "medio_pago",
+      "visible_label": "Tarjeta de crédito",
+      "ws_code": "2",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "medio_pago",
+      "visible_label": "CBU / débito en cuenta",
+      "ws_code": "3",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "medio_pago",
+      "visible_label": "Efectivo / caja",
+      "ws_code": "1",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "origen_pago",
+      "visible_label": "Visa otros bancos",
+      "ws_code": "VISO",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "origen_pago",
+      "visible_label": "Débito directo Provincia",
+      "ws_code": "PDIR",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "origen_pago",
+      "visible_label": "Caja / efectivo",
+      "ws_code": "A",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "vigencia_poliza",
+      "visible_label": "Anual",
+      "ws_code": "A",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "refacturacion",
+      "visible_label": "Mensual",
+      "ws_code": "F",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "cuotas",
+      "visible_label": "1 cuota",
+      "ws_code": "1",
+      "numeric_value": 1,
+      "active": true
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "rastreador_alarma",
+      "visible_label": "Sin Rastreador/Alarma",
+      "ws_code": "0",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "rastreador_alarma",
+      "visible_label": "Con Rastreador/Alarma",
+      "ws_code": "1",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "uso",
+      "visible_label": "Particular",
+      "ws_code": "1",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "uso",
+      "visible_label": "Particular exclusivamente",
+      "ws_code": "79",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "uso",
+      "visible_label": "Uso oficial",
+      "ws_code": "9",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "uso",
+      "visible_label": "Trabajo rural",
+      "ws_code": "10",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "uso",
+      "visible_label": "Trabajo no rural",
+      "ws_code": "11",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "uso",
+      "visible_label": "Comercial",
+      "ws_code": "42",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "uso",
+      "visible_label": "Uso comercial",
+      "ws_code": "21",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "uso",
+      "visible_label": "Comercial transporte de carga general",
+      "ws_code": "21",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "uso",
+      "visible_label": "Comercial transporte de carga peligrosa",
+      "ws_code": "22",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "uso",
+      "visible_label": "Alquiler sin chofer",
+      "ws_code": "37",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "uso",
+      "visible_label": "Auxilio mecánico",
+      "ws_code": "12",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "uso",
+      "visible_label": "Servicio especial pasajeros",
+      "ws_code": "64",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "gnc",
+      "visible_label": "Sin GNC",
+      "ws_code": "0",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "gnc",
+      "visible_label": "Con GNC",
+      "ws_code": "montoAccesorios",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "clausula_ajuste",
+      "visible_label": "Sin ajuste",
+      "ws_code": "0",
+      "numeric_value": 0,
+      "active": true
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "clausula_ajuste",
+      "visible_label": "10%",
+      "ws_code": "10",
+      "numeric_value": 10,
+      "active": true
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "descuento_comercial",
+      "visible_label": "1%",
+      "ws_code": "1",
+      "numeric_value": 1,
+      "active": true
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "descuento_comercial",
+      "visible_label": "5%",
+      "ws_code": "5",
+      "numeric_value": 5,
+      "active": true
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "descuento_comercial",
+      "visible_label": "10%",
+      "ws_code": "10",
+      "numeric_value": 10,
+      "active": true
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "descuento_comercial",
+      "visible_label": "15%",
+      "ws_code": "15",
+      "numeric_value": 15,
+      "active": true
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "descuento_comercial",
+      "visible_label": "20%",
+      "ws_code": "20",
+      "numeric_value": 20,
+      "active": true
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "descuento_comercial",
+      "visible_label": "22%",
+      "ws_code": "22",
+      "numeric_value": 22,
+      "active": true
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "descuento_comercial",
+      "visible_label": "25%",
+      "ws_code": "25",
+      "numeric_value": 25,
+      "active": true
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "comision",
+      "visible_label": "15%",
+      "ws_code": "15",
+      "numeric_value": 15,
+      "active": true
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "comision",
+      "visible_label": "20%",
+      "ws_code": "20",
+      "numeric_value": 20,
+      "active": true
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "medio_pago",
+      "visible_label": "Tarjeta de crédito",
+      "ws_code": "COBRADOR",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "medio_pago",
+      "visible_label": "Efectivo / cobrador",
+      "ws_code": "COBRADOR",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "refacturacion",
+      "visible_label": "Trimestral",
+      "ws_code": "TRIMESTRAL",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "cuotas",
+      "visible_label": "3",
+      "ws_code": "3",
+      "numeric_value": 3,
+      "active": true
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "rastreador_alarma",
+      "visible_label": "Sin Rastreador/Alarma",
+      "ws_code": "SIN_ALARMA",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "rastreador_alarma",
+      "visible_label": "Con Rastreador/Alarma",
+      "ws_code": "CON_ALARMA",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "uso",
+      "visible_label": "Particular",
+      "ws_code": "1",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "uso",
+      "visible_label": "Taxi",
+      "ws_code": "2",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "uso",
+      "visible_label": "Remis",
+      "ws_code": "3",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "uso",
+      "visible_label": "Comercial / Transporte de bienes",
+      "ws_code": "6",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "uso",
+      "visible_label": "Reparto / Mensajería",
+      "ws_code": "15",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "tipo_vehiculo",
+      "visible_label": "Auto",
+      "ws_code": "1",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "tipo_vehiculo",
+      "visible_label": "Pick Up Clase A",
+      "ws_code": "6",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "tipo_vehiculo",
+      "visible_label": "Pick Up Clase B",
+      "ws_code": "8",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "gnc",
+      "visible_label": "Sin GNC",
+      "ws_code": "NO_POSEE_GNC",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "gnc",
+      "visible_label": "Con GNC",
+      "ws_code": "POSEE_GNC",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "clausula_ajuste",
+      "visible_label": "10%",
+      "ws_code": "10",
+      "numeric_value": 10,
+      "active": true
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "clausula_ajuste",
+      "visible_label": "20%",
+      "ws_code": "20",
+      "numeric_value": 20,
+      "active": true
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "clausula_ajuste",
+      "visible_label": "30%",
+      "ws_code": "30",
+      "numeric_value": 30,
+      "active": true
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "clausula_ajuste",
+      "visible_label": "40%",
+      "ws_code": "40",
+      "numeric_value": 40,
+      "active": true
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "clausula_ajuste",
+      "visible_label": "50%",
+      "ws_code": "50",
+      "numeric_value": 50,
+      "active": true
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "coeficiente_rc",
+      "visible_label": "1",
+      "ws_code": "1",
+      "numeric_value": 1,
+      "active": true
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "coeficiente_rc",
+      "visible_label": "0.9",
+      "ws_code": "0.9",
+      "numeric_value": 0.9,
+      "active": true
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "coeficiente_rc",
+      "visible_label": "0.8",
+      "ws_code": "0.8",
+      "numeric_value": 0.8,
+      "active": true
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "coeficiente_casco",
+      "visible_label": "1",
+      "ws_code": "1",
+      "numeric_value": 1,
+      "active": true
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "coeficiente_casco",
+      "visible_label": "0.9",
+      "ws_code": "0.9",
+      "numeric_value": 0.9,
+      "active": true
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "coeficiente_casco",
+      "visible_label": "0.8",
+      "ws_code": "0.8",
+      "numeric_value": 0.8,
+      "active": true
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "medio_pago",
+      "visible_label": "Tarjeta de crédito",
+      "ws_code": null,
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "refacturacion",
+      "visible_label": "Mensual",
+      "ws_code": "6",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "cuotas",
+      "visible_label": "1",
+      "ws_code": "1",
+      "numeric_value": 1,
+      "active": true
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "rastreador_alarma",
+      "visible_label": "Sin Rastreador/Alarma",
+      "ws_code": "0",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "rastreador_alarma",
+      "visible_label": "Lo Jack",
+      "ws_code": "2",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "rastreador_alarma",
+      "visible_label": "Tracer",
+      "ws_code": "3",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "rastreador_alarma",
+      "visible_label": "Pointer",
+      "ws_code": "5",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "rastreador_alarma",
+      "visible_label": "Ituran",
+      "ws_code": "6",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "rastreador_alarma",
+      "visible_label": "Ubicar",
+      "ws_code": "7",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "rastreador_alarma",
+      "visible_label": "Lo Jack a cargo compañía",
+      "ws_code": "14",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "rastreador_alarma",
+      "visible_label": "Tracer a cargo compañía",
+      "ws_code": "20",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "rastreador_alarma",
+      "visible_label": "Micrograbado",
+      "ws_code": "46",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "uso",
+      "visible_label": "Particular",
+      "ws_code": "1",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "uso",
+      "visible_label": "Comercial",
+      "ws_code": "6",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "tipo_vehiculo",
+      "visible_label": "Auto",
+      "ws_code": "1",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "tipo_vehiculo",
+      "visible_label": "Moto",
+      "ws_code": "2",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "gnc",
+      "visible_label": "Sin GNC",
+      "ws_code": "0",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "gnc",
+      "visible_label": "Con GNC",
+      "ws_code": "1",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "clausula_ajuste",
+      "visible_label": "Sin cláusula",
+      "ws_code": "1",
+      "numeric_value": 0,
+      "active": true
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "clausula_ajuste",
+      "visible_label": "10%",
+      "ws_code": "2",
+      "numeric_value": 10,
+      "active": true
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "clausula_ajuste",
+      "visible_label": "20%",
+      "ws_code": "3",
+      "numeric_value": 20,
+      "active": true
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "descuento_comercial",
+      "visible_label": "-15%",
+      "ws_code": "-15",
+      "numeric_value": 15,
+      "active": true
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "descuento_comercial",
+      "visible_label": "-10%",
+      "ws_code": "-10",
+      "numeric_value": 10,
+      "active": true
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "descuento_comercial",
+      "visible_label": "-5%",
+      "ws_code": "-5",
+      "numeric_value": 5,
+      "active": true
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "descuento_comercial",
+      "visible_label": "0%",
+      "ws_code": "0",
+      "numeric_value": 0,
+      "active": true
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "descuento_comercial",
+      "visible_label": "5%",
+      "ws_code": "5",
+      "numeric_value": 5,
+      "active": true
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "descuento_comercial",
+      "visible_label": "10%",
+      "ws_code": "10",
+      "numeric_value": 10,
+      "active": true
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "asistencia",
+      "visible_label": "Sí",
+      "ws_code": "-1",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "asistencia",
+      "visible_label": "No",
+      "ws_code": "0",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "plan_comercial",
+      "visible_label": "Plan Normal",
+      "ws_code": "1",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "sancor",
+      "concept_code": "vigencia_poliza",
+      "visible_label": "Anual",
+      "ws_code": "1",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "sancor",
+      "concept_code": "vigencia_poliza",
+      "visible_label": "Semestral",
+      "ws_code": "2",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "sancor",
+      "concept_code": "vigencia_poliza",
+      "visible_label": "Trimestral",
+      "ws_code": "3",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "sancor",
+      "concept_code": "refacturacion",
+      "visible_label": "Mensual",
+      "ws_code": "5",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "sancor",
+      "concept_code": "cuotas",
+      "visible_label": "Sin cuotas (mensual)",
+      "ws_code": "0",
+      "numeric_value": 0,
+      "active": true
+    },
+    {
+      "company_slug": "sancor",
+      "concept_code": "uso",
+      "visible_label": "Particular",
+      "ws_code": "2",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "sancor",
+      "concept_code": "uso",
+      "visible_label": "Particular y/o comercial",
+      "ws_code": "4",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "sancor",
+      "concept_code": "gnc",
+      "visible_label": "Sin GNC",
+      "ws_code": "0",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "sancor",
+      "concept_code": "gnc",
+      "visible_label": "Con GNC",
+      "ws_code": "1",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "sancor",
+      "concept_code": "garage_guardado",
+      "visible_label": "Sí",
+      "ws_code": "1",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "sancor",
+      "concept_code": "garage_guardado",
+      "visible_label": "No",
+      "ws_code": "2",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "sancor",
+      "concept_code": "clausula_ajuste",
+      "visible_label": "Ninguna",
+      "ws_code": null,
+      "numeric_value": 0,
+      "active": true
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "medio_pago",
+      "visible_label": "Tarjeta de crédito",
+      "ws_code": "2",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "medio_pago",
+      "visible_label": "CBU / débito en cuenta",
+      "ws_code": "3",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "medio_pago",
+      "visible_label": "Efectivo",
+      "ws_code": "1",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "vigencia_poliza",
+      "visible_label": "Mensual",
+      "ws_code": "12",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "vigencia_poliza",
+      "visible_label": "Cuatrimestral",
+      "ws_code": "3",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "vigencia_poliza",
+      "visible_label": "Trimestral",
+      "ws_code": "4",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "refacturacion",
+      "visible_label": "Mensual",
+      "ws_code": "Mensual",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "cuotas",
+      "visible_label": "Contado",
+      "ws_code": "1",
+      "numeric_value": 1,
+      "active": true
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "rastreador_alarma",
+      "visible_label": "Sin Rastreador/Alarma",
+      "ws_code": "false|0",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "rastreador_alarma",
+      "visible_label": "Tracer",
+      "ws_code": "true|1",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "rastreador_alarma",
+      "visible_label": "Ituran",
+      "ws_code": "true|2",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "rastreador_alarma",
+      "visible_label": "Datatrak",
+      "ws_code": "true|3",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "rastreador_alarma",
+      "visible_label": "Ubicar",
+      "ws_code": "true|4",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "rastreador_alarma",
+      "visible_label": "Lo Jack",
+      "ws_code": "true|5",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "uso",
+      "visible_label": "Particular",
+      "ws_code": "1",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "uso",
+      "visible_label": "Comercial",
+      "ws_code": "2",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "uso",
+      "visible_label": "Transporte de bienes",
+      "ws_code": "8",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "uso",
+      "visible_label": "Trabajos rurales",
+      "ws_code": "9",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "gnc",
+      "visible_label": "Sin GNC",
+      "ws_code": "false",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "gnc",
+      "visible_label": "Con GNC",
+      "ws_code": "true",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "clausula_ajuste",
+      "visible_label": "0%",
+      "ws_code": "1",
+      "numeric_value": 0,
+      "active": true
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "clausula_ajuste",
+      "visible_label": "10%",
+      "ws_code": "2",
+      "numeric_value": 10,
+      "active": true
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "clausula_ajuste",
+      "visible_label": "20%",
+      "ws_code": "3",
+      "numeric_value": 20,
+      "active": true
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "clausula_ajuste",
+      "visible_label": "30%",
+      "ws_code": "4",
+      "numeric_value": 30,
+      "active": true
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "variacion_32080",
+      "visible_label": "-15%",
+      "ws_code": "1",
+      "numeric_value": -15,
+      "active": true
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "variacion_32080",
+      "visible_label": "-10%",
+      "ws_code": "6",
+      "numeric_value": -10,
+      "active": true
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "variacion_32080",
+      "visible_label": "-5%",
+      "ws_code": "11",
+      "numeric_value": -5,
+      "active": true
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "variacion_32080",
+      "visible_label": "0%",
+      "ws_code": "16",
+      "numeric_value": 0,
+      "active": true
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "variacion_32080",
+      "visible_label": "5%",
+      "ws_code": "21",
+      "numeric_value": 5,
+      "active": true
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "variacion_32080",
+      "visible_label": "10%",
+      "ws_code": "26",
+      "numeric_value": 10,
+      "active": true
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "descuento_comercial",
+      "visible_label": "-10%",
+      "ws_code": "-10",
+      "numeric_value": 10,
+      "active": true
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "descuento_comercial",
+      "visible_label": "-5%",
+      "ws_code": "-5",
+      "numeric_value": 5,
+      "active": true
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "descuento_comercial",
+      "visible_label": "0%",
+      "ws_code": "0",
+      "numeric_value": 0,
+      "active": true
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "descuento_comercial",
+      "visible_label": "5%",
+      "ws_code": "5",
+      "numeric_value": 5,
+      "active": true
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "descuento_comercial",
+      "visible_label": "10%",
+      "ws_code": "10",
+      "numeric_value": 10,
+      "active": true
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "descuento_seguro_nuevo",
+      "visible_label": "25%",
+      "ws_code": "25",
+      "numeric_value": 25,
+      "active": true
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "ocupacion",
+      "visible_label": "No informa",
+      "ws_code": "NO_INFORMA",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "medio_pago",
+      "visible_label": "Tarjeta de crédito",
+      "ws_code": "TA",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "medio_pago",
+      "visible_label": "CBU",
+      "ws_code": "BA",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "medio_pago",
+      "visible_label": "Débito directo",
+      "ws_code": "DD",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "medio_pago",
+      "visible_label": "Débito en cuenta",
+      "ws_code": "DC",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "medio_pago",
+      "visible_label": "Efectivo",
+      "ws_code": "EF",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "medio_pago",
+      "visible_label": "Pago Fácil",
+      "ws_code": "PR",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "refacturacion",
+      "visible_label": "Cuatrimestral",
+      "ws_code": "4",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "cuotas",
+      "visible_label": "4",
+      "ws_code": "4",
+      "numeric_value": 4,
+      "active": true
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "rastreador_alarma",
+      "visible_label": "Sin Rastreador/Alarma",
+      "ws_code": "1",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "rastreador_alarma",
+      "visible_label": "Ubicar - A cargo del Cliente",
+      "ws_code": "16",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "rastreador_alarma",
+      "visible_label": "Ubicar - A cargo de la Compañía",
+      "ws_code": "17",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "rastreador_alarma",
+      "visible_label": "Pointer - A cargo del Cliente",
+      "ws_code": "23",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "rastreador_alarma",
+      "visible_label": "Pointer - A cargo de la Compañía",
+      "ws_code": "24",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "rastreador_alarma",
+      "visible_label": "Lo-Jack - A cargo del Cliente",
+      "ws_code": "25",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "rastreador_alarma",
+      "visible_label": "Lo-Jack - A cargo de la Compañía",
+      "ws_code": "26",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "rastreador_alarma",
+      "visible_label": "Ituran - A cargo del Cliente",
+      "ws_code": "32",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "rastreador_alarma",
+      "visible_label": "Ituran - A cargo de la Compañía",
+      "ws_code": "33",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "uso",
+      "visible_label": "Particular",
+      "ws_code": "1",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "uso",
+      "visible_label": "Comercial",
+      "ws_code": "2",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "uso",
+      "visible_label": "Carga peligrosa",
+      "ws_code": "4",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "uso",
+      "visible_label": "Carga peligrosa PK",
+      "ws_code": "5",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "uso",
+      "visible_label": "Comercial carga general",
+      "ws_code": "28",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "uso",
+      "visible_label": "Comercial carga peligrosa",
+      "ws_code": "29",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "gnc",
+      "visible_label": "Sin GNC",
+      "ws_code": "ACCESSORY_NONE",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "gnc",
+      "visible_label": "Con GNC",
+      "ws_code": "ACCESSORY_GNC",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "clausula_ajuste",
+      "visible_label": "20%",
+      "ws_code": "2",
+      "numeric_value": 20,
+      "active": true
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "clausula_ajuste",
+      "visible_label": "30%",
+      "ws_code": "3",
+      "numeric_value": 30,
+      "active": true
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "clausula_ajuste",
+      "visible_label": "40%",
+      "ws_code": "4",
+      "numeric_value": 40,
+      "active": true
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "clausula_ajuste",
+      "visible_label": "50%",
+      "ws_code": "5",
+      "numeric_value": 50,
+      "active": true
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "comision",
+      "visible_label": "18%",
+      "ws_code": "18",
+      "numeric_value": 18,
+      "active": true
+    }
+  ],
+  "override_rules": [
+    {
+      "company_slug": "allianz",
+      "concept_code": "descuento_comercial",
+      "min_role": "vendedor",
+      "allowed": true,
+      "min": 0,
+      "max": 15,
+      "notes": "Puntual por cotización."
+    },
+    {
+      "company_slug": "allianz",
+      "concept_code": "clausula_ajuste",
+      "min_role": "supervisor",
+      "allowed": true,
+      "min": 0,
+      "max": 0,
+      "notes": "WS expone clausulaDeAjuste; documentación local sólo confirma 0/sin ajuste."
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "descuento_comercial",
+      "min_role": "vendedor",
+      "allowed": true,
+      "min": 0,
+      "max": 30,
+      "notes": "Campo histórico bonificacion tratado como descuento comercial."
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "clausula_ajuste",
+      "min_role": "supervisor",
+      "allowed": true,
+      "min": 0,
+      "max": 20,
+      "notes": "Permitir 0/sin ajuste. Default PPT/config actual 20%."
+    },
+    {
+      "company_slug": "experta",
+      "concept_code": "clausula_ajuste",
+      "min_role": "supervisor",
+      "allowed": true,
+      "min": 0,
+      "max": 5,
+      "notes": "RequestCotizacion exige porcentajeAjuste; ejemplos/config actual usan 5%."
+    },
+    {
+      "company_slug": "mapfre",
+      "concept_code": "clausula_ajuste",
+      "min_role": "supervisor",
+      "allowed": true,
+      "min": 0,
+      "max": 0,
+      "notes": "Request SOAP expone porcentajeAjuste; ejemplos locales lo envían vacío."
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "clausula_ajuste",
+      "min_role": "supervisor",
+      "allowed": true,
+      "min": 0,
+      "max": 50,
+      "notes": "Catálogo local IdClausulaAjuste: 0%, 20%, 30%, 40%, 50%."
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "descuento_comercial",
+      "min_role": "vendedor",
+      "allowed": true,
+      "min": 0,
+      "max": 25,
+      "notes": "40088_bonifAdicional. Default operativo 1%; rango promocional documentado hasta 25%."
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "comision",
+      "min_role": "supervisor",
+      "allowed": true,
+      "min": 15,
+      "max": 20,
+      "notes": "Provincia acepta 15 y 20 para la relación/productor probada; 0.15 y 18 devuelven error funcional 27309."
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "clausula_ajuste",
+      "min_role": "supervisor",
+      "allowed": true,
+      "min": 0,
+      "max": 10,
+      "notes": "WS define 40550_clausulaAjuste como valor porcentual; ejemplo local usa 10%."
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "clausula_ajuste",
+      "min_role": "supervisor",
+      "allowed": true,
+      "min": 0,
+      "max": 30,
+      "notes": "Request actual envía porcentajeAjuste."
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "coeficiente_rc",
+      "min_role": "supervisor",
+      "allowed": true,
+      "min": 0,
+      "max": null,
+      "notes": "Ingreso numérico. Base PPT/pruebas aseguradora."
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "coeficiente_casco",
+      "min_role": "supervisor",
+      "allowed": true,
+      "min": 0,
+      "max": null,
+      "notes": "Ingreso numérico. Base PPT/pruebas aseguradora."
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "descuento_comercial",
+      "min_role": "vendedor",
+      "allowed": true,
+      "min": 0,
+      "max": 15,
+      "notes": "Ajuste de prima como palanca comercial."
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "clausula_ajuste",
+      "min_role": "supervisor",
+      "allowed": true,
+      "min": 0,
+      "max": 90,
+      "notes": "Adapter acepta 0% a 90% en pasos de 10."
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "descuento_comercial",
+      "min_role": "vendedor",
+      "allowed": true,
+      "min": 0,
+      "max": 10,
+      "notes": "discount_commercial: negativo=descuento, positivo=recargo."
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "clausula_ajuste",
+      "min_role": "supervisor",
+      "allowed": true,
+      "min": 0,
+      "max": 40,
+      "notes": "Catálogo WS 0%, 10%, 20%, 30%, 40%."
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "variacion_32080",
+      "min_role": "supervisor",
+      "allowed": true,
+      "min": -15,
+      "max": 10,
+      "notes": "Catálogo WS -15% a +10%."
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "descuento_seguro_nuevo",
+      "min_role": "vendedor",
+      "allowed": true,
+      "min": 0,
+      "max": 25,
+      "notes": "Sólo cotización nueva."
+    },
+    {
+      "company_slug": "sancor",
+      "concept_code": "descuento_no_siniestralidad",
+      "min_role": "vendedor",
+      "allowed": true,
+      "min": 0,
+      "max": 99,
+      "notes": "Máximo inicial PPT."
+    },
+    {
+      "company_slug": "sancor",
+      "concept_code": "descuento_especial",
+      "min_role": "vendedor",
+      "allowed": true,
+      "min": 0,
+      "max": 48,
+      "notes": "Máximo inicial PPT."
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "comision",
+      "min_role": "supervisor",
+      "allowed": true,
+      "min": null,
+      "max": null,
+      "notes": "WSCAR usa PorcComision; default operativo 18%."
+    },
+    {
+      "company_slug": "mapfre",
+      "concept_code": "garage_guardado",
+      "min_role": "supervisor",
+      "allowed": true,
+      "min": null,
+      "max": null,
+      "notes": "WS cotizar: guardaGGe true/false."
+    },
+    {
+      "company_slug": "sancor",
+      "concept_code": "garage_guardado",
+      "min_role": "supervisor",
+      "allowed": true,
+      "min": null,
+      "max": null,
+      "notes": "ScoringTypeId=3; SelectedOptionId 1=Sí, 2=No."
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "asistencia",
+      "min_role": "supervisor",
+      "allowed": true,
+      "min": null,
+      "max": null,
+      "notes": "AsistMecanica: -1 con asistencia, 0 sin asistencia."
+    }
+  ],
+  "ws_mappings": [
+    {
+      "company_slug": "atm",
+      "concept_code": "rastreador_alarma",
+      "ws_field": "rastreo",
+      "ws_code": "N",
+      "source": "PPT + adapter"
+    },
+    {
+      "company_slug": "allianz",
+      "concept_code": "rastreador_alarma",
+      "ws_field": "VehiculoACotizar.tieneAlarma/codigoTipoAlarma",
+      "ws_code": "false/true + LA",
+      "source": "Allianz ejemplos WS"
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "uso",
+      "ws_field": "vehiculo.uso",
+      "ws_code": "ws_au_usos",
+      "source": "ATM ws_au_usos FTP"
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "vigencia_poliza",
+      "ws_field": "usuario.plan",
+      "ws_code": "get_plans combina vigencia/facturacion/cuotas/forma de pago",
+      "source": "ATM Cotizador_WS_V1.9"
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "refacturacion",
+      "ws_field": "usuario.plan",
+      "ws_code": "get_plans combina vigencia/facturacion/cuotas/forma de pago",
+      "source": "ATM Cotizador_WS_V1.9 + data/atm/diccionarios/vigencia.json"
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "cuotas",
+      "ws_field": "usuario.plan",
+      "ws_code": "derivado de vigencia/refacturacion",
+      "source": "ATM Cotizador_WS_V1.9 + data/atm/diccionarios/vigencia.json"
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "gnc",
+      "ws_field": "Vehicle.GNCInformation.HasGNC/GNCValue",
+      "ws_code": "0/1 + monto",
+      "source": "ATM ejemplo WS EJ 2"
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "clausula_ajuste",
+      "ws_field": "ajuste",
+      "ws_code": "0/sin ajuste o 020",
+      "source": "WS examples + PPT/data"
+    },
+    {
+      "company_slug": "atm",
+      "concept_code": "descuento_comercial",
+      "ws_field": "bonificacion",
+      "ws_code": "30",
+      "source": "PPT + adapter"
+    },
+    {
+      "company_slug": "allianz",
+      "concept_code": "vigencia_poliza",
+      "ws_field": "tipoDePoliza",
+      "ws_code": "M/S/A/P",
+      "source": "Allianz Especificación WS Vehículos Cotizador"
+    },
+    {
+      "company_slug": "allianz",
+      "concept_code": "refacturacion",
+      "ws_field": "tipoDePoliza",
+      "ws_code": "M por default actual",
+      "source": "Allianz adapter resolveAllianzPayment"
+    },
+    {
+      "company_slug": "allianz",
+      "concept_code": "cuotas",
+      "ws_field": "cantidadDeCuotas",
+      "ws_code": "1/6/12 según tipoDePoliza y medioDePago",
+      "source": "Allianz adapter resolveAllianzPayment"
+    },
+    {
+      "company_slug": "allianz",
+      "concept_code": "uso",
+      "ws_field": "VehiculoACotizar.codigoDeUso",
+      "ws_code": "ObtenerUsosVehiculo",
+      "source": "Allianz Operación ObtenerUsosVehiculo"
+    },
+    {
+      "company_slug": "allianz",
+      "concept_code": "gnc",
+      "ws_field": "VehiculoACotizar.ListaAccesorios.codigoAccesorio/sumaAccesorio",
+      "ws_code": "ACCESSORY_GNC + monto",
+      "source": "Allianz Especificación WS Vehículos Cotizador: accesorios por catálogo"
+    },
+    {
+      "company_slug": "allianz",
+      "concept_code": "clausula_ajuste",
+      "ws_field": "CondicionesContratacion.clausulaDeAjuste",
+      "ws_code": "0",
+      "source": "Allianz Especificación WS Vehículos Cotizador"
+    },
+    {
+      "company_slug": "experta",
+      "concept_code": "uso",
+      "ws_field": "uso",
+      "ws_code": "RequestCotizacion.uso",
+      "source": "Experta Swagger RequestCotizacion"
+    },
+    {
+      "company_slug": "experta",
+      "concept_code": "gnc",
+      "ws_field": "gnc/valorGnc",
+      "ws_code": "N o 501 + monto",
+      "source": "Experta Swagger RequestCotizacion + adapter"
+    },
+    {
+      "company_slug": "experta",
+      "concept_code": "clausula_ajuste",
+      "ws_field": "porcentajeAjuste",
+      "ws_code": "0/5",
+      "source": "Experta Swagger RequestCotizacion + ejemplos"
+    },
+    {
+      "company_slug": "experta",
+      "concept_code": "comision",
+      "ws_field": "modalidad",
+      "ws_code": "EX0",
+      "source": "Experta adapter: modalidad default EX0"
+    },
+    {
+      "company_slug": "mapfre",
+      "concept_code": "refacturacion",
+      "ws_field": "tipoFacturacion",
+      "ws_code": "M",
+      "source": "Mapfre request SOAP"
+    },
+    {
+      "company_slug": "mapfre",
+      "concept_code": "rastreador_alarma",
+      "ws_field": "conLocalizador",
+      "ws_code": "0/1",
+      "source": "Mapfre request SOAP"
+    },
+    {
+      "company_slug": "mapfre",
+      "concept_code": "uso",
+      "ws_field": "usoVehiculo",
+      "ws_code": "1/7 según diccionario local",
+      "source": "Mapfre request SOAP + data/mapfre/diccionarios/uso.json"
+    },
+    {
+      "company_slug": "mapfre",
+      "concept_code": "gnc",
+      "ws_field": "conGNC/valorGNC",
+      "ws_code": "0/1 + monto",
+      "source": "Mapfre request SOAP"
+    },
+    {
+      "company_slug": "mapfre",
+      "concept_code": "garage_guardado",
+      "ws_field": "guardaGGe",
+      "ws_code": "true/false",
+      "source": "Mapfre request SOAP"
+    },
+    {
+      "company_slug": "mapfre",
+      "concept_code": "clausula_ajuste",
+      "ws_field": "porcentajeAjuste",
+      "ws_code": "vacío/sin ajuste",
+      "source": "Mapfre request SOAP ejemplos"
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "refacturacion",
+      "ws_field": "tipoFacturacion",
+      "ws_code": "F",
+      "source": "Provincia WS: tipoFacturacion"
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "cuotas",
+      "ws_field": "planDePago",
+      "ws_code": "1",
+      "source": "Provincia WS: planDePago"
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "rastreador_alarma",
+      "ws_field": "parametro_9",
+      "ws_code": "0/1",
+      "source": "Provincia process histórico: Tiene Equipo de Rastreo"
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "uso",
+      "ws_field": "bien.40008_uso",
+      "ws_code": "depende del tipo de vehículo",
+      "source": "Provincia WS: 40008_uso"
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "gnc",
+      "ws_field": "bien.montoAccesorios",
+      "ws_code": "0 o monto",
+      "source": "Provincia WS: montoAccesorios requerido como total de accesorios"
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "clausula_ajuste",
+      "ws_field": "bien.40550_clausulaAjuste",
+      "ws_code": "0/10",
+      "source": "Provincia WS: 40550_clausulaAjuste valor porcentual"
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "descuento_comercial",
+      "ws_field": "bien.40088_bonifAdicional",
+      "ws_code": "1/5/10/15/20/22/25",
+      "source": "Provincia WS: 40088_bonifAdicional valor porcentual"
+    },
+    {
+      "company_slug": "provincia",
+      "concept_code": "comision",
+      "ws_field": "datosAdicionales.porcentajeComision",
+      "ws_code": "15/20",
+      "source": "Provincia WS: porcentajeComision valor porcentual; probado 15 y 20 OK"
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "rastreador_alarma",
+      "ws_field": "datoPoliza.alarmaSatelital",
+      "ws_code": "SIN_ALARMA/CON_ALARMA",
+      "source": "Rivadavia request histórico AlarmaSatelital"
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "refacturacion",
+      "ws_field": "datoPoliza.tipoFacturacion",
+      "ws_code": "TRIMESTRAL",
+      "source": "Rivadavia request"
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "cuotas",
+      "ws_field": "datoPoliza.cantidadCuotas",
+      "ws_code": "3",
+      "source": "Rivadavia request"
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "uso",
+      "ws_field": "tipo_uso",
+      "ws_code": "consulta/tipo_uso",
+      "source": "Rivadavia Postman consulta/tipo_uso"
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "tipo_vehiculo",
+      "ws_field": "tipo_vehiculo",
+      "ws_code": "1/6/8",
+      "source": "Rivadavia infoauto_tipo_vehiculo + consulta codigo_vehiculo"
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "gnc",
+      "ws_field": "datoPoliza.gnc/sumaAseguradaAccesorios",
+      "ws_code": "NO_POSEE_GNC/POSEE_GNC + monto",
+      "source": "Rivadavia API Brokers"
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "clausula_ajuste",
+      "ws_field": "datoVehiculo.porcentajeAjuste",
+      "ws_code": "30",
+      "source": "adapter"
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "coeficiente_rc",
+      "ws_field": "CoefRC",
+      "ws_code": "0.9",
+      "source": "Rivadavia SOAP histórico wsEmisionPoliza.php"
+    },
+    {
+      "company_slug": "rivadavia",
+      "concept_code": "coeficiente_casco",
+      "ws_field": "CoefCasco",
+      "ws_code": "0.9",
+      "source": "Rivadavia SOAP histórico wsEmisionPoliza.php"
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "rastreador_alarma",
+      "ws_field": "nCodLocalizador",
+      "ws_code": "0",
+      "source": "adapter"
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "refacturacion",
+      "ws_field": "nCodPeriodo",
+      "ws_code": "6",
+      "source": "SMG request"
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "cuotas",
+      "ws_field": "nCantCuotas",
+      "ws_code": "1",
+      "source": "SMG request"
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "uso",
+      "ws_field": "nCodUsoVeh",
+      "ws_code": "obtenerDatosParametricos: Usos del Vehículo",
+      "source": "SMG WS V1"
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "tipo_vehiculo",
+      "ws_field": "sTipo_veh",
+      "ws_code": "1=Auto; 2=Moto",
+      "source": "SMG adapter resolveSmgVehicleType"
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "gnc",
+      "ws_field": "nMontoGNC",
+      "ws_code": "0 o monto",
+      "source": "SMG request"
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "clausula_ajuste",
+      "ws_field": "nCodClausulaAjuste",
+      "ws_code": "1=S/C; 2=10%; 3=20%",
+      "source": "WS SMG V1 Tabla 1"
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "descuento_comercial",
+      "ws_field": "nAjustePrima",
+      "ws_code": "-15",
+      "source": "adapter"
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "asistencia",
+      "ws_field": "AsistMecanica",
+      "ws_code": "-1=Sí; 0=No",
+      "source": "SMG WS + histórico process_SMG"
+    },
+    {
+      "company_slug": "smg",
+      "concept_code": "plan_comercial",
+      "ws_field": "cod_tipo_poliza",
+      "ws_code": "1=Plan Normal",
+      "source": "SMG request"
+    },
+    {
+      "company_slug": "sancor",
+      "concept_code": "garage_guardado",
+      "ws_field": "ScoringOptions[typeId=3].SelectedOptionId",
+      "ws_code": "1=Sí; 2=No",
+      "source": "Sancor Cotizar Automotores Request.xml"
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "clausula_ajuste",
+      "ws_field": "policy.adjustment_clause",
+      "ws_code": "1=0%; 2=10%; 3=20%; 4=30%",
+      "source": "Victoria obtenerClausulasAjuste"
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "variacion_32080",
+      "ws_field": "policy.variation_32080_code",
+      "ws_code": "1=-15%; 6=-10%; 11=-5%; 16=0%; 21=5%; 26=10%",
+      "source": "Victoria obtenerVariacion32080"
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "refacturacion",
+      "ws_field": "vigencia.id",
+      "ws_code": "obtenerVigencias + tipoFacturacion",
+      "source": "Victoria adapter /cea/reference/obtenerVigencias"
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "cuotas",
+      "ws_field": "planCuota.cantidadCuotas",
+      "ws_code": "obtenerCantidadCuotas(vigencia, formaPago)",
+      "source": "Victoria adapter /cea/reference/obtenerCantidadCuotas"
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "rastreador_alarma",
+      "ws_field": "vehicle.satellite_tracking/vehicle.sistem_tracking",
+      "ws_code": "false|0 o true|prestador",
+      "source": "MultiPas"
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "uso",
+      "ws_field": "vehicle.use",
+      "ws_code": "1=Particular; 2=Comercial; 8=Transporte de bienes; 9=Trabajos rurales",
+      "source": "MultiPas"
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "gnc",
+      "ws_field": "vehicle.gnc",
+      "ws_code": "false/true",
+      "source": "MultiPas"
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "descuento_comercial",
+      "ws_field": "vehicle.discount_commercial",
+      "ws_code": "negativo=descuento, positivo=recargo",
+      "source": "MultiPas"
+    },
+    {
+      "company_slug": "victoria",
+      "concept_code": "descuento_seguro_nuevo",
+      "ws_field": "vehicle.discount_new_insurance",
+      "ws_code": "25",
+      "source": "MultiPas"
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "medio_pago",
+      "ws_field": "medioPago",
+      "ws_code": "Tarjeta de crédito",
+      "source": "PPT"
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "refacturacion",
+      "ws_field": "IdPeriodo",
+      "ws_code": "4=cuatrimestral",
+      "source": "Meridional Condiciones Comerciales + adapter"
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "cuotas",
+      "ws_field": "CantidadCuotas",
+      "ws_code": "4",
+      "source": "Meridional Condiciones Comerciales + adapter"
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "rastreador_alarma",
+      "ws_field": "IdRastreador",
+      "ws_code": "1/16/17/23/24/25/26/32/33",
+      "source": "Meridional WSCAR + diccionario local"
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "uso",
+      "ws_field": "Vehiculos.IdUsoVehiculo",
+      "ws_code": "1/2/4/5/28/29",
+      "source": "Meridional PARAMETRICAS.xlsx"
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "ocupacion",
+      "ws_field": "ocupacion",
+      "ws_code": "No informa",
+      "source": "PPT"
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "gnc",
+      "ws_field": "Vehiculos.Accesorios.IdAccesorio/SumaAseguradaAccesorio",
+      "ws_code": "ACCESSORY_GNC + monto",
+      "source": "Meridional WSCAR cotización: accesorios por catálogo"
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "clausula_ajuste",
+      "ws_field": "IdClausulaAjuste",
+      "ws_code": "1=0%; 2=20%; 3=30%; 4=40%; 5=50%",
+      "source": "Meridional GetAllClausulasAjuste + data/meridional/diccionarios/clausula_ajuste.json"
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "comision",
+      "ws_field": "PorcComision",
+      "ws_code": "18",
+      "source": "Meridional WSCAR cotización: PorcComision"
+    }
+  ],
+  "quote_overrides": []
+}

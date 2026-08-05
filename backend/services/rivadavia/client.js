@@ -77,8 +77,26 @@ async function rivadaviaPost(cfg, path, payload) {
   return { resp, tokenData };
 }
 
+async function rivadaviaSoapPost(cfg, envelope) {
+  const url = String(
+    cfg?.parametros_extras?.soap_legacy_url ||
+    cfg?.soap_legacy_url ||
+    'https://www.sistemas.segurosrivadavia.com/wsRivadavia/wsEmisionPoliza.php'
+  ).trim();
+  const resp = await axios.post(url, envelope, {
+    headers: {
+      'Content-Type': 'text/xml; charset=UTF-8',
+      SOAPAction: '"urn:emision_poliza/solicitudCotizacion"',
+    },
+    timeout: Number(cfg?.parametros_extras?.soap_timeout_ms || 45000),
+    validateStatus: () => true,
+  });
+  return { resp, tokenData: { tokenType: 'SOAP' }, url };
+}
+
 module.exports = {
   getRivadaviaToken,
   rivadaviaGet,
   rivadaviaPost,
+  rivadaviaSoapPost,
 };
