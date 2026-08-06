@@ -58,6 +58,49 @@ describe('Meridional locality resolver', () => {
     });
   });
 
+  test('resuelve alias aprobado de Adrogue como Almirante Brown', () => {
+    const localityCatalog = [
+      {
+        idLocalidad: '3253',
+        descripcion: 'ALMIRANTE BROWN',
+        idProvincia: '2',
+        provincia: 'BUENOS AIRES',
+        codPostales: ['1846'],
+      },
+      {
+        idLocalidad: '8194',
+        descripcion: 'JOSE MARMOL',
+        idProvincia: '2',
+        provincia: 'BUENOS AIRES',
+        codPostales: ['1846'],
+      },
+    ];
+    const localityAliases = [
+      {
+        inputCodPostal: '1846',
+        inputLocalidad: 'ADROGUE',
+        inputProvincia: 'Buenos Aires',
+        codPostal: '1846',
+        idLocalidad: '3253',
+        descripcion: 'ALMIRANTE BROWN',
+        idProvincia: '2',
+        provincia: 'BUENOS AIRES',
+      },
+    ];
+
+    expect(resolveMeridionalLocalidad(
+      { CP: '1846', provincia: 'Buenos Aires', localidad: 'Adrogué' },
+      {},
+      { localityCatalog, localityAliases }
+    )).toMatchObject({
+      idLocalidad: '3253',
+      descripcion: 'ALMIRANTE BROWN',
+      idProvincia: '2',
+      codPostal: '1846',
+      matchType: 'alias',
+    });
+  });
+
   test('no usa el nombre interno de cabecera como nombre del asegurado', () => {
     const localityCatalog = [
       {

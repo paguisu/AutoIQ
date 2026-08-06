@@ -3,7 +3,9 @@ const path = require('path');
 const { isVehicleZeroKm } = require('../../utils/zero_km');
 
 const LOCALIDADES_PATH = path.join(process.cwd(), 'data', 'meridional', 'diccionarios', 'localidades.json');
+const LOCALIDAD_ALIASES_PATH = path.join(process.cwd(), 'data', 'meridional', 'diccionarios', 'localidad_aliases.json');
 let localityCatalogCache = null;
+let localityAliasCache = null;
 
 function pick(values) {
   for (const value of values) {
@@ -100,6 +102,42 @@ function loadMeridionalLocalityCatalog(customCatalog) {
   }));
 }
 
+function normalizeMeridionalLocalityAlias(item = {}) {
+  return {
+    inputCodPostal: String(item?.inputCodPostal || '').trim(),
+    inputLocalidad: String(item?.inputLocalidad || '').trim(),
+    inputProvincia: String(item?.inputProvincia || '').trim(),
+    codPostal: String(item?.codPostal || item?.inputCodPostal || '').replace(/\D+/g, '').slice(0, 4),
+    idLocalidad: String(item?.idLocalidad || '').trim(),
+    descripcion: String(item?.descripcion || '').trim(),
+    idProvincia: String(item?.idProvincia || '').trim(),
+    provincia: String(item?.provincia || '').trim(),
+    _inputCp: String(item?.inputCodPostal || '').replace(/\D+/g, '').slice(0, 4),
+    _inputLoc: normalizeText(item?.inputLocalidad || ''),
+    _inputProv: normalizeText(item?.inputProvincia || ''),
+    _loc: normalizeText(item?.descripcion || ''),
+    _prov: normalizeText(item?.provincia || ''),
+    matchType: 'alias',
+  };
+}
+
+function loadMeridionalLocalityAliases(customAliases) {
+  if (Array.isArray(customAliases)) return customAliases.map(normalizeMeridionalLocalityAlias);
+  if (localityAliasCache) return localityAliasCache;
+  try {
+    if (!fs.existsSync(LOCALIDAD_ALIASES_PATH)) {
+      localityAliasCache = [];
+      return localityAliasCache;
+    }
+    const raw = JSON.parse(fs.readFileSync(LOCALIDAD_ALIASES_PATH, 'utf8'));
+    localityAliasCache = Array.isArray(raw) ? raw.map(normalizeMeridionalLocalityAlias) : [];
+    return localityAliasCache;
+  } catch {
+    localityAliasCache = [];
+    return localityAliasCache;
+  }
+}
+
 function levenshteinDistance(a, b) {
   const left = String(a || '');
   const right = String(b || '');
@@ -164,6 +202,7 @@ function isGenericCabaLocality(value) {
 
 function resolveMeridionalLocalidad(row = {}, cabecera = {}, options = {}) {
   const catalog = loadMeridionalLocalityCatalog(options.localityCatalog);
+  const aliases = loadMeridionalLocalityAliases(options.localityAliases);
   const cp = pick([row?.codigo_postal, row?.codpostal, row?.CP, row?.cp, row?.CodigoPostal, cabecera?.cp])
     .replace(/\D+/g, '')
     .slice(0, 4);
@@ -199,6 +238,24 @@ function resolveMeridionalLocalidad(row = {}, cabecera = {}, options = {}) {
     && isGenericCabaLocality(localidadNorm)
   ) {
     return { ...candidates[0], codPostal: cp, matchType: 'cp_ambiguo_caba_fallback' };
+  }
+  const alias = aliases.find((item) => {
+    if (item._inputLoc && item._inputLoc !== localidadNorm) return false;
+    if (item._inputProv && item._inputProv !== provinciaNorm) return false;
+    if (item._inputCp && item._inputCp !== cp) return false;
+    return true;
+  });
+  if (alias) {
+    return {
+      idLocalidad: alias.idLocalidad,
+      descripcion: alias.descripcion,
+      idProvincia: alias.idProvincia,
+      provincia: alias.provincia,
+      codPostal: alias.codPostal || cp,
+      _loc: alias._loc,
+      _prov: alias._prov,
+      matchType: alias.matchType || 'alias',
+    };
   }
   return null;
 }
@@ -270,7 +327,7 @@ function normalizeBirthDate(value) {
   return '';
 }
 
-function buildMeridionalPayload({ fila = {}, cabecera = {}, cfg = {}, mapeos = {}, localityCatalog } = {}) {
+function buildMeridionalPayload({ fila = {}, cabecera = {}, cfg = {}, mapeos = {}, localityCatalog, localityAliases } = {}) {
   const extra = cfg?.parametros_extras || {};
   const codInfoauto = pick([
     fila?.infoautocod,
@@ -283,7 +340,7 @@ function buildMeridionalPayload({ fila = {}, cabecera = {}, cfg = {}, mapeos = {
     fila?.infoauto,
   ]);
   const anio = pick([fila?.anio, fila?.anofab, fila?.ANO, fila?.Anio, fila?.ano]);
-  const localidad = resolveMeridionalLocalidad(fila, cabecera, { localityCatalog });
+  const localidad = resolveMeridionalLocalidad(fila, cabecera, { localityCatalog, localityAliases });
 
   if (!codInfoauto) throw new Error('Meridional requiere código InfoAuto');
   if (!anio) throw new Error('Meridional requiere año del vehículo');
@@ -487,6 +544,7 @@ function parseMeridionalQuoteResponse(raw) {
 
 module.exports = {
   buildMeridionalPayload,
+  loadMeridionalLocalityAliases,
   loadMeridionalLocalityCatalog,
   parseMeridionalQuoteResponse,
   resolveMeridionalLocalidad,

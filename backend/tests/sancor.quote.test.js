@@ -12,6 +12,8 @@ describe('Sancor quote adapter', () => {
     { codPostal: '1429', codLocalidad: '30001', localidad: 'CIUDAD AUTONOMA BUENOS AIRES', codProvincia: '2', provincia: 'Capital Federal', _loc: 'CIUDAD AUTONOMA BUENOS AIRES', _prov: 'CAPITAL FEDERAL' },
     { codPostal: '1631', codLocalidad: '69', localidad: 'MARTINEZ', codProvincia: '1', provincia: 'Buenos Aires', _loc: 'MARTINEZ', _prov: 'BUENOS AIRES' },
     { codPostal: '9420', codLocalidad: '17727', localidad: 'Frigorifico Cap-rio Grande', codProvincia: '23', provincia: 'Tierra del Fuego', _loc: 'FRIGORIFICO CAP RIO GRANDE', _prov: 'TIERRA DEL FUEGO' },
+    { codPostal: '8400', codLocalidad: '16802', localidad: 'Bariloche', codProvincia: '23', provincia: 'Rio Negro', _loc: 'BARILOCHE', _prov: 'RIO NEGRO' },
+    { codPostal: '8400', codLocalidad: '16815', localidad: 'San Carlos de Bariloche', codProvincia: '23', provincia: 'Rio Negro', _loc: 'SAN CARLOS DE BARILOCHE', _prov: 'RIO NEGRO' },
   ];
   const localityAliases = [
     {
@@ -23,6 +25,16 @@ describe('Sancor quote adapter', () => {
       localidad: 'Frigorifico Cap-rio Grande',
       codProvincia: '23',
       provincia: 'Tierra del Fuego',
+    },
+    {
+      inputCodPostal: '8400',
+      inputLocalidad: 'BARILOCHE',
+      inputProvincia: 'Rio Negro',
+      codPostal: '8400',
+      codLocalidad: '16815',
+      localidad: 'San Carlos de Bariloche',
+      codProvincia: '23',
+      provincia: 'Rio Negro',
     },
   ];
 
@@ -50,6 +62,22 @@ describe('Sancor quote adapter', () => {
     ).toMatchObject({
       codPostal: '9420',
       codLocalidad: '17727',
+      codProvincia: '23',
+      matchType: 'alias',
+    });
+  });
+
+  test('prioriza alias aprobado de Bariloche sobre match exacto rechazado por Sancor', () => {
+    expect(
+      resolveSancorLocalidad(
+        { CP: '8400', localidad: 'Bariloche', provincia: 'Rio Negro' },
+        {},
+        { localityCatalog, localityAliases }
+      )
+    ).toMatchObject({
+      codPostal: '8400',
+      codLocalidad: '16815',
+      localidad: 'San Carlos de Bariloche',
       codProvincia: '23',
       matchType: 'alias',
     });

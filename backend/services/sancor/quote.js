@@ -74,8 +74,27 @@ function loadSancorLocalityCatalog(customCatalog) {
   return localityCatalogCache;
 }
 
+function normalizeSancorLocalityAlias(item = {}) {
+  return {
+    inputCodPostal: String(item?.inputCodPostal || '').trim(),
+    inputLocalidad: String(item?.inputLocalidad || '').trim(),
+    inputProvincia: String(item?.inputProvincia || '').trim(),
+    codPostal: String(item?.codPostal || '').trim(),
+    codLocalidad: String(item?.codLocalidad || '').trim(),
+    localidad: String(item?.localidad || '').trim(),
+    codProvincia: String(item?.codProvincia || '').trim(),
+    provincia: String(item?.provincia || '').trim(),
+    _inputCp: String(item?.inputCodPostal || '').trim(),
+    _inputLoc: normalizeText(item?.inputLocalidad || ''),
+    _inputProv: normalizeText(item?.inputProvincia || ''),
+    _loc: normalizeText(item?.localidad || ''),
+    _prov: normalizeText(item?.provincia || ''),
+    matchType: 'alias',
+  };
+}
+
 function loadSancorLocalityAliases(customAliases) {
-  if (Array.isArray(customAliases)) return customAliases;
+  if (Array.isArray(customAliases)) return customAliases.map(normalizeSancorLocalityAlias);
   if (localityAliasCache) return localityAliasCache;
   try {
     if (!fs.existsSync(LOCALIDAD_ALIASES_JSON_PATH)) {
@@ -83,24 +102,7 @@ function loadSancorLocalityAliases(customAliases) {
       return localityAliasCache;
     }
     const raw = JSON.parse(fs.readFileSync(LOCALIDAD_ALIASES_JSON_PATH, 'utf8'));
-    localityAliasCache = Array.isArray(raw)
-      ? raw.map((item) => ({
-          inputCodPostal: String(item?.inputCodPostal || '').trim(),
-          inputLocalidad: String(item?.inputLocalidad || '').trim(),
-          inputProvincia: String(item?.inputProvincia || '').trim(),
-          codPostal: String(item?.codPostal || '').trim(),
-          codLocalidad: String(item?.codLocalidad || '').trim(),
-          localidad: String(item?.localidad || '').trim(),
-          codProvincia: String(item?.codProvincia || '').trim(),
-          provincia: String(item?.provincia || '').trim(),
-          _inputCp: String(item?.inputCodPostal || '').trim(),
-          _inputLoc: normalizeText(item?.inputLocalidad || ''),
-          _inputProv: normalizeText(item?.inputProvincia || ''),
-          _loc: normalizeText(item?.localidad || ''),
-          _prov: normalizeText(item?.provincia || ''),
-          matchType: 'alias',
-        }))
-      : [];
+    localityAliasCache = Array.isArray(raw) ? raw.map(normalizeSancorLocalityAlias) : [];
     return localityAliasCache;
   } catch {
     localityAliasCache = [];
@@ -165,14 +167,6 @@ function resolveSancorLocalidad(row = {}, cabecera = {}, options = {}) {
     cabecera?.provincia,
   ]));
 
-  let candidates = cp ? catalog.filter((item) => item.codPostal === cp) : [];
-  if (provinciaNorm) {
-    const byProvince = candidates.filter((item) => item._prov === provinciaNorm);
-    if (byProvince.length) candidates = byProvince;
-  }
-  const chosen = pickLocalityEntry(candidates, localidadNorm);
-  if (chosen) return chosen;
-
   const alias = aliases.find((item) => {
     if (item._inputLoc && item._inputLoc !== localidadNorm) return false;
     if (item._inputProv && item._inputProv !== provinciaNorm) return false;
@@ -191,6 +185,14 @@ function resolveSancorLocalidad(row = {}, cabecera = {}, options = {}) {
       matchType: alias.matchType || 'alias',
     };
   }
+
+  let candidates = cp ? catalog.filter((item) => item.codPostal === cp) : [];
+  if (provinciaNorm) {
+    const byProvince = candidates.filter((item) => item._prov === provinciaNorm);
+    if (byProvince.length) candidates = byProvince;
+  }
+  const chosen = pickLocalityEntry(candidates, localidadNorm);
+  if (chosen) return chosen;
   return null;
 }
 
