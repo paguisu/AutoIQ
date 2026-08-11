@@ -1,154 +1,202 @@
 [
   {
-    "codigo": "3",
-    "descripcion": "ALEMANIA"
-  },
-  {
-    "codigo": "0",
-    "descripcion": "ARGENTINA"
-  },
-  {
-    "codigo": "13",
-    "descripcion": "AUSTRALIA"
-  },
-  {
-    "codigo": "41",
-    "descripcion": "BOLIVIA"
-  },
-  {
-    "codigo": "12",
-    "descripcion": "BRASIL"
-  },
-  {
-    "codigo": "1007",
-    "descripcion": "CANADA"
-  },
-  {
-    "codigo": "11",
-    "descripcion": "CHILE"
-  },
-  {
-    "codigo": "90",
-    "descripcion": "CHINA"
-  },
-  {
-    "codigo": "42",
-    "descripcion": "COLOMBIA"
-  },
-  {
-    "codigo": "1011",
-    "descripcion": "COSTA RICA"
-  },
-  {
-    "codigo": "15",
-    "descripcion": "CUBA"
-  },
-  {
-    "codigo": "14",
-    "descripcion": "DOMINICANA"
-  },
-  {
-    "codigo": "192",
-    "descripcion": "ECUADOR"
-  },
-  {
-    "codigo": "8",
-    "descripcion": "EL SALVADOR"
-  },
-  {
-    "codigo": "9",
-    "descripcion": "ESPAÃA"
-  },
-  {
     "codigo": "1",
-    "descripcion": "ESTADOS UNIDOS"
-  },
-  {
-    "codigo": "6",
-    "descripcion": "EXTERIOR - NO INFORMADO"
-  },
-  {
-    "codigo": "4",
-    "descripcion": "FRANCIA"
-  },
-  {
-    "codigo": "5",
-    "descripcion": "HONDURAS"
-  },
-  {
-    "codigo": "2",
-    "descripcion": "INGLATERRA"
-  },
-  {
-    "codigo": "7",
-    "descripcion": "ITALIA"
-  },
-  {
-    "codigo": "89",
-    "descripcion": "JAPON"
-  },
-  {
-    "codigo": "10",
-    "descripcion": "MADAGASCAR"
-  },
-  {
-    "codigo": "44",
-    "descripcion": "MEXICO"
-  },
-  {
-    "codigo": "16",
-    "descripcion": "NICARAGUA"
-  },
-  {
-    "codigo": "17",
     "descripcion": "NO INFORMADO"
   },
   {
-    "codigo": "188",
-    "descripcion": "PANAMA"
+    "codigo": "2",
+    "descripcion": "ALEMANIA"
   },
   {
-    "codigo": "187",
-    "descripcion": "PARAGUAY"
+    "codigo": "3",
+    "descripcion": "ARGENTINA"
   },
   {
-    "codigo": "88",
-    "descripcion": "PERU"
+    "codigo": "4",
+    "descripcion": "AUSTRALIA"
   },
   {
-    "codigo": "190",
-    "descripcion": "PORTUGAL"
+    "codigo": "5",
+    "descripcion": "BOLIVIA"
+  },
+  {
+    "codigo": "6",
+    "descripcion": "BRASIL"
+  },
+  {
+    "codigo": "7",
+    "descripcion": "CANADA"
+  },
+  {
+    "codigo": "8",
+    "descripcion": "CHILE"
+  },
+  {
+    "codigo": "9",
+    "descripcion": "CHINA"
+  },
+  {
+    "codigo": "10",
+    "descripcion": "COLOMBIA"
+  },
+  {
+    "codigo": "11",
+    "descripcion": "COSTA RICA"
+  },
+  {
+    "codigo": "12",
+    "descripcion": "ECUADOR"
+  },
+  {
+    "codigo": "13",
+    "descripcion": "ESPAÃA"
+  },
+  {
+    "codigo": "14",
+    "descripcion": "FRANCIA"
+  },
+  {
+    "codigo": "15",
+    "descripcion": "HONDURAS"
+  },
+  {
+    "codigo": "16",
+    "descripcion": "ITALIA"
+  },
+  {
+    "codigo": "17",
+    "descripcion": "JAPON"
   },
   {
     "codigo": "18",
-    "descripcion": "PUERTO RICO"
-  },
-  {
-    "codigo": "23",
-    "descripcion": "RUMANIA"
-  },
-  {
-    "codigo": "22",
-    "descripcion": "SIRIO"
-  },
-  {
-    "codigo": "21",
-    "descripcion": "SUECIA"
-  },
-  {
-    "codigo": "20",
-    "descripcion": "SUIZA"
+    "descripcion": "MEXICO"
   },
   {
     "codigo": "19",
-    "descripcion": "UGANDA"
+    "descripcion": "NICARAGUA"
   },
   {
-    "codigo": "191",
+    "codigo": "20",
+    "descripcion": "PARAGUAY"
+  },
+  {
+    "codigo": "21",
+    "descripcion": "PERU"
+  },
+  {
+    "codigo": "22",
+    "descripcion": "PANAMA"
+  },
+  {
+    "codigo": "23",
+    "descripcion": "EL SALVADOR"
+  },
+  {
+    "codigo": "24",
+    "descripcion": "SUECIA"
+  },
+  {
+    "codigo": "25",
+    "descripcion": "SUIZA"
+  },
+  {
+    "codigo": "26",
+    "descripcion": "INGLATERRA"
+  },
+  {
+    "codigo": "27",
     "descripcion": "URUGUAY"
   },
   {
-    "codigo": "43",
+    "codigo": "28",
+    "descripcion": "ESTADOS UNIDOS"
+  },
+  {
+    "codigo": "29",
     "descripcion": "VENEZUELA"
+  },
+  {
+    "codigo": "30",
+    "descripcion": "CUBA"
+  },
+  {
+    "codigo": "31",
+    "descripcion": "SIRIO"
+  },
+  {
+    "codigo": "32",
+    "descripcion": "PORTUGAL"
+  },
+  {
+    "codigo": "33",
+    "descripcion": "DOMINICANA"
+  },
+  {
+    "codigo": "34",
+    "descripcion": "UGANDA"
+  },
+  {
+    "codigo": "35",
+    "descripcion": "PUERTO RICO"
+  },
+  {
+    "codigo": "36",
+    "descripcion": "MADAGASCAR"
+  },
+  {
+    "codigo": "37",
+    "descripcion": "RUMANIA"
+  },
+  {
+    "codigo": "40",
+    "descripcion": "AUSTRIA"
+  },
+  {
+    "codigo": "41",
+    "descripcion": "BELGICA"
+  },
+  {
+    "codigo": "42",
+    "descripcion": "CHECA REP."
+  },
+  {
+    "codigo": "43",
+    "descripcion": "COREA"
+  },
+  {
+    "codigo": "44",
+    "descripcion": "GRECIA"
+  },
+  {
+    "codigo": "45",
+    "descripcion": "HOLANDA"
+  },
+  {
+    "codigo": "46",
+    "descripcion": "IRAN"
+  },
+  {
+    "codigo": "47",
+    "descripcion": "IRLANDA"
+  },
+  {
+    "codigo": "48",
+    "descripcion": "PANAMA"
+  },
+  {
+    "codigo": "49",
+    "descripcion": "RUSIA"
+  },
+  {
+    "codigo": "50",
+    "descripcion": "SENEGAL"
+  },
+  {
+    "codigo": "51",
+    "descripcion": "INDONESIA"
+  },
+  {
+    "codigo": "99",
+    "descripcion": "EXTERIOR - NO INFORMADO"
   }
 ]

@@ -4,47 +4,11 @@
     "descripcion": "EQUIPO DE GNC"
   },
   {
-    "codigo": "2",
-    "descripcion": "BLINDAJE"
-  },
-  {
-    "codigo": "8",
-    "descripcion": "FAROS AUXILIARES"
-  },
-  {
     "codigo": "9",
     "descripcion": "AIRE ACONDICIONADO"
   },
   {
-    "codigo": "10",
-    "descripcion": "LLANTAS ESPECIALES"
-  },
-  {
-    "codigo": "15",
-    "descripcion": "RUEDA DE AUXILIO"
-  },
-  {
-    "codigo": "17",
-    "descripcion": "TASAS"
-  },
-  {
     "codigo": "18",
     "descripcion": "LLANTAS Y/O CUBIERTAS ESPECIALES"
-  },
-  {
-    "codigo": "21",
-    "descripcion": "CUBIERTAS ESPECIALES"
-  },
-  {
-    "codigo": "22",
-    "descripcion": "CRISTALES"
-  },
-  {
-    "codigo": "23",
-    "descripcion": "ASIENTOS"
-  },
-  {
-    "codigo": "24",
-    "descripcion": "CUPULA"
   }
 ]

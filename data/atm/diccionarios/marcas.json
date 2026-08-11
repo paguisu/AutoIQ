@@ -2483,5 +2483,15 @@
     "codigo": "884",
     "descripcion": "GAC",
     "seccion": "3"
+  },
+  {
+    "codigo": "885",
+    "descripcion": "TEKNIAL",
+    "seccion": "4"
+  },
+  {
+    "codigo": "886",
+    "descripcion": "KAMAX",
+    "seccion": "4"
   }
 ]

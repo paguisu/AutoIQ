@@ -1,0 +1,3595 @@
+{
+  "2016": [
+    {
+      "descripcion": "CHERY"
+    },
+    {
+      "descripcion": "CHEVROLET"
+    },
+    {
+      "descripcion": "CHRYSLER"
+    },
+    {
+      "descripcion": "CITROEN"
+    },
+    {
+      "descripcion": "FIAT"
+    },
+    {
+      "descripcion": "FORD"
+    },
+    {
+      "descripcion": "HONDA"
+    },
+    {
+      "descripcion": "NISSAN"
+    },
+    {
+      "descripcion": "PEUGEOT"
+    },
+    {
+      "descripcion": "RENAULT"
+    },
+    {
+      "descripcion": "TOYOTA"
+    },
+    {
+      "descripcion": "VOLKSWAGEN"
+    },
+    {
+      "descripcion": "ACAPULCO"
+    },
+    {
+      "descripcion": "ACURA"
+    },
+    {
+      "descripcion": "AFF"
+    },
+    {
+      "descripcion": "AGRALE"
+    },
+    {
+      "descripcion": "ALFA"
+    },
+    {
+      "descripcion": "ALFA ROMEO"
+    },
+    {
+      "descripcion": "AMANCAY"
+    },
+    {
+      "descripcion": "ANAHI"
+    },
+    {
+      "descripcion": "APPIA"
+    },
+    {
+      "descripcion": "APRILIA"
+    },
+    {
+      "descripcion": "ARCTIC CAT"
+    },
+    {
+      "descripcion": "AST PRA"
+    },
+    {
+      "descripcion": "AUDI"
+    },
+    {
+      "descripcion": "AUTO"
+    },
+    {
+      "descripcion": "AYLEN"
+    },
+    {
+      "descripcion": "BAJAJ"
+    },
+    {
+      "descripcion": "BENELLI"
+    },
+    {
+      "descripcion": "BETA"
+    },
+    {
+      "descripcion": "BMW"
+    },
+    {
+      "descripcion": "BRAVA"
+    },
+    {
+      "descripcion": "CANAM"
+    },
+    {
+      "descripcion": "CERRO"
+    },
+    {
+      "descripcion": "CFMOTO"
+    },
+    {
+      "descripcion": "CHANGAN"
+    },
+    {
+      "descripcion": "CONST. PARTICULAR"
+    },
+    {
+      "descripcion": "CORVEN"
+    },
+    {
+      "descripcion": "DAELIM"
+    },
+    {
+      "descripcion": "DAEWOO"
+    },
+    {
+      "descripcion": "DAYAMA"
+    },
+    {
+      "descripcion": "DEI"
+    },
+    {
+      "descripcion": "DELTA"
+    },
+    {
+      "descripcion": "DODGE"
+    },
+    {
+      "descripcion": "DONGFENG"
+    },
+    {
+      "descripcion": "DS AUTOMOBILES"
+    },
+    {
+      "descripcion": "DUCATI"
+    },
+    {
+      "descripcion": "EUROMOT"
+    },
+    {
+      "descripcion": "FERRARI"
+    },
+    {
+      "descripcion": "FIERRO"
+    },
+    {
+      "descripcion": "FOTON"
+    },
+    {
+      "descripcion": "GAMMA"
+    },
+    {
+      "descripcion": "GEELY"
+    },
+    {
+      "descripcion": "GHIGGERI"
+    },
+    {
+      "descripcion": "GILERA"
+    },
+    {
+      "descripcion": "GMC"
+    },
+    {
+      "descripcion": "GRASSANI"
+    },
+    {
+      "descripcion": "GROSSPAL"
+    },
+    {
+      "descripcion": "GUERRERO"
+    },
+    {
+      "descripcion": "GUZZI"
+    },
+    {
+      "descripcion": "HAITI"
+    },
+    {
+      "descripcion": "HARLEY DAVIDSON"
+    },
+    {
+      "descripcion": "HERO"
+    },
+    {
+      "descripcion": "HINO"
+    },
+    {
+      "descripcion": "HYOSUNG"
+    },
+    {
+      "descripcion": "HYUNDAI"
+    },
+    {
+      "descripcion": "IKA"
+    },
+    {
+      "descripcion": "INFINITI"
+    },
+    {
+      "descripcion": "ITATI"
+    },
+    {
+      "descripcion": "IVECO"
+    },
+    {
+      "descripcion": "JAGUAR"
+    },
+    {
+      "descripcion": "JAWA"
+    },
+    {
+      "descripcion": "JIANSHE"
+    },
+    {
+      "descripcion": "KAWASAKI"
+    },
+    {
+      "descripcion": "KELLER"
+    },
+    {
+      "descripcion": "KIA"
+    },
+    {
+      "descripcion": "KTM"
+    },
+    {
+      "descripcion": "KYMCO"
+    },
+    {
+      "descripcion": "LAND ROVER"
+    },
+    {
+      "descripcion": "LEGNANO"
+    },
+    {
+      "descripcion": "LEXUS"
+    },
+    {
+      "descripcion": "LIFAN"
+    },
+    {
+      "descripcion": "LUCKY LION"
+    },
+    {
+      "descripcion": "MANCINI"
+    },
+    {
+      "descripcion": "MASERATI"
+    },
+    {
+      "descripcion": "MAVERICK"
+    },
+    {
+      "descripcion": "MAZDA"
+    },
+    {
+      "descripcion": "MELEX"
+    },
+    {
+      "descripcion": "MERCEDES BENZ"
+    },
+    {
+      "descripcion": "METALMACK"
+    },
+    {
+      "descripcion": "MICHIGAN"
+    },
+    {
+      "descripcion": "MINARELLI"
+    },
+    {
+      "descripcion": "MINI"
+    },
+    {
+      "descripcion": "MITSUBISHI"
+    },
+    {
+      "descripcion": "MONDIAL"
+    },
+    {
+      "descripcion": "MONTENEGRO"
+    },
+    {
+      "descripcion": "MOTOMEL"
+    },
+    {
+      "descripcion": "MV AGUSTA"
+    },
+    {
+      "descripcion": "NEW HOLLAND"
+    },
+    {
+      "descripcion": "OKINOI"
+    },
+    {
+      "descripcion": "PANTHER"
+    },
+    {
+      "descripcion": "PIAGGIO"
+    },
+    {
+      "descripcion": "POLARIS"
+    },
+    {
+      "descripcion": "PORSCHE"
+    },
+    {
+      "descripcion": "PRADERITA"
+    },
+    {
+      "descripcion": "RANGE ROVER"
+    },
+    {
+      "descripcion": "RIDAHO"
+    },
+    {
+      "descripcion": "ROYAL ENFIELD"
+    },
+    {
+      "descripcion": "SATURNI"
+    },
+    {
+      "descripcion": "SCANIA"
+    },
+    {
+      "descripcion": "SIN MARCA"
+    },
+    {
+      "descripcion": "SMART"
+    },
+    {
+      "descripcion": "SOLA Y BRUSA"
+    },
+    {
+      "descripcion": "SUBARU"
+    },
+    {
+      "descripcion": "SUNEQUIP"
+    },
+    {
+      "descripcion": "SUZUKI"
+    },
+    {
+      "descripcion": "SYM"
+    },
+    {
+      "descripcion": "TIBO"
+    },
+    {
+      "descripcion": "TRAILER"
+    },
+    {
+      "descripcion": "TRIUMPH"
+    },
+    {
+      "descripcion": "TVS"
+    },
+    {
+      "descripcion": "VALTRA"
+    },
+    {
+      "descripcion": "VESPA"
+    },
+    {
+      "descripcion": "VOLVO"
+    },
+    {
+      "descripcion": "VULCANO"
+    },
+    {
+      "descripcion": "WRANGLER"
+    },
+    {
+      "descripcion": "XCMG"
+    },
+    {
+      "descripcion": "YAMAHA"
+    },
+    {
+      "descripcion": "ZANELLA"
+    }
+  ],
+  "2017": [
+    {
+      "descripcion": "CHERY"
+    },
+    {
+      "descripcion": "CHEVROLET"
+    },
+    {
+      "descripcion": "CHRYSLER"
+    },
+    {
+      "descripcion": "CITROEN"
+    },
+    {
+      "descripcion": "FIAT"
+    },
+    {
+      "descripcion": "FORD"
+    },
+    {
+      "descripcion": "HONDA"
+    },
+    {
+      "descripcion": "NISSAN"
+    },
+    {
+      "descripcion": "PEUGEOT"
+    },
+    {
+      "descripcion": "RENAULT"
+    },
+    {
+      "descripcion": "TOYOTA"
+    },
+    {
+      "descripcion": "VOLKSWAGEN"
+    },
+    {
+      "descripcion": "ACAPULCO"
+    },
+    {
+      "descripcion": "ACURA"
+    },
+    {
+      "descripcion": "AFF"
+    },
+    {
+      "descripcion": "AGRALE"
+    },
+    {
+      "descripcion": "ALFA"
+    },
+    {
+      "descripcion": "ALFA ROMEO"
+    },
+    {
+      "descripcion": "AMANCAY"
+    },
+    {
+      "descripcion": "ANAHI"
+    },
+    {
+      "descripcion": "APPIA"
+    },
+    {
+      "descripcion": "APRILIA"
+    },
+    {
+      "descripcion": "ARCTIC CAT"
+    },
+    {
+      "descripcion": "AST PRA"
+    },
+    {
+      "descripcion": "AUDI"
+    },
+    {
+      "descripcion": "AUTO"
+    },
+    {
+      "descripcion": "AYLEN"
+    },
+    {
+      "descripcion": "BAJAJ"
+    },
+    {
+      "descripcion": "BENELLI"
+    },
+    {
+      "descripcion": "BETA"
+    },
+    {
+      "descripcion": "BMW"
+    },
+    {
+      "descripcion": "BRAVA"
+    },
+    {
+      "descripcion": "CANAM"
+    },
+    {
+      "descripcion": "CERRO"
+    },
+    {
+      "descripcion": "CFMOTO"
+    },
+    {
+      "descripcion": "CHANGAN"
+    },
+    {
+      "descripcion": "CONST. PARTICULAR"
+    },
+    {
+      "descripcion": "CORVEN"
+    },
+    {
+      "descripcion": "DAELIM"
+    },
+    {
+      "descripcion": "DAYAMA"
+    },
+    {
+      "descripcion": "DELTA"
+    },
+    {
+      "descripcion": "DFSK"
+    },
+    {
+      "descripcion": "DODGE"
+    },
+    {
+      "descripcion": "DONGFENG"
+    },
+    {
+      "descripcion": "DS AUTOMOBILES"
+    },
+    {
+      "descripcion": "DUCATI"
+    },
+    {
+      "descripcion": "EUROMOT"
+    },
+    {
+      "descripcion": "FERRARI"
+    },
+    {
+      "descripcion": "FIERRO"
+    },
+    {
+      "descripcion": "FOTON"
+    },
+    {
+      "descripcion": "GAMMA"
+    },
+    {
+      "descripcion": "GEELY"
+    },
+    {
+      "descripcion": "GHIGGERI"
+    },
+    {
+      "descripcion": "GILERA"
+    },
+    {
+      "descripcion": "GMC"
+    },
+    {
+      "descripcion": "GRASSANI"
+    },
+    {
+      "descripcion": "GROSSPAL"
+    },
+    {
+      "descripcion": "GUERRERO"
+    },
+    {
+      "descripcion": "GUZZI"
+    },
+    {
+      "descripcion": "HAITI"
+    },
+    {
+      "descripcion": "HARLEY DAVIDSON"
+    },
+    {
+      "descripcion": "HERO"
+    },
+    {
+      "descripcion": "HINO"
+    },
+    {
+      "descripcion": "HISUN"
+    },
+    {
+      "descripcion": "HUSQVARNA"
+    },
+    {
+      "descripcion": "HYOSUNG"
+    },
+    {
+      "descripcion": "HYUNDAI"
+    },
+    {
+      "descripcion": "IKA"
+    },
+    {
+      "descripcion": "ITATI"
+    },
+    {
+      "descripcion": "IVECO"
+    },
+    {
+      "descripcion": "JAGUAR"
+    },
+    {
+      "descripcion": "JAWA"
+    },
+    {
+      "descripcion": "JIANSHE"
+    },
+    {
+      "descripcion": "KAWASAKI"
+    },
+    {
+      "descripcion": "KELLER"
+    },
+    {
+      "descripcion": "KIA"
+    },
+    {
+      "descripcion": "KTM"
+    },
+    {
+      "descripcion": "KYMCO"
+    },
+    {
+      "descripcion": "LAND ROVER"
+    },
+    {
+      "descripcion": "LEXUS"
+    },
+    {
+      "descripcion": "LIFAN"
+    },
+    {
+      "descripcion": "LOTUS"
+    },
+    {
+      "descripcion": "LUCKY LION"
+    },
+    {
+      "descripcion": "MANCINI"
+    },
+    {
+      "descripcion": "MASERATI"
+    },
+    {
+      "descripcion": "MAVERICK"
+    },
+    {
+      "descripcion": "MAZDA"
+    },
+    {
+      "descripcion": "MELEX"
+    },
+    {
+      "descripcion": "MERCEDES BENZ"
+    },
+    {
+      "descripcion": "METALMACK"
+    },
+    {
+      "descripcion": "MINARELLI"
+    },
+    {
+      "descripcion": "MINI"
+    },
+    {
+      "descripcion": "MITSUBISHI"
+    },
+    {
+      "descripcion": "MONDIAL"
+    },
+    {
+      "descripcion": "MOTOMEL"
+    },
+    {
+      "descripcion": "MV AGUSTA"
+    },
+    {
+      "descripcion": "NEW HOLLAND"
+    },
+    {
+      "descripcion": "OKINOI"
+    },
+    {
+      "descripcion": "PANTHER"
+    },
+    {
+      "descripcion": "PIAGGIO"
+    },
+    {
+      "descripcion": "POLARIS"
+    },
+    {
+      "descripcion": "PORSCHE"
+    },
+    {
+      "descripcion": "RANGE ROVER"
+    },
+    {
+      "descripcion": "RIDAHO"
+    },
+    {
+      "descripcion": "ROYAL ENFIELD"
+    },
+    {
+      "descripcion": "SCANIA"
+    },
+    {
+      "descripcion": "SIN MARCA"
+    },
+    {
+      "descripcion": "SMART"
+    },
+    {
+      "descripcion": "SOLA Y BRUSA"
+    },
+    {
+      "descripcion": "SUBARU"
+    },
+    {
+      "descripcion": "SUNEQUIP"
+    },
+    {
+      "descripcion": "SUNRA"
+    },
+    {
+      "descripcion": "SUZUKI"
+    },
+    {
+      "descripcion": "SWM"
+    },
+    {
+      "descripcion": "SYM"
+    },
+    {
+      "descripcion": "TIBO"
+    },
+    {
+      "descripcion": "TRAILER"
+    },
+    {
+      "descripcion": "TRIUMPH"
+    },
+    {
+      "descripcion": "VALTRA"
+    },
+    {
+      "descripcion": "VESPA"
+    },
+    {
+      "descripcion": "VOLVO"
+    },
+    {
+      "descripcion": "VULCANO"
+    },
+    {
+      "descripcion": "WRANGLER"
+    },
+    {
+      "descripcion": "YAMAHA"
+    },
+    {
+      "descripcion": "ZANELLA"
+    }
+  ],
+  "2019": [
+    {
+      "descripcion": "CHERY"
+    },
+    {
+      "descripcion": "CHEVROLET"
+    },
+    {
+      "descripcion": "CHRYSLER"
+    },
+    {
+      "descripcion": "CITROEN"
+    },
+    {
+      "descripcion": "FIAT"
+    },
+    {
+      "descripcion": "FORD"
+    },
+    {
+      "descripcion": "HONDA"
+    },
+    {
+      "descripcion": "NISSAN"
+    },
+    {
+      "descripcion": "PEUGEOT"
+    },
+    {
+      "descripcion": "RENAULT"
+    },
+    {
+      "descripcion": "TOYOTA"
+    },
+    {
+      "descripcion": "VOLKSWAGEN"
+    },
+    {
+      "descripcion": "ACAPULCO"
+    },
+    {
+      "descripcion": "AGRALE"
+    },
+    {
+      "descripcion": "ALFA"
+    },
+    {
+      "descripcion": "ALFA ROMEO"
+    },
+    {
+      "descripcion": "AMANCAY"
+    },
+    {
+      "descripcion": "ANAHI"
+    },
+    {
+      "descripcion": "APPIA"
+    },
+    {
+      "descripcion": "APRILIA"
+    },
+    {
+      "descripcion": "ARCTIC CAT"
+    },
+    {
+      "descripcion": "AST PRA"
+    },
+    {
+      "descripcion": "AUDI"
+    },
+    {
+      "descripcion": "AYLEN"
+    },
+    {
+      "descripcion": "BAIC"
+    },
+    {
+      "descripcion": "BAJAJ"
+    },
+    {
+      "descripcion": "BENELLI"
+    },
+    {
+      "descripcion": "BETA"
+    },
+    {
+      "descripcion": "BMW"
+    },
+    {
+      "descripcion": "BRAVA"
+    },
+    {
+      "descripcion": "CANAM"
+    },
+    {
+      "descripcion": "CERRO"
+    },
+    {
+      "descripcion": "CFMOTO"
+    },
+    {
+      "descripcion": "CHANGAN"
+    },
+    {
+      "descripcion": "CONST. PARTICULAR"
+    },
+    {
+      "descripcion": "CORVEN"
+    },
+    {
+      "descripcion": "DAELIM"
+    },
+    {
+      "descripcion": "DELTA"
+    },
+    {
+      "descripcion": "DFSK"
+    },
+    {
+      "descripcion": "DODGE"
+    },
+    {
+      "descripcion": "DONGFENG"
+    },
+    {
+      "descripcion": "DS AUTOMOBILES"
+    },
+    {
+      "descripcion": "DUCATI"
+    },
+    {
+      "descripcion": "ELPRA"
+    },
+    {
+      "descripcion": "FERRARI"
+    },
+    {
+      "descripcion": "FOTON"
+    },
+    {
+      "descripcion": "GAMMA"
+    },
+    {
+      "descripcion": "GEELY"
+    },
+    {
+      "descripcion": "GILERA"
+    },
+    {
+      "descripcion": "GRASSANI"
+    },
+    {
+      "descripcion": "GREAT WALL"
+    },
+    {
+      "descripcion": "GROSSPAL"
+    },
+    {
+      "descripcion": "GUERRERO"
+    },
+    {
+      "descripcion": "GUZZI"
+    },
+    {
+      "descripcion": "HARLEY DAVIDSON"
+    },
+    {
+      "descripcion": "HAVAL"
+    },
+    {
+      "descripcion": "HERO"
+    },
+    {
+      "descripcion": "HINO"
+    },
+    {
+      "descripcion": "HUSQVARNA"
+    },
+    {
+      "descripcion": "HYUNDAI"
+    },
+    {
+      "descripcion": "IKA"
+    },
+    {
+      "descripcion": "INDIAN"
+    },
+    {
+      "descripcion": "ISUZU"
+    },
+    {
+      "descripcion": "ITATI"
+    },
+    {
+      "descripcion": "IVECO"
+    },
+    {
+      "descripcion": "JAC"
+    },
+    {
+      "descripcion": "JAGUAR"
+    },
+    {
+      "descripcion": "JAWA"
+    },
+    {
+      "descripcion": "JEEP"
+    },
+    {
+      "descripcion": "JIANSHE"
+    },
+    {
+      "descripcion": "KAESER"
+    },
+    {
+      "descripcion": "KAWASAKI"
+    },
+    {
+      "descripcion": "KELLER"
+    },
+    {
+      "descripcion": "KIA"
+    },
+    {
+      "descripcion": "KTM"
+    },
+    {
+      "descripcion": "KYMCO"
+    },
+    {
+      "descripcion": "LAND ROVER"
+    },
+    {
+      "descripcion": "LEXUS"
+    },
+    {
+      "descripcion": "LIFAN"
+    },
+    {
+      "descripcion": "LUCKY LION"
+    },
+    {
+      "descripcion": "MANCINI"
+    },
+    {
+      "descripcion": "MASERATI"
+    },
+    {
+      "descripcion": "MASSEY FERGUSON"
+    },
+    {
+      "descripcion": "MAZDA"
+    },
+    {
+      "descripcion": "MELEX"
+    },
+    {
+      "descripcion": "MERCEDES BENZ"
+    },
+    {
+      "descripcion": "METALMACK"
+    },
+    {
+      "descripcion": "MG"
+    },
+    {
+      "descripcion": "MICHIGAN"
+    },
+    {
+      "descripcion": "MINARELLI"
+    },
+    {
+      "descripcion": "MINI"
+    },
+    {
+      "descripcion": "MITSUBISHI"
+    },
+    {
+      "descripcion": "MONDIAL"
+    },
+    {
+      "descripcion": "MOTOMEL"
+    },
+    {
+      "descripcion": "MV AGUSTA"
+    },
+    {
+      "descripcion": "NEW HOLLAND"
+    },
+    {
+      "descripcion": "NUUV"
+    },
+    {
+      "descripcion": "OKINOI"
+    },
+    {
+      "descripcion": "PIAGGIO"
+    },
+    {
+      "descripcion": "POLARIS"
+    },
+    {
+      "descripcion": "PORSCHE"
+    },
+    {
+      "descripcion": "RANGE ROVER"
+    },
+    {
+      "descripcion": "RIDAHO"
+    },
+    {
+      "descripcion": "ROYAL ENFIELD"
+    },
+    {
+      "descripcion": "SCANIA"
+    },
+    {
+      "descripcion": "SERO ELECTRIC"
+    },
+    {
+      "descripcion": "SHINERAY"
+    },
+    {
+      "descripcion": "SIN MARCA"
+    },
+    {
+      "descripcion": "SMART"
+    },
+    {
+      "descripcion": "SOLA Y BRUSA"
+    },
+    {
+      "descripcion": "SOUEAST"
+    },
+    {
+      "descripcion": "SUBARU"
+    },
+    {
+      "descripcion": "SUNEQUIP"
+    },
+    {
+      "descripcion": "SUNRA"
+    },
+    {
+      "descripcion": "SUZUKI"
+    },
+    {
+      "descripcion": "SYM"
+    },
+    {
+      "descripcion": "TRAILER"
+    },
+    {
+      "descripcion": "TRIUMPH"
+    },
+    {
+      "descripcion": "TVS"
+    },
+    {
+      "descripcion": "VALTRA"
+    },
+    {
+      "descripcion": "VESPA"
+    },
+    {
+      "descripcion": "VOLVO"
+    },
+    {
+      "descripcion": "VULCANO"
+    },
+    {
+      "descripcion": "WRANGLER"
+    },
+    {
+      "descripcion": "XCMG"
+    },
+    {
+      "descripcion": "YAMAHA"
+    },
+    {
+      "descripcion": "ZANELLA"
+    }
+  ],
+  "2020": [
+    {
+      "descripcion": "CHERY"
+    },
+    {
+      "descripcion": "CHEVROLET"
+    },
+    {
+      "descripcion": "CHRYSLER"
+    },
+    {
+      "descripcion": "CITROEN"
+    },
+    {
+      "descripcion": "FIAT"
+    },
+    {
+      "descripcion": "FORD"
+    },
+    {
+      "descripcion": "HONDA"
+    },
+    {
+      "descripcion": "NISSAN"
+    },
+    {
+      "descripcion": "PEUGEOT"
+    },
+    {
+      "descripcion": "RENAULT"
+    },
+    {
+      "descripcion": "TOYOTA"
+    },
+    {
+      "descripcion": "VOLKSWAGEN"
+    },
+    {
+      "descripcion": "ACAPULCO"
+    },
+    {
+      "descripcion": "AGRALE"
+    },
+    {
+      "descripcion": "ALFA"
+    },
+    {
+      "descripcion": "ALFA ROMEO"
+    },
+    {
+      "descripcion": "AMANCAY"
+    },
+    {
+      "descripcion": "ANAHI"
+    },
+    {
+      "descripcion": "APPIA"
+    },
+    {
+      "descripcion": "APRILIA"
+    },
+    {
+      "descripcion": "ARCTIC CAT"
+    },
+    {
+      "descripcion": "AST PRA"
+    },
+    {
+      "descripcion": "AUDI"
+    },
+    {
+      "descripcion": "BAIC"
+    },
+    {
+      "descripcion": "BAJAJ"
+    },
+    {
+      "descripcion": "BENELLI"
+    },
+    {
+      "descripcion": "BETA"
+    },
+    {
+      "descripcion": "BMW"
+    },
+    {
+      "descripcion": "BRAVA"
+    },
+    {
+      "descripcion": "CANAM"
+    },
+    {
+      "descripcion": "CASA RODANTE"
+    },
+    {
+      "descripcion": "CERRO"
+    },
+    {
+      "descripcion": "CFMOTO"
+    },
+    {
+      "descripcion": "CHANGAN"
+    },
+    {
+      "descripcion": "CONST. PARTICULAR"
+    },
+    {
+      "descripcion": "CORVEN"
+    },
+    {
+      "descripcion": "DAELIM"
+    },
+    {
+      "descripcion": "DELTA"
+    },
+    {
+      "descripcion": "DFSK"
+    },
+    {
+      "descripcion": "DONGFENG"
+    },
+    {
+      "descripcion": "DS AUTOMOBILES"
+    },
+    {
+      "descripcion": "DUCATI"
+    },
+    {
+      "descripcion": "ELPRA"
+    },
+    {
+      "descripcion": "FAMSA"
+    },
+    {
+      "descripcion": "FERRARI"
+    },
+    {
+      "descripcion": "FOTON"
+    },
+    {
+      "descripcion": "GAMMA"
+    },
+    {
+      "descripcion": "GEELY"
+    },
+    {
+      "descripcion": "GILERA"
+    },
+    {
+      "descripcion": "GRASSANI"
+    },
+    {
+      "descripcion": "GREAT WALL"
+    },
+    {
+      "descripcion": "GROSSPAL"
+    },
+    {
+      "descripcion": "GUERRERO"
+    },
+    {
+      "descripcion": "GUZZI"
+    },
+    {
+      "descripcion": "HARLEY DAVIDSON"
+    },
+    {
+      "descripcion": "HAVAL"
+    },
+    {
+      "descripcion": "HERO"
+    },
+    {
+      "descripcion": "HINO"
+    },
+    {
+      "descripcion": "HUSQVARNA"
+    },
+    {
+      "descripcion": "HYUNDAI"
+    },
+    {
+      "descripcion": "INDIAN"
+    },
+    {
+      "descripcion": "ISUZU"
+    },
+    {
+      "descripcion": "ITATI"
+    },
+    {
+      "descripcion": "IVECO"
+    },
+    {
+      "descripcion": "JAC"
+    },
+    {
+      "descripcion": "JAGUAR"
+    },
+    {
+      "descripcion": "JAWA"
+    },
+    {
+      "descripcion": "JEEP"
+    },
+    {
+      "descripcion": "JETOUR"
+    },
+    {
+      "descripcion": "JIANSHE"
+    },
+    {
+      "descripcion": "JUKI"
+    },
+    {
+      "descripcion": "KAWASAKI"
+    },
+    {
+      "descripcion": "KELLER"
+    },
+    {
+      "descripcion": "KIA"
+    },
+    {
+      "descripcion": "KTM"
+    },
+    {
+      "descripcion": "KYMCO"
+    },
+    {
+      "descripcion": "LAND ROVER"
+    },
+    {
+      "descripcion": "LEXUS"
+    },
+    {
+      "descripcion": "LIFAN"
+    },
+    {
+      "descripcion": "LUCKY LION"
+    },
+    {
+      "descripcion": "MANCINI"
+    },
+    {
+      "descripcion": "MASERATI"
+    },
+    {
+      "descripcion": "MASSEY FERGUSON"
+    },
+    {
+      "descripcion": "MAZDA"
+    },
+    {
+      "descripcion": "MELEX"
+    },
+    {
+      "descripcion": "MERCEDES BENZ"
+    },
+    {
+      "descripcion": "MICHIGAN"
+    },
+    {
+      "descripcion": "MINARELLI"
+    },
+    {
+      "descripcion": "MINI"
+    },
+    {
+      "descripcion": "MITSUBISHI"
+    },
+    {
+      "descripcion": "MONDIAL"
+    },
+    {
+      "descripcion": "MOTOMEL"
+    },
+    {
+      "descripcion": "MV AGUSTA"
+    },
+    {
+      "descripcion": "NEW HOLLAND"
+    },
+    {
+      "descripcion": "NUUV"
+    },
+    {
+      "descripcion": "OKINOI"
+    },
+    {
+      "descripcion": "PIAGGIO"
+    },
+    {
+      "descripcion": "POLARIS"
+    },
+    {
+      "descripcion": "PORSCHE"
+    },
+    {
+      "descripcion": "RANGE ROVER"
+    },
+    {
+      "descripcion": "RIDAHO"
+    },
+    {
+      "descripcion": "ROYAL ENFIELD"
+    },
+    {
+      "descripcion": "SERO ELECTRIC"
+    },
+    {
+      "descripcion": "SHINERAY"
+    },
+    {
+      "descripcion": "SIN MARCA"
+    },
+    {
+      "descripcion": "SOLA Y BRUSA"
+    },
+    {
+      "descripcion": "SOUEAST"
+    },
+    {
+      "descripcion": "SUBARU"
+    },
+    {
+      "descripcion": "SUNRA"
+    },
+    {
+      "descripcion": "SUZUKI"
+    },
+    {
+      "descripcion": "SYM"
+    },
+    {
+      "descripcion": "TRAILER"
+    },
+    {
+      "descripcion": "TRIUMPH"
+    },
+    {
+      "descripcion": "TVS"
+    },
+    {
+      "descripcion": "VALTRA"
+    },
+    {
+      "descripcion": "VELIMOTOR"
+    },
+    {
+      "descripcion": "VESPA"
+    },
+    {
+      "descripcion": "VOLVO"
+    },
+    {
+      "descripcion": "VULCANO"
+    },
+    {
+      "descripcion": "WRANGLER"
+    },
+    {
+      "descripcion": "XCMG"
+    },
+    {
+      "descripcion": "YAMAHA"
+    },
+    {
+      "descripcion": "ZANELLA"
+    }
+  ],
+  "2021": [
+    {
+      "descripcion": "CHERY"
+    },
+    {
+      "descripcion": "CHEVROLET"
+    },
+    {
+      "descripcion": "CHRYSLER"
+    },
+    {
+      "descripcion": "CITROEN"
+    },
+    {
+      "descripcion": "FIAT"
+    },
+    {
+      "descripcion": "FORD"
+    },
+    {
+      "descripcion": "HONDA"
+    },
+    {
+      "descripcion": "NISSAN"
+    },
+    {
+      "descripcion": "PEUGEOT"
+    },
+    {
+      "descripcion": "RENAULT"
+    },
+    {
+      "descripcion": "TOYOTA"
+    },
+    {
+      "descripcion": "VOLKSWAGEN"
+    },
+    {
+      "descripcion": "ACAPULCO"
+    },
+    {
+      "descripcion": "AGRALE"
+    },
+    {
+      "descripcion": "ALFA"
+    },
+    {
+      "descripcion": "ALFA ROMEO"
+    },
+    {
+      "descripcion": "AMANCAY"
+    },
+    {
+      "descripcion": "ANAHI"
+    },
+    {
+      "descripcion": "APRILIA"
+    },
+    {
+      "descripcion": "ARCTIC CAT"
+    },
+    {
+      "descripcion": "AST PRA"
+    },
+    {
+      "descripcion": "AUDI"
+    },
+    {
+      "descripcion": "BAIC"
+    },
+    {
+      "descripcion": "BAJAJ"
+    },
+    {
+      "descripcion": "BENELLI"
+    },
+    {
+      "descripcion": "BETA"
+    },
+    {
+      "descripcion": "BMW"
+    },
+    {
+      "descripcion": "BRAVA"
+    },
+    {
+      "descripcion": "CANAM"
+    },
+    {
+      "descripcion": "CERRO"
+    },
+    {
+      "descripcion": "CFMOTO"
+    },
+    {
+      "descripcion": "CHANGAN"
+    },
+    {
+      "descripcion": "CONST. PARTICULAR"
+    },
+    {
+      "descripcion": "CORADIR"
+    },
+    {
+      "descripcion": "CORVEN"
+    },
+    {
+      "descripcion": "DAELIM"
+    },
+    {
+      "descripcion": "DELTA"
+    },
+    {
+      "descripcion": "DFSK"
+    },
+    {
+      "descripcion": "DONGFENG"
+    },
+    {
+      "descripcion": "DS AUTOMOBILES"
+    },
+    {
+      "descripcion": "DUCATI"
+    },
+    {
+      "descripcion": "ELPRA"
+    },
+    {
+      "descripcion": "FERRARI"
+    },
+    {
+      "descripcion": "FOTON"
+    },
+    {
+      "descripcion": "GAMMA"
+    },
+    {
+      "descripcion": "GEELY"
+    },
+    {
+      "descripcion": "GILERA"
+    },
+    {
+      "descripcion": "GRASSANI"
+    },
+    {
+      "descripcion": "GREAT WALL"
+    },
+    {
+      "descripcion": "GROSSPAL"
+    },
+    {
+      "descripcion": "GUERRERO"
+    },
+    {
+      "descripcion": "GUZZI"
+    },
+    {
+      "descripcion": "HARLEY DAVIDSON"
+    },
+    {
+      "descripcion": "HAVAL"
+    },
+    {
+      "descripcion": "HERO"
+    },
+    {
+      "descripcion": "HINO"
+    },
+    {
+      "descripcion": "HUSQVARNA"
+    },
+    {
+      "descripcion": "HYUNDAI"
+    },
+    {
+      "descripcion": "INDIAN"
+    },
+    {
+      "descripcion": "ISUZU"
+    },
+    {
+      "descripcion": "ITATI"
+    },
+    {
+      "descripcion": "IVECO"
+    },
+    {
+      "descripcion": "JAC"
+    },
+    {
+      "descripcion": "JAGUAR"
+    },
+    {
+      "descripcion": "JAWA"
+    },
+    {
+      "descripcion": "JEEP"
+    },
+    {
+      "descripcion": "JETOUR"
+    },
+    {
+      "descripcion": "JIANSHE"
+    },
+    {
+      "descripcion": "KAWASAKI"
+    },
+    {
+      "descripcion": "KELLER"
+    },
+    {
+      "descripcion": "KIA"
+    },
+    {
+      "descripcion": "KIDEN"
+    },
+    {
+      "descripcion": "KTM"
+    },
+    {
+      "descripcion": "KYMCO"
+    },
+    {
+      "descripcion": "LAND ROVER"
+    },
+    {
+      "descripcion": "LEXUS"
+    },
+    {
+      "descripcion": "LIFAN"
+    },
+    {
+      "descripcion": "LUCKY LION"
+    },
+    {
+      "descripcion": "MASERATI"
+    },
+    {
+      "descripcion": "MASSEY FERGUSON"
+    },
+    {
+      "descripcion": "MAZDA"
+    },
+    {
+      "descripcion": "MELEX"
+    },
+    {
+      "descripcion": "MERCEDES BENZ"
+    },
+    {
+      "descripcion": "MICHIGAN"
+    },
+    {
+      "descripcion": "MINARELLI"
+    },
+    {
+      "descripcion": "MINI"
+    },
+    {
+      "descripcion": "MITSUBISHI"
+    },
+    {
+      "descripcion": "MONDIAL"
+    },
+    {
+      "descripcion": "MOTOMEL"
+    },
+    {
+      "descripcion": "MV AGUSTA"
+    },
+    {
+      "descripcion": "NEW HOLLAND"
+    },
+    {
+      "descripcion": "NUUV"
+    },
+    {
+      "descripcion": "OKINOI"
+    },
+    {
+      "descripcion": "PIAGGIO"
+    },
+    {
+      "descripcion": "POLARIS"
+    },
+    {
+      "descripcion": "PORSCHE"
+    },
+    {
+      "descripcion": "RANGE ROVER"
+    },
+    {
+      "descripcion": "RIDAHO"
+    },
+    {
+      "descripcion": "ROYAL ENFIELD"
+    },
+    {
+      "descripcion": "SERO ELECTRIC"
+    },
+    {
+      "descripcion": "SHINERAY"
+    },
+    {
+      "descripcion": "SIN MARCA"
+    },
+    {
+      "descripcion": "SOLA Y BRUSA"
+    },
+    {
+      "descripcion": "SOUEAST"
+    },
+    {
+      "descripcion": "SUBARU"
+    },
+    {
+      "descripcion": "SUNRA"
+    },
+    {
+      "descripcion": "SUPERSOCO"
+    },
+    {
+      "descripcion": "SUZUKI"
+    },
+    {
+      "descripcion": "SYM"
+    },
+    {
+      "descripcion": "TRAILER"
+    },
+    {
+      "descripcion": "TRIUMPH"
+    },
+    {
+      "descripcion": "TVS"
+    },
+    {
+      "descripcion": "VALTRA"
+    },
+    {
+      "descripcion": "VESPA"
+    },
+    {
+      "descripcion": "VOGE"
+    },
+    {
+      "descripcion": "VOLVO"
+    },
+    {
+      "descripcion": "VULCANO"
+    },
+    {
+      "descripcion": "WRANGLER"
+    },
+    {
+      "descripcion": "XCMG"
+    },
+    {
+      "descripcion": "YADEA"
+    },
+    {
+      "descripcion": "YAMAHA"
+    },
+    {
+      "descripcion": "ZANELLA"
+    }
+  ],
+  "2022": [
+    {
+      "descripcion": "CHERY"
+    },
+    {
+      "descripcion": "CHEVROLET"
+    },
+    {
+      "descripcion": "CHRYSLER"
+    },
+    {
+      "descripcion": "CITROEN"
+    },
+    {
+      "descripcion": "FIAT"
+    },
+    {
+      "descripcion": "FORD"
+    },
+    {
+      "descripcion": "HONDA"
+    },
+    {
+      "descripcion": "NISSAN"
+    },
+    {
+      "descripcion": "PEUGEOT"
+    },
+    {
+      "descripcion": "RENAULT"
+    },
+    {
+      "descripcion": "TOYOTA"
+    },
+    {
+      "descripcion": "VOLKSWAGEN"
+    },
+    {
+      "descripcion": "ACAPULCO"
+    },
+    {
+      "descripcion": "AGRALE"
+    },
+    {
+      "descripcion": "ALFA ROMEO"
+    },
+    {
+      "descripcion": "AMANCAY"
+    },
+    {
+      "descripcion": "APRILIA"
+    },
+    {
+      "descripcion": "AUDI"
+    },
+    {
+      "descripcion": "BAIC"
+    },
+    {
+      "descripcion": "BAJAJ"
+    },
+    {
+      "descripcion": "BENELLI"
+    },
+    {
+      "descripcion": "BETA"
+    },
+    {
+      "descripcion": "BMW"
+    },
+    {
+      "descripcion": "BRAVA"
+    },
+    {
+      "descripcion": "CANAM"
+    },
+    {
+      "descripcion": "CERRO"
+    },
+    {
+      "descripcion": "CFMOTO"
+    },
+    {
+      "descripcion": "CHANGAN"
+    },
+    {
+      "descripcion": "CONST. PARTICULAR"
+    },
+    {
+      "descripcion": "CORADIR"
+    },
+    {
+      "descripcion": "CORVEN"
+    },
+    {
+      "descripcion": "DAELIM"
+    },
+    {
+      "descripcion": "DELTA"
+    },
+    {
+      "descripcion": "DFSK"
+    },
+    {
+      "descripcion": "DONGFENG"
+    },
+    {
+      "descripcion": "DS AUTOMOBILES"
+    },
+    {
+      "descripcion": "DUCATI"
+    },
+    {
+      "descripcion": "ELPRA"
+    },
+    {
+      "descripcion": "FERRARI"
+    },
+    {
+      "descripcion": "FOTON"
+    },
+    {
+      "descripcion": "GAMMA"
+    },
+    {
+      "descripcion": "GEELY"
+    },
+    {
+      "descripcion": "GILERA"
+    },
+    {
+      "descripcion": "GRASSANI"
+    },
+    {
+      "descripcion": "GREAT WALL"
+    },
+    {
+      "descripcion": "GROSSPAL"
+    },
+    {
+      "descripcion": "GUERRERO"
+    },
+    {
+      "descripcion": "GUZZI"
+    },
+    {
+      "descripcion": "HAOJUE"
+    },
+    {
+      "descripcion": "HARLEY DAVIDSON"
+    },
+    {
+      "descripcion": "HAVAL"
+    },
+    {
+      "descripcion": "HERO"
+    },
+    {
+      "descripcion": "HINO"
+    },
+    {
+      "descripcion": "HUSQVARNA"
+    },
+    {
+      "descripcion": "HYUNDAI"
+    },
+    {
+      "descripcion": "ISUZU"
+    },
+    {
+      "descripcion": "ITATI"
+    },
+    {
+      "descripcion": "IVECO"
+    },
+    {
+      "descripcion": "JAC"
+    },
+    {
+      "descripcion": "JAGUAR"
+    },
+    {
+      "descripcion": "JAWA"
+    },
+    {
+      "descripcion": "JEEP"
+    },
+    {
+      "descripcion": "JETOUR"
+    },
+    {
+      "descripcion": "JIANSHE"
+    },
+    {
+      "descripcion": "KAWASAKI"
+    },
+    {
+      "descripcion": "KELLER"
+    },
+    {
+      "descripcion": "KIA"
+    },
+    {
+      "descripcion": "KIDEN"
+    },
+    {
+      "descripcion": "KTM"
+    },
+    {
+      "descripcion": "KYMCO"
+    },
+    {
+      "descripcion": "LAND ROVER"
+    },
+    {
+      "descripcion": "LEXUS"
+    },
+    {
+      "descripcion": "LIFAN"
+    },
+    {
+      "descripcion": "LUCKY LION"
+    },
+    {
+      "descripcion": "MASERATI"
+    },
+    {
+      "descripcion": "MASSEY FERGUSON"
+    },
+    {
+      "descripcion": "MAZDA"
+    },
+    {
+      "descripcion": "MERCEDES BENZ"
+    },
+    {
+      "descripcion": "MINARELLI"
+    },
+    {
+      "descripcion": "MINI"
+    },
+    {
+      "descripcion": "MITSUBISHI"
+    },
+    {
+      "descripcion": "MONDIAL"
+    },
+    {
+      "descripcion": "MOTOMEL"
+    },
+    {
+      "descripcion": "MV AGUSTA"
+    },
+    {
+      "descripcion": "NEW HOLLAND"
+    },
+    {
+      "descripcion": "NUUV"
+    },
+    {
+      "descripcion": "OKINOI"
+    },
+    {
+      "descripcion": "PIAGGIO"
+    },
+    {
+      "descripcion": "POLARIS"
+    },
+    {
+      "descripcion": "PORSCHE"
+    },
+    {
+      "descripcion": "RANGE ROVER"
+    },
+    {
+      "descripcion": "RIDAHO"
+    },
+    {
+      "descripcion": "ROYAL ENFIELD"
+    },
+    {
+      "descripcion": "SERO ELECTRIC"
+    },
+    {
+      "descripcion": "SHINERAY"
+    },
+    {
+      "descripcion": "SIAM"
+    },
+    {
+      "descripcion": "SIN MARCA"
+    },
+    {
+      "descripcion": "SOLA Y BRUSA"
+    },
+    {
+      "descripcion": "SOUEAST"
+    },
+    {
+      "descripcion": "SUBARU"
+    },
+    {
+      "descripcion": "SUNRA"
+    },
+    {
+      "descripcion": "SUPERSOCO"
+    },
+    {
+      "descripcion": "SUZUKI"
+    },
+    {
+      "descripcion": "SYM"
+    },
+    {
+      "descripcion": "TRAILER"
+    },
+    {
+      "descripcion": "TRIUMPH"
+    },
+    {
+      "descripcion": "TVS"
+    },
+    {
+      "descripcion": "VALTRA"
+    },
+    {
+      "descripcion": "VESPA"
+    },
+    {
+      "descripcion": "VOGE"
+    },
+    {
+      "descripcion": "VOLT"
+    },
+    {
+      "descripcion": "VOLVO"
+    },
+    {
+      "descripcion": "VULCANO"
+    },
+    {
+      "descripcion": "XCMG"
+    },
+    {
+      "descripcion": "YADEA"
+    },
+    {
+      "descripcion": "YAMAHA"
+    },
+    {
+      "descripcion": "ZANELLA"
+    }
+  ],
+  "2023": [
+    {
+      "descripcion": "CHERY"
+    },
+    {
+      "descripcion": "CHEVROLET"
+    },
+    {
+      "descripcion": "CHRYSLER"
+    },
+    {
+      "descripcion": "CITROEN"
+    },
+    {
+      "descripcion": "FIAT"
+    },
+    {
+      "descripcion": "FORD"
+    },
+    {
+      "descripcion": "HONDA"
+    },
+    {
+      "descripcion": "NISSAN"
+    },
+    {
+      "descripcion": "PEUGEOT"
+    },
+    {
+      "descripcion": "RENAULT"
+    },
+    {
+      "descripcion": "TOYOTA"
+    },
+    {
+      "descripcion": "VOLKSWAGEN"
+    },
+    {
+      "descripcion": "AGRALE"
+    },
+    {
+      "descripcion": "ALFA ROMEO"
+    },
+    {
+      "descripcion": "AMANCAY"
+    },
+    {
+      "descripcion": "APRILIA"
+    },
+    {
+      "descripcion": "AUDI"
+    },
+    {
+      "descripcion": "BAIC"
+    },
+    {
+      "descripcion": "BAJAJ"
+    },
+    {
+      "descripcion": "BENELLI"
+    },
+    {
+      "descripcion": "BETA"
+    },
+    {
+      "descripcion": "BMW"
+    },
+    {
+      "descripcion": "BRAVA"
+    },
+    {
+      "descripcion": "CANAM"
+    },
+    {
+      "descripcion": "CERRO"
+    },
+    {
+      "descripcion": "CFMOTO"
+    },
+    {
+      "descripcion": "CHANGAN"
+    },
+    {
+      "descripcion": "CORADIR"
+    },
+    {
+      "descripcion": "CORVEN"
+    },
+    {
+      "descripcion": "DFSK"
+    },
+    {
+      "descripcion": "DONGFENG"
+    },
+    {
+      "descripcion": "DS AUTOMOBILES"
+    },
+    {
+      "descripcion": "DUCATI"
+    },
+    {
+      "descripcion": "ELPRA"
+    },
+    {
+      "descripcion": "FERRARI"
+    },
+    {
+      "descripcion": "FOTON"
+    },
+    {
+      "descripcion": "GAMMA"
+    },
+    {
+      "descripcion": "GEELY"
+    },
+    {
+      "descripcion": "GILERA"
+    },
+    {
+      "descripcion": "GRASSANI"
+    },
+    {
+      "descripcion": "GREAT WALL"
+    },
+    {
+      "descripcion": "GUERRERO"
+    },
+    {
+      "descripcion": "GUZZI"
+    },
+    {
+      "descripcion": "HAOJUE"
+    },
+    {
+      "descripcion": "HARLEY DAVIDSON"
+    },
+    {
+      "descripcion": "HAVAL"
+    },
+    {
+      "descripcion": "HERO"
+    },
+    {
+      "descripcion": "HINO"
+    },
+    {
+      "descripcion": "HUSQVARNA"
+    },
+    {
+      "descripcion": "HYUNDAI"
+    },
+    {
+      "descripcion": "ITALJET"
+    },
+    {
+      "descripcion": "IVECO"
+    },
+    {
+      "descripcion": "JAC"
+    },
+    {
+      "descripcion": "JAGUAR"
+    },
+    {
+      "descripcion": "JAWA"
+    },
+    {
+      "descripcion": "JEEP"
+    },
+    {
+      "descripcion": "JETOUR"
+    },
+    {
+      "descripcion": "JIANSHE"
+    },
+    {
+      "descripcion": "KAWASAKI"
+    },
+    {
+      "descripcion": "KELLER"
+    },
+    {
+      "descripcion": "KIA"
+    },
+    {
+      "descripcion": "KIDEN"
+    },
+    {
+      "descripcion": "KTM"
+    },
+    {
+      "descripcion": "KYMCO"
+    },
+    {
+      "descripcion": "LAND ROVER"
+    },
+    {
+      "descripcion": "LEXUS"
+    },
+    {
+      "descripcion": "LIFAN"
+    },
+    {
+      "descripcion": "LUCKY LION"
+    },
+    {
+      "descripcion": "LVN"
+    },
+    {
+      "descripcion": "MASERATI"
+    },
+    {
+      "descripcion": "MAZDA"
+    },
+    {
+      "descripcion": "MERCEDES BENZ"
+    },
+    {
+      "descripcion": "MINARELLI"
+    },
+    {
+      "descripcion": "MINI"
+    },
+    {
+      "descripcion": "MITSUBISHI"
+    },
+    {
+      "descripcion": "MONDIAL"
+    },
+    {
+      "descripcion": "MOTO MORINI"
+    },
+    {
+      "descripcion": "MOTOMEL"
+    },
+    {
+      "descripcion": "MV AGUSTA"
+    },
+    {
+      "descripcion": "NUUV"
+    },
+    {
+      "descripcion": "OKINOI"
+    },
+    {
+      "descripcion": "PIAGGIO"
+    },
+    {
+      "descripcion": "POLARIS"
+    },
+    {
+      "descripcion": "PORSCHE"
+    },
+    {
+      "descripcion": "RANGE ROVER"
+    },
+    {
+      "descripcion": "RIDAHO"
+    },
+    {
+      "descripcion": "ROYAL ENFIELD"
+    },
+    {
+      "descripcion": "SERO ELECTRIC"
+    },
+    {
+      "descripcion": "SHINERAY"
+    },
+    {
+      "descripcion": "SIAM"
+    },
+    {
+      "descripcion": "SIN MARCA"
+    },
+    {
+      "descripcion": "SOLA Y BRUSA"
+    },
+    {
+      "descripcion": "SOUEAST"
+    },
+    {
+      "descripcion": "SUBARU"
+    },
+    {
+      "descripcion": "SUNRA"
+    },
+    {
+      "descripcion": "SUPERSOCO"
+    },
+    {
+      "descripcion": "SUZUKI"
+    },
+    {
+      "descripcion": "SYM"
+    },
+    {
+      "descripcion": "TRIUMPH"
+    },
+    {
+      "descripcion": "TVS"
+    },
+    {
+      "descripcion": "VALTRA"
+    },
+    {
+      "descripcion": "VESPA"
+    },
+    {
+      "descripcion": "VOGE"
+    },
+    {
+      "descripcion": "VOLT"
+    },
+    {
+      "descripcion": "VOLVO"
+    },
+    {
+      "descripcion": "VULCANO"
+    },
+    {
+      "descripcion": "XCMG"
+    },
+    {
+      "descripcion": "YADEA"
+    },
+    {
+      "descripcion": "YAMAHA"
+    },
+    {
+      "descripcion": "ZANELLA"
+    }
+  ],
+  "2024": [
+    {
+      "descripcion": "CHERY"
+    },
+    {
+      "descripcion": "CHEVROLET"
+    },
+    {
+      "descripcion": "CHRYSLER"
+    },
+    {
+      "descripcion": "CITROEN"
+    },
+    {
+      "descripcion": "FIAT"
+    },
+    {
+      "descripcion": "FORD"
+    },
+    {
+      "descripcion": "HONDA"
+    },
+    {
+      "descripcion": "NISSAN"
+    },
+    {
+      "descripcion": "PEUGEOT"
+    },
+    {
+      "descripcion": "RENAULT"
+    },
+    {
+      "descripcion": "TOYOTA"
+    },
+    {
+      "descripcion": "VOLKSWAGEN"
+    },
+    {
+      "descripcion": "ALFA ROMEO"
+    },
+    {
+      "descripcion": "APRILIA"
+    },
+    {
+      "descripcion": "AUDI"
+    },
+    {
+      "descripcion": "BAIC"
+    },
+    {
+      "descripcion": "BAJAJ"
+    },
+    {
+      "descripcion": "BENELLI"
+    },
+    {
+      "descripcion": "BETA"
+    },
+    {
+      "descripcion": "BMW"
+    },
+    {
+      "descripcion": "BRAVA"
+    },
+    {
+      "descripcion": "CANAM"
+    },
+    {
+      "descripcion": "CASA RODANTE"
+    },
+    {
+      "descripcion": "CERRO"
+    },
+    {
+      "descripcion": "CFMOTO"
+    },
+    {
+      "descripcion": "CHANGAN"
+    },
+    {
+      "descripcion": "CORADIR"
+    },
+    {
+      "descripcion": "CORVEN"
+    },
+    {
+      "descripcion": "DFSK"
+    },
+    {
+      "descripcion": "DONGFENG"
+    },
+    {
+      "descripcion": "DS AUTOMOBILES"
+    },
+    {
+      "descripcion": "DUCATI"
+    },
+    {
+      "descripcion": "ELPRA"
+    },
+    {
+      "descripcion": "FERRARI"
+    },
+    {
+      "descripcion": "FOTON"
+    },
+    {
+      "descripcion": "GAMMA"
+    },
+    {
+      "descripcion": "GILERA"
+    },
+    {
+      "descripcion": "GREAT WALL"
+    },
+    {
+      "descripcion": "GUERRERO"
+    },
+    {
+      "descripcion": "GUZZI"
+    },
+    {
+      "descripcion": "HAOJUE"
+    },
+    {
+      "descripcion": "HARLEY DAVIDSON"
+    },
+    {
+      "descripcion": "HAVAL"
+    },
+    {
+      "descripcion": "HERO"
+    },
+    {
+      "descripcion": "HINO"
+    },
+    {
+      "descripcion": "HUSQVARNA"
+    },
+    {
+      "descripcion": "HYUNDAI"
+    },
+    {
+      "descripcion": "ITALJET"
+    },
+    {
+      "descripcion": "IVECO"
+    },
+    {
+      "descripcion": "JAC"
+    },
+    {
+      "descripcion": "JAWA"
+    },
+    {
+      "descripcion": "JEEP"
+    },
+    {
+      "descripcion": "JETOUR"
+    },
+    {
+      "descripcion": "JIANSHE"
+    },
+    {
+      "descripcion": "KAWASAKI"
+    },
+    {
+      "descripcion": "KELLER"
+    },
+    {
+      "descripcion": "KIA"
+    },
+    {
+      "descripcion": "KIDEN"
+    },
+    {
+      "descripcion": "KTM"
+    },
+    {
+      "descripcion": "KYMCO"
+    },
+    {
+      "descripcion": "LAND ROVER"
+    },
+    {
+      "descripcion": "LEXUS"
+    },
+    {
+      "descripcion": "LIFAN"
+    },
+    {
+      "descripcion": "LUCKY LION"
+    },
+    {
+      "descripcion": "LVN"
+    },
+    {
+      "descripcion": "MERCEDES BENZ"
+    },
+    {
+      "descripcion": "MINARELLI"
+    },
+    {
+      "descripcion": "MINI"
+    },
+    {
+      "descripcion": "MITSUBISHI"
+    },
+    {
+      "descripcion": "MONDIAL"
+    },
+    {
+      "descripcion": "MOTO MORINI"
+    },
+    {
+      "descripcion": "MOTOMEL"
+    },
+    {
+      "descripcion": "MV AGUSTA"
+    },
+    {
+      "descripcion": "NUUV"
+    },
+    {
+      "descripcion": "OKINOI"
+    },
+    {
+      "descripcion": "PIAGGIO"
+    },
+    {
+      "descripcion": "POLARIS"
+    },
+    {
+      "descripcion": "PORSCHE"
+    },
+    {
+      "descripcion": "QJMOTOR"
+    },
+    {
+      "descripcion": "RANGE ROVER"
+    },
+    {
+      "descripcion": "RIDAHO"
+    },
+    {
+      "descripcion": "ROYAL ENFIELD"
+    },
+    {
+      "descripcion": "RVM"
+    },
+    {
+      "descripcion": "SEGWAY"
+    },
+    {
+      "descripcion": "SERO ELECTRIC"
+    },
+    {
+      "descripcion": "SHINERAY"
+    },
+    {
+      "descripcion": "SIAM"
+    },
+    {
+      "descripcion": "SIN MARCA"
+    },
+    {
+      "descripcion": "SKYWELL"
+    },
+    {
+      "descripcion": "SOLA Y BRUSA"
+    },
+    {
+      "descripcion": "SOUEAST"
+    },
+    {
+      "descripcion": "SUBARU"
+    },
+    {
+      "descripcion": "SUNRA"
+    },
+    {
+      "descripcion": "SUPERSOCO"
+    },
+    {
+      "descripcion": "SUZUKI"
+    },
+    {
+      "descripcion": "SYM"
+    },
+    {
+      "descripcion": "TEKNIAL"
+    },
+    {
+      "descripcion": "TRAILER"
+    },
+    {
+      "descripcion": "TRIUMPH"
+    },
+    {
+      "descripcion": "TVS"
+    },
+    {
+      "descripcion": "VESPA"
+    },
+    {
+      "descripcion": "VOGE"
+    },
+    {
+      "descripcion": "VOLT"
+    },
+    {
+      "descripcion": "VOLVO"
+    },
+    {
+      "descripcion": "XCMG"
+    },
+    {
+      "descripcion": "YADEA"
+    },
+    {
+      "descripcion": "YAMAHA"
+    },
+    {
+      "descripcion": "ZANELLA"
+    }
+  ],
+  "2025": [
+    {
+      "descripcion": "CHERY"
+    },
+    {
+      "descripcion": "CHEVROLET"
+    },
+    {
+      "descripcion": "CHRYSLER"
+    },
+    {
+      "descripcion": "CITROEN"
+    },
+    {
+      "descripcion": "FIAT"
+    },
+    {
+      "descripcion": "FORD"
+    },
+    {
+      "descripcion": "HONDA"
+    },
+    {
+      "descripcion": "NISSAN"
+    },
+    {
+      "descripcion": "PEUGEOT"
+    },
+    {
+      "descripcion": "RENAULT"
+    },
+    {
+      "descripcion": "TOYOTA"
+    },
+    {
+      "descripcion": "VOLKSWAGEN"
+    },
+    {
+      "descripcion": "AGRALE"
+    },
+    {
+      "descripcion": "ALFA ROMEO"
+    },
+    {
+      "descripcion": "APRILIA"
+    },
+    {
+      "descripcion": "AUDI"
+    },
+    {
+      "descripcion": "BAIC"
+    },
+    {
+      "descripcion": "BAJAJ"
+    },
+    {
+      "descripcion": "BENELLI"
+    },
+    {
+      "descripcion": "BETA"
+    },
+    {
+      "descripcion": "BMW"
+    },
+    {
+      "descripcion": "BRAVA"
+    },
+    {
+      "descripcion": "BYD"
+    },
+    {
+      "descripcion": "CANAM"
+    },
+    {
+      "descripcion": "CERRO"
+    },
+    {
+      "descripcion": "CFMOTO"
+    },
+    {
+      "descripcion": "CHANGAN"
+    },
+    {
+      "descripcion": "CORADIR"
+    },
+    {
+      "descripcion": "CORVEN"
+    },
+    {
+      "descripcion": "DFSK"
+    },
+    {
+      "descripcion": "DOMY"
+    },
+    {
+      "descripcion": "DONGFENG"
+    },
+    {
+      "descripcion": "DS AUTOMOBILES"
+    },
+    {
+      "descripcion": "DUCATI"
+    },
+    {
+      "descripcion": "ELPRA"
+    },
+    {
+      "descripcion": "FERRARI"
+    },
+    {
+      "descripcion": "FORTHING"
+    },
+    {
+      "descripcion": "FOTON"
+    },
+    {
+      "descripcion": "GAC"
+    },
+    {
+      "descripcion": "GAMMA"
+    },
+    {
+      "descripcion": "GEELY"
+    },
+    {
+      "descripcion": "GILERA"
+    },
+    {
+      "descripcion": "GOES"
+    },
+    {
+      "descripcion": "GREAT WALL"
+    },
+    {
+      "descripcion": "GUERRERO"
+    },
+    {
+      "descripcion": "GUZZI"
+    },
+    {
+      "descripcion": "HAOJUE"
+    },
+    {
+      "descripcion": "HARLEY DAVIDSON"
+    },
+    {
+      "descripcion": "HAVAL"
+    },
+    {
+      "descripcion": "HERO"
+    },
+    {
+      "descripcion": "HINO"
+    },
+    {
+      "descripcion": "HUSQVARNA"
+    },
+    {
+      "descripcion": "HYUNDAI"
+    },
+    {
+      "descripcion": "IKA"
+    },
+    {
+      "descripcion": "INDIAN"
+    },
+    {
+      "descripcion": "ISUZU"
+    },
+    {
+      "descripcion": "ITALJET"
+    },
+    {
+      "descripcion": "IVECO"
+    },
+    {
+      "descripcion": "JAC"
+    },
+    {
+      "descripcion": "JAWA"
+    },
+    {
+      "descripcion": "JEEP"
+    },
+    {
+      "descripcion": "JETOUR"
+    },
+    {
+      "descripcion": "JIANSHE"
+    },
+    {
+      "descripcion": "JMC"
+    },
+    {
+      "descripcion": "JMEV"
+    },
+    {
+      "descripcion": "KAIYI"
+    },
+    {
+      "descripcion": "KAWASAKI"
+    },
+    {
+      "descripcion": "KELLER"
+    },
+    {
+      "descripcion": "KIA"
+    },
+    {
+      "descripcion": "KIDEN"
+    },
+    {
+      "descripcion": "KOVE"
+    },
+    {
+      "descripcion": "KTM"
+    },
+    {
+      "descripcion": "KYMCO"
+    },
+    {
+      "descripcion": "LAND ROVER"
+    },
+    {
+      "descripcion": "LEXUS"
+    },
+    {
+      "descripcion": "LIFAN"
+    },
+    {
+      "descripcion": "LUCKY LION"
+    },
+    {
+      "descripcion": "LVN"
+    },
+    {
+      "descripcion": "MERCEDES BENZ"
+    },
+    {
+      "descripcion": "MG"
+    },
+    {
+      "descripcion": "MINARELLI"
+    },
+    {
+      "descripcion": "MINI"
+    },
+    {
+      "descripcion": "MITSUBISHI"
+    },
+    {
+      "descripcion": "MONDIAL"
+    },
+    {
+      "descripcion": "MORBIDELLI"
+    },
+    {
+      "descripcion": "MOTO MORINI"
+    },
+    {
+      "descripcion": "MOTOMEL"
+    },
+    {
+      "descripcion": "MV AGUSTA"
+    },
+    {
+      "descripcion": "NUUV"
+    },
+    {
+      "descripcion": "OKINOI"
+    },
+    {
+      "descripcion": "PIAGGIO"
+    },
+    {
+      "descripcion": "POLARIS"
+    },
+    {
+      "descripcion": "PORSCHE"
+    },
+    {
+      "descripcion": "QJMOTOR"
+    },
+    {
+      "descripcion": "RANGE ROVER"
+    },
+    {
+      "descripcion": "RIDAHO"
+    },
+    {
+      "descripcion": "ROYAL ENFIELD"
+    },
+    {
+      "descripcion": "RVM"
+    },
+    {
+      "descripcion": "SERO ELECTRIC"
+    },
+    {
+      "descripcion": "SHINERAY"
+    },
+    {
+      "descripcion": "SIAM"
+    },
+    {
+      "descripcion": "SIN MARCA"
+    },
+    {
+      "descripcion": "SKYWELL"
+    },
+    {
+      "descripcion": "SOUEAST"
+    },
+    {
+      "descripcion": "SUBARU"
+    },
+    {
+      "descripcion": "SUNRA"
+    },
+    {
+      "descripcion": "SUPERSOCO"
+    },
+    {
+      "descripcion": "SUZUKI"
+    },
+    {
+      "descripcion": "SYM"
+    },
+    {
+      "descripcion": "TRIUMPH"
+    },
+    {
+      "descripcion": "TVS"
+    },
+    {
+      "descripcion": "VESPA"
+    },
+    {
+      "descripcion": "VOGE"
+    },
+    {
+      "descripcion": "VOLT"
+    },
+    {
+      "descripcion": "VOLVO"
+    },
+    {
+      "descripcion": "XEV"
+    },
+    {
+      "descripcion": "YADEA"
+    },
+    {
+      "descripcion": "YAMAHA"
+    },
+    {
+      "descripcion": "ZANELLA"
+    }
+  ],
+  "2026": [
+    {
+      "descripcion": "CHERY"
+    },
+    {
+      "descripcion": "CHEVROLET"
+    },
+    {
+      "descripcion": "CHRYSLER"
+    },
+    {
+      "descripcion": "CITROEN"
+    },
+    {
+      "descripcion": "FIAT"
+    },
+    {
+      "descripcion": "FORD"
+    },
+    {
+      "descripcion": "HONDA"
+    },
+    {
+      "descripcion": "NISSAN"
+    },
+    {
+      "descripcion": "PEUGEOT"
+    },
+    {
+      "descripcion": "RENAULT"
+    },
+    {
+      "descripcion": "TOYOTA"
+    },
+    {
+      "descripcion": "VOLKSWAGEN"
+    },
+    {
+      "descripcion": "AGRALE"
+    },
+    {
+      "descripcion": "ALFA ROMEO"
+    },
+    {
+      "descripcion": "APRILIA"
+    },
+    {
+      "descripcion": "AUDI"
+    },
+    {
+      "descripcion": "BAIC"
+    },
+    {
+      "descripcion": "BAJAJ"
+    },
+    {
+      "descripcion": "BENELLI"
+    },
+    {
+      "descripcion": "BETA"
+    },
+    {
+      "descripcion": "BMW"
+    },
+    {
+      "descripcion": "BRAVA"
+    },
+    {
+      "descripcion": "BYD"
+    },
+    {
+      "descripcion": "CANAM"
+    },
+    {
+      "descripcion": "CERRO"
+    },
+    {
+      "descripcion": "CFMOTO"
+    },
+    {
+      "descripcion": "CHANGAN"
+    },
+    {
+      "descripcion": "CORADIR"
+    },
+    {
+      "descripcion": "CORVEN"
+    },
+    {
+      "descripcion": "DFSK"
+    },
+    {
+      "descripcion": "DOMY"
+    },
+    {
+      "descripcion": "DONGFENG"
+    },
+    {
+      "descripcion": "DS AUTOMOBILES"
+    },
+    {
+      "descripcion": "DUCATI"
+    },
+    {
+      "descripcion": "FERRARI"
+    },
+    {
+      "descripcion": "FORTHING"
+    },
+    {
+      "descripcion": "FOTON"
+    },
+    {
+      "descripcion": "GAC"
+    },
+    {
+      "descripcion": "GAMMA"
+    },
+    {
+      "descripcion": "GEELY"
+    },
+    {
+      "descripcion": "GILERA"
+    },
+    {
+      "descripcion": "GOES"
+    },
+    {
+      "descripcion": "GREAT WALL"
+    },
+    {
+      "descripcion": "GUERRERO"
+    },
+    {
+      "descripcion": "GUZZI"
+    },
+    {
+      "descripcion": "HAOJUE"
+    },
+    {
+      "descripcion": "HARLEY DAVIDSON"
+    },
+    {
+      "descripcion": "HAVAL"
+    },
+    {
+      "descripcion": "HERO"
+    },
+    {
+      "descripcion": "HUSQVARNA"
+    },
+    {
+      "descripcion": "HYUNDAI"
+    },
+    {
+      "descripcion": "IKA"
+    },
+    {
+      "descripcion": "ISUZU"
+    },
+    {
+      "descripcion": "ITALJET"
+    },
+    {
+      "descripcion": "IVECO"
+    },
+    {
+      "descripcion": "JAC"
+    },
+    {
+      "descripcion": "JAWA"
+    },
+    {
+      "descripcion": "JEEP"
+    },
+    {
+      "descripcion": "JETOUR"
+    },
+    {
+      "descripcion": "JIANSHE"
+    },
+    {
+      "descripcion": "JMC"
+    },
+    {
+      "descripcion": "JMEV"
+    },
+    {
+      "descripcion": "KAIYI"
+    },
+    {
+      "descripcion": "KAWASAKI"
+    },
+    {
+      "descripcion": "KELLER"
+    },
+    {
+      "descripcion": "KIA"
+    },
+    {
+      "descripcion": "KIDEN"
+    },
+    {
+      "descripcion": "KOVE"
+    },
+    {
+      "descripcion": "KTM"
+    },
+    {
+      "descripcion": "KYMCO"
+    },
+    {
+      "descripcion": "LAND ROVER"
+    },
+    {
+      "descripcion": "LANDKING"
+    },
+    {
+      "descripcion": "LEXUS"
+    },
+    {
+      "descripcion": "LIFAN"
+    },
+    {
+      "descripcion": "MERCEDES BENZ"
+    },
+    {
+      "descripcion": "MG"
+    },
+    {
+      "descripcion": "MINI"
+    },
+    {
+      "descripcion": "MITSUBISHI"
+    },
+    {
+      "descripcion": "MONDIAL"
+    },
+    {
+      "descripcion": "MORBIDELLI"
+    },
+    {
+      "descripcion": "MOTO MORINI"
+    },
+    {
+      "descripcion": "MOTOMEL"
+    },
+    {
+      "descripcion": "MV AGUSTA"
+    },
+    {
+      "descripcion": "NUUV"
+    },
+    {
+      "descripcion": "OKINOI"
+    },
+    {
+      "descripcion": "PIAGGIO"
+    },
+    {
+      "descripcion": "POLARIS"
+    },
+    {
+      "descripcion": "PORSCHE"
+    },
+    {
+      "descripcion": "QJMOTOR"
+    },
+    {
+      "descripcion": "RANGE ROVER"
+    },
+    {
+      "descripcion": "ROYAL ENFIELD"
+    },
+    {
+      "descripcion": "RVM"
+    },
+    {
+      "descripcion": "SERO ELECTRIC"
+    },
+    {
+      "descripcion": "SHINERAY"
+    },
+    {
+      "descripcion": "SIAM"
+    },
+    {
+      "descripcion": "SIN MARCA"
+    },
+    {
+      "descripcion": "SITRAK"
+    },
+    {
+      "descripcion": "SUBARU"
+    },
+    {
+      "descripcion": "SUNRA"
+    },
+    {
+      "descripcion": "SUPERSOCO"
+    },
+    {
+      "descripcion": "SUZUKI"
+    },
+    {
+      "descripcion": "SYM"
+    },
+    {
+      "descripcion": "TRIUMPH"
+    },
+    {
+      "descripcion": "TVS"
+    },
+    {
+      "descripcion": "VESPA"
+    },
+    {
+      "descripcion": "VOGE"
+    },
+    {
+      "descripcion": "VOLVO"
+    },
+    {
+      "descripcion": "XEV"
+    },
+    {
+      "descripcion": "YADEA"
+    },
+    {
+      "descripcion": "YAMAHA"
+    },
+    {
+      "descripcion": "ZANELLA"
+    }
+  ]
+}

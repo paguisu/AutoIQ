@@ -234,4 +234,43 @@ describe('catalogos service', () => {
     expect(status.isCurrentMonth).toBe(true);
     expect(status.updatedAt).toBeTruthy();
   });
+
+  test('Mercantil Andina expone y persiste sus catálogos remotos en el flujo común', async () => {
+    const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'autoiq-catalogos-'));
+    const dataRoot = path.join(tmpRoot, 'data');
+    const catalogRoot = path.join(dataRoot, 'catalogos');
+    fs.mkdirSync(path.join(dataRoot, 'mercantil_andina'), { recursive: true });
+
+    const { listTablesForCompany } = require('../services/catalogos');
+    expect(listTablesForCompany(dataRoot, 'mercantil_andina').map((item) => item.table)).toEqual([
+      'marcas',
+      'vehiculos',
+    ]);
+
+    await syncTable({
+      dataRoot,
+      catalogRoot,
+      slug: 'mercantil_andina',
+      table: 'vehiculos',
+      source: 'remote',
+      providerFetch: async () => ({
+        sourceRaw: [{ catalog_key: '2019:10624121', codigo: 10624121, anio: 2019, descripcion: 'AUDI A1', infoauto: 60450, propulsion: 1 }],
+        sourcePath: 'https://api.mercantilandina.com.ar/vehiculos/v1/',
+        sourceType: 'remote-api-paginated',
+      }),
+    });
+
+    const persisted = JSON.parse(fs.readFileSync(
+      path.join(dataRoot, 'mercantil_andina', 'diccionarios', 'vehiculos.json'),
+      'utf8'
+    ));
+    expect(persisted).toEqual([{
+      catalog_key: '2019:10624121',
+      codigo: 10624121,
+      anio: 2019,
+      descripcion: 'AUDI A1',
+      infoauto: 60450,
+      propulsion: 1,
+    }]);
+  });
 });

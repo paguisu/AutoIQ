@@ -2507,5 +2507,42 @@
       "codigoInfoauto": 320799,
       "moto": "N"
     }
+  ],
+  "2019|N|AUDI|A1": [
+    {
+      "codigo": "664",
+      "descripcion": "AUDI A1 1.4T AMBITION STRONIC CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 60388,
+      "moto": "N"
+    },
+    {
+      "codigo": "1029",
+      "descripcion": "AUDI A1 SPORTBACK 1.4T AMBITION CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 60450,
+      "moto": "N"
+    },
+    {
+      "codigo": "1071",
+      "descripcion": "AUDI A1 SPORTBACK 1.4T AMBITION STRONIC CON AC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 60451,
+      "moto": "N"
+    },
+    {
+      "codigo": "1153",
+      "descripcion": "AUDI A1 SPORTBACK 30T STRONIC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 60534,
+      "moto": "N"
+    },
+    {
+      "codigo": "1152",
+      "descripcion": "AUDI A1 SPORTBACK 35T STRONIC",
+      "cantidadInfoauto": 1,
+      "codigoInfoauto": 60533,
+      "moto": "N"
+    }
   ]
 }

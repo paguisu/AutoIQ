@@ -21612,7 +21612,7 @@
     "cod_marca": "12",
     "marca": "CHEVROLET",
     "cod_modelo": "573",
-    "modelo": "ONIX 1.2 PLUS L/19",
+    "modelo": "ONIX 1.2 PLUS LS L/19",
     "tau_codia": "40988",
     "cod_uso": "0101",
     "tipo_uso": "1"
@@ -22624,6 +22624,168 @@
     "tau_codia": "1266101",
     "cod_uso": "1212",
     "tipo_uso": "2"
+  },
+  {
+    "cod_marca": "12",
+    "marca": "CHEVROLET",
+    "cod_modelo": "1266201",
+    "modelo": "CS 10703",
+    "tau_codia": "1266201",
+    "cod_uso": "1110",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "12",
+    "marca": "CHEVROLET",
+    "cod_modelo": "1266201",
+    "modelo": "CS 10703",
+    "tau_codia": "1266201",
+    "cod_uso": "1212",
+    "tipo_uso": "2"
+  },
+  {
+    "cod_marca": "12",
+    "marca": "CHEVROLET",
+    "cod_modelo": "1266301",
+    "modelo": "ONIX 1.0T LT L/25",
+    "tau_codia": "1266301",
+    "cod_uso": "0101",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "12",
+    "marca": "CHEVROLET",
+    "cod_modelo": "1266400",
+    "modelo": "ONIX 1.0T PREMIER AT L/25",
+    "tau_codia": "1266400",
+    "cod_uso": "0101",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "12",
+    "marca": "CHEVROLET",
+    "cod_modelo": "1266501",
+    "modelo": "TRACKER 1.2 TURBO LT AT6 L/25",
+    "tau_codia": "1266501",
+    "cod_uso": "0101",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "12",
+    "marca": "CHEVROLET",
+    "cod_modelo": "1266601",
+    "modelo": "TRACKER 1.2 TURBO PREMIER AT6 L/25",
+    "tau_codia": "1266601",
+    "cod_uso": "0101",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "12",
+    "marca": "CHEVROLET",
+    "cod_modelo": "1266701",
+    "modelo": "TRACKER 1.2 TURBO RS AT6 L/25",
+    "tau_codia": "1266701",
+    "cod_uso": "0101",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "12",
+    "marca": "CHEVROLET",
+    "cod_modelo": "1266801",
+    "modelo": "ONIX 1.0T RS AT L/25",
+    "tau_codia": "1266801",
+    "cod_uso": "0101",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "12",
+    "marca": "CHEVROLET",
+    "cod_modelo": "1266901",
+    "modelo": "ONIX 1.0T PLUS LT L/25",
+    "tau_codia": "1266901",
+    "cod_uso": "0101",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "12",
+    "marca": "CHEVROLET",
+    "cod_modelo": "1267001",
+    "modelo": "SPARK EUV",
+    "tau_codia": "1267001",
+    "cod_uso": "0101",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "12",
+    "marca": "CHEVROLET",
+    "cod_modelo": "1267101",
+    "modelo": "ONIX 1.0T PLUS LTZ AT L/25",
+    "tau_codia": "1267101",
+    "cod_uso": "0101",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "12",
+    "marca": "CHEVROLET",
+    "cod_modelo": "1267201",
+    "modelo": "ONIX 1.0T PLUS PREMIER AT L/25",
+    "tau_codia": "1267201",
+    "cod_uso": "0101",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "12",
+    "marca": "CHEVROLET",
+    "cod_modelo": "1267501",
+    "modelo": "MONTANA 1.2 TURBO LT AT6 L/25",
+    "tau_codia": "1267501",
+    "cod_uso": "0101",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "12",
+    "marca": "CHEVROLET",
+    "cod_modelo": "1267601",
+    "modelo": "MONTANA 1.2 TURBO LTZ AT6 L/25",
+    "tau_codia": "1267601",
+    "cod_uso": "0101",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "12",
+    "marca": "CHEVROLET",
+    "cod_modelo": "1267701",
+    "modelo": "MONTANA 1.2 TURBO PREMIER AT6 L/25",
+    "tau_codia": "1267701",
+    "cod_uso": "0101",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "12",
+    "marca": "CHEVROLET",
+    "cod_modelo": "1267801",
+    "modelo": "MONTANA 1.2 TURBO RS AT6 L/25",
+    "tau_codia": "1267801",
+    "cod_uso": "0101",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "12",
+    "marca": "CHEVROLET",
+    "cod_modelo": "1267901",
+    "modelo": "P-UP S10 2.8TD SC 4X2 WT L/25",
+    "tau_codia": "1267901",
+    "cod_uso": "0101",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "12",
+    "marca": "CHEVROLET",
+    "cod_modelo": "1268001",
+    "modelo": "P-UP S10 2.8TD SC 4X4 WT L/25",
+    "tau_codia": "1268001",
+    "cod_uso": "0101",
+    "tipo_uso": "1"
   },
   {
     "cod_marca": "13",
@@ -25126,6 +25288,42 @@
     "tau_codia": "1324701",
     "cod_uso": "1515",
     "tipo_uso": "2"
+  },
+  {
+    "cod_marca": "13",
+    "marca": "CHRYSLER",
+    "cod_modelo": "1324801",
+    "modelo": "JEEP RENEGADE L/26 1.3T 4X2 ALTITUDE AT6",
+    "tau_codia": "1324801",
+    "cod_uso": "0101",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "13",
+    "marca": "CHRYSLER",
+    "cod_modelo": "1324901",
+    "modelo": "JEEP RENEGADE L/26 1.3T 4X2 LONG NIG AT6",
+    "tau_codia": "1324901",
+    "cod_uso": "0101",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "13",
+    "marca": "CHRYSLER",
+    "cod_modelo": "1325001",
+    "modelo": "JEEP RENEGADE L/26 1.3T 4X2 SAHARA AT6",
+    "tau_codia": "1325001",
+    "cod_uso": "0101",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "13",
+    "marca": "CHRYSLER",
+    "cod_modelo": "1325101",
+    "modelo": "JEEP RENEGADE L/26 1.3T 4X4 WILLYS AT9",
+    "tau_codia": "1325101",
+    "cod_uso": "0101",
+    "tipo_uso": "1"
   },
   {
     "cod_marca": "14",
@@ -33404,8 +33602,17 @@
     "cod_modelo": "694",
     "modelo": "QUBO FIORINO 1.4 ACTIVE",
     "tau_codia": "33013",
-    "cod_uso": "0101",
+    "cod_uso": "1110",
     "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "17",
+    "marca": "FIAT",
+    "cod_modelo": "694",
+    "modelo": "QUBO FIORINO 1.4 ACTIVE",
+    "tau_codia": "33013",
+    "cod_uso": "1212",
+    "tipo_uso": "2"
   },
   {
     "cod_marca": "17",
@@ -33431,7 +33638,25 @@
     "cod_modelo": "696",
     "modelo": "QUBO 1.4 ACTIVE",
     "tau_codia": "33010",
-    "cod_uso": "0101",
+    "cod_uso": "1110",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "17",
+    "marca": "FIAT",
+    "cod_modelo": "696",
+    "modelo": "QUBO 1.4 ACTIVE",
+    "tau_codia": "33010",
+    "cod_uso": "1212",
+    "tipo_uso": "2"
+  },
+  {
+    "cod_marca": "17",
+    "marca": "FIAT",
+    "cod_modelo": "697",
+    "modelo": "QUBO 1.4 DYNAMIC",
+    "tau_codia": "33011",
+    "cod_uso": "1110",
     "tipo_uso": "1"
   },
   {
@@ -33440,8 +33665,8 @@
     "cod_modelo": "697",
     "modelo": "QUBO 1.4 DYNAMIC",
     "tau_codia": "33011",
-    "cod_uso": "0101",
-    "tipo_uso": "1"
+    "cod_uso": "1212",
+    "tipo_uso": "2"
   },
   {
     "cod_marca": "17",
@@ -34142,8 +34367,17 @@
     "cod_modelo": "766",
     "modelo": "QUBO 1.4 TREKKING",
     "tau_codia": "33012",
-    "cod_uso": "0101",
+    "cod_uso": "1110",
     "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "17",
+    "marca": "FIAT",
+    "cod_modelo": "766",
+    "modelo": "QUBO 1.4 TREKKING",
+    "tau_codia": "33012",
+    "cod_uso": "1212",
+    "tipo_uso": "2"
   },
   {
     "cod_marca": "17",
@@ -49613,6 +49847,15 @@
     "cod_modelo": "2026101",
     "modelo": "CRETA 1.5 SAFETY L/25",
     "tau_codia": "2026101",
+    "cod_uso": "0101",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "20",
+    "marca": "HYUNDAI",
+    "cod_modelo": "2026201",
+    "modelo": "ACCENT GLS",
+    "tau_codia": "2026201",
     "cod_uso": "0101",
     "tipo_uso": "1"
   },
@@ -70725,7 +70968,7 @@
     "cod_marca": "32",
     "marca": "PEUGEOT",
     "cod_modelo": "443",
-    "modelo": "PEU",
+    "modelo": "206 1.6 5 PTAS XT L/04 PRE.TIP.",
     "tau_codia": "36762",
     "cod_uso": "010103",
     "tipo_uso": "1"
@@ -71726,7 +71969,7 @@
     "cod_modelo": "548",
     "modelo": "207 COMPACT 1.4 5 P XR//ACTIVE",
     "tau_codia": "36817",
-    "cod_uso": "010103",
+    "cod_uso": "0101",
     "tipo_uso": "1"
   },
   {
@@ -72113,8 +72356,17 @@
     "cod_modelo": "591",
     "modelo": "PARTNER 1.4 CONFORT PLC L/10",
     "tau_codia": "37339",
-    "cod_uso": "0101",
+    "cod_uso": "1110",
     "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "32",
+    "marca": "PEUGEOT",
+    "cod_modelo": "591",
+    "modelo": "PARTNER 1.4 CONFORT PLC L/10",
+    "tau_codia": "37339",
+    "cod_uso": "1212",
+    "tipo_uso": "2"
   },
   {
     "cod_marca": "32",
@@ -72140,8 +72392,17 @@
     "cod_modelo": "594",
     "modelo": "PARTNER PATA. 1.4 L10/17",
     "tau_codia": "37365",
-    "cod_uso": "0101",
+    "cod_uso": "1110",
     "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "32",
+    "marca": "PEUGEOT",
+    "cod_modelo": "594",
+    "modelo": "PARTNER PATA. 1.4 L10/17",
+    "tau_codia": "37365",
+    "cod_uso": "1212",
+    "tipo_uso": "2"
   },
   {
     "cod_marca": "32",
@@ -74167,6 +74428,114 @@
     "tau_codia": "3280901",
     "cod_uso": "0101",
     "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "32",
+    "marca": "PEUGEOT",
+    "cod_modelo": "3281001",
+    "modelo": "5008 1.6 THP GT L/25",
+    "tau_codia": "3281001",
+    "cod_uso": "0101",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "32",
+    "marca": "PEUGEOT",
+    "cod_modelo": "3281100",
+    "modelo": "408 1.6 THP GT",
+    "tau_codia": "3281100",
+    "cod_uso": "0101",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "32",
+    "marca": "PEUGEOT",
+    "cod_modelo": "3281201",
+    "modelo": "EXPERT 1.5 HDI",
+    "tau_codia": "3281201",
+    "cod_uso": "1414",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "32",
+    "marca": "PEUGEOT",
+    "cod_modelo": "3281201",
+    "modelo": "EXPERT 1.5 HDI",
+    "tau_codia": "3281201",
+    "cod_uso": "1515",
+    "tipo_uso": "2"
+  },
+  {
+    "cod_marca": "32",
+    "marca": "PEUGEOT",
+    "cod_modelo": "3281301",
+    "modelo": "BOXER 2.2 HDI FURGON L2H2 L/25",
+    "tau_codia": "3281301",
+    "cod_uso": "1414",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "32",
+    "marca": "PEUGEOT",
+    "cod_modelo": "3281301",
+    "modelo": "BOXER 2.2 HDI FURGON L2H2 L/25",
+    "tau_codia": "3281301",
+    "cod_uso": "1515",
+    "tipo_uso": "2"
+  },
+  {
+    "cod_marca": "32",
+    "marca": "PEUGEOT",
+    "cod_modelo": "3281401",
+    "modelo": "BOXER 2.2 HDI FURGON L3H2 L/25",
+    "tau_codia": "3281401",
+    "cod_uso": "1414",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "32",
+    "marca": "PEUGEOT",
+    "cod_modelo": "3281401",
+    "modelo": "BOXER 2.2 HDI FURGON L3H2 L/25",
+    "tau_codia": "3281401",
+    "cod_uso": "1515",
+    "tipo_uso": "2"
+  },
+  {
+    "cod_marca": "32",
+    "marca": "PEUGEOT",
+    "cod_modelo": "3281501",
+    "modelo": "EXPERT 2.2 HDI 6AS",
+    "tau_codia": "3281501",
+    "cod_uso": "1414",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "32",
+    "marca": "PEUGEOT",
+    "cod_modelo": "3281501",
+    "modelo": "EXPERT 2.2 HDI 6AS",
+    "tau_codia": "3281501",
+    "cod_uso": "1515",
+    "tipo_uso": "2"
+  },
+  {
+    "cod_marca": "32",
+    "marca": "PEUGEOT",
+    "cod_modelo": "3281601",
+    "modelo": "EXPERT 2.2 HDI",
+    "tau_codia": "3281601",
+    "cod_uso": "1414",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "32",
+    "marca": "PEUGEOT",
+    "cod_modelo": "3281601",
+    "modelo": "EXPERT 2.2 HDI",
+    "tau_codia": "3281601",
+    "cod_uso": "1515",
+    "tipo_uso": "2"
   },
   {
     "cod_marca": "33",
@@ -81122,8 +81491,17 @@
     "cod_modelo": "557",
     "modelo": "KANGOO 2 1.5 D EXPRESS 1 PLC CON.AA",
     "tau_codia": "37814",
-    "cod_uso": "0101",
+    "cod_uso": "1110",
     "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "36",
+    "marca": "RENAULT",
+    "cod_modelo": "557",
+    "modelo": "KANGOO 2 1.5 D EXPRESS 1 PLC CON.AA",
+    "tau_codia": "37814",
+    "cod_uso": "1212",
+    "tipo_uso": "2"
   },
   {
     "cod_marca": "36",
@@ -81158,8 +81536,17 @@
     "cod_modelo": "561",
     "modelo": "KANGOO 2 1.5 D EXPRESS 1 PLC CON.",
     "tau_codia": "37813",
-    "cod_uso": "0101",
+    "cod_uso": "1110",
     "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "36",
+    "marca": "RENAULT",
+    "cod_modelo": "561",
+    "modelo": "KANGOO 2 1.5 D EXPRESS 1 PLC CON.",
+    "tau_codia": "37813",
+    "cod_uso": "1212",
+    "tipo_uso": "2"
   },
   {
     "cod_marca": "36",
@@ -81176,8 +81563,17 @@
     "cod_modelo": "563",
     "modelo": "KANGOO 2 1.6.EXPRESS 1 PLC CON. AA",
     "tau_codia": "37837",
-    "cod_uso": "0101",
+    "cod_uso": "1110",
     "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "36",
+    "marca": "RENAULT",
+    "cod_modelo": "563",
+    "modelo": "KANGOO 2 1.6.EXPRESS 1 PLC CON. AA",
+    "tau_codia": "37837",
+    "cod_uso": "1212",
+    "tipo_uso": "2"
   },
   {
     "cod_marca": "36",
@@ -111332,6 +111728,24 @@
   {
     "cod_marca": "114",
     "marca": "LIFAN",
+    "cod_modelo": "2",
+    "modelo": "FOISON TRUCK",
+    "tau_codia": "35294",
+    "cod_uso": "1110",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "114",
+    "marca": "LIFAN",
+    "cod_modelo": "2",
+    "modelo": "FOISON TRUCK",
+    "tau_codia": "35294",
+    "cod_uso": "1212",
+    "tipo_uso": "2"
+  },
+  {
+    "cod_marca": "114",
+    "marca": "LIFAN",
     "cod_modelo": "3",
     "modelo": "X 50",
     "tau_codia": "35297",
@@ -111598,6 +112012,33 @@
     "tau_codia": "11502601",
     "cod_uso": "1212",
     "tipo_uso": "2"
+  },
+  {
+    "cod_marca": "115",
+    "marca": "FOTON",
+    "cod_modelo": "11502901",
+    "modelo": "TUNLAND 2.0 TD DC 4X2 G7 LITE",
+    "tau_codia": "11502901",
+    "cod_uso": "0101",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "115",
+    "marca": "FOTON",
+    "cod_modelo": "11503001",
+    "modelo": "TUNLAND 2.0 TD DC 4X4 G7 LITE",
+    "tau_codia": "11503001",
+    "cod_uso": "0101",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "115",
+    "marca": "FOTON",
+    "cod_modelo": "11503101",
+    "modelo": "TUNLAND 2.0 TD DC 4X2 G7 ULTIMATE AT",
+    "tau_codia": "11503101",
+    "cod_uso": "0101",
+    "tipo_uso": "1"
   },
   {
     "cod_marca": "116",
@@ -117441,6 +117882,42 @@
     "tipo_uso": "1"
   },
   {
+    "cod_marca": "372",
+    "marca": "KAWASAKI",
+    "cod_modelo": "37224201",
+    "modelo": "ZX 600 (ZX6R) 2026",
+    "tau_codia": "37224201",
+    "cod_uso": "060701",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "372",
+    "marca": "KAWASAKI",
+    "cod_modelo": "37224201",
+    "modelo": "ZX 600 (ZX6R) 2026",
+    "tau_codia": "37224201",
+    "cod_uso": "060702",
+    "tipo_uso": "2"
+  },
+  {
+    "cod_marca": "372",
+    "marca": "KAWASAKI",
+    "cod_modelo": "37224301",
+    "modelo": "KLE 500 SE",
+    "tau_codia": "37224301",
+    "cod_uso": "060701",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "372",
+    "marca": "KAWASAKI",
+    "cod_modelo": "37224301",
+    "modelo": "KLE 500 SE",
+    "tau_codia": "37224301",
+    "cod_uso": "060702",
+    "tipo_uso": "2"
+  },
+  {
     "cod_marca": "373",
     "marca": "YAMAHA",
     "cod_modelo": "10254",
@@ -122666,7 +123143,7 @@
     "cod_modelo": "725242",
     "modelo": "125 LCX FASCINO",
     "tau_codia": "7227",
-    "cod_uso": "060701",
+    "cod_uso": "4262",
     "tipo_uso": "1"
   },
   {
@@ -122675,7 +123152,7 @@
     "cod_modelo": "725242",
     "modelo": "125 LCX FASCINO",
     "tau_codia": "7227",
-    "cod_uso": "060702",
+    "cod_uso": "5272",
     "tipo_uso": "2"
   },
   {
@@ -123198,6 +123675,24 @@
     "modelo": "250 FZ 25 (2025)",
     "tau_codia": "37335501",
     "cod_uso": "5273",
+    "tipo_uso": "2"
+  },
+  {
+    "cod_marca": "373",
+    "marca": "YAMAHA",
+    "cod_modelo": "37335601",
+    "modelo": "MT 03 ABS 2026",
+    "tau_codia": "37335601",
+    "cod_uso": "060701",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "373",
+    "marca": "YAMAHA",
+    "cod_modelo": "37335601",
+    "modelo": "MT 03 ABS 2026",
+    "tau_codia": "37335601",
+    "cod_uso": "060702",
     "tipo_uso": "2"
   },
   {
@@ -129255,6 +129750,24 @@
     "modelo": "CECCATO 300 ANDINA",
     "tau_codia": "37435401",
     "cod_uso": "5274",
+    "tipo_uso": "2"
+  },
+  {
+    "cod_marca": "374",
+    "marca": "ZANELLA",
+    "cod_modelo": "37435501",
+    "modelo": "RX150 F",
+    "tau_codia": "37435501",
+    "cod_uso": "4262",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "374",
+    "marca": "ZANELLA",
+    "cod_modelo": "37435501",
+    "modelo": "RX150 F",
+    "tau_codia": "37435501",
+    "cod_uso": "5272",
     "tipo_uso": "2"
   },
   {
@@ -135950,8 +136463,17 @@
     "cod_modelo": "37652601",
     "modelo": "NAVI 110",
     "tau_codia": "37652601",
-    "cod_uso": "061101",
+    "cod_uso": "061001",
     "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "376",
+    "marca": "HONDA",
+    "cod_modelo": "37652601",
+    "modelo": "NAVI 110",
+    "tau_codia": "37652601",
+    "cod_uso": "061002",
+    "tipo_uso": "2"
   },
   {
     "cod_marca": "376",
@@ -136473,6 +136995,24 @@
     "modelo": "XL 750 TRANSALP (2025)",
     "tau_codia": "37655601",
     "cod_uso": "060702",
+    "tipo_uso": "2"
+  },
+  {
+    "cod_marca": "376",
+    "marca": "HONDA",
+    "cod_modelo": "37655701",
+    "modelo": "XRE 190",
+    "tau_codia": "37655701",
+    "cod_uso": "4263",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "376",
+    "marca": "HONDA",
+    "cod_modelo": "37655701",
+    "modelo": "XRE 190",
+    "tau_codia": "37655701",
+    "cod_uso": "5273",
     "tipo_uso": "2"
   },
   {
@@ -140387,6 +140927,24 @@
     "cod_modelo": "37733401",
     "modelo": "DL 250 SX V STROM",
     "tau_codia": "37733401",
+    "cod_uso": "060702",
+    "tipo_uso": "2"
+  },
+  {
+    "cod_marca": "377",
+    "marca": "SUZUKI",
+    "cod_modelo": "37733501",
+    "modelo": "GSX-S 1000",
+    "tau_codia": "37733501",
+    "cod_uso": "060701",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "377",
+    "marca": "SUZUKI",
+    "cod_modelo": "37733501",
+    "modelo": "GSX-S 1000",
+    "tau_codia": "37733501",
     "cod_uso": "060702",
     "tipo_uso": "2"
   },
@@ -145407,7 +145965,7 @@
     "cod_marca": "387",
     "marca": "TRIUMPH",
     "cod_modelo": "723660",
-    "modelo": "TIGER EXPLORER XC",
+    "modelo": "EXPLORER 1200 XCX",
     "tau_codia": "5655",
     "cod_uso": "060701",
     "tipo_uso": "1"
@@ -145416,7 +145974,7 @@
     "cod_marca": "387",
     "marca": "TRIUMPH",
     "cod_modelo": "723660",
-    "modelo": "TIGER EXPLORER XC",
+    "modelo": "EXPLORER 1200 XCX",
     "tau_codia": "5655",
     "cod_uso": "060702",
     "tipo_uso": "2"
@@ -148343,6 +148901,24 @@
     "cod_modelo": "39802501",
     "modelo": "V7 750I III STONE",
     "tau_codia": "39802501",
+    "cod_uso": "060702",
+    "tipo_uso": "2"
+  },
+  {
+    "cod_marca": "398",
+    "marca": "GUZZI",
+    "cod_modelo": "39802601",
+    "modelo": "V7 850 STONE CORSA/ SPECIAL EDITION",
+    "tau_codia": "39802601",
+    "cod_uso": "060701",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "398",
+    "marca": "GUZZI",
+    "cod_modelo": "39802601",
+    "modelo": "V7 850 STONE CORSA/ SPECIAL EDITION",
+    "tau_codia": "39802601",
     "cod_uso": "060702",
     "tipo_uso": "2"
   },
@@ -152241,6 +152817,42 @@
     "modelo": "HUNK 150 XTEC",
     "tau_codia": "42602301",
     "cod_uso": "5273",
+    "tipo_uso": "2"
+  },
+  {
+    "cod_marca": "426",
+    "marca": "HERO",
+    "cod_modelo": "42602401",
+    "modelo": "XPULSE 4V 200",
+    "tau_codia": "42602401",
+    "cod_uso": "4263",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "426",
+    "marca": "HERO",
+    "cod_modelo": "42602401",
+    "modelo": "XPULSE 4V 200",
+    "tau_codia": "42602401",
+    "cod_uso": "5273",
+    "tipo_uso": "2"
+  },
+  {
+    "cod_marca": "426",
+    "marca": "HERO",
+    "cod_modelo": "42602501",
+    "modelo": "HUNK 125 R",
+    "tau_codia": "42602501",
+    "cod_uso": "4262",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "426",
+    "marca": "HERO",
+    "cod_modelo": "42602501",
+    "modelo": "HUNK 125 R",
+    "tau_codia": "42602501",
+    "cod_uso": "5272",
     "tipo_uso": "2"
   },
   {
@@ -156290,7 +156902,7 @@
     "cod_modelo": "723636",
     "modelo": "200 RC",
     "tau_codia": "5633",
-    "cod_uso": "4264",
+    "cod_uso": "4263",
     "tipo_uso": "1"
   },
   {
@@ -156299,7 +156911,7 @@
     "cod_modelo": "723636",
     "modelo": "200 RC",
     "tau_codia": "5633",
-    "cod_uso": "5274",
+    "cod_uso": "5273",
     "tipo_uso": "2"
   },
   {
@@ -160062,6 +160674,42 @@
     "modelo": "150 SKUA MY24",
     "tau_codia": "47515701",
     "cod_uso": "5273",
+    "tipo_uso": "2"
+  },
+  {
+    "cod_marca": "475",
+    "marca": "MOTOMEL",
+    "cod_modelo": "47515801",
+    "modelo": "110 BLITZ ONE",
+    "tau_codia": "47515801",
+    "cod_uso": "4262",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "475",
+    "marca": "MOTOMEL",
+    "cod_modelo": "47515801",
+    "modelo": "110 BLITZ ONE",
+    "tau_codia": "47515801",
+    "cod_uso": "5272",
+    "tipo_uso": "2"
+  },
+  {
+    "cod_marca": "475",
+    "marca": "MOTOMEL",
+    "cod_modelo": "47515901",
+    "modelo": "110 BLITZ ONE FULL",
+    "tau_codia": "47515901",
+    "cod_uso": "4262",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "475",
+    "marca": "MOTOMEL",
+    "cod_modelo": "47515901",
+    "modelo": "110 BLITZ ONE FULL",
+    "tau_codia": "47515901",
+    "cod_uso": "5272",
     "tipo_uso": "2"
   },
   {
@@ -164520,6 +165168,24 @@
     "tipo_uso": "2"
   },
   {
+    "cod_marca": "478",
+    "marca": "HARLEY DAVIDSON",
+    "cod_modelo": "47819801",
+    "modelo": "FXSTB NIGHT TRAIN",
+    "tau_codia": "47819801",
+    "cod_uso": "060701",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "478",
+    "marca": "HARLEY DAVIDSON",
+    "cod_modelo": "47819801",
+    "modelo": "FXSTB NIGHT TRAIN",
+    "tau_codia": "47819801",
+    "cod_uso": "060702",
+    "tipo_uso": "2"
+  },
+  {
     "cod_marca": "484",
     "marca": "JINCHENG",
     "cod_modelo": "11775",
@@ -167108,6 +167774,24 @@
     "cod_modelo": "50211401",
     "modelo": "890 STREETFIGHTER V2 (ARG)",
     "tau_codia": "50211401",
+    "cod_uso": "060702",
+    "tipo_uso": "2"
+  },
+  {
+    "cod_marca": "502",
+    "marca": "DUCATI",
+    "cod_modelo": "50211501",
+    "modelo": "896 MULTISTRADA V2 S",
+    "tau_codia": "50211501",
+    "cod_uso": "060701",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "502",
+    "marca": "DUCATI",
+    "cod_modelo": "50211501",
+    "modelo": "896 MULTISTRADA V2 S",
+    "tau_codia": "50211501",
     "cod_uso": "060702",
     "tipo_uso": "2"
   },
@@ -170397,6 +171081,60 @@
     "tipo_uso": "2"
   },
   {
+    "cod_marca": "519",
+    "marca": "ROYAL ENFIELD",
+    "cod_modelo": "51906101",
+    "modelo": "350 GOAN RAVE RED",
+    "tau_codia": "51906101",
+    "cod_uso": "060701",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "519",
+    "marca": "ROYAL ENFIELD",
+    "cod_modelo": "51906101",
+    "modelo": "350 GOAN RAVE RED",
+    "tau_codia": "51906101",
+    "cod_uso": "060702",
+    "tipo_uso": "2"
+  },
+  {
+    "cod_marca": "519",
+    "marca": "ROYAL ENFIELD",
+    "cod_modelo": "51906201",
+    "modelo": "350 GOAN SHACK BLACK",
+    "tau_codia": "51906201",
+    "cod_uso": "060701",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "519",
+    "marca": "ROYAL ENFIELD",
+    "cod_modelo": "51906201",
+    "modelo": "350 GOAN SHACK BLACK",
+    "tau_codia": "51906201",
+    "cod_uso": "060702",
+    "tipo_uso": "2"
+  },
+  {
+    "cod_marca": "519",
+    "marca": "ROYAL ENFIELD",
+    "cod_modelo": "51906301",
+    "modelo": "350 GOAN TRIP TEAL",
+    "tau_codia": "51906301",
+    "cod_uso": "060701",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "519",
+    "marca": "ROYAL ENFIELD",
+    "cod_modelo": "51906301",
+    "modelo": "350 GOAN TRIP TEAL",
+    "tau_codia": "51906301",
+    "cod_uso": "060702",
+    "tipo_uso": "2"
+  },
+  {
     "cod_marca": "520",
     "marca": "HARTHFORD",
     "cod_modelo": "12254",
@@ -171756,6 +172494,78 @@
     "tipo_uso": "2"
   },
   {
+    "cod_marca": "521",
+    "marca": "KYMCO",
+    "cod_modelo": "52108301",
+    "modelo": "SUPER 8 150",
+    "tau_codia": "52108301",
+    "cod_uso": "061001",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "521",
+    "marca": "KYMCO",
+    "cod_modelo": "52108301",
+    "modelo": "SUPER 8 150",
+    "tau_codia": "52108301",
+    "cod_uso": "061002",
+    "tipo_uso": "2"
+  },
+  {
+    "cod_marca": "521",
+    "marca": "KYMCO",
+    "cod_modelo": "52108401",
+    "modelo": "XCITING 400 VS",
+    "tau_codia": "52108401",
+    "cod_uso": "060701",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "521",
+    "marca": "KYMCO",
+    "cod_modelo": "52108401",
+    "modelo": "XCITING 400 VS",
+    "tau_codia": "52108401",
+    "cod_uso": "060702",
+    "tipo_uso": "2"
+  },
+  {
+    "cod_marca": "521",
+    "marca": "KYMCO",
+    "cod_modelo": "52108501",
+    "modelo": "SKYTOWN 150",
+    "tau_codia": "52108501",
+    "cod_uso": "4263",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "521",
+    "marca": "KYMCO",
+    "cod_modelo": "52108501",
+    "modelo": "SKYTOWN 150",
+    "tau_codia": "52108501",
+    "cod_uso": "5273",
+    "tipo_uso": "2"
+  },
+  {
+    "cod_marca": "521",
+    "marca": "KYMCO",
+    "cod_modelo": "52108601",
+    "modelo": "AGILITY KS 125",
+    "tau_codia": "52108601",
+    "cod_uso": "061001",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "521",
+    "marca": "KYMCO",
+    "cod_modelo": "52108601",
+    "modelo": "AGILITY KS 125",
+    "tau_codia": "52108601",
+    "cod_uso": "061002",
+    "tipo_uso": "2"
+  },
+  {
     "cod_marca": "522",
     "marca": "GAS-GAS",
     "cod_modelo": "724251",
@@ -171921,7 +172731,7 @@
     "cod_marca": "523",
     "marca": "TVS",
     "cod_modelo": "52301001",
-    "modelo": "125 RIDER",
+    "modelo": "125 RAIDER",
     "tau_codia": "52301001",
     "cod_uso": "4262",
     "tipo_uso": "1"
@@ -171930,7 +172740,7 @@
     "cod_marca": "523",
     "marca": "TVS",
     "cod_modelo": "52301001",
-    "modelo": "125 RIDER",
+    "modelo": "125 RAIDER",
     "tau_codia": "52301001",
     "cod_uso": "5272",
     "tipo_uso": "2"
@@ -177057,6 +177867,24 @@
     "tipo_uso": "2"
   },
   {
+    "cod_marca": "597",
+    "marca": "CERRO",
+    "cod_modelo": "59703101",
+    "modelo": "CE 150 CHAMICAL",
+    "tau_codia": "59703101",
+    "cod_uso": "4263",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "597",
+    "marca": "CERRO",
+    "cod_modelo": "59703101",
+    "modelo": "CE 150 CHAMICAL",
+    "tau_codia": "59703101",
+    "cod_uso": "5273",
+    "tipo_uso": "2"
+  },
+  {
     "cod_marca": "598",
     "marca": "RADAR",
     "cod_modelo": "13187",
@@ -177989,17 +178817,8 @@
     "cod_modelo": "724878",
     "modelo": "DEFENDER HD 8 DPS",
     "tau_codia": "6863",
-    "cod_uso": "060701",
+    "cod_uso": "6266",
     "tipo_uso": "1"
-  },
-  {
-    "cod_marca": "612",
-    "marca": "CAN-AM",
-    "cod_modelo": "724878",
-    "modelo": "DEFENDER HD 8 DPS",
-    "tau_codia": "6863",
-    "cod_uso": "060702",
-    "tipo_uso": "2"
   },
   {
     "cod_marca": "612",
@@ -178061,25 +178880,7 @@
     "cod_modelo": "724882",
     "modelo": "DEFENDER HD 8 MAX DPS",
     "tau_codia": "6867",
-    "cod_uso": "060701",
-    "tipo_uso": "1"
-  },
-  {
-    "cod_marca": "612",
-    "marca": "CAN-AM",
-    "cod_modelo": "724882",
-    "modelo": "DEFENDER HD 8 MAX DPS",
-    "tau_codia": "6867",
-    "cod_uso": "060702",
-    "tipo_uso": "2"
-  },
-  {
-    "cod_marca": "612",
-    "marca": "CAN-AM",
-    "cod_modelo": "724883",
-    "modelo": "DEFENDER HD10 MAX LONE STAR",
-    "tau_codia": "6868",
-    "cod_uso": "060701",
+    "cod_uso": "6266",
     "tipo_uso": "1"
   },
   {
@@ -178088,8 +178889,8 @@
     "cod_modelo": "724883",
     "modelo": "DEFENDER HD10 MAX LONE STAR",
     "tau_codia": "6868",
-    "cod_uso": "060702",
-    "tipo_uso": "2"
+    "cod_uso": "6266",
+    "tipo_uso": "1"
   },
   {
     "cod_marca": "612",
@@ -178314,6 +179115,15 @@
     "modelo": "OUTLANDER 700 MAX XT 700",
     "tau_codia": "61207001",
     "cod_uso": "6265",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "612",
+    "marca": "CAN-AM",
+    "cod_modelo": "61207101",
+    "modelo": "DEFENDER HD9 DPS",
+    "tau_codia": "61207101",
+    "cod_uso": "6266",
     "tipo_uso": "1"
   },
   {
@@ -183513,7 +184323,7 @@
     "cod_marca": "675",
     "marca": "IKA",
     "cod_modelo": "67500401",
-    "modelo": "DURBAN 150",
+    "modelo": "150 DURBAN",
     "tau_codia": "67500401",
     "cod_uso": "4263",
     "tipo_uso": "1"
@@ -183522,7 +184332,7 @@
     "cod_marca": "675",
     "marca": "IKA",
     "cod_modelo": "67500401",
-    "modelo": "DURBAN 150",
+    "modelo": "150 DURBAN",
     "tau_codia": "67500401",
     "cod_uso": "5273",
     "tipo_uso": "2"
@@ -185895,24 +186705,6 @@
     "tipo_uso": "2"
   },
   {
-    "cod_marca": "730",
-    "marca": "CFMOTO",
-    "cod_modelo": "73006801",
-    "modelo": "SR 675 R",
-    "tau_codia": "73006801",
-    "cod_uso": "060701",
-    "tipo_uso": "1"
-  },
-  {
-    "cod_marca": "730",
-    "marca": "CFMOTO",
-    "cod_modelo": "73006801",
-    "modelo": "SR 675 R",
-    "tau_codia": "73006801",
-    "cod_uso": "060702",
-    "tipo_uso": "2"
-  },
-  {
     "cod_marca": "731",
     "marca": "INDIAN",
     "cod_modelo": "17205",
@@ -185999,6 +186791,24 @@
     "cod_modelo": "73100500",
     "modelo": "SCOUT BOBBER LIMITED",
     "tau_codia": "73100500",
+    "cod_uso": "5274",
+    "tipo_uso": "2"
+  },
+  {
+    "cod_marca": "731",
+    "marca": "INDIAN",
+    "cod_modelo": "73100601",
+    "modelo": "SPIRIT DELUXE",
+    "tau_codia": "73100601",
+    "cod_uso": "4264",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "731",
+    "marca": "INDIAN",
+    "cod_modelo": "73100601",
+    "modelo": "SPIRIT DELUXE",
+    "tau_codia": "73100601",
     "cod_uso": "5274",
     "tipo_uso": "2"
   },
@@ -187299,6 +188109,24 @@
     "tipo_uso": "2"
   },
   {
+    "cod_marca": "763",
+    "marca": "BENELLI",
+    "cod_modelo": "76303801",
+    "modelo": "KEEWAY RK 150 L/N",
+    "tau_codia": "76303801",
+    "cod_uso": "4263",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "763",
+    "marca": "BENELLI",
+    "cod_modelo": "76303801",
+    "modelo": "KEEWAY RK 150 L/N",
+    "tau_codia": "76303801",
+    "cod_uso": "5273",
+    "tipo_uso": "2"
+  },
+  {
     "cod_marca": "764",
     "marca": "BETA",
     "cod_modelo": "723331",
@@ -188352,6 +189180,24 @@
     "tipo_uso": "2"
   },
   {
+    "cod_marca": "764",
+    "marca": "BETA",
+    "cod_modelo": "76407101",
+    "modelo": "ZONTES 200 Z",
+    "tau_codia": "76407101",
+    "cod_uso": "4263",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "764",
+    "marca": "BETA",
+    "cod_modelo": "76407101",
+    "modelo": "ZONTES 200 Z",
+    "tau_codia": "76407101",
+    "cod_uso": "5273",
+    "tipo_uso": "2"
+  },
+  {
     "cod_marca": "765",
     "marca": "DAELIM",
     "cod_modelo": "722862",
@@ -188787,7 +189633,7 @@
     "cod_marca": "798",
     "marca": "RVM",
     "cod_modelo": "723836",
-    "modelo": "TEKKEN 250",
+    "modelo": "TEKKEN 250 FULL",
     "tau_codia": "5830",
     "cod_uso": "4263",
     "tipo_uso": "1"
@@ -188796,7 +189642,7 @@
     "cod_marca": "798",
     "marca": "RVM",
     "cod_modelo": "723836",
-    "modelo": "TEKKEN 250",
+    "modelo": "TEKKEN 250 FULL",
     "tau_codia": "5830",
     "cod_uso": "5273",
     "tipo_uso": "2"
@@ -189014,6 +189860,42 @@
     "cod_modelo": "79800601",
     "modelo": "TEKKEN 500 X",
     "tau_codia": "79800601",
+    "cod_uso": "5274",
+    "tipo_uso": "2"
+  },
+  {
+    "cod_marca": "798",
+    "marca": "RVM",
+    "cod_modelo": "79800701",
+    "modelo": "T-SPORT 750",
+    "tau_codia": "79800701",
+    "cod_uso": "4264",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "798",
+    "marca": "RVM",
+    "cod_modelo": "79800701",
+    "modelo": "T-SPORT 750",
+    "tau_codia": "79800701",
+    "cod_uso": "5274",
+    "tipo_uso": "2"
+  },
+  {
+    "cod_marca": "798",
+    "marca": "RVM",
+    "cod_modelo": "79800801",
+    "modelo": "MITT 775 R",
+    "tau_codia": "79800801",
+    "cod_uso": "4264",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "798",
+    "marca": "RVM",
+    "cod_modelo": "79800801",
+    "modelo": "MITT 775 R",
+    "tau_codia": "79800801",
     "cod_uso": "5274",
     "tipo_uso": "2"
   },
@@ -191975,7 +192857,7 @@
     "cod_modelo": "725259",
     "modelo": "300 DS",
     "tau_codia": "7244",
-    "cod_uso": "4264",
+    "cod_uso": "060701",
     "tipo_uso": "1"
   },
   {
@@ -191984,7 +192866,7 @@
     "cod_modelo": "725259",
     "modelo": "300 DS",
     "tau_codia": "7244",
-    "cod_uso": "5274",
+    "cod_uso": "060702",
     "tipo_uso": "2"
   },
   {
@@ -192333,7 +193215,7 @@
     "cod_marca": "843",
     "marca": "VOGE",
     "cod_modelo": "84302701",
-    "modelo": "DS 800 RALLY",
+    "modelo": "800 DSX RALLY",
     "tau_codia": "84302701",
     "cod_uso": "060701",
     "tipo_uso": "1"
@@ -192342,8 +193224,26 @@
     "cod_marca": "843",
     "marca": "VOGE",
     "cod_modelo": "84302701",
-    "modelo": "DS 800 RALLY",
+    "modelo": "800 DSX RALLY",
     "tau_codia": "84302701",
+    "cod_uso": "060702",
+    "tipo_uso": "2"
+  },
+  {
+    "cod_marca": "843",
+    "marca": "VOGE",
+    "cod_modelo": "84302801",
+    "modelo": "CU625",
+    "tau_codia": "84302801",
+    "cod_uso": "060701",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "843",
+    "marca": "VOGE",
+    "cod_modelo": "84302801",
+    "modelo": "CU625",
+    "tau_codia": "84302801",
     "cod_uso": "060702",
     "tipo_uso": "2"
   },
@@ -193230,6 +194130,33 @@
     "tipo_uso": "2"
   },
   {
+    "cod_marca": "872",
+    "marca": "QJMOTOR",
+    "cod_modelo": "87201301",
+    "modelo": "Q2",
+    "tau_codia": "87201301",
+    "cod_uso": "4561",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "872",
+    "marca": "QJMOTOR",
+    "cod_modelo": "87201401",
+    "modelo": "SRT 450 RX",
+    "tau_codia": "87201401",
+    "cod_uso": "060701",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "872",
+    "marca": "QJMOTOR",
+    "cod_modelo": "87201401",
+    "modelo": "SRT 450 RX",
+    "tau_codia": "87201401",
+    "cod_uso": "060702",
+    "tipo_uso": "2"
+  },
+  {
     "cod_marca": "873",
     "marca": "PHILCO",
     "cod_modelo": "87300101",
@@ -193374,6 +194301,60 @@
     "tipo_uso": "2"
   },
   {
+    "cod_marca": "875",
+    "marca": "KOVE",
+    "cod_modelo": "87500201",
+    "modelo": "450 RALLY",
+    "tau_codia": "87500201",
+    "cod_uso": "4264",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "875",
+    "marca": "KOVE",
+    "cod_modelo": "87500201",
+    "modelo": "450 RALLY",
+    "tau_codia": "87500201",
+    "cod_uso": "5274",
+    "tipo_uso": "2"
+  },
+  {
+    "cod_marca": "875",
+    "marca": "KOVE",
+    "cod_modelo": "87500301",
+    "modelo": "450 RALLY FACTORY",
+    "tau_codia": "87500301",
+    "cod_uso": "4264",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "875",
+    "marca": "KOVE",
+    "cod_modelo": "87500301",
+    "modelo": "450 RALLY FACTORY",
+    "tau_codia": "87500301",
+    "cod_uso": "5274",
+    "tipo_uso": "2"
+  },
+  {
+    "cod_marca": "875",
+    "marca": "KOVE",
+    "cod_modelo": "87500401",
+    "modelo": "350 R",
+    "tau_codia": "87500401",
+    "cod_uso": "4264",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "875",
+    "marca": "KOVE",
+    "cod_modelo": "87500401",
+    "modelo": "350 R",
+    "tau_codia": "87500401",
+    "cod_uso": "5274",
+    "tipo_uso": "2"
+  },
+  {
     "cod_marca": "876",
     "marca": "BUGATTI",
     "cod_modelo": "87600101",
@@ -193498,6 +194479,15 @@
     "tau_codia": "87800801",
     "cod_uso": "1515",
     "tipo_uso": "2"
+  },
+  {
+    "cod_marca": "878",
+    "marca": "BYD",
+    "cod_modelo": "87800901",
+    "modelo": "ATTO 2 DM-I GS",
+    "tau_codia": "87800901",
+    "cod_uso": "0101",
+    "tipo_uso": "1"
   },
   {
     "cod_marca": "879",
@@ -193642,5 +194632,41 @@
     "tau_codia": "88400601",
     "cod_uso": "0101",
     "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "885",
+    "marca": "TEKNIAL",
+    "cod_modelo": "88500101",
+    "modelo": "RE RACE",
+    "tau_codia": "88500101",
+    "cod_uso": "4561",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "885",
+    "marca": "TEKNIAL",
+    "cod_modelo": "88500201",
+    "modelo": "RE VOLT",
+    "tau_codia": "88500201",
+    "cod_uso": "4561",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "886",
+    "marca": "KAMAX",
+    "cod_modelo": "88600101",
+    "modelo": "AL 125",
+    "tau_codia": "88600101",
+    "cod_uso": "4262",
+    "tipo_uso": "1"
+  },
+  {
+    "cod_marca": "886",
+    "marca": "KAMAX",
+    "cod_modelo": "88600101",
+    "modelo": "AL 125",
+    "tau_codia": "88600101",
+    "cod_uso": "5272",
+    "tipo_uso": "2"
   }
 ]
