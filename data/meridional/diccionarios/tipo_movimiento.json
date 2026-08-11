@@ -1,0 +1,14 @@
+[
+  {
+    "idTipoMovimiento": 1,
+    "descripcion": "NUEVA"
+  },
+  {
+    "idTipoMovimiento": 2,
+    "descripcion": "ENDOSO  "
+  },
+  {
+    "idTipoMovimiento": 3,
+    "descripcion": "RENOVACION  "
+  }
+]

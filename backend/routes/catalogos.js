@@ -8,6 +8,10 @@ const {
   syncTable,
   readReport,
 } = require('../services/catalogos');
+const {
+  readMapfreGncSuggestion,
+  refreshMapfreGncSuggestion,
+} = require('../services/mapfre/gnc_suggestion');
 
 const router = express.Router();
 
@@ -26,6 +30,15 @@ function parseBool(v) {
 function pickSource(req) {
   const q = String(req.query?.source || req.body?.source || 'local').toLowerCase().trim();
   return q === 'remote' ? 'remote' : 'local';
+}
+
+async function refreshMapfreGncSuggestionIfInfoauto({ dataRoot, slug, table, source, dryRun }) {
+  if (slug !== 'atm' || table !== 'ws_au_infoauto' || source !== 'remote' || dryRun) return null;
+  try {
+    return await refreshMapfreGncSuggestion({ dataRoot });
+  } catch (err) {
+    return { ok: false, error: err.message || 'No se pudo actualizar sugerencia GNC Mapfre' };
+  }
 }
 
 router.get('/companias', (_req, res) => {
@@ -64,6 +77,17 @@ router.get('/:slug/estado/:tabla', (req, res) => {
   }
 });
 
+router.get('/mapfre/gnc-sugerido', (req, res) => {
+  try {
+    const { dataRoot } = roots();
+    const suggestion = readMapfreGncSuggestion({ dataRoot });
+    res.json({ ok: true, suggestion });
+  } catch (err) {
+    console.error('catalogos:mapfre:gnc-sugerido', err);
+    res.status(500).json({ ok: false, error: 'No se pudo leer sugerencia GNC Mapfre' });
+  }
+});
+
 router.post('/:slug/sync/:tabla', express.json(), async (req, res) => {
   try {
     const { dataRoot, catalogRoot } = roots();
@@ -80,8 +104,9 @@ router.post('/:slug/sync/:tabla', express.json(), async (req, res) => {
       source,
       dryRun,
     });
+    const mapfreGncSuggestion = await refreshMapfreGncSuggestionIfInfoauto({ dataRoot, slug, table, source, dryRun });
 
-    res.json({ ok: true, ...out });
+    res.json({ ok: true, ...out, mapfreGncSuggestion });
   } catch (err) {
     console.error('catalogos:sync:tabla', err);
     res.status(400).json({ ok: false, error: err.message || 'No se pudo sincronizar tabla' });
@@ -100,6 +125,7 @@ router.post('/:slug/sync-all', express.json(), async (req, res) => {
       .map((x) => x.table);
 
     const results = [];
+    let mapfreGncSuggestion = null;
     for (const table of tables) {
       // secuencial para reducir ruido de IO y facilitar troubleshooting
       // eslint-disable-next-line no-await-in-loop
@@ -113,9 +139,12 @@ router.post('/:slug/sync-all', express.json(), async (req, res) => {
         columns: out.profile?.columns?.length || 0,
         resumen: out.resumen,
       });
+      // eslint-disable-next-line no-await-in-loop
+      const suggestion = await refreshMapfreGncSuggestionIfInfoauto({ dataRoot, slug, table, source, dryRun });
+      if (suggestion) mapfreGncSuggestion = suggestion;
     }
 
-    res.json({ ok: true, slug, source, dryRun, total: results.length, results });
+    res.json({ ok: true, slug, source, dryRun, total: results.length, results, mapfreGncSuggestion });
   } catch (err) {
     console.error('catalogos:sync:all', err);
     res.status(400).json({ ok: false, error: err.message || 'No se pudo sincronizar todas las tablas' });

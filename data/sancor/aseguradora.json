@@ -27,16 +27,49 @@
     "use_particular": "2",
     "use_comercial": "4",
     "scoring_options": [
-      { "typeId": "3", "selectedOptionId": "1" },
-      { "typeId": "7", "selectedOptionId": "2" },
-      { "typeId": "8", "selectedOptionId": "1" }
+      {
+        "typeId": "3",
+        "selectedOptionId": "1"
+      },
+      {
+        "typeId": "7",
+        "selectedOptionId": "2"
+      },
+      {
+        "typeId": "8",
+        "selectedOptionId": "1"
+      }
     ],
     "discount_customizations": [
-      { "discountNumber": "1", "rate": "99" },
-      { "discountNumber": "4", "rate": "0" },
-      { "discountNumber": "58", "rate": "0" }
+      {
+        "discountNumber": "1",
+        "rate": "99"
+      },
+      {
+        "discountNumber": "4",
+        "rate": "0"
+      },
+      {
+        "discountNumber": "58",
+        "rate": "0"
+      }
     ],
     "max_concurrency": 1,
     "min_interval_ms": 1400
-  }
+  },
+  "sigla": "",
+  "codAgt": "",
+  "claveAcceso": "",
+  "claveProcedencia": "",
+  "origen": "",
+  "plan": "",
+  "vigencia": "",
+  "refacturacion": "",
+  "descuento_comercial": "48",
+  "clausula_ajuste": "",
+  "ajuste_rc": "",
+  "ajuste_casco": "",
+  "tipoFacturacion": "",
+  "updated_at": "2026-04-22T17:00:08.107Z",
+  "slug": "sancor"
 }

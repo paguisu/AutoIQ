@@ -1,0 +1,29 @@
+{
+  "nombre_publico": "Nacion Seguros",
+  "sigla": "NACION",
+  "activo": false,
+  "base_url": "https://capacitacionws.nacion-seguros.com.ar:4445",
+  "soap_path": "/servcomercial_pru/servlet/servicioscom.ser_cotizador",
+  "soap_method": "ENVIAR_COBERTURAS",
+  "soap_action": "ENVIAR_COBERTURAS",
+  "auth_url": "https://capacitacionws.nacion-seguros.com.ar:4445/token_pru/auth",
+  "auth_method": "login",
+  "auth_user": "",
+  "auth_password": "",
+  "usuario_aplicacion": "",
+  "cotizador_id": "",
+  "vigencia": "mensual",
+  "refacturacion": "mensual",
+  "parametros_extras": {
+    "skeleton_only": true,
+    "formato_fecha_request": "yyyy-MM-dd",
+    "tipo_documento_default": "96",
+    "iva_default": "5",
+    "forma_pago_default": "2",
+    "uso_default": "1",
+    "combustible_default": "4",
+    "valor_vehiculo_default": "0.00",
+    "max_concurrency": 1,
+    "min_interval_ms": 1500
+  }
+}

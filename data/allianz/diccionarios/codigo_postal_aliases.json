@@ -1,0 +1,17 @@
+[
+  {
+    "inputCodPostal": "1014",
+    "inputLocalidad": "CAPITAL FEDERAL",
+    "inputProvincia": "Capital Federal",
+    "codPostal": "1005",
+    "codigoProvincia": "2",
+    "reason": "Equivalencia comercial validada contra la cotizacion de referencia para CP 1014 de CABA."
+  },
+  {
+    "inputCodPostal": "4234",
+    "inputLocalidad": "San Martin",
+    "inputProvincia": "Catamarca",
+    "codPostal": "4235",
+    "reason": "Allianz no acepta 4234 para San Martin (Tapso-Dpto. Ancasti); se remapea a 4235 para cotizar."
+  }
+]

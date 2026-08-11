@@ -33,6 +33,18 @@ function parsePositiveInt(value) {
   return Number.isFinite(out) && out > 0 ? out : null;
 }
 
+function parseNumber(value) {
+  if (value == null) return null;
+  const normalized = String(value)
+    .trim()
+    .replace('%', '')
+    .replace(',', '.')
+    .replace(/[^\d.+-]+/g, '');
+  if (!normalized) return null;
+  const out = Number(normalized);
+  return Number.isFinite(out) ? out : null;
+}
+
 function boolFlag(value) {
   const raw = normalizeText(value);
   return ['1', 'S', 'SI', 'TRUE', 'CON', 'POSEE'].includes(raw);
@@ -473,21 +485,57 @@ async function resolveBrandAndModel({ fila = {}, cabecera = {}, cfg = {}, year }
   };
 }
 
-function resolveFormaPagoCode({ cabecera = {}, formasPago = [] } = {}) {
+function resolveFormaPagoCode({ cabecera = {}, cfg = {}, formasPago = [] } = {}) {
   const raw = normalizeText(
     pick([
       cabecera?.medio_pago,
       cabecera?.medioPago,
       cabecera?.forma_pago,
       cabecera?.formaPago,
+      cfg?.forma_pago,
+      cfg?.formaPago,
+      cfg?.medio_pago,
+      cfg?.medioPago,
+      cfg?.parametros_extras?.forma_pago_default,
     ])
   );
+
+  const configuredCode = parsePositiveInt(cfg?.parametros_extras?.forma_pago_default_id);
+  if (configuredCode != null) return configuredCode;
 
   if (raw.includes('TARJ')) return 2;
   if (raw.includes('CBU') || raw.includes('DEBIT')) return 3;
   if (raw.includes('EFEC') || raw.includes('PAGO FACIL') || raw.includes('RAPIPAGO')) return 1;
 
   return asArray(formasPago)[0]?.codigo || 1;
+}
+
+function resolveByConfiguredIdOrNumber(list, idValue, rawValue, numericGetters = []) {
+  const items = asArray(list);
+  const configuredId = parsePositiveInt(idValue);
+  if (configuredId != null) {
+    const exact = items.find((item) => Number(item?.id ?? item?.codigo ?? 0) === configuredId);
+    if (exact) return exact;
+  }
+
+  const configuredNumber = parseNumber(rawValue);
+  if (configuredNumber != null) {
+    const exact = items.find((item) =>
+      numericGetters.some((getter) => {
+        const n = parseNumber(getter(item));
+        return n != null && Math.abs(n - configuredNumber) < 0.000001;
+      })
+    );
+    if (exact) return exact;
+  }
+
+  const rawText = normalizeText(rawValue);
+  if (rawText) {
+    const exactText = items.find((item) => normalizeText(item?.nombre || item?.descripcion) === rawText);
+    if (exactText) return exactText;
+  }
+
+  return null;
 }
 
 async function buildVictoriaPayload({
@@ -547,14 +595,23 @@ async function buildVictoriaPayload({
     cachedVictoriaGetJson(cfg, '/cea/reference/obtenerVariacion32080'),
   ]);
 
-  const vigenciaId = parsePositiveInt(cfg?.parametros_extras?.vigencia_default_id) || 4;
-  const vigencia = asArray(vigencias).find((item) => Number(item?.id || 0) === vigenciaId) || asArray(vigencias)[0] || null;
+  const vigencia = resolveByConfiguredIdOrNumber(
+    vigencias,
+    cfg?.parametros_extras?.vigencia_default_id,
+    pick([
+      cfg?.tipoFacturacion,
+      cfg?.tipo_facturacion,
+      cfg?.refacturacion,
+      cfg?.vigencia,
+      cfg?.parametros_extras?.vigencia_default,
+    ])
+  ) || asArray(vigencias)[0] || null;
   if (!vigencia) throw new Error('Victoria no devolvio vigencias');
 
   const formasPago = asArray(
     await cachedVictoriaGetJson(cfg, `/cea/reference/obtenerFormaDePagos/${encodeURIComponent(vigencia.id)}`)
   );
-  const formaPagoCode = resolveFormaPagoCode({ cabecera, formasPago });
+  const formaPagoCode = resolveFormaPagoCode({ cabecera, cfg, formasPago });
   const formaPago =
     formasPago.find((item) => Number(item?.codigo || 0) === Number(formaPagoCode || 0)) ||
     formasPago[0] ||
@@ -574,27 +631,40 @@ async function buildVictoriaPayload({
     null;
   if (!planCuota) throw new Error('Victoria no devolvio cuotas');
 
-  const variacionDefault = parsePositiveInt(cfg?.parametros_extras?.variacion_32080_default_id) || 16;
-  const variacion =
-    asArray(variaciones).find((item) => Number(item?.id || 0) === variacionDefault) ||
-    asArray(variaciones)[0] ||
-    null;
+  const variacion = resolveByConfiguredIdOrNumber(
+    variaciones,
+    cfg?.parametros_extras?.variacion_32080_default_id,
+    pick([
+      cfg?.variacion_32080,
+      cfg?.variacion32080,
+      cfg?.parametros_extras?.variacion_32080_default,
+    ]),
+    [(item) => item?.variacion]
+  ) || asArray(variaciones)[0] || null;
   if (!variacion) throw new Error('Victoria no devolvio variacion 32080');
 
   const tipoCombustible = asArray(tipoCombustibles)[0] || null;
   if (!tipoCombustible) throw new Error('Victoria no devolvio tipoCombustible');
 
-  const clausulaId = parsePositiveInt(cfg?.clausula_ajuste || cfg?.parametros_extras?.clausula_ajuste_default) || 1;
-  const clausulaAjuste =
-    asArray(clauses).find((item) => Number(item?.id || 0) === clausulaId) ||
-    asArray(clauses)[0] ||
-    null;
+  const clausulaAjuste = resolveByConfiguredIdOrNumber(
+    clauses,
+    cfg?.parametros_extras?.clausula_ajuste_default_id,
+    pick([cfg?.clausula_ajuste, cfg?.parametros_extras?.clausula_ajuste_default]),
+    [(item) => item?.porcentajeAjuste, (item) => item?.descripcion]
+  ) || asArray(clauses)[0] || null;
 
-  const descuentoSeguroId = parsePositiveInt(cfg?.parametros_extras?.descuento_seguro_nuevo_default_id) || 1;
-  const descuentoSeguroNuevo =
-    asArray(discountSeguroList).find((item) => Number(item?.id || 0) === descuentoSeguroId) ||
-    asArray(discountSeguroList)[0] ||
-    null;
+  const descuentoSeguroNuevo = resolveByConfiguredIdOrNumber(
+    discountSeguroList,
+    cfg?.parametros_extras?.descuento_seguro_nuevo_default_id,
+    pick([cfg?.descuento_seguro_nuevo, cfg?.parametros_extras?.descuento_seguro_nuevo_default]),
+    [(item) => item?.valor, (item) => item?.descripcion]
+  ) || asArray(discountSeguroList)[0] || null;
+
+  const descuentoComercialValor = parseNumber(pick([
+    cfg?.descuento_comercial,
+    cfg?.descuentoComercial,
+    cfg?.parametros_extras?.descuento_comercial_default,
+  ]));
 
   const calidad = asArray(qualityList)[0] || null;
   const propietarioVehiculo = calidad?.tipoPropietarioVehiculo || null;
@@ -652,14 +722,18 @@ async function buildVictoriaPayload({
     variacion32080: variacion,
   };
 
+  const sumaAseguradaBase = Number(suma?.sumaAsegurada || 0);
+  const sumaAsegurada0km = Number(suma?.sumaAsegurada0km || 0);
+  const sumaAseguradaEfectiva = sumaAseguradaBase > 0 ? sumaAseguradaBase : sumaAsegurada0km;
+
   const vehiculo = {
     año: year,
     marca: brand,
     modelo: model,
     version: {
       id: versionId,
-      sumaAsegurada: Number(suma?.sumaAsegurada || 0),
-      sumaAsegurada0km: Number(suma?.sumaAsegurada0km || 0),
+      sumaAsegurada: sumaAseguradaEfectiva,
+      sumaAsegurada0km,
     },
     tipoVehiculo,
     tipoCombustible,
@@ -672,6 +746,10 @@ async function buildVictoriaPayload({
     uso,
     clausulaAjuste,
     descuentoSeguroNuevo,
+    descuentoComercial: {
+      id: 0,
+      valor: descuentoComercialValor ?? 0,
+    },
     primaGranizo: { descripcion: 'No Aplica', id: 0, id1g: 0, valor: 0 },
     propietarioVehiculo,
     poseeSiniestros: false,
@@ -679,8 +757,8 @@ async function buildVictoriaPayload({
     ceroKm: isVehicleZeroKm(fila),
     gnc: String(cabecera?.gnc || fila?.gnc || '0').trim() === '1',
     ...resolveVictoriaTracking({ cabecera, cfg }),
-    sumaAsegurada: Number(suma?.sumaAsegurada || 0),
-    sumaAsegurada0km: Number(suma?.sumaAsegurada0km || 0),
+    sumaAsegurada: sumaAseguradaEfectiva,
+    sumaAsegurada0km,
     listaAccesorios: [],
     lstImagenes: [],
     motor: pick([fila?.motor, cabecera?.motor]),
@@ -719,6 +797,7 @@ async function buildVictoriaPayload({
       formaPagoCode: formaPago.codigo,
       cantidadCuotas: planCuota.cantidadCuotas,
       variacionId: variacion.id,
+      variacion32080: variacion?.variacion ?? null,
       useId,
       tipoVehiculoId: tipoVehiculo.id,
       tipoCombustibleId: tipoCombustible.id,
@@ -729,9 +808,14 @@ async function buildVictoriaPayload({
       rastreoSistemaEfectivo: vehiculo.rastreoSistemaEfectivo,
       rastreoDefaultAplicado: vehiculo.rastreoDefaultAplicado,
       clausulaAjusteId: clausulaAjuste?.id ?? null,
+      clausulaAjuste: clausulaAjuste?.porcentajeAjuste ?? null,
       descuentoSeguroNuevoId: descuentoSeguroNuevo?.id ?? null,
-      sumaAsegurada: Number(suma?.sumaAsegurada || 0),
-      sumaAsegurada0km: Number(suma?.sumaAsegurada0km || 0),
+      descuentoSeguroNuevo: descuentoSeguroNuevo?.valor ?? null,
+      descuentoComercial: descuentoComercialValor ?? 0,
+      sumaAsegurada: sumaAseguradaEfectiva,
+      sumaAseguradaBase,
+      sumaAsegurada0km,
+      sumaAseguradaFuente: sumaAseguradaBase > 0 ? 'sumaAsegurada' : 'sumaAsegurada0km',
     },
   };
 }
@@ -763,6 +847,8 @@ function parseVictoriaQuoteResponse(data) {
       importePrima: String(calculos?.prima ?? ''),
       importePremio: String(calculos?.premio ?? ''),
       importeCuota: String(calculos?.cuota ?? ''),
+      premiumMonthly: String(calculos?.cuota ?? calculos?.premio ?? ''),
+      premium: String(calculos?.premio ?? ''),
       primaNeta: String(calculos?.primaNeta ?? ''),
       premioSinIva: String(calculos?.premioSinIva ?? ''),
       iva: String(calculos?.iva ?? ''),

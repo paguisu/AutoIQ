@@ -6,7 +6,9 @@ const { resolveCompanyTracking } = require('../../utils/rastreo');
 const { isVehicleZeroKm } = require('../../utils/zero_km');
 
 const MAPFRE_CP_PATH = path.join(__dirname, '..', '..', '..', 'data', 'mapfre', 'diccionarios', 'codigos_postales.json');
+const MAPFRE_POSTAL_ALIASES_PATH = path.join(__dirname, '..', '..', '..', 'data', 'mapfre', 'diccionarios', 'localidad_aliases.json');
 let postalCatalogCache = null;
+let postalAliasesCache = null;
 
 function escapeXml(value) {
   return String(value ?? '')
@@ -60,6 +62,28 @@ function getMapfrePostalCatalog(postalCatalog) {
     postalCatalogCache = [];
   }
   return postalCatalogCache;
+}
+
+function normalizeMapfrePostalAlias(item = {}) {
+  return {
+    ...item,
+    _cp: String(item.codigo_postal || item.cp || '').replace(/\D+/g, ''),
+    _mapfre: String(item.codigo_mapfre || '').trim(),
+    _loc: normalizeText(item.localidad || item.descripcion_origen || ''),
+    _prov: normalizeText(item.provincia || ''),
+  };
+}
+
+function getMapfrePostalAliases(postalAliases) {
+  if (Array.isArray(postalAliases)) return postalAliases.map(normalizeMapfrePostalAlias);
+  if (postalAliasesCache) return postalAliasesCache;
+  try {
+    const raw = JSON.parse(fs.readFileSync(MAPFRE_POSTAL_ALIASES_PATH, 'utf8'));
+    postalAliasesCache = Array.isArray(raw) ? raw.map(normalizeMapfrePostalAlias) : [];
+  } catch {
+    postalAliasesCache = [];
+  }
+  return postalAliasesCache;
 }
 
 function levenshteinDistance(a, b) {
@@ -185,6 +209,9 @@ function resolveMapfreTipoPersona(cabecera = {}, cfg = {}) {
 
 function resolveMapfrePostalMatch(row = {}, cabecera = {}, options = {}) {
   const catalog = getMapfrePostalCatalog(options.postalCatalog);
+  const aliases = Array.isArray(options.postalAliases)
+    ? getMapfrePostalAliases(options.postalAliases)
+    : (Array.isArray(options.postalCatalog) ? [] : getMapfrePostalAliases());
   const raw = pick([
     row?.codigo_postal,
     row?.codpostal,
@@ -242,6 +269,33 @@ function resolveMapfrePostalMatch(row = {}, cabecera = {}, options = {}) {
       if (byProvince.length) candidates = byProvince;
     }
 
+    const alias = aliases.find((item) => (
+      item._cp === digits &&
+      item._loc === localidadNorm &&
+      (!item._prov || !provinciaNorm || item._prov === provinciaNorm)
+    ));
+    if (alias?._mapfre) {
+      const aliasMatch = catalog.find((item) => item._mapfre === alias._mapfre);
+      if (aliasMatch) {
+        return {
+          ...aliasMatch,
+          matchType: 'alias',
+          aliasLocalidad: alias.localidad || '',
+          aliasMotivo: alias.motivo || '',
+        };
+      }
+      return {
+        codigo_postal: digits,
+        codigo_mapfre: alias._mapfre,
+        codigo_provincia: '',
+        descripcion: alias.descripcion_mapfre || '',
+        provincia: alias.provincia || '',
+        matchType: 'alias',
+        aliasLocalidad: alias.localidad || '',
+        aliasMotivo: alias.motivo || '',
+      };
+    }
+
     const chosen = pickMapfrePostalEntry(candidates, localidadNorm);
     if (chosen) return chosen;
 
@@ -264,7 +318,7 @@ function resolveMapfreCodPostal(row = {}, cabecera = {}, options = {}) {
 
 function isMapfrePostalMatchSafe(match) {
   const kind = String(match?.matchType || '').trim();
-  return ['mapfre_directo', 'sub_cp_exacto', 'cp_unico', 'exacto', 'fuzzy'].includes(kind);
+  return ['mapfre_directo', 'sub_cp_exacto', 'cp_unico', 'exacto', 'fuzzy', 'alias'].includes(kind);
 }
 
 function resolveMapfreCodProv(row = {}, cabecera = {}, cfg = {}, options = {}) {
@@ -321,6 +375,13 @@ function buildOptionalTag(name, value) {
   return `    <${name}>${escapeXml(value)}</${name}>`;
 }
 
+function toIntegerString(value) {
+  const raw = String(value ?? '').trim().replace(/\./g, '').replace(',', '.');
+  const num = Number(raw);
+  if (!Number.isFinite(num)) return '';
+  return String(Math.round(num));
+}
+
 async function buildMapfreEnvelope({ fila = {}, cabecera = {}, hoyFmt, cfg = {}, mapeos = {}, postalCatalog } = {}) {
   const codInfoauto = pick([
     fila?.infoautocod,
@@ -353,7 +414,7 @@ async function buildMapfreEnvelope({ fila = {}, cabecera = {}, hoyFmt, cfg = {},
   const tipoMedioPago = resolveMapfreTipoMedioPago(cabecera, cfg);
   const usoVehiculo = resolveMapfreUsoCodigo({ mapeos, fila, cabecera, cfg });
   const conGnc = cabecera?.gnc === '1' ? '1' : '0';
-  const valorGnc = conGnc === '1' ? toMoneyString(cabecera?.suma_gnc || fila?.suma_gnc || 0) || '0' : '0';
+  const valorGnc = conGnc === '1' ? toIntegerString(cabecera?.suma_gnc || fila?.suma_gnc || 0) || '0' : '0';
   const conLocalizador = String(resolveCompanyTracking(cabecera, 'mapfre', cfg).mappedValue || '0');
   const guardaGGe = String(cfg?.parametros_extras?.guarda_gge_default || '0');
   const requestXml = `<?xml version="1.0" encoding="UTF-8"?>

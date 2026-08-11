@@ -1,0 +1,22 @@
+[
+  {
+    "inputCodPostal": "9421",
+    "inputLocalidad": "FRIGORIFICO CAP",
+    "inputProvincia": "Tierra del Fuego",
+    "codPostal": "9420",
+    "codLocalidad": "17727",
+    "localidad": "Frigorifico Cap-rio Grande",
+    "codProvincia": "23",
+    "provincia": "Tierra del Fuego"
+  },
+  {
+    "inputCodPostal": "8400",
+    "inputLocalidad": "BARILOCHE",
+    "inputProvincia": "Rio Negro",
+    "codPostal": "8400",
+    "codLocalidad": "16815",
+    "localidad": "San Carlos de Bariloche",
+    "codProvincia": "23",
+    "provincia": "Rio Negro"
+  }
+]

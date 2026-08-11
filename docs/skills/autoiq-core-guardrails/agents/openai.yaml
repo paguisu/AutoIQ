@@ -1,0 +1,4 @@
+interface:
+  display_name: "AutoIQ Guardrails"
+  short_description: "Protege contratos y entregables de AutoIQ"
+  default_prompt: "Use $autoiq-core-guardrails to preserve AutoIQ contracts while modifying cotizacion flows, Excel output, or insurer integrations."

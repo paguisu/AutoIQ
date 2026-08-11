@@ -1,0 +1,9 @@
+{
+  "auto": { "codigo": "1", "seccion": "3" },
+  "automovil": { "codigo": "1", "seccion": "3" },
+  "pickup": { "codigo": "6", "seccion": "3" },
+  "pick up": { "codigo": "6", "seccion": "3" },
+  "jeep": { "codigo": "4", "seccion": "3" },
+  "moto": { "codigo": "18", "seccion": "1" },
+  "motocicleta": { "codigo": "18", "seccion": "1" }
+}

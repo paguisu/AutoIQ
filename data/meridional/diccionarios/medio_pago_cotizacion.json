@@ -1,0 +1,26 @@
+[
+  {
+    "idMedioPago": "EFECTIVO",
+    "codigo": "EF"
+  },
+  {
+    "idMedioPago": "TARJETA DE CREDITO",
+    "codigo": "TA"
+  },
+  {
+    "idMedioPago": "DEBITO DIRECTO",
+    "codigo": "DD"
+  },
+  {
+    "idMedioPago": "CBU",
+    "codigo": "BA"
+  },
+  {
+    "idMedioPago": "PAGO FACIL",
+    "codigo": "PR"
+  },
+  {
+    "idMedioPago": "DEBITO EN CUENTA",
+    "codigo": "DC"
+  }
+]

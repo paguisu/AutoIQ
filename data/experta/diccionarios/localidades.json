@@ -1,0 +1,4208 @@
+{
+  "1014": [
+    {
+      "codPostal": "1014000",
+      "provinciaId": "1",
+      "localidad": "CAPITAL FEDERAL"
+    }
+  ],
+  "1054": [
+    {
+      "codPostal": "1054000",
+      "provinciaId": "1",
+      "localidad": "CAPITAL FEDERAL"
+    }
+  ],
+  "1107": [
+    {
+      "codPostal": "1107000",
+      "provinciaId": "1",
+      "localidad": "CAPITAL FEDERAL"
+    }
+  ],
+  "1406": [
+    {
+      "codPostal": "1406000",
+      "provinciaId": "1",
+      "localidad": "CAPITAL FEDERAL"
+    }
+  ],
+  "1407": [
+    {
+      "codPostal": "1407000",
+      "provinciaId": "1",
+      "localidad": "CAPITAL FEDERAL"
+    }
+  ],
+  "1414": [
+    {
+      "codPostal": "1414000",
+      "provinciaId": "1",
+      "localidad": "CAPITAL FEDERAL"
+    }
+  ],
+  "1416": [
+    {
+      "codPostal": "1416000",
+      "provinciaId": "1",
+      "localidad": "CAPITAL FEDERAL"
+    }
+  ],
+  "1602": [
+    {
+      "codPostal": "1602000",
+      "provinciaId": "2",
+      "localidad": "FLORIDA"
+    },
+    {
+      "codPostal": "1602002",
+      "provinciaId": "2",
+      "localidad": "JUAN B. JUSTO ( PDO. VICENTE LOPEZ )"
+    },
+    {
+      "codPostal": "1602004",
+      "provinciaId": "2",
+      "localidad": "DOCTOR ANTONIO CETRANGOLO"
+    },
+    {
+      "codPostal": "1602001",
+      "provinciaId": "2",
+      "localidad": "ARISTOBULO DEL VALLE"
+    },
+    {
+      "codPostal": "1602003",
+      "provinciaId": "2",
+      "localidad": "PUENTE SAAVEDRA"
+    }
+  ],
+  "1605": [
+    {
+      "codPostal": "1605000",
+      "provinciaId": "2",
+      "localidad": "MUNRO"
+    },
+    {
+      "codPostal": "1605001",
+      "provinciaId": "2",
+      "localidad": "CARAPACHAY"
+    }
+  ],
+  "1607": [
+    {
+      "codPostal": "1607000",
+      "provinciaId": "2",
+      "localidad": "BARRIO OBRERO FERROVIARIO"
+    },
+    {
+      "codPostal": "1607001",
+      "provinciaId": "2",
+      "localidad": "BARRIO STELLA MARIS"
+    },
+    {
+      "codPostal": "1607002",
+      "provinciaId": "2",
+      "localidad": "VILLA ADELINA"
+    },
+    {
+      "codPostal": "1607003",
+      "provinciaId": "2",
+      "localidad": "JOSE MARTI"
+    },
+    {
+      "codPostal": "1607004",
+      "provinciaId": "2",
+      "localidad": "VILLA ADELINA"
+    }
+  ],
+  "1609": [
+    {
+      "codPostal": "1609000",
+      "provinciaId": "2",
+      "localidad": "BOULOGNE"
+    },
+    {
+      "codPostal": "1609001",
+      "provinciaId": "2",
+      "localidad": "BOULOGNE SUR MER"
+    }
+  ],
+  "1611": [
+    {
+      "codPostal": "1611000",
+      "provinciaId": "2",
+      "localidad": "KILOMETRO 26"
+    },
+    {
+      "codPostal": "1611001",
+      "provinciaId": "2",
+      "localidad": "SOLANA DEL MONTE"
+    },
+    {
+      "codPostal": "1611002",
+      "provinciaId": "2",
+      "localidad": "VICEALMIRANTE E. MONTES"
+    },
+    {
+      "codPostal": "1611003",
+      "provinciaId": "2",
+      "localidad": "BARRIO BAIRES"
+    },
+    {
+      "codPostal": "1611004",
+      "provinciaId": "2",
+      "localidad": "BARRIO DOCTOR RICARDO GUT"
+    },
+    {
+      "codPostal": "1611005",
+      "provinciaId": "2",
+      "localidad": "DON TORCUATO"
+    }
+  ],
+  "1617": [
+    {
+      "codPostal": "1617001",
+      "provinciaId": "2",
+      "localidad": "ALTO DEL TALAR"
+    },
+    {
+      "codPostal": "1617002",
+      "provinciaId": "2",
+      "localidad": "BARRIO EL BOYERO"
+    },
+    {
+      "codPostal": "1617003",
+      "provinciaId": "2",
+      "localidad": "BARRIO EL ZORZAL"
+    },
+    {
+      "codPostal": "1617004",
+      "provinciaId": "2",
+      "localidad": "BARRIO FERRINI"
+    },
+    {
+      "codPostal": "1617005",
+      "provinciaId": "2",
+      "localidad": "BARRIO ENRIQUE DELFINO"
+    },
+    {
+      "codPostal": "1617007",
+      "provinciaId": "2",
+      "localidad": "BARRIO EL PEREJIL"
+    },
+    {
+      "codPostal": "1617008",
+      "provinciaId": "2",
+      "localidad": "BARRIO EL EMBRUJO"
+    },
+    {
+      "codPostal": "1617009",
+      "provinciaId": "2",
+      "localidad": "BARRIO RESIDENCIAL ESTANC"
+    },
+    {
+      "codPostal": "1617012",
+      "provinciaId": "2",
+      "localidad": "BARRIO TRONCOS DEL TALAR"
+    },
+    {
+      "codPostal": "1617013",
+      "provinciaId": "2",
+      "localidad": "KILOMETRO 31 ( APEADERO FCGU )"
+    },
+    {
+      "codPostal": "1617015",
+      "provinciaId": "2",
+      "localidad": "LOPEZ CAMELO"
+    },
+    {
+      "codPostal": "1617016",
+      "provinciaId": "2",
+      "localidad": "DOCTOR RICARDO ROJAS"
+    },
+    {
+      "codPostal": "1617017",
+      "provinciaId": "2",
+      "localidad": "PARQUE SAN LORENZO"
+    },
+    {
+      "codPostal": "1617000",
+      "provinciaId": "2",
+      "localidad": "GENERAL PACHECO"
+    },
+    {
+      "codPostal": "1617006",
+      "provinciaId": "2",
+      "localidad": "BARRIO LOS TRONCOS DEL TA"
+    },
+    {
+      "codPostal": "1617014",
+      "provinciaId": "2",
+      "localidad": "VILLA LAS TUNAS"
+    },
+    {
+      "codPostal": "1617011",
+      "provinciaId": "2",
+      "localidad": "BARRIO RODRIGUEZ"
+    },
+    {
+      "codPostal": "1617010",
+      "provinciaId": "2",
+      "localidad": "BARRIO RICARDO ROJAS ( PDO. TIGRE )"
+    }
+  ],
+  "1636": [
+    {
+      "codPostal": "1636001",
+      "provinciaId": "2",
+      "localidad": "BORGES"
+    },
+    {
+      "codPostal": "1636002",
+      "provinciaId": "2",
+      "localidad": "OLIVOS"
+    },
+    {
+      "codPostal": "1636003",
+      "provinciaId": "2",
+      "localidad": "LA LUCILA"
+    },
+    {
+      "codPostal": "1636000",
+      "provinciaId": "2",
+      "localidad": "BARTOLOME MITRE ( ESTACION FCGM )"
+    }
+  ],
+  "1638": [
+    {
+      "codPostal": "1638000",
+      "provinciaId": "2",
+      "localidad": "VICENTE LOPEZ"
+    }
+  ],
+  "1640": [
+    {
+      "codPostal": "1640000",
+      "provinciaId": "2",
+      "localidad": "BARRIO VILLA PRIMAVERA"
+    },
+    {
+      "codPostal": "1640001",
+      "provinciaId": "2",
+      "localidad": "ACASSUSO"
+    },
+    {
+      "codPostal": "1640002",
+      "provinciaId": "2",
+      "localidad": "MARTINEZ"
+    }
+  ],
+  "1642": [
+    {
+      "codPostal": "1642000",
+      "provinciaId": "2",
+      "localidad": "MONTE VIEJO"
+    },
+    {
+      "codPostal": "1642001",
+      "provinciaId": "2",
+      "localidad": "SAN ISIDRO"
+    },
+    {
+      "codPostal": "1642002",
+      "provinciaId": "2",
+      "localidad": "BARRIO BOATING CLUB"
+    },
+    {
+      "codPostal": "1642003",
+      "provinciaId": "2",
+      "localidad": "BARRIO GENERAL PUEYRREDON"
+    },
+    {
+      "codPostal": "1642004",
+      "provinciaId": "2",
+      "localidad": "SAN ISIDRO"
+    }
+  ],
+  "1643": [
+    {
+      "codPostal": "1643000",
+      "provinciaId": "2",
+      "localidad": "BECCAR"
+    }
+  ],
+  "1646": [
+    {
+      "codPostal": "1646002",
+      "provinciaId": "2",
+      "localidad": "SAN FERNANDO"
+    },
+    {
+      "codPostal": "1646003",
+      "provinciaId": "2",
+      "localidad": "VIRREYES"
+    },
+    {
+      "codPostal": "1646000",
+      "provinciaId": "2",
+      "localidad": "VILLA DEL CARMEN ( PDO. SAN FERNANDO )"
+    },
+    {
+      "codPostal": "1646001",
+      "provinciaId": "2",
+      "localidad": "BARRIO SAN JORGE ( PDO. SAN FERNANDO )"
+    },
+    {
+      "codPostal": "1646004",
+      "provinciaId": "2",
+      "localidad": "VIRREYES"
+    }
+  ],
+  "1648": [
+    {
+      "codPostal": "1648000",
+      "provinciaId": "2",
+      "localidad": "NUEVO PUERTO TIGRE"
+    },
+    {
+      "codPostal": "1648002",
+      "provinciaId": "2",
+      "localidad": "VILLA LA YATA"
+    },
+    {
+      "codPostal": "1648001",
+      "provinciaId": "2",
+      "localidad": "TIGRE"
+    }
+  ],
+  "1650": [
+    {
+      "codPostal": "1650000",
+      "provinciaId": "2",
+      "localidad": "MIGUELETE ( PARADA FCGM )"
+    },
+    {
+      "codPostal": "1650001",
+      "provinciaId": "2",
+      "localidad": "SAN MARTIN"
+    },
+    {
+      "codPostal": "1650002",
+      "provinciaId": "2",
+      "localidad": "BARRIO PARA JEFES Y OFICI"
+    },
+    {
+      "codPostal": "1650003",
+      "provinciaId": "2",
+      "localidad": "CIUDAD DEL LIBERTADOR GRA"
+    },
+    {
+      "codPostal": "1650004",
+      "provinciaId": "2",
+      "localidad": "VILLA BILLINGHURST"
+    },
+    {
+      "codPostal": "1650005",
+      "provinciaId": "2",
+      "localidad": "VILLA MAIPU"
+    },
+    {
+      "codPostal": "1650006",
+      "provinciaId": "2",
+      "localidad": "VILLA BONICH"
+    },
+    {
+      "codPostal": "1650007",
+      "provinciaId": "2",
+      "localidad": "VILLA LIBERTAD"
+    },
+    {
+      "codPostal": "1650008",
+      "provinciaId": "2",
+      "localidad": "VILLA PROGRESO"
+    }
+  ],
+  "1653": [
+    {
+      "codPostal": "1653000",
+      "provinciaId": "2",
+      "localidad": "VILLA BALLESTER"
+    }
+  ],
+  "1655": [
+    {
+      "codPostal": "1655000",
+      "provinciaId": "2",
+      "localidad": "VILLA HIDALGO"
+    },
+    {
+      "codPostal": "1655002",
+      "provinciaId": "2",
+      "localidad": "VILLA JOSE LEON SUAREZ"
+    },
+    {
+      "codPostal": "1655003",
+      "provinciaId": "2",
+      "localidad": "JOSE LEON SUAREZ"
+    },
+    {
+      "codPostal": "1655004",
+      "provinciaId": "2",
+      "localidad": "BARRIO LIBERTADOR"
+    },
+    {
+      "codPostal": "1655001",
+      "provinciaId": "2",
+      "localidad": "VILLA LANZONI"
+    },
+    {
+      "codPostal": "1655005",
+      "provinciaId": "2",
+      "localidad": "CHILAVERT"
+    }
+  ],
+  "1670": [
+    {
+      "codPostal": "1670001",
+      "provinciaId": "2",
+      "localidad": "NORDELTA"
+    }
+  ],
+  "1676": [
+    {
+      "codPostal": "1676000",
+      "provinciaId": "2",
+      "localidad": "CUADRILLA 1011 ( FGCSM. SUBD. ALIANZA )"
+    },
+    {
+      "codPostal": "1676001",
+      "provinciaId": "2",
+      "localidad": "SANTOS LUGARES"
+    },
+    {
+      "codPostal": "1676002",
+      "provinciaId": "2",
+      "localidad": "VILLA SANTOS LUGARES"
+    },
+    {
+      "codPostal": "1676003",
+      "provinciaId": "2",
+      "localidad": "VILLA TALLERES ALIANZA"
+    }
+  ],
+  "1678": [
+    {
+      "codPostal": "1678000",
+      "provinciaId": "2",
+      "localidad": "VILLA MATHEU"
+    },
+    {
+      "codPostal": "1678001",
+      "provinciaId": "2",
+      "localidad": "VILLA PARQUE"
+    },
+    {
+      "codPostal": "1678002",
+      "provinciaId": "2",
+      "localidad": "CASEROS ( PDO. 3 DE FEBRERO )"
+    }
+  ],
+  "1704": [
+    {
+      "codPostal": "1704000",
+      "provinciaId": "2",
+      "localidad": "VILLA DON BOSCO"
+    },
+    {
+      "codPostal": "1704001",
+      "provinciaId": "2",
+      "localidad": "RAMOS MEJIA"
+    },
+    {
+      "codPostal": "1704002",
+      "provinciaId": "2",
+      "localidad": "LOMAS DEL MILLON"
+    }
+  ],
+  "1706": [
+    {
+      "codPostal": "1706000",
+      "provinciaId": "2",
+      "localidad": "DOMINGO FAUSTINO SARMIENT"
+    },
+    {
+      "codPostal": "1706001",
+      "provinciaId": "2",
+      "localidad": "MARIANO J. HAEDO"
+    },
+    {
+      "codPostal": "1706002",
+      "provinciaId": "2",
+      "localidad": "HAEDO"
+    }
+  ],
+  "1708": [
+    {
+      "codPostal": "1708000",
+      "provinciaId": "2",
+      "localidad": "BARRIO AVIACION"
+    },
+    {
+      "codPostal": "1708001",
+      "provinciaId": "2",
+      "localidad": "BARRIO MANZANAR DE KAISER"
+    },
+    {
+      "codPostal": "1708002",
+      "provinciaId": "2",
+      "localidad": "BARRIO DE LA MERCED"
+    },
+    {
+      "codPostal": "1708004",
+      "provinciaId": "2",
+      "localidad": "BARRIO PARQUE PELUFFO"
+    },
+    {
+      "codPostal": "1708005",
+      "provinciaId": "2",
+      "localidad": "BARRIO SAN JOSE ( PDO. MORON )"
+    },
+    {
+      "codPostal": "1708006",
+      "provinciaId": "2",
+      "localidad": "BARRIO SAN FRANCISCO"
+    },
+    {
+      "codPostal": "1708007",
+      "provinciaId": "2",
+      "localidad": "MORON"
+    },
+    {
+      "codPostal": "1708003",
+      "provinciaId": "2",
+      "localidad": "BARRIO LA CABAYA"
+    }
+  ],
+  "1712": [
+    {
+      "codPostal": "1712000",
+      "provinciaId": "2",
+      "localidad": "CASTELAR"
+    }
+  ],
+  "1714": [
+    {
+      "codPostal": "1714000",
+      "provinciaId": "2",
+      "localidad": "VILLA DE LAS NACIONES"
+    },
+    {
+      "codPostal": "1714001",
+      "provinciaId": "2",
+      "localidad": "VILLA GRAND BOURG"
+    },
+    {
+      "codPostal": "1714002",
+      "provinciaId": "2",
+      "localidad": "VILLA IRUPE"
+    },
+    {
+      "codPostal": "1714003",
+      "provinciaId": "2",
+      "localidad": "VILLA LEON"
+    },
+    {
+      "codPostal": "1714004",
+      "provinciaId": "2",
+      "localidad": "BARRIO PINTEMAR"
+    },
+    {
+      "codPostal": "1714005",
+      "provinciaId": "2",
+      "localidad": "BARRIO SAN JUAN ( PDO. MORON )"
+    },
+    {
+      "codPostal": "1714006",
+      "provinciaId": "2",
+      "localidad": "BARRIO VILLA ALBERDI"
+    },
+    {
+      "codPostal": "1714007",
+      "provinciaId": "2",
+      "localidad": "BARRIO AERONAUTICO"
+    },
+    {
+      "codPostal": "1714008",
+      "provinciaId": "2",
+      "localidad": "BARRIO MARINA"
+    },
+    {
+      "codPostal": "1714009",
+      "provinciaId": "2",
+      "localidad": "BARRIO ALFREDO L. PALACIO"
+    },
+    {
+      "codPostal": "1714010",
+      "provinciaId": "2",
+      "localidad": "ITUZAINGO"
+    },
+    {
+      "codPostal": "1714011",
+      "provinciaId": "2",
+      "localidad": "MERLO GOMEZ (APEADERO FCGB)"
+    }
+  ],
+  "1718": [
+    {
+      "codPostal": "1718000",
+      "provinciaId": "2",
+      "localidad": "SAN ANTONIO DE PADUA"
+    }
+  ],
+  "1722": [
+    {
+      "codPostal": "1722000",
+      "provinciaId": "2",
+      "localidad": "BARRIO EL PERICON"
+    },
+    {
+      "codPostal": "1722001",
+      "provinciaId": "2",
+      "localidad": "BARRIO LOS VASCOS"
+    },
+    {
+      "codPostal": "1722002",
+      "provinciaId": "2",
+      "localidad": "AERODROMO ALBATROS"
+    },
+    {
+      "codPostal": "1722003",
+      "provinciaId": "2",
+      "localidad": "VILLA LAGO DEL BOSQUE"
+    },
+    {
+      "codPostal": "1722004",
+      "provinciaId": "2",
+      "localidad": "LOMA FLORIDA"
+    },
+    {
+      "codPostal": "1722005",
+      "provinciaId": "2",
+      "localidad": "LOMA GRANDE"
+    },
+    {
+      "codPostal": "1722006",
+      "provinciaId": "2",
+      "localidad": "MERLO"
+    },
+    {
+      "codPostal": "1722007",
+      "provinciaId": "2",
+      "localidad": "PARQUE SAN MARTIN ( PDO. MERLO )"
+    }
+  ],
+  "1727": [
+    {
+      "codPostal": "1727000",
+      "provinciaId": "2",
+      "localidad": "HOGAR RICARDO GUTIERREZ"
+    },
+    {
+      "codPostal": "1727001",
+      "provinciaId": "2",
+      "localidad": "ZAMUDIO ( APEADERO FCDFS )"
+    },
+    {
+      "codPostal": "1727002",
+      "provinciaId": "2",
+      "localidad": "KILOMETRO 45 ( PDO. MARCOS PAZ )"
+    },
+    {
+      "codPostal": "1727003",
+      "provinciaId": "2",
+      "localidad": "KILOMETRO 53 ( PARADA FCGB )"
+    },
+    {
+      "codPostal": "1727004",
+      "provinciaId": "2",
+      "localidad": "MARCOS PAZ"
+    },
+    {
+      "codPostal": "1727005",
+      "provinciaId": "2",
+      "localidad": "COLONIA HOGAR RICARDO GUT"
+    },
+    {
+      "codPostal": "1727006",
+      "provinciaId": "2",
+      "localidad": "COLONIA NACIONAL DE MENOR"
+    },
+    {
+      "codPostal": "1727007",
+      "provinciaId": "2",
+      "localidad": "ELIAS ROMERO"
+    }
+  ],
+  "1741": [
+    {
+      "codPostal": "1741000",
+      "provinciaId": "2",
+      "localidad": "PLOMER"
+    },
+    {
+      "codPostal": "1741001",
+      "provinciaId": "2",
+      "localidad": "LAS HERAS"
+    },
+    {
+      "codPostal": "1741002",
+      "provinciaId": "2",
+      "localidad": "LOZANO"
+    },
+    {
+      "codPostal": "1741003",
+      "provinciaId": "2",
+      "localidad": "ENRIQUE FYNN"
+    },
+    {
+      "codPostal": "1741004",
+      "provinciaId": "2",
+      "localidad": "GENERAL HORNOS"
+    },
+    {
+      "codPostal": "1741005",
+      "provinciaId": "2",
+      "localidad": "GENERAL LAS HERAS"
+    },
+    {
+      "codPostal": "1741006",
+      "provinciaId": "2",
+      "localidad": "KILOMETRO 79 ( APEADERO FCGB )"
+    },
+    {
+      "codPostal": "1741007",
+      "provinciaId": "2",
+      "localidad": "SPERATTI"
+    }
+  ],
+  "1754": [
+    {
+      "codPostal": "1754000",
+      "provinciaId": "2",
+      "localidad": "VILLA LUZURIAGA"
+    },
+    {
+      "codPostal": "1754001",
+      "provinciaId": "2",
+      "localidad": "SAN JUSTO"
+    },
+    {
+      "codPostal": "1754002",
+      "provinciaId": "2",
+      "localidad": "VILLA CONSTRUCTORA"
+    }
+  ],
+  "1768": [
+    {
+      "codPostal": "1768000",
+      "provinciaId": "2",
+      "localidad": "VILLA MADERO"
+    }
+  ],
+  "1804": [
+    {
+      "codPostal": "1804000",
+      "provinciaId": "2",
+      "localidad": "EZEIZA"
+    },
+    {
+      "codPostal": "1804001",
+      "provinciaId": "2",
+      "localidad": "BARRIO A. T. E."
+    },
+    {
+      "codPostal": "1804003",
+      "provinciaId": "2",
+      "localidad": "VILLA GUILLERMINA"
+    },
+    {
+      "codPostal": "1804004",
+      "provinciaId": "2",
+      "localidad": "VILLA GOLF"
+    },
+    {
+      "codPostal": "1804005",
+      "provinciaId": "2",
+      "localidad": "BARRIO PROGRESO"
+    },
+    {
+      "codPostal": "1804006",
+      "provinciaId": "2",
+      "localidad": "BARRIO SAN IGNACIO (PDO. E ECHEVERRIA)"
+    },
+    {
+      "codPostal": "1804007",
+      "provinciaId": "2",
+      "localidad": "BARRIO SOL DE ORO"
+    },
+    {
+      "codPostal": "1804008",
+      "provinciaId": "2",
+      "localidad": "CANNING"
+    },
+    {
+      "codPostal": "1804009",
+      "provinciaId": "2",
+      "localidad": "RUTA 205 KILOMETRO 32500"
+    },
+    {
+      "codPostal": "1804002",
+      "provinciaId": "2",
+      "localidad": "UNION FERROVIARIA"
+    }
+  ],
+  "1822": [
+    {
+      "codPostal": "1822000",
+      "provinciaId": "2",
+      "localidad": "VALENTIN ALSINA"
+    },
+    {
+      "codPostal": "1822001",
+      "provinciaId": "2",
+      "localidad": "VILLA CARAZA"
+    },
+    {
+      "codPostal": "1822002",
+      "provinciaId": "2",
+      "localidad": "VILLA JARDIN"
+    },
+    {
+      "codPostal": "1822003",
+      "provinciaId": "2",
+      "localidad": "VILLA ILASA"
+    },
+    {
+      "codPostal": "1822004",
+      "provinciaId": "2",
+      "localidad": "CARAZA"
+    },
+    {
+      "codPostal": "1822005",
+      "provinciaId": "2",
+      "localidad": "BARRIO MARIANO MORENO ( PDO. LANUS )"
+    },
+    {
+      "codPostal": "1822006",
+      "provinciaId": "2",
+      "localidad": "VILLA DIAMANTE"
+    }
+  ],
+  "1824": [
+    {
+      "codPostal": "1824000",
+      "provinciaId": "2",
+      "localidad": "GERLI ( PARTIDO LANUS )"
+    },
+    {
+      "codPostal": "1824001",
+      "provinciaId": "2",
+      "localidad": "VILLA INDUSTRIALES"
+    },
+    {
+      "codPostal": "1824002",
+      "provinciaId": "2",
+      "localidad": "LANUS"
+    }
+  ],
+  "1828": [
+    {
+      "codPostal": "1828007",
+      "provinciaId": "2",
+      "localidad": "BARRIO PROVINCIAS UNIDAS"
+    },
+    {
+      "codPostal": "1828008",
+      "provinciaId": "2",
+      "localidad": "BANFIELD"
+    },
+    {
+      "codPostal": "1828009",
+      "provinciaId": "2",
+      "localidad": "BARRIO M. MORENO ( PDO. L. DE ZAMORA )"
+    },
+    {
+      "codPostal": "1828003",
+      "provinciaId": "2",
+      "localidad": "VILLA SAN MARTIN ( PDO. L. DE ZAMORA )"
+    },
+    {
+      "codPostal": "1828004",
+      "provinciaId": "2",
+      "localidad": "VILLA ECONOMIA"
+    },
+    {
+      "codPostal": "1828005",
+      "provinciaId": "2",
+      "localidad": "BARRIO PARQUE UNION Y FRA"
+    },
+    {
+      "codPostal": "1828006",
+      "provinciaId": "2",
+      "localidad": "BARRIO VILLA MAIPU"
+    },
+    {
+      "codPostal": "1828001",
+      "provinciaId": "2",
+      "localidad": "VILLA ELVIRA"
+    },
+    {
+      "codPostal": "1828000",
+      "provinciaId": "2",
+      "localidad": "VILLA BENQUEZ"
+    },
+    {
+      "codPostal": "1828002",
+      "provinciaId": "2",
+      "localidad": "VILLA RECREO"
+    },
+    {
+      "codPostal": "1828010",
+      "provinciaId": "2",
+      "localidad": "VILLA CENTENARIO"
+    }
+  ],
+  "1832": [
+    {
+      "codPostal": "1832000",
+      "provinciaId": "2",
+      "localidad": "VILLA BARRIO ARCA"
+    },
+    {
+      "codPostal": "1832001",
+      "provinciaId": "2",
+      "localidad": "VILLA EL FARO"
+    },
+    {
+      "codPostal": "1832002",
+      "provinciaId": "2",
+      "localidad": "VILLA RITA"
+    },
+    {
+      "codPostal": "1832003",
+      "provinciaId": "2",
+      "localidad": "VILLA BARRIO LAPRIDA"
+    },
+    {
+      "codPostal": "1832005",
+      "provinciaId": "2",
+      "localidad": "BARRIO PARQUE BARON"
+    },
+    {
+      "codPostal": "1832006",
+      "provinciaId": "2",
+      "localidad": "PARQUE MITRE"
+    },
+    {
+      "codPostal": "1832007",
+      "provinciaId": "2",
+      "localidad": "LOMAS DE ZAMORA"
+    },
+    {
+      "codPostal": "1832004",
+      "provinciaId": "2",
+      "localidad": "KILOMETRO 34 ( PDO. LOMAS DE ZAMORA )"
+    }
+  ],
+  "1842": [
+    {
+      "codPostal": "1842000",
+      "provinciaId": "2",
+      "localidad": "BARRIO MONTECARLO"
+    },
+    {
+      "codPostal": "1842001",
+      "provinciaId": "2",
+      "localidad": "BARRIO NUESTRAS MALVINAS"
+    },
+    {
+      "codPostal": "1842002",
+      "provinciaId": "2",
+      "localidad": "BARRIO MONTE CHICO"
+    },
+    {
+      "codPostal": "1842003",
+      "provinciaId": "2",
+      "localidad": "BARRIO VILLA MARIA"
+    },
+    {
+      "codPostal": "1842004",
+      "provinciaId": "2",
+      "localidad": "BARRIO SIGLO XX"
+    },
+    {
+      "codPostal": "1842005",
+      "provinciaId": "2",
+      "localidad": "BARRIO STA ISABEL ( PDO. E. ECHEVERRIA )"
+    },
+    {
+      "codPostal": "1842006",
+      "provinciaId": "2",
+      "localidad": "BARRIO GRANDE"
+    },
+    {
+      "codPostal": "1842007",
+      "provinciaId": "2",
+      "localidad": "BARRIO LA MORITA"
+    },
+    {
+      "codPostal": "1842008",
+      "provinciaId": "2",
+      "localidad": "BARRIO MARTINEZ MORENO"
+    },
+    {
+      "codPostal": "1842009",
+      "provinciaId": "2",
+      "localidad": "BARRIO LANDA"
+    },
+    {
+      "codPostal": "1842010",
+      "provinciaId": "2",
+      "localidad": "MONTE GRANDE"
+    },
+    {
+      "codPostal": "1842011",
+      "provinciaId": "2",
+      "localidad": "EL JAGUEL (PDO EST ECHEVERRIA)"
+    }
+  ],
+  "1846": [
+    {
+      "codPostal": "1846001",
+      "provinciaId": "2",
+      "localidad": "BARRIO LOMA VERDE"
+    },
+    {
+      "codPostal": "1846002",
+      "provinciaId": "2",
+      "localidad": "ADROGUE"
+    },
+    {
+      "codPostal": "1846003",
+      "provinciaId": "2",
+      "localidad": "ALMIRANTE BROWN"
+    },
+    {
+      "codPostal": "1846005",
+      "provinciaId": "2",
+      "localidad": "JOSE MARMOL"
+    },
+    {
+      "codPostal": "1846004",
+      "provinciaId": "2",
+      "localidad": "BARRIO SAN JUAN ( PDO. ALMTE. BROWN )"
+    },
+    {
+      "codPostal": "1846000",
+      "provinciaId": "2",
+      "localidad": "BARRIO LA TABLADA"
+    }
+  ],
+  "1849": [
+    {
+      "codPostal": "1849000",
+      "provinciaId": "2",
+      "localidad": "BARRIO EL PATRONATO"
+    },
+    {
+      "codPostal": "1849001",
+      "provinciaId": "2",
+      "localidad": "BARRIO LAS TUNAS"
+    },
+    {
+      "codPostal": "1849002",
+      "provinciaId": "2",
+      "localidad": "BARRIO LAS MALVINAS"
+    },
+    {
+      "codPostal": "1849003",
+      "provinciaId": "2",
+      "localidad": "BARRIO LA JOVITA"
+    },
+    {
+      "codPostal": "1849004",
+      "provinciaId": "2",
+      "localidad": "BARRIO EL TREBOL"
+    },
+    {
+      "codPostal": "1849005",
+      "provinciaId": "2",
+      "localidad": "BARRIO PARQUE MARIANO MOR"
+    },
+    {
+      "codPostal": "1849006",
+      "provinciaId": "2",
+      "localidad": "CLAYPOLE"
+    },
+    {
+      "codPostal": "1849007",
+      "provinciaId": "2",
+      "localidad": "BARRIO SANZ"
+    },
+    {
+      "codPostal": "1849008",
+      "provinciaId": "2",
+      "localidad": "BARRIO SANTA CLARA"
+    },
+    {
+      "codPostal": "1849009",
+      "provinciaId": "2",
+      "localidad": "BARRIO SAN LUCAS"
+    }
+  ],
+  "1875": [
+    {
+      "codPostal": "1875000",
+      "provinciaId": "2",
+      "localidad": "VILLA GONNET"
+    },
+    {
+      "codPostal": "1875001",
+      "provinciaId": "2",
+      "localidad": "WILDE"
+    },
+    {
+      "codPostal": "1875002",
+      "provinciaId": "2",
+      "localidad": "WILDE ESTE"
+    }
+  ],
+  "1878": [
+    {
+      "codPostal": "1878002",
+      "provinciaId": "2",
+      "localidad": "VILLA ESMERALDA"
+    },
+    {
+      "codPostal": "1878003",
+      "provinciaId": "2",
+      "localidad": "VILLA FLORENTINO AMEGHINO"
+    },
+    {
+      "codPostal": "1878005",
+      "provinciaId": "2",
+      "localidad": "VILLA MARIA ( PDO. QUILMES )"
+    },
+    {
+      "codPostal": "1878006",
+      "provinciaId": "2",
+      "localidad": "VILLA LUJAN"
+    },
+    {
+      "codPostal": "1878007",
+      "provinciaId": "2",
+      "localidad": "VILLA LAS ROSAS"
+    },
+    {
+      "codPostal": "1878008",
+      "provinciaId": "2",
+      "localidad": "VILLA LA ROSA"
+    },
+    {
+      "codPostal": "1878009",
+      "provinciaId": "2",
+      "localidad": "VILLA DEYA"
+    },
+    {
+      "codPostal": "1878010",
+      "provinciaId": "2",
+      "localidad": "VILLA AUGUSTA"
+    },
+    {
+      "codPostal": "1878011",
+      "provinciaId": "2",
+      "localidad": "BARRIO HORNOS"
+    },
+    {
+      "codPostal": "1878001",
+      "provinciaId": "2",
+      "localidad": "VILLA ARGENTINA ( PDO. QUILMES )"
+    },
+    {
+      "codPostal": "1878004",
+      "provinciaId": "2",
+      "localidad": "VILLA ELENA ( DPTO. QUILMES )"
+    },
+    {
+      "codPostal": "1878000",
+      "provinciaId": "2",
+      "localidad": "QUILMES"
+    }
+  ],
+  "1879": [
+    {
+      "codPostal": "1879000",
+      "provinciaId": "2",
+      "localidad": "BARRIO EL DORADO ( PDO. QUILMES )"
+    },
+    {
+      "codPostal": "1879001",
+      "provinciaId": "2",
+      "localidad": "BARRIO LAS MARGARITAS ( PDO. QUILMES )"
+    },
+    {
+      "codPostal": "1879002",
+      "provinciaId": "2",
+      "localidad": "BARRIO LOS EUCALIPTOS ( PDO. QUILMES )"
+    },
+    {
+      "codPostal": "1879003",
+      "provinciaId": "2",
+      "localidad": "BARRIO SAN DOMINGO"
+    },
+    {
+      "codPostal": "1879004",
+      "provinciaId": "2",
+      "localidad": "BARRIO SANTO DOMINGO"
+    },
+    {
+      "codPostal": "1879007",
+      "provinciaId": "2",
+      "localidad": "QUILMES OESTE"
+    },
+    {
+      "codPostal": "1879006",
+      "provinciaId": "2",
+      "localidad": "CAMINO CALCHAQUI ( KM. 17300 22900 )"
+    },
+    {
+      "codPostal": "1879005",
+      "provinciaId": "2",
+      "localidad": "CAMINO GRAL. BELGRANO ( KM 12 17400 )"
+    }
+  ],
+  "1884": [
+    {
+      "codPostal": "1884013",
+      "provinciaId": "2",
+      "localidad": "VILLA JULIA"
+    },
+    {
+      "codPostal": "1884015",
+      "provinciaId": "2",
+      "localidad": "BARRIO RAYO DE SOL ( PDO. BERAZATEGUI )"
+    },
+    {
+      "codPostal": "1884017",
+      "provinciaId": "2",
+      "localidad": "BARRIO SAN ROQUE ( PDO. BERAZATEGUI )"
+    },
+    {
+      "codPostal": "1884018",
+      "provinciaId": "2",
+      "localidad": "BERAZATEGUI"
+    },
+    {
+      "codPostal": "1884001",
+      "provinciaId": "2",
+      "localidad": "BARRIO G. BELGRANO ( PDO. BERAZATEGUI )"
+    },
+    {
+      "codPostal": "1884002",
+      "provinciaId": "2",
+      "localidad": "BARRIO EL ONCE"
+    },
+    {
+      "codPostal": "1884003",
+      "provinciaId": "2",
+      "localidad": "BARRIO LUCHETTI"
+    },
+    {
+      "codPostal": "1884005",
+      "provinciaId": "2",
+      "localidad": "BARRIO LOS PINOS ( PDO. BERAZATEGUI )"
+    },
+    {
+      "codPostal": "1884006",
+      "provinciaId": "2",
+      "localidad": "BARRIO LOS MANZANOS"
+    },
+    {
+      "codPostal": "1884007",
+      "provinciaId": "2",
+      "localidad": "BARRIO LA LOMA"
+    },
+    {
+      "codPostal": "1884008",
+      "provinciaId": "2",
+      "localidad": "BARRIO JACARANDA"
+    },
+    {
+      "codPostal": "1884009",
+      "provinciaId": "2",
+      "localidad": "VILLA SOL"
+    },
+    {
+      "codPostal": "1884010",
+      "provinciaId": "2",
+      "localidad": "VILLA ESPAYA"
+    },
+    {
+      "codPostal": "1884012",
+      "provinciaId": "2",
+      "localidad": "VILLA OLIVERO"
+    },
+    {
+      "codPostal": "1884004",
+      "provinciaId": "2",
+      "localidad": "BARRIO LOS TRONCOS"
+    },
+    {
+      "codPostal": "1884011",
+      "provinciaId": "2",
+      "localidad": "VILLA SAN FRANCISCO"
+    },
+    {
+      "codPostal": "1884016",
+      "provinciaId": "2",
+      "localidad": "BARRIO SAN JUAN ( PDO. BERAZATEGUI )"
+    },
+    {
+      "codPostal": "1884014",
+      "provinciaId": "2",
+      "localidad": "VILLA MITRE"
+    },
+    {
+      "codPostal": "1884000",
+      "provinciaId": "2",
+      "localidad": "BARRIO CENTENARIO"
+    },
+    {
+      "codPostal": "1884019",
+      "provinciaId": "2",
+      "localidad": "VILLA ESPA%A"
+    }
+  ],
+  "1900": [
+    {
+      "codPostal": "1900000",
+      "provinciaId": "2",
+      "localidad": "LA PLATA"
+    },
+    {
+      "codPostal": "1900001",
+      "provinciaId": "2",
+      "localidad": "CIRCUNVALACION"
+    },
+    {
+      "codPostal": "1900002",
+      "provinciaId": "2",
+      "localidad": "SARRAT ( PARADA )"
+    },
+    {
+      "codPostal": "1900003",
+      "provinciaId": "2",
+      "localidad": "LOS HORNOS"
+    },
+    {
+      "codPostal": "1900004",
+      "provinciaId": "2",
+      "localidad": "RUFINO DE ELIZALDE"
+    },
+    {
+      "codPostal": "1900005",
+      "provinciaId": "2",
+      "localidad": "TOLOSA"
+    },
+    {
+      "codPostal": "1900006",
+      "provinciaId": "2",
+      "localidad": "VILLA RIVERA"
+    },
+    {
+      "codPostal": "1900007",
+      "provinciaId": "2",
+      "localidad": "LA CUMBRE"
+    },
+    {
+      "codPostal": "1900008",
+      "provinciaId": "2",
+      "localidad": "VILLA ALBA"
+    },
+    {
+      "codPostal": "1900009",
+      "provinciaId": "2",
+      "localidad": "VILLA ELVIRA (LA PLATA)"
+    }
+  ],
+  "2000": [
+    {
+      "codPostal": "2000000",
+      "provinciaId": "8",
+      "localidad": "VILLA ANGELICA"
+    },
+    {
+      "codPostal": "2000500",
+      "provinciaId": "21",
+      "localidad": "BARRIO MERCEDES DE SAN MA"
+    },
+    {
+      "codPostal": "2000001",
+      "provinciaId": "21",
+      "localidad": "BARRIO TABLADA"
+    },
+    {
+      "codPostal": "2000002",
+      "provinciaId": "21",
+      "localidad": "BARRIO REMEDIOS DE ESCALA"
+    },
+    {
+      "codPostal": "2000004",
+      "provinciaId": "21",
+      "localidad": "LA CERAMICA Y CUYO"
+    },
+    {
+      "codPostal": "2000005",
+      "provinciaId": "21",
+      "localidad": "ROSARIO"
+    },
+    {
+      "codPostal": "2000006",
+      "provinciaId": "21",
+      "localidad": "BARRIO ALVEAR"
+    },
+    {
+      "codPostal": "2000007",
+      "provinciaId": "21",
+      "localidad": "BARRIO AZCUENAGA"
+    },
+    {
+      "codPostal": "2000008",
+      "provinciaId": "21",
+      "localidad": "FISHERTON"
+    },
+    {
+      "codPostal": "2000009",
+      "provinciaId": "21",
+      "localidad": "HUME"
+    },
+    {
+      "codPostal": "2000010",
+      "provinciaId": "21",
+      "localidad": "LUDUEÑA"
+    },
+    {
+      "codPostal": "2000011",
+      "provinciaId": "21",
+      "localidad": "SALADILLO"
+    },
+    {
+      "codPostal": "2000012",
+      "provinciaId": "21",
+      "localidad": "EMPALME GRANEROS"
+    },
+    {
+      "codPostal": "2000013",
+      "provinciaId": "21",
+      "localidad": "ANTARTIDA ARGENTINA"
+    },
+    {
+      "codPostal": "2000014",
+      "provinciaId": "21",
+      "localidad": "BARRIO ACINDAR"
+    },
+    {
+      "codPostal": "2000015",
+      "provinciaId": "21",
+      "localidad": "BARRIO BELGRANO (ROSARIO)"
+    },
+    {
+      "codPostal": "2000016",
+      "provinciaId": "21",
+      "localidad": "BARRIO CELEDONIO ESCALADA"
+    },
+    {
+      "codPostal": "2000017",
+      "provinciaId": "21",
+      "localidad": "BARRIO ESPAÑA Y HOSPITALES"
+    },
+    {
+      "codPostal": "2000018",
+      "provinciaId": "21",
+      "localidad": "BARRIO GRAL LAS HERAS"
+    },
+    {
+      "codPostal": "2000003",
+      "provinciaId": "21",
+      "localidad": "BARRIO GENERAL JOSE DE SA"
+    }
+  ],
+  "2300": [
+    {
+      "codPostal": "2300000",
+      "provinciaId": "21",
+      "localidad": "BARRIO PUZZI"
+    },
+    {
+      "codPostal": "2300001",
+      "provinciaId": "21",
+      "localidad": "BARRIO VILLA ROSA"
+    },
+    {
+      "codPostal": "2300002",
+      "provinciaId": "21",
+      "localidad": "COLONIA BELLA ITALIA"
+    },
+    {
+      "codPostal": "2300003",
+      "provinciaId": "21",
+      "localidad": "RAFAELA"
+    }
+  ],
+  "2800": [
+    {
+      "codPostal": "2800001",
+      "provinciaId": "2",
+      "localidad": "CANAL MARTIN IRIGOYEN"
+    },
+    {
+      "codPostal": "2800002",
+      "provinciaId": "2",
+      "localidad": "VILLA ANGUS"
+    },
+    {
+      "codPostal": "2800003",
+      "provinciaId": "2",
+      "localidad": "VILLA FOX"
+    },
+    {
+      "codPostal": "2800004",
+      "provinciaId": "2",
+      "localidad": "VILLA MASSONI"
+    },
+    {
+      "codPostal": "2800005",
+      "provinciaId": "2",
+      "localidad": "ARROYO BOTIJA FALSA"
+    },
+    {
+      "codPostal": "2800006",
+      "provinciaId": "2",
+      "localidad": "ARROYO YACURUTU"
+    },
+    {
+      "codPostal": "2800008",
+      "provinciaId": "2",
+      "localidad": "ZARATE"
+    },
+    {
+      "codPostal": "2800000",
+      "provinciaId": "2",
+      "localidad": "BARRIO SAN JACINTO"
+    },
+    {
+      "codPostal": "2800007",
+      "provinciaId": "2",
+      "localidad": "ARROYO NEGRO ( PDO. ZARATE )"
+    }
+  ],
+  "2801": [
+    {
+      "codPostal": "2801001",
+      "provinciaId": "2",
+      "localidad": "EL TATU"
+    },
+    {
+      "codPostal": "2801002",
+      "provinciaId": "2",
+      "localidad": "ESCALADA"
+    },
+    {
+      "codPostal": "2801000",
+      "provinciaId": "2",
+      "localidad": "ALTO VERDE"
+    }
+  ],
+  "2804": [
+    {
+      "codPostal": "2804000",
+      "provinciaId": "2",
+      "localidad": "RUTA 9 KILOMETRO 72"
+    },
+    {
+      "codPostal": "2804001",
+      "provinciaId": "2",
+      "localidad": "EL FENIX"
+    },
+    {
+      "codPostal": "2804003",
+      "provinciaId": "2",
+      "localidad": "BARRIO LUBO"
+    },
+    {
+      "codPostal": "2804004",
+      "provinciaId": "2",
+      "localidad": "KILOMETRO 88 ( PDO. CAMPANA )"
+    },
+    {
+      "codPostal": "2804005",
+      "provinciaId": "2",
+      "localidad": "BARRIO VILLA NUEVA"
+    },
+    {
+      "codPostal": "2804006",
+      "provinciaId": "2",
+      "localidad": "CAMPANA"
+    },
+    {
+      "codPostal": "2804002",
+      "provinciaId": "2",
+      "localidad": "BARRIO LAS ACACIAS ( PDO. CAMPANA )"
+    }
+  ],
+  "2930": [
+    {
+      "codPostal": "2930000",
+      "provinciaId": "2",
+      "localidad": "LA BUENA MOZA"
+    },
+    {
+      "codPostal": "2930001",
+      "provinciaId": "2",
+      "localidad": "LAS CANALETAS"
+    },
+    {
+      "codPostal": "2930002",
+      "provinciaId": "2",
+      "localidad": "RUTA 9 KILOMETRO 1695"
+    },
+    {
+      "codPostal": "2930003",
+      "provinciaId": "2",
+      "localidad": "BARRIO COBOS"
+    },
+    {
+      "codPostal": "2930004",
+      "provinciaId": "2",
+      "localidad": "BARRIO LAS CANALETAS"
+    },
+    {
+      "codPostal": "2930005",
+      "provinciaId": "2",
+      "localidad": "SAN PEDRO"
+    },
+    {
+      "codPostal": "2930006",
+      "provinciaId": "2",
+      "localidad": "VILLA DEPIETRI"
+    },
+    {
+      "codPostal": "2930007",
+      "provinciaId": "2",
+      "localidad": "VILLA SARITA"
+    },
+    {
+      "codPostal": "2930008",
+      "provinciaId": "2",
+      "localidad": "VILLAIGRILLO"
+    }
+  ],
+  "3000": [
+    {
+      "codPostal": "3000001",
+      "provinciaId": "21",
+      "localidad": "CARCEL PUBLICA"
+    },
+    {
+      "codPostal": "3000002",
+      "provinciaId": "21",
+      "localidad": "BARRIO VILLA MARIA SELVA"
+    },
+    {
+      "codPostal": "3000003",
+      "provinciaId": "21",
+      "localidad": "BARRIO VILLA DEL PARQUE"
+    },
+    {
+      "codPostal": "3000004",
+      "provinciaId": "21",
+      "localidad": "BARRIO TRANSPORTES"
+    },
+    {
+      "codPostal": "3000005",
+      "provinciaId": "21",
+      "localidad": "BARRIO PROGRESISTAS"
+    },
+    {
+      "codPostal": "3000006",
+      "provinciaId": "21",
+      "localidad": "BARRIO PRESIDENTE ROQUE S."
+    },
+    {
+      "codPostal": "3000007",
+      "provinciaId": "21",
+      "localidad": "BARRIO SCARAFFIA"
+    },
+    {
+      "codPostal": "3000008",
+      "provinciaId": "21",
+      "localidad": "BARRIO SUD ( DPTO. CAPITAL )"
+    },
+    {
+      "codPostal": "3000009",
+      "provinciaId": "21",
+      "localidad": "BARRIO SAN LORENZO"
+    },
+    {
+      "codPostal": "3000010",
+      "provinciaId": "21",
+      "localidad": "BARRANQUITAS"
+    },
+    {
+      "codPostal": "3000011",
+      "provinciaId": "21",
+      "localidad": "BARRIO CIUDADELA"
+    },
+    {
+      "codPostal": "3000012",
+      "provinciaId": "21",
+      "localidad": "BARRIO LOS HORNOS"
+    },
+    {
+      "codPostal": "3000013",
+      "provinciaId": "21",
+      "localidad": "BARRIO CABAYA LEIVA"
+    },
+    {
+      "codPostal": "3000014",
+      "provinciaId": "21",
+      "localidad": "BARRIO BELGRANO"
+    },
+    {
+      "codPostal": "3000015",
+      "provinciaId": "21",
+      "localidad": "HOSPITAL PSIQUIATRICO SAN"
+    },
+    {
+      "codPostal": "3000016",
+      "provinciaId": "21",
+      "localidad": "KILOMETRO 9 ( APEADERO FCGB )"
+    },
+    {
+      "codPostal": "3000018",
+      "provinciaId": "21",
+      "localidad": "VILLA YAPEYU"
+    },
+    {
+      "codPostal": "3000019",
+      "provinciaId": "21",
+      "localidad": "VILLA MARIA SELVA"
+    },
+    {
+      "codPostal": "3000020",
+      "provinciaId": "21",
+      "localidad": "PIQUETE"
+    },
+    {
+      "codPostal": "3000021",
+      "provinciaId": "21",
+      "localidad": "PUEBLO CANDIOTI"
+    },
+    {
+      "codPostal": "3000022",
+      "provinciaId": "21",
+      "localidad": "SANTA FE"
+    },
+    {
+      "codPostal": "3000000",
+      "provinciaId": "21",
+      "localidad": "BARRIO NUEVE DE JULIO"
+    },
+    {
+      "codPostal": "3000017",
+      "provinciaId": "21",
+      "localidad": "VILLA DON BOSCO"
+    }
+  ],
+  "4000": [
+    {
+      "codPostal": "4000000",
+      "provinciaId": "23",
+      "localidad": "CHACRAS AL OESTE"
+    },
+    {
+      "codPostal": "4000001",
+      "provinciaId": "23",
+      "localidad": "KILOMETRO 810 ( APEADERO FCGB )"
+    },
+    {
+      "codPostal": "4000002",
+      "provinciaId": "23",
+      "localidad": "VILLA LUJAN"
+    },
+    {
+      "codPostal": "4000003",
+      "provinciaId": "23",
+      "localidad": "VILLA ZENON J. SANTILLAN"
+    },
+    {
+      "codPostal": "4000004",
+      "provinciaId": "23",
+      "localidad": "VILLA NUEVE DE JULIO"
+    },
+    {
+      "codPostal": "4000006",
+      "provinciaId": "23",
+      "localidad": "VILLA URQUIZA"
+    },
+    {
+      "codPostal": "4000007",
+      "provinciaId": "23",
+      "localidad": "TUCUMAN"
+    },
+    {
+      "codPostal": "4000009",
+      "provinciaId": "23",
+      "localidad": "BARRIO NICOLAS AVELLANEDA"
+    },
+    {
+      "codPostal": "4000010",
+      "provinciaId": "23",
+      "localidad": "BARRIO OESTE"
+    },
+    {
+      "codPostal": "4000012",
+      "provinciaId": "23",
+      "localidad": "BARRIO SAN BERNARDO"
+    },
+    {
+      "codPostal": "4000013",
+      "provinciaId": "23",
+      "localidad": "BARRIO OBISPO PIEDRABUENA"
+    },
+    {
+      "codPostal": "4000014",
+      "provinciaId": "23",
+      "localidad": "ALTO LA POLVORA"
+    },
+    {
+      "codPostal": "4000015",
+      "provinciaId": "23",
+      "localidad": "BAJO DE LA POLVORA"
+    },
+    {
+      "codPostal": "4000016",
+      "provinciaId": "23",
+      "localidad": "BARRIO BELGRANO ( DPTO. TUCUMAN )"
+    },
+    {
+      "codPostal": "4000018",
+      "provinciaId": "23",
+      "localidad": "BARRIO LOS PINOS"
+    },
+    {
+      "codPostal": "4000019",
+      "provinciaId": "23",
+      "localidad": "BARRIO JUAN BAUTISTA ALBE"
+    },
+    {
+      "codPostal": "4000020",
+      "provinciaId": "23",
+      "localidad": "BARRIO JOHN F. KENNEDY"
+    },
+    {
+      "codPostal": "4000021",
+      "provinciaId": "23",
+      "localidad": "BARRIO HIPOLITO YRIGOYEN"
+    },
+    {
+      "codPostal": "4000022",
+      "provinciaId": "23",
+      "localidad": "BARRIO FLORESTA"
+    },
+    {
+      "codPostal": "4000023",
+      "provinciaId": "23",
+      "localidad": "BARRIO ESTEBAN ECHEVERRIA"
+    },
+    {
+      "codPostal": "4000025",
+      "provinciaId": "23",
+      "localidad": "BARRIO EL BOSQUE"
+    },
+    {
+      "codPostal": "4000026",
+      "provinciaId": "23",
+      "localidad": "BARRIO MARCONI"
+    },
+    {
+      "codPostal": "4000028",
+      "provinciaId": "23",
+      "localidad": "SAN MIGUEL DE TUCUMAN"
+    },
+    {
+      "codPostal": "4000029",
+      "provinciaId": "23",
+      "localidad": "INGENIO MANANTIAL"
+    },
+    {
+      "codPostal": "4000005",
+      "provinciaId": "23",
+      "localidad": "VILLA SAN CAYETANO"
+    },
+    {
+      "codPostal": "4000011",
+      "provinciaId": "23",
+      "localidad": "BARRIO VILLA ALEM"
+    },
+    {
+      "codPostal": "4000017",
+      "provinciaId": "23",
+      "localidad": "BARRIO AGUA Y ENERGIA"
+    },
+    {
+      "codPostal": "4000024",
+      "provinciaId": "23",
+      "localidad": "BARRIO EL PARQUE"
+    },
+    {
+      "codPostal": "4000027",
+      "provinciaId": "23",
+      "localidad": "MERCADO NORTE ( APEADERO FCGB )"
+    },
+    {
+      "codPostal": "4000030",
+      "provinciaId": "23",
+      "localidad": "MUÑECAS"
+    },
+    {
+      "codPostal": "4000008",
+      "provinciaId": "23",
+      "localidad": "VILLA AMALIA"
+    }
+  ],
+  "4234": [
+    {
+      "codPostal": "4234500",
+      "provinciaId": "3",
+      "localidad": "ACHALCO"
+    },
+    {
+      "codPostal": "4234002",
+      "provinciaId": "3",
+      "localidad": "EL SIMBOL"
+    },
+    {
+      "codPostal": "4234005",
+      "provinciaId": "3",
+      "localidad": "TAPSO"
+    },
+    {
+      "codPostal": "4234006",
+      "provinciaId": "3",
+      "localidad": "LOS MORTEROS ( DPTO. EL ALTO )"
+    },
+    {
+      "codPostal": "4234008",
+      "provinciaId": "3",
+      "localidad": "LAS LOMITAS ( DPTO. EL ALTO )"
+    },
+    {
+      "codPostal": "4234009",
+      "provinciaId": "3",
+      "localidad": "LA CALERA ( DPTO. EL ALTO )"
+    },
+    {
+      "codPostal": "4234010",
+      "provinciaId": "3",
+      "localidad": "LA QUEBRADA ( DPTO. EL ALTO )"
+    },
+    {
+      "codPostal": "4234012",
+      "provinciaId": "3",
+      "localidad": "CHAYAR LAGUNA"
+    },
+    {
+      "codPostal": "4234000",
+      "provinciaId": "22",
+      "localidad": "KILOMETRO 1098 ( APEADERO FCGB )"
+    },
+    {
+      "codPostal": "4234001",
+      "provinciaId": "3",
+      "localidad": "AYAPASO"
+    },
+    {
+      "codPostal": "4234004",
+      "provinciaId": "3",
+      "localidad": "SAN MARTIN ( DPTO. ANCASTI )"
+    },
+    {
+      "codPostal": "4234007",
+      "provinciaId": "3",
+      "localidad": "KILOMETRO 1093 ( PARADA FCGB )"
+    },
+    {
+      "codPostal": "4234011",
+      "provinciaId": "3",
+      "localidad": "POZO GRANDE"
+    },
+    {
+      "codPostal": "4234003",
+      "provinciaId": "3",
+      "localidad": "ICHIPUCA"
+    },
+    {
+      "codPostal": "4234501",
+      "provinciaId": "3",
+      "localidad": "AYAPASO"
+    },
+    {
+      "codPostal": "4234502",
+      "provinciaId": "3",
+      "localidad": "EL SIMBOL"
+    },
+    {
+      "codPostal": "4234503",
+      "provinciaId": "3",
+      "localidad": "ICHIPUCA"
+    },
+    {
+      "codPostal": "4234504",
+      "provinciaId": "3",
+      "localidad": "SAN MARTIN (TAPSO-D? ANCASTI)"
+    },
+    {
+      "codPostal": "4234505",
+      "provinciaId": "3",
+      "localidad": "TAPSO"
+    },
+    {
+      "codPostal": "4234506",
+      "provinciaId": "3",
+      "localidad": "LOS MORTEROS (TAPSO-D? EL ALTO"
+    },
+    {
+      "codPostal": "4234507",
+      "provinciaId": "3",
+      "localidad": "KILOMETRO 1093 (PARADA FCGB)"
+    },
+    {
+      "codPostal": "4234508",
+      "provinciaId": "3",
+      "localidad": "LAS LOMITAS (TAPSO-D? EL ALTO)"
+    },
+    {
+      "codPostal": "4234509",
+      "provinciaId": "3",
+      "localidad": "LA CALERA (TAPSO-D? EL ALTO)"
+    },
+    {
+      "codPostal": "4234510",
+      "provinciaId": "3",
+      "localidad": "LA QUEBRADA (TAPSO-D? EL ALTO)"
+    },
+    {
+      "codPostal": "4234511",
+      "provinciaId": "3",
+      "localidad": "POZO GRANDE"
+    },
+    {
+      "codPostal": "4234512",
+      "provinciaId": "3",
+      "localidad": "CHAYAR LAGUNA"
+    }
+  ],
+  "4700": [
+    {
+      "codPostal": "4700000",
+      "provinciaId": "3",
+      "localidad": "CHACABUCO"
+    },
+    {
+      "codPostal": "4700001",
+      "provinciaId": "3",
+      "localidad": "RIO DEL TALA"
+    },
+    {
+      "codPostal": "4700002",
+      "provinciaId": "3",
+      "localidad": "SAN FDO DEL VALLE DE CATAMARCA"
+    },
+    {
+      "codPostal": "4700004",
+      "provinciaId": "3",
+      "localidad": "LA AGUADA ( DPTO. CAPITAL )"
+    },
+    {
+      "codPostal": "4700007",
+      "provinciaId": "3",
+      "localidad": "LAS TEJAS DE VALLE VIEJO"
+    },
+    {
+      "codPostal": "4700009",
+      "provinciaId": "3",
+      "localidad": "LAS VARITAS"
+    },
+    {
+      "codPostal": "4700010",
+      "provinciaId": "3",
+      "localidad": "LA CHACARITA DE LOS PADRE"
+    },
+    {
+      "codPostal": "4700012",
+      "provinciaId": "3",
+      "localidad": "BANDA VARELA"
+    },
+    {
+      "codPostal": "4700015",
+      "provinciaId": "3",
+      "localidad": "CATAMARCA"
+    },
+    {
+      "codPostal": "4700016",
+      "provinciaId": "3",
+      "localidad": "VILLA CUBAS"
+    },
+    {
+      "codPostal": "4700003",
+      "provinciaId": "3",
+      "localidad": "LOMA CORTADA"
+    },
+    {
+      "codPostal": "4700006",
+      "provinciaId": "3",
+      "localidad": "LA CHACARITA"
+    },
+    {
+      "codPostal": "4700008",
+      "provinciaId": "3",
+      "localidad": "LAZARETO"
+    },
+    {
+      "codPostal": "4700011",
+      "provinciaId": "3",
+      "localidad": "LA CALERA ( DPTO. CAPITAL )"
+    },
+    {
+      "codPostal": "4700017",
+      "provinciaId": "3",
+      "localidad": "VILLA PARQUE CHACABUCO"
+    },
+    {
+      "codPostal": "4700013",
+      "provinciaId": "3",
+      "localidad": "EL TALA ( DPTO. CAPITAL )"
+    },
+    {
+      "codPostal": "4700005",
+      "provinciaId": "3",
+      "localidad": "LA BREA ( DPTO. CAPITAL )"
+    },
+    {
+      "codPostal": "4700014",
+      "provinciaId": "3",
+      "localidad": "BARRIO LA VIYITA"
+    }
+  ],
+  "4711": [
+    {
+      "codPostal": "4711000",
+      "provinciaId": "3",
+      "localidad": "EL POTRERILLO"
+    },
+    {
+      "codPostal": "4711001",
+      "provinciaId": "3",
+      "localidad": "HUAYCAMA ( DPTO. AMBATO )"
+    },
+    {
+      "codPostal": "4711002",
+      "provinciaId": "3",
+      "localidad": "ISLA LARGA"
+    },
+    {
+      "codPostal": "4711004",
+      "provinciaId": "3",
+      "localidad": "EL RODEO GRANDE"
+    },
+    {
+      "codPostal": "4711006",
+      "provinciaId": "3",
+      "localidad": "AMBATO"
+    },
+    {
+      "codPostal": "4711007",
+      "provinciaId": "3",
+      "localidad": "SIERRA BRAVA"
+    },
+    {
+      "codPostal": "4711009",
+      "provinciaId": "3",
+      "localidad": "CASAS VIEJAS ( DPTO. AMBATO )"
+    },
+    {
+      "codPostal": "4711012",
+      "provinciaId": "3",
+      "localidad": "LAS CHACRITAS"
+    },
+    {
+      "codPostal": "4711013",
+      "provinciaId": "3",
+      "localidad": "LA PUERTA"
+    },
+    {
+      "codPostal": "4711015",
+      "provinciaId": "3",
+      "localidad": "LOS VARELA"
+    },
+    {
+      "codPostal": "4711016",
+      "provinciaId": "3",
+      "localidad": "LOS TALAS"
+    },
+    {
+      "codPostal": "4711018",
+      "provinciaId": "3",
+      "localidad": "LOS GUINDOS"
+    },
+    {
+      "codPostal": "4711020",
+      "provinciaId": "3",
+      "localidad": "LOS NARVAEZ"
+    },
+    {
+      "codPostal": "4711023",
+      "provinciaId": "3",
+      "localidad": "CONDOR HUASI ( DPTO. ANDALGALA )"
+    },
+    {
+      "codPostal": "4711024",
+      "provinciaId": "3",
+      "localidad": "COLLAGASTA"
+    },
+    {
+      "codPostal": "4711026",
+      "provinciaId": "3",
+      "localidad": "EL PIE DE LA CUESTA"
+    },
+    {
+      "codPostal": "4711027",
+      "provinciaId": "3",
+      "localidad": "EL PARQUE"
+    },
+    {
+      "codPostal": "4711028",
+      "provinciaId": "3",
+      "localidad": "EL NOGAL"
+    },
+    {
+      "codPostal": "4711031",
+      "provinciaId": "3",
+      "localidad": "EL ARBOL SOLO"
+    },
+    {
+      "codPostal": "4711003",
+      "provinciaId": "3",
+      "localidad": "HUMAYA"
+    },
+    {
+      "codPostal": "4711008",
+      "provinciaId": "3",
+      "localidad": "SINGUIL"
+    },
+    {
+      "codPostal": "4711010",
+      "provinciaId": "3",
+      "localidad": "LA AGUADA ( DPTO. AMBATO )"
+    },
+    {
+      "codPostal": "4711014",
+      "provinciaId": "3",
+      "localidad": "LOS CASTILLOS"
+    },
+    {
+      "codPostal": "4711017",
+      "provinciaId": "3",
+      "localidad": "LOS NAVARROS"
+    },
+    {
+      "codPostal": "4711019",
+      "provinciaId": "3",
+      "localidad": "LOS MORTERITOS"
+    },
+    {
+      "codPostal": "4711022",
+      "provinciaId": "3",
+      "localidad": "COLPES AMBATO"
+    },
+    {
+      "codPostal": "4711025",
+      "provinciaId": "3",
+      "localidad": "EL POLEAR ( DPTO. AMBATO )"
+    },
+    {
+      "codPostal": "4711029",
+      "provinciaId": "3",
+      "localidad": "EL CHORRO ( DPTO. AMBATO )"
+    },
+    {
+      "codPostal": "4711032",
+      "provinciaId": "3",
+      "localidad": "CHUCHUCARUANA"
+    },
+    {
+      "codPostal": "4711021",
+      "provinciaId": "3",
+      "localidad": "POMANCILLO"
+    },
+    {
+      "codPostal": "4711011",
+      "provinciaId": "3",
+      "localidad": "LAS PAMPITAS ( DPTO. AMBATO )"
+    },
+    {
+      "codPostal": "4711005",
+      "provinciaId": "3",
+      "localidad": "EL TABIQUE"
+    },
+    {
+      "codPostal": "4711030",
+      "provinciaId": "3",
+      "localidad": "EL BOLSON ( DPTO. AMBATO )"
+    },
+    {
+      "codPostal": "4711033",
+      "provinciaId": "3",
+      "localidad": "LA CARRERA"
+    }
+  ],
+  "5000": [
+    {
+      "codPostal": "5000009",
+      "provinciaId": "4",
+      "localidad": "BAJO PALERMO"
+    },
+    {
+      "codPostal": "5000010",
+      "provinciaId": "4",
+      "localidad": "EL TROPEZON"
+    },
+    {
+      "codPostal": "5000011",
+      "provinciaId": "4",
+      "localidad": "SAN MARTIN ( DPTO. CAPITAL )"
+    },
+    {
+      "codPostal": "5000012",
+      "provinciaId": "4",
+      "localidad": "BARRIO EMPLEADOS PUBLICOS"
+    },
+    {
+      "codPostal": "5000013",
+      "provinciaId": "4",
+      "localidad": "BARRIO JORGE NEWBERY"
+    },
+    {
+      "codPostal": "5000014",
+      "provinciaId": "4",
+      "localidad": "BARRIO LOS NARANJOS"
+    },
+    {
+      "codPostal": "5000016",
+      "provinciaId": "4",
+      "localidad": "BARRIO LAS VIOLETAS"
+    },
+    {
+      "codPostal": "5000017",
+      "provinciaId": "4",
+      "localidad": "BARRIO LAS FLORES"
+    },
+    {
+      "codPostal": "5000018",
+      "provinciaId": "4",
+      "localidad": "BARRIO KENNEDY"
+    },
+    {
+      "codPostal": "5000020",
+      "provinciaId": "4",
+      "localidad": "BARRIO GENERAL ARTIGAS"
+    },
+    {
+      "codPostal": "5000021",
+      "provinciaId": "4",
+      "localidad": "BARRIO HIPOLITO YRIGOYEN"
+    },
+    {
+      "codPostal": "5000022",
+      "provinciaId": "4",
+      "localidad": "BARRIO MARIANO FRAGUEIRO"
+    },
+    {
+      "codPostal": "5000023",
+      "provinciaId": "4",
+      "localidad": "BARRIO LOS OLMOS"
+    },
+    {
+      "codPostal": "5000024",
+      "provinciaId": "4",
+      "localidad": "BARRIO MIRIZZI"
+    },
+    {
+      "codPostal": "5000025",
+      "provinciaId": "4",
+      "localidad": "BARRIO PARQUE CHATEAU CAR"
+    },
+    {
+      "codPostal": "5000026",
+      "provinciaId": "4",
+      "localidad": "COLINAS DE VELEZ SARSFIEL"
+    },
+    {
+      "codPostal": "5000027",
+      "provinciaId": "4",
+      "localidad": "CIUDAD UNIVERSITARIA"
+    },
+    {
+      "codPostal": "5000028",
+      "provinciaId": "4",
+      "localidad": "BARRIO YAPEYU"
+    },
+    {
+      "codPostal": "5000029",
+      "provinciaId": "4",
+      "localidad": "BARRIO VILLA URQUIZA"
+    },
+    {
+      "codPostal": "5000030",
+      "provinciaId": "4",
+      "localidad": "BARRIO VILLA SARMIENTO"
+    },
+    {
+      "codPostal": "5000031",
+      "provinciaId": "4",
+      "localidad": "BARRIO VILLA SAN CARLOS"
+    },
+    {
+      "codPostal": "5000032",
+      "provinciaId": "4",
+      "localidad": "BARRIO VILLA PAEZ"
+    },
+    {
+      "codPostal": "5000033",
+      "provinciaId": "4",
+      "localidad": "BARRIO VILLA EL LIBERTADO"
+    },
+    {
+      "codPostal": "5000034",
+      "provinciaId": "4",
+      "localidad": "BARRIO SANTA ISABEL"
+    },
+    {
+      "codPostal": "5000035",
+      "provinciaId": "4",
+      "localidad": "BARRIO ROQUE SAENZ PEYA"
+    },
+    {
+      "codPostal": "5000036",
+      "provinciaId": "4",
+      "localidad": "BARRIO REMEDIOS DE ESCALA"
+    },
+    {
+      "codPostal": "5000037",
+      "provinciaId": "4",
+      "localidad": "BARRIO PRIMERA JUNTA"
+    },
+    {
+      "codPostal": "5000038",
+      "provinciaId": "4",
+      "localidad": "BARRIO PARQUE REPUBLICA"
+    },
+    {
+      "codPostal": "5000039",
+      "provinciaId": "4",
+      "localidad": "BARRIO PARQUE LICEO"
+    },
+    {
+      "codPostal": "5000040",
+      "provinciaId": "4",
+      "localidad": "BARRIO OYA"
+    },
+    {
+      "codPostal": "5000041",
+      "provinciaId": "4",
+      "localidad": "BARRIO PARQUE ATLANTIDA"
+    },
+    {
+      "codPostal": "5000043",
+      "provinciaId": "4",
+      "localidad": "VILLA ACHAVAL"
+    },
+    {
+      "codPostal": "5000044",
+      "provinciaId": "4",
+      "localidad": "VILLA LAS PALMAS"
+    },
+    {
+      "codPostal": "5000045",
+      "provinciaId": "4",
+      "localidad": "VILLA MAFEKIN"
+    },
+    {
+      "codPostal": "5000046",
+      "provinciaId": "4",
+      "localidad": "VILLA REVOL"
+    },
+    {
+      "codPostal": "5000047",
+      "provinciaId": "4",
+      "localidad": "VILLA MAURIZZI"
+    },
+    {
+      "codPostal": "5000048",
+      "provinciaId": "4",
+      "localidad": "VILLA CABRERA"
+    },
+    {
+      "codPostal": "5000049",
+      "provinciaId": "4",
+      "localidad": "VILLA AZALAIS OESTE"
+    },
+    {
+      "codPostal": "5000051",
+      "provinciaId": "4",
+      "localidad": "DOCTOR ARTURO M. BAS"
+    },
+    {
+      "codPostal": "5000000",
+      "provinciaId": "4",
+      "localidad": "ALTO ALBERDI"
+    },
+    {
+      "codPostal": "5000001",
+      "provinciaId": "4",
+      "localidad": "BARRIO CENTRO AMERICA"
+    },
+    {
+      "codPostal": "5000002",
+      "provinciaId": "4",
+      "localidad": "BARRIO COMERCIAL"
+    },
+    {
+      "codPostal": "5000004",
+      "provinciaId": "4",
+      "localidad": "BARRIO DEL PILAR"
+    },
+    {
+      "codPostal": "5000005",
+      "provinciaId": "4",
+      "localidad": "BARRIO COLON"
+    },
+    {
+      "codPostal": "5000006",
+      "provinciaId": "4",
+      "localidad": "BARRIO AYACUCHO"
+    },
+    {
+      "codPostal": "5000007",
+      "provinciaId": "4",
+      "localidad": "ALTO DE LOS VIDELA"
+    },
+    {
+      "codPostal": "5000008",
+      "provinciaId": "4",
+      "localidad": "BARRIO ACOSTA NORTE"
+    },
+    {
+      "codPostal": "5000050",
+      "provinciaId": "4",
+      "localidad": "CORDOBA"
+    },
+    {
+      "codPostal": "5000003",
+      "provinciaId": "4",
+      "localidad": "BARRIO DON BOSCO"
+    },
+    {
+      "codPostal": "5000019",
+      "provinciaId": "4",
+      "localidad": "BARRIO IPONA"
+    },
+    {
+      "codPostal": "5000015",
+      "provinciaId": "4",
+      "localidad": "BARRIO LOS MOLINOS"
+    },
+    {
+      "codPostal": "5000042",
+      "provinciaId": "4",
+      "localidad": "SAN VICENTE ( DPTO. CAPITAL )"
+    },
+    {
+      "codPostal": "5000052",
+      "provinciaId": "4",
+      "localidad": "ALBERDI"
+    },
+    {
+      "codPostal": "5000053",
+      "provinciaId": "4",
+      "localidad": "CLINICAS"
+    },
+    {
+      "codPostal": "5000054",
+      "provinciaId": "4",
+      "localidad": "DUCASSE"
+    },
+    {
+      "codPostal": "5000055",
+      "provinciaId": "4",
+      "localidad": "JUNIORS"
+    },
+    {
+      "codPostal": "5000056",
+      "provinciaId": "4",
+      "localidad": "LOS PINOS"
+    },
+    {
+      "codPostal": "5000057",
+      "provinciaId": "4",
+      "localidad": "NUEVA CORDOBA"
+    },
+    {
+      "codPostal": "5000058",
+      "provinciaId": "4",
+      "localidad": "PUEBLO COLON"
+    },
+    {
+      "codPostal": "5000059",
+      "provinciaId": "4",
+      "localidad": "PATRIA"
+    },
+    {
+      "codPostal": "5000060",
+      "provinciaId": "4",
+      "localidad": "PROVIDENCIA"
+    },
+    {
+      "codPostal": "5000061",
+      "provinciaId": "4",
+      "localidad": "QUINTA SANTA ANA"
+    },
+    {
+      "codPostal": "5000062",
+      "provinciaId": "4",
+      "localidad": "RESIDENCIAL OLIVOS"
+    },
+    {
+      "codPostal": "5000063",
+      "provinciaId": "4",
+      "localidad": "ROGELIO MARTINEZ"
+    },
+    {
+      "codPostal": "5000064",
+      "provinciaId": "4",
+      "localidad": "VILLA ARSENALES"
+    },
+    {
+      "codPostal": "5000065",
+      "provinciaId": "4",
+      "localidad": "GUEMES"
+    },
+    {
+      "codPostal": "5000066",
+      "provinciaId": "4",
+      "localidad": "GENERAL PAZ"
+    },
+    {
+      "codPostal": "5000067",
+      "provinciaId": "4",
+      "localidad": "AMPLIACION YAPEYU"
+    },
+    {
+      "codPostal": "5000068",
+      "provinciaId": "4",
+      "localidad": "BAJADA SAN ROQUE"
+    },
+    {
+      "codPostal": "5000069",
+      "provinciaId": "4",
+      "localidad": "CENTRO"
+    },
+    {
+      "codPostal": "5000070",
+      "provinciaId": "4",
+      "localidad": "CHACRA DE LA MERCED"
+    },
+    {
+      "codPostal": "5000071",
+      "provinciaId": "4",
+      "localidad": "HOGAR PROPIO (A. GRAL. P.)"
+    },
+    {
+      "codPostal": "5000073",
+      "provinciaId": "4",
+      "localidad": "QUINTAS DE SANTA ANA"
+    },
+    {
+      "codPostal": "5000074",
+      "provinciaId": "4",
+      "localidad": "SANGRE Y SOL"
+    },
+    {
+      "codPostal": "5000075",
+      "provinciaId": "4",
+      "localidad": "OLIVOS"
+    },
+    {
+      "codPostal": "5000076",
+      "provinciaId": "4",
+      "localidad": "COFICO"
+    },
+    {
+      "codPostal": "5000077",
+      "provinciaId": "4",
+      "localidad": "CUPANI"
+    },
+    {
+      "codPostal": "5000078",
+      "provinciaId": "4",
+      "localidad": "BELLA VISTA"
+    },
+    {
+      "codPostal": "5000079",
+      "provinciaId": "4",
+      "localidad": "BELLA VISTA OESTE"
+    },
+    {
+      "codPostal": "5000080",
+      "provinciaId": "4",
+      "localidad": "OBSERVATORIO"
+    },
+    {
+      "codPostal": "5000081",
+      "provinciaId": "4",
+      "localidad": "BAJO GRANDE"
+    },
+    {
+      "codPostal": "5000083",
+      "provinciaId": "4",
+      "localidad": "BARRANCA YACO"
+    },
+    {
+      "codPostal": "5000084",
+      "provinciaId": "4",
+      "localidad": "COFICO"
+    },
+    {
+      "codPostal": "5000072",
+      "provinciaId": "4",
+      "localidad": "PEREZONI (YAPEYU)"
+    },
+    {
+      "codPostal": "5000082",
+      "provinciaId": "4",
+      "localidad": "INDEPENDENCIA"
+    },
+    {
+      "codPostal": "5000085",
+      "provinciaId": "4",
+      "localidad": "DON BOSCO"
+    },
+    {
+      "codPostal": "5000086",
+      "provinciaId": "4",
+      "localidad": "INDUSTRIAL"
+    },
+    {
+      "codPostal": "5000087",
+      "provinciaId": "4",
+      "localidad": "ALEJANDRO CARBO"
+    },
+    {
+      "codPostal": "5000088",
+      "provinciaId": "4",
+      "localidad": "INAUDI"
+    },
+    {
+      "codPostal": "5000089",
+      "provinciaId": "4",
+      "localidad": "MIRIZZI"
+    },
+    {
+      "codPostal": "5000090",
+      "provinciaId": "4",
+      "localidad": "VILLA SAN ANTONIO"
+    },
+    {
+      "codPostal": "5000091",
+      "provinciaId": "4",
+      "localidad": "JERONIMO L. DE CABRERA"
+    }
+  ],
+  "5361": [
+    {
+      "codPostal": "5361002",
+      "provinciaId": "12",
+      "localidad": "CHAYARMUYO"
+    },
+    {
+      "codPostal": "5361003",
+      "provinciaId": "12",
+      "localidad": "LA HIGUERA"
+    },
+    {
+      "codPostal": "5361004",
+      "provinciaId": "12",
+      "localidad": "SANTO DOMINGO ( DPTO. FAMATINA )"
+    },
+    {
+      "codPostal": "5361005",
+      "provinciaId": "12",
+      "localidad": "TILIMUQUI"
+    },
+    {
+      "codPostal": "5361007",
+      "provinciaId": "12",
+      "localidad": "CAMPANAS"
+    },
+    {
+      "codPostal": "5361008",
+      "provinciaId": "12",
+      "localidad": "AICUYA"
+    },
+    {
+      "codPostal": "5361009",
+      "provinciaId": "12",
+      "localidad": "ALTO CARRIZAL"
+    },
+    {
+      "codPostal": "5361010",
+      "provinciaId": "12",
+      "localidad": "ANGULOS"
+    },
+    {
+      "codPostal": "5361011",
+      "provinciaId": "12",
+      "localidad": "ANTINACO"
+    },
+    {
+      "codPostal": "5361012",
+      "provinciaId": "12",
+      "localidad": "BARRIO DE GALLI"
+    },
+    {
+      "codPostal": "5361014",
+      "provinciaId": "12",
+      "localidad": "SANTA CRUZ ( DPTO. FAMATINA )"
+    },
+    {
+      "codPostal": "5361016",
+      "provinciaId": "12",
+      "localidad": "EL CHOCOY"
+    },
+    {
+      "codPostal": "5361017",
+      "provinciaId": "12",
+      "localidad": "EL PEDREGAL"
+    },
+    {
+      "codPostal": "5361018",
+      "provinciaId": "12",
+      "localidad": "EL POTRERILLO ( DPTO. FAMATINA )"
+    },
+    {
+      "codPostal": "5361019",
+      "provinciaId": "12",
+      "localidad": "LOS CORRALES"
+    },
+    {
+      "codPostal": "5361020",
+      "provinciaId": "12",
+      "localidad": "LOS TAMBILLOS"
+    },
+    {
+      "codPostal": "5361022",
+      "provinciaId": "12",
+      "localidad": "LOS SARMIENTOS"
+    },
+    {
+      "codPostal": "5361023",
+      "provinciaId": "12",
+      "localidad": "PITUIL"
+    },
+    {
+      "codPostal": "5361024",
+      "provinciaId": "12",
+      "localidad": "PLAZA VIEJA"
+    },
+    {
+      "codPostal": "5361000",
+      "provinciaId": "12",
+      "localidad": "CARRIZAL FAMATINA"
+    },
+    {
+      "codPostal": "5361006",
+      "provinciaId": "12",
+      "localidad": "BUENA VISTA ( DPTO. FAMATINA )"
+    },
+    {
+      "codPostal": "5361013",
+      "provinciaId": "12",
+      "localidad": "PUERTO ALEGRE ( DPTO. GRAL. LAVALLE )"
+    },
+    {
+      "codPostal": "5361021",
+      "provinciaId": "12",
+      "localidad": "MALLIGASTA"
+    },
+    {
+      "codPostal": "5361001",
+      "provinciaId": "12",
+      "localidad": "CARRIZALILLO"
+    },
+    {
+      "codPostal": "5361015",
+      "provinciaId": "12",
+      "localidad": "SAN MIGUEL ( DPTO. CHILECITO )"
+    }
+  ],
+  "5400": [
+    {
+      "codPostal": "5400001",
+      "provinciaId": "18",
+      "localidad": "MEDANITO"
+    },
+    {
+      "codPostal": "5400002",
+      "provinciaId": "18",
+      "localidad": "PRESBITERO FRANCISCO PERE"
+    },
+    {
+      "codPostal": "5400003",
+      "provinciaId": "18",
+      "localidad": "DESAMPARADOS"
+    },
+    {
+      "codPostal": "5400004",
+      "provinciaId": "18",
+      "localidad": "VILLA CAROLINA"
+    },
+    {
+      "codPostal": "5400005",
+      "provinciaId": "18",
+      "localidad": "VILLA MARINI"
+    },
+    {
+      "codPostal": "5400006",
+      "provinciaId": "18",
+      "localidad": "VILLA HUASIHUL"
+    },
+    {
+      "codPostal": "5400007",
+      "provinciaId": "18",
+      "localidad": "TALACASTO"
+    },
+    {
+      "codPostal": "5400008",
+      "provinciaId": "18",
+      "localidad": "TRINIDAD"
+    },
+    {
+      "codPostal": "5400009",
+      "provinciaId": "18",
+      "localidad": "BARRIO RIVADAVIA"
+    },
+    {
+      "codPostal": "5400010",
+      "provinciaId": "18",
+      "localidad": "BARRIO VILLA DEL CARMEN"
+    },
+    {
+      "codPostal": "5400011",
+      "provinciaId": "18",
+      "localidad": "BARRIO VILLA PALERMO"
+    },
+    {
+      "codPostal": "5400012",
+      "provinciaId": "18",
+      "localidad": "BARRIO CANADA"
+    },
+    {
+      "codPostal": "5400013",
+      "provinciaId": "18",
+      "localidad": "BARRIO JUAN XXIII"
+    },
+    {
+      "codPostal": "5400000",
+      "provinciaId": "18",
+      "localidad": "SAN JUAN"
+    },
+    {
+      "codPostal": "5400014",
+      "provinciaId": "18",
+      "localidad": "VILLA DEL CARRIL"
+    },
+    {
+      "codPostal": "5400015",
+      "provinciaId": "18",
+      "localidad": "CONCEPCION"
+    }
+  ],
+  "5500": [
+    {
+      "codPostal": "5500000",
+      "provinciaId": "13",
+      "localidad": "MENDOZA"
+    },
+    {
+      "codPostal": "5500001",
+      "provinciaId": "13",
+      "localidad": "SECCION SEXTA"
+    },
+    {
+      "codPostal": "5500002",
+      "provinciaId": "13",
+      "localidad": "VILLA TALLERES"
+    },
+    {
+      "codPostal": "5500003",
+      "provinciaId": "13",
+      "localidad": "CERRO DE LA GLORIA"
+    },
+    {
+      "codPostal": "5500004",
+      "provinciaId": "13",
+      "localidad": "BARRIO CANO"
+    },
+    {
+      "codPostal": "5500005",
+      "provinciaId": "13",
+      "localidad": "BARRIO GENERAL SAN MARTIN"
+    },
+    {
+      "codPostal": "5500006",
+      "provinciaId": "13",
+      "localidad": "BARRIO OESTE"
+    },
+    {
+      "codPostal": "5500007",
+      "provinciaId": "13",
+      "localidad": "BARRIO SANIDAD"
+    },
+    {
+      "codPostal": "5500008",
+      "provinciaId": "13",
+      "localidad": "BARRIO VIALIDAD"
+    },
+    {
+      "codPostal": "5500009",
+      "provinciaId": "13",
+      "localidad": "BARRIO OLIVARES"
+    }
+  ],
+  "5600": [
+    {
+      "codPostal": "5600000",
+      "provinciaId": "13",
+      "localidad": "PUEBLO DIAMANTE"
+    },
+    {
+      "codPostal": "5600001",
+      "provinciaId": "13",
+      "localidad": "PUEBLO SOTO"
+    },
+    {
+      "codPostal": "5600002",
+      "provinciaId": "13",
+      "localidad": "LOS TERNEROS ( EMBARCADERO FCGSM )"
+    },
+    {
+      "codPostal": "5600003",
+      "provinciaId": "13",
+      "localidad": "EL CERRITO"
+    },
+    {
+      "codPostal": "5600004",
+      "provinciaId": "13",
+      "localidad": "SAN RAFAEL"
+    }
+  ],
+  "5800": [
+    {
+      "codPostal": "5800000",
+      "provinciaId": "4",
+      "localidad": "MOLINOS FENIX ( DESVIO PARTICULAR FCGM )"
+    },
+    {
+      "codPostal": "5800001",
+      "provinciaId": "4",
+      "localidad": "PUEBLO ALBERDI"
+    },
+    {
+      "codPostal": "5800002",
+      "provinciaId": "4",
+      "localidad": "RIO CUARTO"
+    },
+    {
+      "codPostal": "5800003",
+      "provinciaId": "4",
+      "localidad": "BANDA NORTE"
+    },
+    {
+      "codPostal": "5800004",
+      "provinciaId": "4",
+      "localidad": "BARRIO ALBERDI ( DPTO. RIO IV )"
+    },
+    {
+      "codPostal": "5800005",
+      "provinciaId": "4",
+      "localidad": "BARRIO BRASCA"
+    },
+    {
+      "codPostal": "5800006",
+      "provinciaId": "4",
+      "localidad": "BARRIO ABILENE"
+    },
+    {
+      "codPostal": "5800007",
+      "provinciaId": "4",
+      "localidad": "KILOMETRO 136 ( DESVIO FCGSM )"
+    },
+    {
+      "codPostal": "5800008",
+      "provinciaId": "4",
+      "localidad": "BARRIO INDUSTRIAL"
+    },
+    {
+      "codPostal": "5800009",
+      "provinciaId": "4",
+      "localidad": "BARRIO MERCADO DE ABASTO"
+    },
+    {
+      "codPostal": "5800010",
+      "provinciaId": "4",
+      "localidad": "BARRIO PARQUE BIMACO"
+    },
+    {
+      "codPostal": "5800011",
+      "provinciaId": "4",
+      "localidad": "BARRIO SAN MARTIN"
+    },
+    {
+      "codPostal": "5800012",
+      "provinciaId": "4",
+      "localidad": "SAUCECITO"
+    },
+    {
+      "codPostal": "5800013",
+      "provinciaId": "4",
+      "localidad": "VILLA DALCAR"
+    }
+  ],
+  "5900": [
+    {
+      "codPostal": "5900002",
+      "provinciaId": "4",
+      "localidad": "BARRIO GENERAL PAZ"
+    },
+    {
+      "codPostal": "5900003",
+      "provinciaId": "4",
+      "localidad": "BARRIO FLORENTINO AMEGHIN"
+    },
+    {
+      "codPostal": "5900004",
+      "provinciaId": "4",
+      "localidad": "FABRICA MILITAR"
+    },
+    {
+      "codPostal": "5900005",
+      "provinciaId": "4",
+      "localidad": "LA HERRADURA"
+    },
+    {
+      "codPostal": "5900006",
+      "provinciaId": "4",
+      "localidad": "VILLA AURORA"
+    },
+    {
+      "codPostal": "5900007",
+      "provinciaId": "4",
+      "localidad": "VILLA MARIA ( DPTO. GRAL. SAN MARTIN )"
+    },
+    {
+      "codPostal": "5900008",
+      "provinciaId": "4",
+      "localidad": "VILLA EMILIA"
+    },
+    {
+      "codPostal": "5900009",
+      "provinciaId": "4",
+      "localidad": "BARRIO RIVADAVIA"
+    },
+    {
+      "codPostal": "5900010",
+      "provinciaId": "4",
+      "localidad": "MONTE DE LOS LAZOS"
+    },
+    {
+      "codPostal": "5900011",
+      "provinciaId": "4",
+      "localidad": "LAS CUATRO ESQUINAS"
+    },
+    {
+      "codPostal": "5900012",
+      "provinciaId": "4",
+      "localidad": "LAS PICHANAS"
+    },
+    {
+      "codPostal": "5900013",
+      "provinciaId": "4",
+      "localidad": "LAS PLAYAS"
+    },
+    {
+      "codPostal": "5900014",
+      "provinciaId": "4",
+      "localidad": "RAMON J. CARCANO"
+    },
+    {
+      "codPostal": "5900000",
+      "provinciaId": "4",
+      "localidad": "BARRIO GRAL. BELGRANO (DPTO. S MARTIN)"
+    },
+    {
+      "codPostal": "5900001",
+      "provinciaId": "4",
+      "localidad": "BARRIO GENERAL GUEMES"
+    }
+  ],
+  "6000": [
+    {
+      "codPostal": "6000007",
+      "provinciaId": "2",
+      "localidad": "VILLA TRIANGULO"
+    },
+    {
+      "codPostal": "6000009",
+      "provinciaId": "2",
+      "localidad": "VILLA MAYOR"
+    },
+    {
+      "codPostal": "6000010",
+      "provinciaId": "2",
+      "localidad": "BARRIO U. O. C. R. A."
+    },
+    {
+      "codPostal": "6000011",
+      "provinciaId": "2",
+      "localidad": "BARRIO VILLA ORTEGA"
+    },
+    {
+      "codPostal": "6000000",
+      "provinciaId": "2",
+      "localidad": "JUNIN"
+    },
+    {
+      "codPostal": "6000001",
+      "provinciaId": "2",
+      "localidad": "BARRIO CAROSIO"
+    },
+    {
+      "codPostal": "6000002",
+      "provinciaId": "2",
+      "localidad": "BARRIO GENERAL SAN MARTIN"
+    },
+    {
+      "codPostal": "6000003",
+      "provinciaId": "2",
+      "localidad": "VILLA BELGRANO ( PDO. JUNIN )"
+    },
+    {
+      "codPostal": "6000004",
+      "provinciaId": "2",
+      "localidad": "VILLA TALLERES"
+    },
+    {
+      "codPostal": "6000005",
+      "provinciaId": "2",
+      "localidad": "VILLA ORTEGA"
+    },
+    {
+      "codPostal": "6000006",
+      "provinciaId": "2",
+      "localidad": "VILLA YORK"
+    },
+    {
+      "codPostal": "6000008",
+      "provinciaId": "2",
+      "localidad": "VILLA PENOTTI"
+    },
+    {
+      "codPostal": "6000012",
+      "provinciaId": "2",
+      "localidad": "PUEBLO NUEVO ( PDO. JUNIN )"
+    }
+  ],
+  "6300": [
+    {
+      "codPostal": "6300000",
+      "provinciaId": "11",
+      "localidad": "SANTA ROSA"
+    },
+    {
+      "codPostal": "6300001",
+      "provinciaId": "11",
+      "localidad": "BARRIO VILLA DEL BUSTO"
+    },
+    {
+      "codPostal": "6300002",
+      "provinciaId": "11",
+      "localidad": "BARRIO VILLA PARQUE SANTI"
+    },
+    {
+      "codPostal": "6300003",
+      "provinciaId": "11",
+      "localidad": "BARRIO VILLA SANTILLAN"
+    },
+    {
+      "codPostal": "6300004",
+      "provinciaId": "11",
+      "localidad": "BARRANCAS COLORADAS ( DPTO. CAPITAL )"
+    },
+    {
+      "codPostal": "6300005",
+      "provinciaId": "11",
+      "localidad": "BARRIO FENIX"
+    },
+    {
+      "codPostal": "6300006",
+      "provinciaId": "11",
+      "localidad": "LA FORTUNA"
+    },
+    {
+      "codPostal": "6300008",
+      "provinciaId": "11",
+      "localidad": "LA MALVINA"
+    },
+    {
+      "codPostal": "6300009",
+      "provinciaId": "11",
+      "localidad": "COLONIA ESCALANTE"
+    },
+    {
+      "codPostal": "6300010",
+      "provinciaId": "11",
+      "localidad": "COLONIA LAGOS"
+    },
+    {
+      "codPostal": "6300011",
+      "provinciaId": "11",
+      "localidad": "EL MIRADOR DE JUAREZ"
+    },
+    {
+      "codPostal": "6300012",
+      "provinciaId": "11",
+      "localidad": "EL OASIS"
+    },
+    {
+      "codPostal": "6300013",
+      "provinciaId": "11",
+      "localidad": "MEDANO BLANCO"
+    },
+    {
+      "codPostal": "6300014",
+      "provinciaId": "11",
+      "localidad": "LA PRIMAVERA ( DPTO. CAPITAL )"
+    },
+    {
+      "codPostal": "6300015",
+      "provinciaId": "11",
+      "localidad": "LOS NOGALES"
+    },
+    {
+      "codPostal": "6300016",
+      "provinciaId": "11",
+      "localidad": "LAS MALVINAS"
+    },
+    {
+      "codPostal": "6300007",
+      "provinciaId": "11",
+      "localidad": "LA JUANITA ( DPTO. CAPITAL )"
+    }
+  ],
+  "7600": [
+    {
+      "codPostal": "7600000",
+      "provinciaId": "2",
+      "localidad": "EL MARTILLO"
+    },
+    {
+      "codPostal": "7600001",
+      "provinciaId": "2",
+      "localidad": "PUEBLO PERALTA RAMOS OEST"
+    },
+    {
+      "codPostal": "7600003",
+      "provinciaId": "2",
+      "localidad": "LAGUNA DEL SOLDADO"
+    },
+    {
+      "codPostal": "7600004",
+      "provinciaId": "2",
+      "localidad": "BARRIO 9 DE JULIO ( GRAL. PUEYRREDON )"
+    },
+    {
+      "codPostal": "7600005",
+      "provinciaId": "2",
+      "localidad": "BARRIO PARQUE CAMET"
+    },
+    {
+      "codPostal": "7600006",
+      "provinciaId": "2",
+      "localidad": "BARRIO PARQUE LA FLORIDA"
+    },
+    {
+      "codPostal": "7600007",
+      "provinciaId": "2",
+      "localidad": "BARRIO PRIMERA JUNTA"
+    },
+    {
+      "codPostal": "7600009",
+      "provinciaId": "2",
+      "localidad": "BASE NAVAL MAR DEL PLATA"
+    },
+    {
+      "codPostal": "7600010",
+      "provinciaId": "2",
+      "localidad": "BARRIO TIRO FEDERAL ( GRAL. PUEYRREDON )"
+    },
+    {
+      "codPostal": "7600011",
+      "provinciaId": "2",
+      "localidad": "BARRIO TIERRA DE ORO"
+    },
+    {
+      "codPostal": "7600012",
+      "provinciaId": "2",
+      "localidad": "BARRIO SAN JUAN ( GRAL. PUEYRREDON )"
+    },
+    {
+      "codPostal": "7600014",
+      "provinciaId": "2",
+      "localidad": "BARRIO PINARES"
+    },
+    {
+      "codPostal": "7600016",
+      "provinciaId": "2",
+      "localidad": "EL SOLDADO"
+    },
+    {
+      "codPostal": "7600017",
+      "provinciaId": "2",
+      "localidad": "BARRIO ALFAR"
+    },
+    {
+      "codPostal": "7600018",
+      "provinciaId": "2",
+      "localidad": "BARRIO BOSQUE ALEGRE"
+    },
+    {
+      "codPostal": "7600019",
+      "provinciaId": "2",
+      "localidad": "BARRIO LOS ANDES"
+    },
+    {
+      "codPostal": "7600021",
+      "provinciaId": "2",
+      "localidad": "BARRIO JUAN GREGORIO DE L."
+    },
+    {
+      "codPostal": "7600023",
+      "provinciaId": "2",
+      "localidad": "BARRIO GENERAL ROCA"
+    },
+    {
+      "codPostal": "7600024",
+      "provinciaId": "2",
+      "localidad": "BARRIO GASTRONOMICO"
+    },
+    {
+      "codPostal": "7600025",
+      "provinciaId": "2",
+      "localidad": "BARRIO FLORENTINO AMEGHIN"
+    },
+    {
+      "codPostal": "7600026",
+      "provinciaId": "2",
+      "localidad": "BARRIO FARO NORTE"
+    },
+    {
+      "codPostal": "7600027",
+      "provinciaId": "2",
+      "localidad": "BARRIO EMIR RAMON JUAREZ"
+    },
+    {
+      "codPostal": "7600028",
+      "provinciaId": "2",
+      "localidad": "BARRIO EL GAUCHO ( GRAL. PUEYRREDON )"
+    },
+    {
+      "codPostal": "7600029",
+      "provinciaId": "2",
+      "localidad": "BARRIO CONSTITUCION"
+    },
+    {
+      "codPostal": "7600030",
+      "provinciaId": "2",
+      "localidad": "BARRIO DON BOSCO"
+    },
+    {
+      "codPostal": "7600002",
+      "provinciaId": "2",
+      "localidad": "MAR DEL PLATA"
+    },
+    {
+      "codPostal": "7600008",
+      "provinciaId": "2",
+      "localidad": "BARRIO S. CAYETANO ( G. PUEYRREDON )"
+    },
+    {
+      "codPostal": "7600015",
+      "provinciaId": "2",
+      "localidad": "BARRIO PARQUE LURO"
+    },
+    {
+      "codPostal": "7600022",
+      "provinciaId": "2",
+      "localidad": "BARRIO JOSE MANUEL ESTRAD"
+    },
+    {
+      "codPostal": "7600020",
+      "provinciaId": "2",
+      "localidad": "BARRIO JURAMENTO"
+    },
+    {
+      "codPostal": "7600013",
+      "provinciaId": "2",
+      "localidad": "BARRIO SAN JOSE ( PDO. G. PUEYRREDON )"
+    },
+    {
+      "codPostal": "7600031",
+      "provinciaId": "2",
+      "localidad": "PUNTA MOGOTES"
+    },
+    {
+      "codPostal": "7600032",
+      "provinciaId": "2",
+      "localidad": "BARRIO PUEBLO NUEVO"
+    },
+    {
+      "codPostal": "7600033",
+      "provinciaId": "2",
+      "localidad": "BARRIO CAISAMAR"
+    },
+    {
+      "codPostal": "7600034",
+      "provinciaId": "2",
+      "localidad": "BARRIO DE LAS AVENIDAS"
+    },
+    {
+      "codPostal": "7600035",
+      "provinciaId": "2",
+      "localidad": "BARRIO PERALTA RAMOS"
+    }
+  ],
+  "8000": [
+    {
+      "codPostal": "8000000",
+      "provinciaId": "2",
+      "localidad": "ADELA CORTI"
+    },
+    {
+      "codPostal": "8000001",
+      "provinciaId": "2",
+      "localidad": "BAHIA BLANCA NOROESTE"
+    },
+    {
+      "codPostal": "8000002",
+      "provinciaId": "2",
+      "localidad": "BARRIO ALMAFUERTE ( PDO. BAHIA BLANCA )"
+    },
+    {
+      "codPostal": "8000004",
+      "provinciaId": "2",
+      "localidad": "BAHIA BLANCA"
+    },
+    {
+      "codPostal": "8000005",
+      "provinciaId": "2",
+      "localidad": "BARRIO KILOMETRO 5"
+    },
+    {
+      "codPostal": "8000006",
+      "provinciaId": "2",
+      "localidad": "BARRIO LOMA PARAGUAYA"
+    },
+    {
+      "codPostal": "8000007",
+      "provinciaId": "2",
+      "localidad": "BARRIO LA FALDA"
+    },
+    {
+      "codPostal": "8000008",
+      "provinciaId": "2",
+      "localidad": "BARRIO MALDONADO"
+    },
+    {
+      "codPostal": "8000009",
+      "provinciaId": "2",
+      "localidad": "VILLA BUENOS AIRES"
+    },
+    {
+      "codPostal": "8000010",
+      "provinciaId": "2",
+      "localidad": "VILLA SOLDATI"
+    },
+    {
+      "codPostal": "8000012",
+      "provinciaId": "2",
+      "localidad": "VILLA OLGA"
+    },
+    {
+      "codPostal": "8000013",
+      "provinciaId": "2",
+      "localidad": "VILLA OBRERA"
+    },
+    {
+      "codPostal": "8000014",
+      "provinciaId": "2",
+      "localidad": "VILLA NOCITO"
+    },
+    {
+      "codPostal": "8000015",
+      "provinciaId": "2",
+      "localidad": "VILLA LORETO"
+    },
+    {
+      "codPostal": "8000016",
+      "provinciaId": "2",
+      "localidad": "VILLA LIBRES"
+    },
+    {
+      "codPostal": "8000017",
+      "provinciaId": "2",
+      "localidad": "VILLA ITALIA ( PDO. BAHIA BLANCA )"
+    },
+    {
+      "codPostal": "8000018",
+      "provinciaId": "2",
+      "localidad": "VILLA CERRITO"
+    },
+    {
+      "codPostal": "8000019",
+      "provinciaId": "2",
+      "localidad": "VILLA DOMINGO PRONSATO"
+    },
+    {
+      "codPostal": "8000020",
+      "provinciaId": "2",
+      "localidad": "VILLA DELFINA"
+    },
+    {
+      "codPostal": "8000021",
+      "provinciaId": "2",
+      "localidad": "VILLA FLORESTA"
+    },
+    {
+      "codPostal": "8000022",
+      "provinciaId": "2",
+      "localidad": "BARRIO NOROESTE"
+    },
+    {
+      "codPostal": "8000023",
+      "provinciaId": "2",
+      "localidad": "BARRIO PARQUE FLORIDA"
+    },
+    {
+      "codPostal": "8000024",
+      "provinciaId": "2",
+      "localidad": "BARRIO PEDRO PICO"
+    },
+    {
+      "codPostal": "8000025",
+      "provinciaId": "2",
+      "localidad": "BARRIO SAN BLAS"
+    },
+    {
+      "codPostal": "8000026",
+      "provinciaId": "2",
+      "localidad": "BARRIO SAN ROQUE ( PDO. BAHIA BLANCA )"
+    },
+    {
+      "codPostal": "8000027",
+      "provinciaId": "2",
+      "localidad": "BARRIO SAN MARTIN ( PDO. BAHIA BLANCA )"
+    },
+    {
+      "codPostal": "8000028",
+      "provinciaId": "2",
+      "localidad": "BORDEU"
+    },
+    {
+      "codPostal": "8000029",
+      "provinciaId": "2",
+      "localidad": "BELLA VISTA ( PDO. BAHIA BLANCA )"
+    },
+    {
+      "codPostal": "8000031",
+      "provinciaId": "2",
+      "localidad": "BARRIO VILLA MUYIZ"
+    },
+    {
+      "codPostal": "8000032",
+      "provinciaId": "2",
+      "localidad": "BARRIO T. FEDERAL ( PDO. B. BLANCA )"
+    },
+    {
+      "codPostal": "8000033",
+      "provinciaId": "2",
+      "localidad": "BARRIO ROSARIO SUD"
+    },
+    {
+      "codPostal": "8000034",
+      "provinciaId": "2",
+      "localidad": "BARRIO PARQUE PATAGONIA"
+    },
+    {
+      "codPostal": "8000035",
+      "provinciaId": "2",
+      "localidad": "PUERTO GALVAN"
+    },
+    {
+      "codPostal": "8000036",
+      "provinciaId": "2",
+      "localidad": "CORONEL MALDONADO"
+    },
+    {
+      "codPostal": "8000037",
+      "provinciaId": "2",
+      "localidad": "CHOIQUE"
+    },
+    {
+      "codPostal": "8000030",
+      "provinciaId": "2",
+      "localidad": "BARRIO V. ALEGRE ( PDO. BAHIA BLANCA )"
+    },
+    {
+      "codPostal": "8000011",
+      "provinciaId": "2",
+      "localidad": "VILLA SANCHEZ ELIA"
+    },
+    {
+      "codPostal": "8000003",
+      "provinciaId": "2",
+      "localidad": "BARRIO AVELLANEDA ( PDO. BAHIA BLANCA )"
+    }
+  ],
+  "8300": [
+    {
+      "codPostal": "8300000",
+      "provinciaId": "15",
+      "localidad": "RINCON DE EMILIO"
+    },
+    {
+      "codPostal": "8300001",
+      "provinciaId": "15",
+      "localidad": "NEUQUEN"
+    },
+    {
+      "codPostal": "8300003",
+      "provinciaId": "15",
+      "localidad": "LAS PERLAS"
+    },
+    {
+      "codPostal": "8300004",
+      "provinciaId": "15",
+      "localidad": "LOMA DE LA LATA"
+    },
+    {
+      "codPostal": "8300005",
+      "provinciaId": "15",
+      "localidad": "BARRIO BOUQUET ROLDAN"
+    },
+    {
+      "codPostal": "8300006",
+      "provinciaId": "15",
+      "localidad": "BARRIO LIMAY"
+    },
+    {
+      "codPostal": "8300007",
+      "provinciaId": "15",
+      "localidad": "BARRIO EL PROGRESO"
+    },
+    {
+      "codPostal": "8300009",
+      "provinciaId": "15",
+      "localidad": "BARRIO MIKALCIUS"
+    },
+    {
+      "codPostal": "8300011",
+      "provinciaId": "15",
+      "localidad": "BARRIO PROVINCIAS UNIDAS"
+    },
+    {
+      "codPostal": "8300012",
+      "provinciaId": "15",
+      "localidad": "BARRIO NUESTRO HOGAR"
+    },
+    {
+      "codPostal": "8300002",
+      "provinciaId": "15",
+      "localidad": "PORTEZUELO GRANDE"
+    },
+    {
+      "codPostal": "8300008",
+      "provinciaId": "15",
+      "localidad": "BARRIO COLONIA CONFLUENCI"
+    },
+    {
+      "codPostal": "8300010",
+      "provinciaId": "15",
+      "localidad": "BARRIO SAN LORENZO"
+    }
+  ],
+  "8400": [
+    {
+      "codPostal": "8400500",
+      "provinciaId": "16",
+      "localidad": "LOS JUNCOS ( DPTO. PILCANIYEU )"
+    },
+    {
+      "codPostal": "8400002",
+      "provinciaId": "16",
+      "localidad": "PUERTO TIGRE"
+    },
+    {
+      "codPostal": "8400003",
+      "provinciaId": "16",
+      "localidad": "PUERTO PICHI MAHUIDA"
+    },
+    {
+      "codPostal": "8400004",
+      "provinciaId": "16",
+      "localidad": "PUERTO MORENO"
+    },
+    {
+      "codPostal": "8400005",
+      "provinciaId": "16",
+      "localidad": "PLAYA BONITA"
+    },
+    {
+      "codPostal": "8400006",
+      "provinciaId": "16",
+      "localidad": "PIEDRA BLANCA ( DPTO. BARILOCHE )"
+    },
+    {
+      "codPostal": "8400000",
+      "provinciaId": "15",
+      "localidad": "PUERTO ANCHORENA"
+    },
+    {
+      "codPostal": "8400001",
+      "provinciaId": "15",
+      "localidad": "ISLA VICTORIA"
+    },
+    {
+      "codPostal": "8400008",
+      "provinciaId": "16",
+      "localidad": "PENINSULA HUEMUL"
+    },
+    {
+      "codPostal": "8400009",
+      "provinciaId": "16",
+      "localidad": "RIO NIRIHUANO"
+    },
+    {
+      "codPostal": "8400010",
+      "provinciaId": "16",
+      "localidad": "SAN CARLOS DE BARILOCHE"
+    },
+    {
+      "codPostal": "8400011",
+      "provinciaId": "16",
+      "localidad": "LAGO GUTIERREZ"
+    },
+    {
+      "codPostal": "8400012",
+      "provinciaId": "16",
+      "localidad": "LAGO MORENO"
+    },
+    {
+      "codPostal": "8400013",
+      "provinciaId": "16",
+      "localidad": "BARRIO NIRECO"
+    },
+    {
+      "codPostal": "8400014",
+      "provinciaId": "16",
+      "localidad": "HOTEL BAHIA LOPEZ"
+    },
+    {
+      "codPostal": "8400015",
+      "provinciaId": "16",
+      "localidad": "HOTEL LOS COIHUES"
+    },
+    {
+      "codPostal": "8400016",
+      "provinciaId": "16",
+      "localidad": "BAHIA LOPEZ"
+    },
+    {
+      "codPostal": "8400017",
+      "provinciaId": "16",
+      "localidad": "BARRIO LAS QUINTAS"
+    },
+    {
+      "codPostal": "8400018",
+      "provinciaId": "16",
+      "localidad": "BARILOCHE"
+    },
+    {
+      "codPostal": "8400007",
+      "provinciaId": "16",
+      "localidad": "YIRIHUAO"
+    },
+    {
+      "codPostal": "8400501",
+      "provinciaId": "15",
+      "localidad": "ISLA VICTORIA"
+    }
+  ],
+  "8500": [
+    {
+      "codPostal": "8500000",
+      "provinciaId": "16",
+      "localidad": "ZANJON DE OYUELA"
+    },
+    {
+      "codPostal": "8500001",
+      "provinciaId": "16",
+      "localidad": "LA MESETA"
+    },
+    {
+      "codPostal": "8500002",
+      "provinciaId": "16",
+      "localidad": "VIEDMA"
+    },
+    {
+      "codPostal": "8500003",
+      "provinciaId": "16",
+      "localidad": "GENERAL LIBORIO BERNAL"
+    },
+    {
+      "codPostal": "8500004",
+      "provinciaId": "16",
+      "localidad": "BALNEARIO EL CONDOR"
+    },
+    {
+      "codPostal": "8500006",
+      "provinciaId": "16",
+      "localidad": "EL DIQUE"
+    },
+    {
+      "codPostal": "8500007",
+      "provinciaId": "16",
+      "localidad": "RUTA 3 KILOMETRO 974"
+    },
+    {
+      "codPostal": "8500008",
+      "provinciaId": "16",
+      "localidad": "SAN JAVIER"
+    },
+    {
+      "codPostal": "8500009",
+      "provinciaId": "16",
+      "localidad": "MATA NEGRA"
+    },
+    {
+      "codPostal": "8500005",
+      "provinciaId": "16",
+      "localidad": "BALNEARIO MASSINI"
+    }
+  ],
+  "9410": [
+    {
+      "codPostal": "9410001",
+      "provinciaId": "24",
+      "localidad": "ISLA DE AYO NUEVO"
+    },
+    {
+      "codPostal": "9410002",
+      "provinciaId": "24",
+      "localidad": "ISLA DE LOS ESTADOS"
+    },
+    {
+      "codPostal": "9410003",
+      "provinciaId": "24",
+      "localidad": "SAN JUAN DEL SALVAMENTO"
+    },
+    {
+      "codPostal": "9410004",
+      "provinciaId": "24",
+      "localidad": "PARADOR OLIVIA"
+    },
+    {
+      "codPostal": "9410005",
+      "provinciaId": "24",
+      "localidad": "PUERTO HARBERTON"
+    },
+    {
+      "codPostal": "9410007",
+      "provinciaId": "24",
+      "localidad": "PUNTA REMOLINOS"
+    },
+    {
+      "codPostal": "9410008",
+      "provinciaId": "24",
+      "localidad": "ALMIRANTE BROWN"
+    },
+    {
+      "codPostal": "9410010",
+      "provinciaId": "24",
+      "localidad": "BAHIA THETIS"
+    },
+    {
+      "codPostal": "9410011",
+      "provinciaId": "24",
+      "localidad": "BAHIA BUEN SUCESO"
+    },
+    {
+      "codPostal": "9410013",
+      "provinciaId": "24",
+      "localidad": "LAGUNA ESCONDIDA"
+    },
+    {
+      "codPostal": "9410014",
+      "provinciaId": "24",
+      "localidad": "LAPATAIA"
+    },
+    {
+      "codPostal": "9410000",
+      "provinciaId": "24",
+      "localidad": "HOSTERIA PETREL"
+    },
+    {
+      "codPostal": "9410006",
+      "provinciaId": "24",
+      "localidad": "RIO YRIGOYEN"
+    },
+    {
+      "codPostal": "9410012",
+      "provinciaId": "24",
+      "localidad": "USHUAIA"
+    },
+    {
+      "codPostal": "9410009",
+      "provinciaId": "24",
+      "localidad": "BARRIO MATADEROS"
+    }
+  ],
+  "9420": [
+    {
+      "codPostal": "9420000",
+      "provinciaId": "24",
+      "localidad": "CABO SAN PABLO"
+    },
+    {
+      "codPostal": "9420001",
+      "provinciaId": "24",
+      "localidad": "CAMPAMENTO LOS CHORRILLOS"
+    },
+    {
+      "codPostal": "9420003",
+      "provinciaId": "24",
+      "localidad": "TOLHUIN"
+    },
+    {
+      "codPostal": "9420004",
+      "provinciaId": "24",
+      "localidad": "LAGO KHAMI"
+    },
+    {
+      "codPostal": "9420005",
+      "provinciaId": "24",
+      "localidad": "EL PARAMO"
+    },
+    {
+      "codPostal": "9420006",
+      "provinciaId": "24",
+      "localidad": "ESTANCIA INES"
+    },
+    {
+      "codPostal": "9420008",
+      "provinciaId": "24",
+      "localidad": "HOSTERIA KAIKEN"
+    },
+    {
+      "codPostal": "9420009",
+      "provinciaId": "24",
+      "localidad": "FRIGORIFICO CAP RIO GRAND"
+    },
+    {
+      "codPostal": "9420010",
+      "provinciaId": "24",
+      "localidad": "ESTANCIA VIAMONTE"
+    },
+    {
+      "codPostal": "9420011",
+      "provinciaId": "24",
+      "localidad": "ESTANCIA MARIA BEHETY"
+    },
+    {
+      "codPostal": "9420013",
+      "provinciaId": "24",
+      "localidad": "SANTA INES"
+    },
+    {
+      "codPostal": "9420014",
+      "provinciaId": "24",
+      "localidad": "PUNTA MARIA"
+    },
+    {
+      "codPostal": "9420015",
+      "provinciaId": "24",
+      "localidad": "RUBY"
+    },
+    {
+      "codPostal": "9420016",
+      "provinciaId": "24",
+      "localidad": "RIO GRANDE"
+    },
+    {
+      "codPostal": "9420017",
+      "provinciaId": "24",
+      "localidad": "RIO EWAN"
+    },
+    {
+      "codPostal": "9420012",
+      "provinciaId": "24",
+      "localidad": "SAN SEBASTIAN"
+    },
+    {
+      "codPostal": "9420007",
+      "provinciaId": "24",
+      "localidad": "ESTANCIA JOSE MENENDEZ"
+    },
+    {
+      "codPostal": "9420002",
+      "provinciaId": "24",
+      "localidad": "CAMPAMENTO CENTRAL Y. P. F."
+    }
+  ],
+  "9421": [
+    {
+      "codPostal": "9421001",
+      "provinciaId": "24",
+      "localidad": "FRIGORIFICO CAP"
+    }
+  ]
+}

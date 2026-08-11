@@ -1,0 +1,20 @@
+{
+  "generado_en": "2026-08-07T19:46:40.199Z",
+  "fuente_webapp": "D:/OneDrive - Productores Asesores de Seguros Novecientos Once S.R.L/Seguros911/2-nuevo multi/recursos/top_modelos_webapp_autoiq.csv",
+  "filas_origen": 120,
+  "filas_propuestas": 121,
+  "marcas_origen": 12,
+  "marcas_propuestas": 16,
+  "aliases": 150,
+  "correspondencias": {
+    "exacto": 106,
+    "alias_normalizado": 7,
+    "familia_experta_version_especifica": 4,
+    "marca_experta_legacy": 2,
+    "requiere_revision": 2
+  },
+  "cache_experta": {
+    "anios_marcas": "2016-2026",
+    "claves_modelos": 164
+  }
+}

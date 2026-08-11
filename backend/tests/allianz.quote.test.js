@@ -4,9 +4,22 @@ const {
   resolveAllianzPayment,
   resolveAllianzPostalCode,
   buildAdditionalXml,
+  buildAccessoryXml,
+  resolveAllianzGncAccessory,
+  resolveAllianzGncAccessoryCode,
 } = require('../services/allianz/quote');
 
 describe('Allianz quote adapter', () => {
+  test('aplica la equivalencia comercial de CABA validada para CP 1014', () => {
+    expect(resolveAllianzPostalCode({
+      fila: { CP: '1014', localidad: 'CAPITAL FEDERAL', provincia: 'Capital Federal' },
+      postalAliases: [{
+        inputCodPostal: '1014', inputLocalidad: 'CAPITAL FEDERAL', inputProvincia: 'Capital Federal',
+        codPostal: '1005', codigoProvincia: '2',
+      }],
+    })).toMatchObject({ codigoPostal: '1005', codigoProvincia: '2', aliasApplied: true });
+  });
+
   test('resuelve forma de pago Allianz desde la cabecera', () => {
     expect(resolveAllianzPayment({
       cabecera: { medio_pago: 'Tarjeta de crédito' },
@@ -144,6 +157,101 @@ describe('Allianz quote adapter', () => {
     expect(buildAdditionalXml({ codigoDeAdicional: '001' })).toContain('<cot:codigoDeAdicional>001</cot:codigoDeAdicional>');
   });
 
+  test('usa la columna Suma como valor de vehiculo para Allianz', async () => {
+    const { envelope, requestMeta } = await buildAllianzEnvelope({
+      fila: {
+        infoautocod: '170882',
+        anio: '2026',
+        CP: '1605',
+        Suma: '35000000',
+      },
+      cabecera: {
+        medio_pago: 'Tarjeta de crédito',
+        fec_nac: '19850705',
+        sexo: 'M',
+      },
+      cfg: {
+        usuario: 'demo-user',
+        password: 'demo-pass',
+        application: 'AutoIQ',
+        sender_username: 'sender@example.com',
+        producer_code: 'M22054',
+        parametros_extras: {
+          tipo_poliza_default: 'M',
+          medio_pago_default: 'T',
+          cantidad_cuotas_default: '1',
+          codigo_condicion_iva_default: '1',
+          codigo_condicion_iibb_default: '1',
+          tipo_documento_default: 'D',
+          codigo_provincia_default: '0',
+          valor_vehiculo_default: '0',
+        },
+      },
+      today: new Date('2026-03-17T12:00:00Z'),
+    });
+
+    expect(requestMeta.valorVehiculo).toBe('35000000');
+    expect(envelope).toContain('<cot:valorVehiculo>35000000</cot:valorVehiculo>');
+  });
+
+  test('envia GNC como accesorio de vehiculo en Allianz', async () => {
+    expect(resolveAllianzGncAccessoryCode({
+      accessories: [{ codigo: '20', descripcion: 'GNC' }],
+    })).toBe('20');
+    expect(resolveAllianzGncAccessory({
+      cabecera: { gnc: '1', suma_gnc: '300000' },
+      cfg: { parametros_extras: {} },
+      accessories: [{ codigo: '20', descripcion: 'GNC' }],
+    })).toEqual({ codigoAccesorio: '20', sumaAccesorio: '300000' });
+    expect(buildAccessoryXml({ codigoAccesorio: '20', sumaAccesorio: '300000' }))
+      .toContain('<cot:codigoAccesorio>20</cot:codigoAccesorio>');
+
+    const { envelope, requestMeta } = await buildAllianzEnvelope({
+      fila: {
+        infoautocod: '18461',
+        anio: '2012',
+        CP: '1005',
+      },
+      cabecera: {
+        medio_pago: 'Tarjeta de crédito',
+        fec_nac: '19850705',
+        sexo: 'M',
+        gnc: '1',
+        suma_gnc: '300000',
+      },
+      cfg: {
+        usuario: 'demo-user',
+        password: 'demo-pass',
+        application: 'AutoIQ',
+        sender_username: 'sender@example.com',
+        producer_code: 'M22054',
+        parametros_extras: {
+          tipo_poliza_default: 'M',
+          medio_pago_default: 'T',
+          cantidad_cuotas_default: '1',
+          codigo_condicion_iva_default: '1',
+          codigo_condicion_iibb_default: '1',
+          tipo_documento_default: 'D',
+          codigo_provincia_default: '0',
+          valor_vehiculo_default: '0',
+          codigo_accesorio_gnc_default: '20',
+        },
+      },
+      accessories: [{ codigo: '20', descripcion: 'GNC' }],
+      today: new Date('2026-03-17T12:00:00Z'),
+    });
+
+    expect(requestMeta).toMatchObject({
+      codigoAccesorioGnc: '20',
+      sumaAccesorioGnc: '300000',
+    });
+    expect(envelope).toContain('<cot:ListaAccesorios>');
+    expect(envelope).toContain('<cot:AccesorioVehiculo>');
+    expect(envelope).toContain('<cot:codigoAccesorio>20</cot:codigoAccesorio>');
+    expect(envelope).toContain('<cot:sumaAccesorio>300000</cot:sumaAccesorio>');
+    expect(envelope.indexOf('<cot:ListaAccesorios>')).toBeLessThan(envelope.indexOf('</cot:VehiculoACotizar>'));
+  });
+
   test('usa esquema 002 para recargos en Allianz', async () => {
     const { envelope } = await buildAllianzEnvelope({
       fila: {
@@ -277,6 +385,7 @@ describe('Allianz quote adapter', () => {
               <cot1:descripcionDeProducto>BASICA</cot1:descripcionDeProducto>
               <cot1:prima>
                 <prim:importePrima xmlns:prim="http://xmlns.allianz.com.ar/Core/EBO/Allianz/Prima">146.75</prim:importePrima>
+                <prim:importePrimaAccesorio xmlns:prim="http://xmlns.allianz.com.ar/Core/EBO/Allianz/Prima">721.66</prim:importePrimaAccesorio>
               </cot1:prima>
               <cot1:premio>
                 <prem:importePremio xmlns:prem="http://xmlns.allianz.com.ar/Core/EBO/Allianz/Premio">180.8</prem:importePremio>
@@ -309,6 +418,7 @@ describe('Allianz quote adapter', () => {
       codigoDeCobertura: '36',
       descripcionDeCobertura: 'RESPONSABILIDAD CIVIL',
       importePrima: '146.75',
+      importePrimaAccesorio: '721.66',
       importePremio: '180.8',
       requiereInspeccion: 'false',
     });

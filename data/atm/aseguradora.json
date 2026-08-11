@@ -2,33 +2,52 @@
   "base_url": "https://wsatm.atmseguros.com.ar",
   "soap_path": "/index.php/soap",
   "soap_method": "AUTOS_Cotizar_PHP",
-
   "usuario": "PNONCECOM",
   "password": "125qNQVku1tC",
   "vendedor": "0067804766",
   "origen": "WS",
-
   "seccion_default": "3",
   "plan": "01",
-
   "contacto_tecnico": "",
   "contacto_comercial": "",
-
   "date_format": "ddmmAAAA",
-
   "vigencia": "mensual",
   "refacturacion": "mensual",
-  "ajuste_rc": 0,
-  "ajuste_casco": 0,
-
+  "ajuste_rc": "0",
+  "ajuste_casco": "0",
   "planes": [
-    { "codigo": "01", "nombre": "Responsabilidad Civil" },
-    { "codigo": "02", "nombre": "Terceros Completo" },
-    { "codigo": "03", "nombre": "Todo Riesgo c/ Franquicia" }
+    {
+      "codigo": "01",
+      "nombre": "Responsabilidad Civil"
+    },
+    {
+      "codigo": "02",
+      "nombre": "Terceros Completo"
+    },
+    {
+      "codigo": "03",
+      "nombre": "Todo Riesgo c/ Franquicia"
+    }
   ],
-
   "parametros_extras": {
     "formato_fecha_request": "ddMMyyyy",
     "moneda": "ARS"
-  }
+  },
+  "nombre_publico": "",
+  "sigla": "",
+  "activo": true,
+  "soap_action": "",
+  "auth_url": "",
+  "auth_method": "",
+  "quote_user": "",
+  "codAgt": "",
+  "claveAcceso": "",
+  "claveProcedencia": "",
+  "producer_code": "0067804766",
+  "supervisor_code": "",
+  "descuento_comercial": "30",
+  "clausula_ajuste": "20",
+  "tipoFacturacion": "",
+  "updated_at": "2026-04-22T16:57:12.467Z",
+  "slug": "atm"
 }

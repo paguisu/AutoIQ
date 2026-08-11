@@ -1,0 +1,12 @@
+{
+  "particular": "1",
+  "privado": "1",
+  "personal": "1",
+  "comercial": "2",
+  "carga": "2",
+  "flete": "2",
+  "taxi": "2",
+  "remis": "2",
+  "remisse": "2",
+  "remisse y/o taxi": "2"
+}

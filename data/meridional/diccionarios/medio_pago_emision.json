@@ -1,0 +1,92 @@
+[
+  {
+    "idMedioPago": 1,
+    "idConducto": 101,
+    "descripcion": "EFECTIVO"
+  },
+  {
+    "idMedioPago": 2,
+    "idConducto": 201,
+    "descripcion": "VISA"
+  },
+  {
+    "idMedioPago": 2,
+    "idConducto": 202,
+    "descripcion": "AMERICAN EXPRESS"
+  },
+  {
+    "idMedioPago": 2,
+    "idConducto": 203,
+    "descripcion": "MASTERCARD"
+  },
+  {
+    "idMedioPago": 2,
+    "idConducto": 204,
+    "descripcion": "NARANJA"
+  },
+  {
+    "idMedioPago": 2,
+    "idConducto": 205,
+    "descripcion": "FALABELLA"
+  },
+  {
+    "idMedioPago": 2,
+    "idConducto": 206,
+    "descripcion": "CABAL"
+  },
+  {
+    "idMedioPago": 2,
+    "idConducto": 207,
+    "descripcion": "CLIPER"
+  },
+  {
+    "idMedioPago": 2,
+    "idConducto": 208,
+    "descripcion": "NATIVA VISA"
+  },
+  {
+    "idMedioPago": 2,
+    "idConducto": 209,
+    "descripcion": "NATIVA MASTERCARD"
+  },
+  {
+    "idMedioPago": 2,
+    "idConducto": 230,
+    "descripcion": "DINERS"
+  },
+  {
+    "idMedioPago": 2,
+    "idConducto": 234,
+    "descripcion": "CARTA AUTOMÁTICA"
+  },
+  {
+    "idMedioPago": 2,
+    "idConducto": 235,
+    "descripcion": "ELEBAR"
+  },
+  {
+    "idMedioPago": 2,
+    "idConducto": 241,
+    "descripcion": "NEVADA"
+  },
+  {
+    "idMedioPago": 3,
+    "idConducto": 301,
+    "descripcion": "DEBITO DIRECTO"
+  },
+  {
+    "idMedioPago": 4,
+    "idConducto": 401,
+    "descripcion": "CBU"
+  },
+  {
+    "idMedioPago": 5,
+    "idConducto": 501,
+    "descripcion": "PAGO FACIL"
+  },
+  {
+    "idMedioPago": 6,
+    "idConducto": 601,
+    "descripcion": "DEBITO EN CUENTA"
+  }
+]

@@ -6,7 +6,9 @@ const { isVehicleZeroKm } = require('../../utils/zero_km');
 
 const parser = new XMLParser({ ignoreAttributes: false, trimValues: true, removeNSPrefix: true });
 let postalAliasCache = null;
+let accessoriesCache = null;
 const POSTAL_ALIASES_JSON_PATH = path.join(process.cwd(), 'data', 'allianz', 'diccionarios', 'codigo_postal_aliases.json');
+const ACCESSORIES_JSON_PATH = path.join(process.cwd(), 'data', 'allianz', 'diccionarios', 'accesorios.json');
 
 function escapeXml(value) {
   return String(value ?? '')
@@ -49,6 +51,7 @@ function normalizeAllianzPostalAliases(rows) {
         inputLocalidad: normalizeText(item?.inputLocalidad || ''),
         inputProvincia: normalizeText(item?.inputProvincia || ''),
         codPostal: String(item?.codPostal || '').trim(),
+        codigoProvincia: String(item?.codigoProvincia || '').trim(),
         reason: String(item?.reason || '').trim(),
       })).filter((item) => item.codPostal)
     : [];
@@ -71,6 +74,35 @@ function loadAllianzPostalAliases(customAliases) {
   }
 }
 
+function loadAllianzAccessories(customAccessories) {
+  if (Array.isArray(customAccessories)) return customAccessories;
+  if (accessoriesCache) return accessoriesCache;
+  try {
+    if (!fs.existsSync(ACCESSORIES_JSON_PATH)) {
+      accessoriesCache = [];
+      return accessoriesCache;
+    }
+    const raw = JSON.parse(fs.readFileSync(ACCESSORIES_JSON_PATH, 'utf8'));
+    accessoriesCache = Array.isArray(raw) ? raw : [];
+    return accessoriesCache;
+  } catch {
+    accessoriesCache = [];
+    return accessoriesCache;
+  }
+}
+
+function resolveAllianzGncAccessoryCode({ cfg = {}, accessories } = {}) {
+  const direct = pick([
+    cfg?.parametros_extras?.codigo_accesorio_gnc_default,
+    cfg?.codigo_accesorio_gnc_default,
+  ]);
+  if (direct) return direct;
+
+  const catalog = loadAllianzAccessories(accessories);
+  const match = catalog.find((item) => normalizeText(item?.descripcion || item?.descripcionAccesorio).includes('GNC'));
+  return String(match?.codigo || match?.codigoAccesorio || '20').trim();
+}
+
 function resolveAllianzPostalCode({ fila = {}, cabecera = {}, postalAliases } = {}) {
   const originalCodigoPostal = pick([
     fila?.codigo_postal,
@@ -85,6 +117,7 @@ function resolveAllianzPostalCode({ fila = {}, cabecera = {}, postalAliases } = 
       originalCodigoPostal: '',
       aliasApplied: false,
       aliasReason: '',
+      codigoProvincia: '',
     };
   }
 
@@ -113,6 +146,7 @@ function resolveAllianzPostalCode({ fila = {}, cabecera = {}, postalAliases } = 
     originalCodigoPostal,
     aliasApplied: Boolean(alias?.codPostal && alias.codPostal !== originalCodigoPostal),
     aliasReason: alias?.reason || '',
+    codigoProvincia: alias?.codigoProvincia || '',
   };
 }
 
@@ -142,6 +176,8 @@ function resolveAllianzVehicleValue(fila = {}, cfg = {}) {
     fila?.valor_vehiculo,
     fila?.valorVeh,
     fila?.valor_veh,
+    fila?.Suma,
+    fila?.SUMA,
     fila?.suma,
     fila?.suma_asegurada,
   ]);
@@ -263,6 +299,44 @@ function buildAdditionalXml(additional = {}) {
   return '';
 }
 
+function onlyDigits(value) {
+  return String(value ?? '').replace(/[^\d]/g, '');
+}
+
+function resolveAllianzGncAccessory({ fila = {}, cabecera = {}, cfg = {}, accessories } = {}) {
+  if (String(cabecera?.gnc || fila?.gnc || '').trim() !== '1') return null;
+  const sumaAccesorio = onlyDigits(pick([
+    fila?.suma_gnc,
+    fila?.sumaGnc,
+    fila?.valor_gnc,
+    fila?.valorGnc,
+    cabecera?.suma_gnc,
+    cabecera?.sumaGnc,
+    cabecera?.valor_gnc,
+    cabecera?.valorGnc,
+  ]));
+  if (!sumaAccesorio || Number(sumaAccesorio) <= 0) return null;
+  const codigoAccesorio = pick([
+    fila?.codigo_accesorio_gnc,
+    fila?.codigoAccesorioGnc,
+    cabecera?.codigo_accesorio_gnc,
+    cabecera?.codigoAccesorioGnc,
+    resolveAllianzGncAccessoryCode({ cfg, accessories }),
+  ]);
+  return { codigoAccesorio, sumaAccesorio };
+}
+
+function buildAccessoryXml(accessory = null) {
+  if (!accessory?.codigoAccesorio || !accessory?.sumaAccesorio) return '';
+  return `
+                  <cot:ListaAccesorios>
+                     <cot:AccesorioVehiculo>
+                        <cot:codigoAccesorio>${escapeXml(accessory.codigoAccesorio)}</cot:codigoAccesorio>
+                        <cot:sumaAccesorio>${escapeXml(accessory.sumaAccesorio)}</cot:sumaAccesorio>
+                     </cot:AccesorioVehiculo>
+                  </cot:ListaAccesorios>`.trimEnd();
+}
+
 async function buildAllianzEnvelope({
   fila = {},
   cabecera = {},
@@ -271,6 +345,7 @@ async function buildAllianzEnvelope({
   usoDicc = {},
   today = new Date(),
   postalAliases,
+  accessories,
   additional = {},
 } = {}) {
   const codigoMarcaModelo = pick([
@@ -304,6 +379,8 @@ async function buildAllianzEnvelope({
   const alarmType = tracking.mappedValue?.codigoTipoAlarma || '';
   const discountXml = buildDiscountXml(cfg);
   const additionalXml = buildAdditionalXml(additional);
+  const gncAccessory = resolveAllianzGncAccessory({ fila, cabecera, cfg, accessories });
+  const accessoryXml = buildAccessoryXml(gncAccessory);
   const application = String(cfg?.application || '').trim();
   const username = String(cfg?.usuario || '').trim();
   const password = String(cfg?.password || '').trim();
@@ -339,6 +416,7 @@ async function buildAllianzEnvelope({
                   <cot:es0Km>${isVehicleZeroKm(fila) ? 'true' : 'false'}</cot:es0Km>
                   <cot:tieneAlarma>${hasTracking || cfg?.parametros_extras?.use_alarm_default === true ? 'true' : 'false'}</cot:tieneAlarma>
                   ${alarmType ? `<cot:codigoTipoAlarma>${alarmType}</cot:codigoTipoAlarma>` : ''}
+${accessoryXml ? `                  ${accessoryXml}` : ''}
                </cot:VehiculoACotizar>
                <con:CondicionesContratacion>
                   <con:tipoDePoliza>${escapeXml(payment.tipoDePoliza)}</con:tipoDePoliza>
@@ -357,7 +435,7 @@ async function buildAllianzEnvelope({
 ${additionalXml ? `               ${additionalXml}` : ''}
                <cot:UbicacionDelRiesgo>
                   <cot:codigoPostal>${escapeXml(codigoPostal)}</cot:codigoPostal>
-                  <cot:codigoProvincia>${escapeXml(cfg?.parametros_extras?.codigo_provincia_default || '0')}</cot:codigoProvincia>
+                  <cot:codigoProvincia>${escapeXml(postal.codigoProvincia || cfg?.parametros_extras?.codigo_provincia_default || '0')}</cot:codigoProvincia>
                   ${cfg?.parametros_extras?.codigo_zona_riesgo_default ? `<cot:codigoZonaDeRiesgo>${escapeXml(cfg.parametros_extras.codigo_zona_riesgo_default)}</cot:codigoZonaDeRiesgo>` : '<cot:codigoZonaDeRiesgo/>'}
                </cot:UbicacionDelRiesgo>
 ${discountXml ? `               ${discountXml}` : ''}
@@ -381,13 +459,15 @@ ${discountXml ? `               ${discountXml}` : ''}
       codigoPostalOriginal: postal.originalCodigoPostal,
       codigoPostalAliasApplied: postal.aliasApplied,
       codigoPostalAliasReason: postal.aliasReason,
-      codigoProvincia: String(cfg?.parametros_extras?.codigo_provincia_default || '0'),
+      codigoProvincia: String(postal.codigoProvincia || cfg?.parametros_extras?.codigo_provincia_default || '0'),
       codigoDeProductor: String(cfg?.producer_code || ''),
       clausulaDeAjuste: clausula,
       fechaDesde,
       fechaHasta,
       adicionalCodigo: additional?.codigoDeAdicional || '',
       adicionalDescripcion: additional?.descripcion || '',
+      codigoAccesorioGnc: gncAccessory?.codigoAccesorio || '',
+      sumaAccesorioGnc: gncAccessory?.sumaAccesorio || '',
       listaAdicionales: additional?.codigoDeAdicional
         ? 'con_adicional'
         : additional?.sendEmptyList
@@ -437,6 +517,7 @@ function parseAllianzQuoteResponse(xml) {
     importePrima: asText(item?.prima?.importePrima),
     importePrimaRC: asText(item?.prima?.importePrimaRC),
     importePrimaCasco: asText(item?.prima?.importePrimaCasco),
+    importePrimaAccesorio: asText(item?.prima?.importePrimaAccesorio),
     importePremio: asText(item?.premio?.importePremio),
     importeSellados: asText(item?.impuestos?.importeSellados),
     porcentajeIVA: asText(item?.impuestos?.porcentajeIVA),
@@ -470,4 +551,8 @@ module.exports = {
   resolveAllianzPayment,
   resolveAllianzPostalCode,
   buildAdditionalXml,
+  buildAccessoryXml,
+  loadAllianzAccessories,
+  resolveAllianzGncAccessory,
+  resolveAllianzGncAccessoryCode,
 };

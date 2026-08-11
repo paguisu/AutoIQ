@@ -1,0 +1,5510 @@
+{
+  "2023|AUDI": [
+    {
+      "descripcion": "A1"
+    },
+    {
+      "descripcion": "A3"
+    },
+    {
+      "descripcion": "A4"
+    },
+    {
+      "descripcion": "A5"
+    },
+    {
+      "descripcion": "A6"
+    },
+    {
+      "descripcion": "A7"
+    },
+    {
+      "descripcion": "A8"
+    },
+    {
+      "descripcion": "E-TRON"
+    },
+    {
+      "descripcion": "Q2"
+    },
+    {
+      "descripcion": "Q3"
+    },
+    {
+      "descripcion": "Q5"
+    },
+    {
+      "descripcion": "Q7"
+    },
+    {
+      "descripcion": "Q8"
+    }
+  ],
+  "2023|CHEVROLET": [
+    {
+      "descripcion": "CAMARO"
+    },
+    {
+      "descripcion": "CASA RODANTE"
+    },
+    {
+      "descripcion": "CRUZE"
+    },
+    {
+      "descripcion": "EQUINOX"
+    },
+    {
+      "descripcion": "MONTANA"
+    },
+    {
+      "descripcion": "ONIX"
+    },
+    {
+      "descripcion": "S 10"
+    },
+    {
+      "descripcion": "SPIN"
+    },
+    {
+      "descripcion": "TRACKER"
+    },
+    {
+      "descripcion": "TRAILBLAZER"
+    }
+  ],
+  "2023|MERCEDES BENZ": [
+    {
+      "descripcion": "A 200"
+    },
+    {
+      "descripcion": "A 250"
+    },
+    {
+      "descripcion": "A 35"
+    },
+    {
+      "descripcion": "A 45"
+    },
+    {
+      "descripcion": "ACCELO"
+    },
+    {
+      "descripcion": "ATEGO"
+    },
+    {
+      "descripcion": "AXOR"
+    },
+    {
+      "descripcion": "C 300"
+    },
+    {
+      "descripcion": "C 43"
+    },
+    {
+      "descripcion": "E 450"
+    },
+    {
+      "descripcion": "E 53"
+    },
+    {
+      "descripcion": "E 63"
+    },
+    {
+      "descripcion": "EQA"
+    },
+    {
+      "descripcion": "G 500"
+    },
+    {
+      "descripcion": "GLA"
+    },
+    {
+      "descripcion": "GLB"
+    },
+    {
+      "descripcion": "GLC"
+    },
+    {
+      "descripcion": "GLE"
+    },
+    {
+      "descripcion": "S 500"
+    },
+    {
+      "descripcion": "SPRINTER"
+    },
+    {
+      "descripcion": "VITO"
+    }
+  ],
+  "2023|NISSAN": [
+    {
+      "descripcion": "FRONTIER"
+    },
+    {
+      "descripcion": "KICKS"
+    },
+    {
+      "descripcion": "LEAF"
+    },
+    {
+      "descripcion": "SENTRA"
+    },
+    {
+      "descripcion": "VERSA"
+    },
+    {
+      "descripcion": "XTRAIL"
+    }
+  ],
+  "2025|TOYOTA": [
+    {
+      "descripcion": "86"
+    },
+    {
+      "descripcion": "COROLLA"
+    },
+    {
+      "descripcion": "CROWN"
+    },
+    {
+      "descripcion": "ETIOS"
+    },
+    {
+      "descripcion": "HIACE"
+    },
+    {
+      "descripcion": "HILUX"
+    },
+    {
+      "descripcion": "LAND CRUISER"
+    },
+    {
+      "descripcion": "RAV 4"
+    },
+    {
+      "descripcion": "YARIS"
+    }
+  ],
+  "2023|TOYOTA": [
+    {
+      "descripcion": "86"
+    },
+    {
+      "descripcion": "CAMRY"
+    },
+    {
+      "descripcion": "CH-R"
+    },
+    {
+      "descripcion": "COROLLA"
+    },
+    {
+      "descripcion": "ETIOS"
+    },
+    {
+      "descripcion": "HIACE"
+    },
+    {
+      "descripcion": "HILUX"
+    },
+    {
+      "descripcion": "LAND CRUISER"
+    },
+    {
+      "descripcion": "PRIUS"
+    },
+    {
+      "descripcion": "RAV 4"
+    },
+    {
+      "descripcion": "SUPRA"
+    },
+    {
+      "descripcion": "YARIS"
+    }
+  ],
+  "2023|PEUGEOT": [
+    {
+      "descripcion": "2008"
+    },
+    {
+      "descripcion": "208"
+    },
+    {
+      "descripcion": "3008"
+    },
+    {
+      "descripcion": "5008"
+    },
+    {
+      "descripcion": "BOXER"
+    },
+    {
+      "descripcion": "EXPERT"
+    },
+    {
+      "descripcion": "PARTNER"
+    }
+  ],
+  "2024|TOYOTA": [
+    {
+      "descripcion": "86"
+    },
+    {
+      "descripcion": "CAMRY"
+    },
+    {
+      "descripcion": "CH-R"
+    },
+    {
+      "descripcion": "COROLLA"
+    },
+    {
+      "descripcion": "CROWN"
+    },
+    {
+      "descripcion": "ETIOS"
+    },
+    {
+      "descripcion": "HIACE"
+    },
+    {
+      "descripcion": "HILUX"
+    },
+    {
+      "descripcion": "LAND CRUISER"
+    },
+    {
+      "descripcion": "RAV 4"
+    },
+    {
+      "descripcion": "SUPRA"
+    },
+    {
+      "descripcion": "YARIS"
+    }
+  ],
+  "2024|FIAT": [
+    {
+      "descripcion": "CRONOS"
+    },
+    {
+      "descripcion": "DUCATO"
+    },
+    {
+      "descripcion": "FASTBACK"
+    },
+    {
+      "descripcion": "FIORINO"
+    },
+    {
+      "descripcion": "MOBI"
+    },
+    {
+      "descripcion": "PULSE"
+    },
+    {
+      "descripcion": "STRADA"
+    },
+    {
+      "descripcion": "TORO"
+    }
+  ],
+  "2025|VOLKSWAGEN": [
+    {
+      "descripcion": "17.280"
+    },
+    {
+      "descripcion": "19.330"
+    },
+    {
+      "descripcion": "19.360"
+    },
+    {
+      "descripcion": "26.280"
+    },
+    {
+      "descripcion": "26.420"
+    },
+    {
+      "descripcion": "31.280"
+    },
+    {
+      "descripcion": "AMAROK"
+    },
+    {
+      "descripcion": "NIVUS"
+    },
+    {
+      "descripcion": "POLO"
+    },
+    {
+      "descripcion": "SAVEIRO"
+    },
+    {
+      "descripcion": "T-CROSS"
+    },
+    {
+      "descripcion": "TAOS"
+    },
+    {
+      "descripcion": "TERA"
+    },
+    {
+      "descripcion": "TIGUAN"
+    },
+    {
+      "descripcion": "VENTO"
+    },
+    {
+      "descripcion": "VIRTUS"
+    }
+  ],
+  "2025|FORD": [
+    {
+      "descripcion": "BRONCO"
+    },
+    {
+      "descripcion": "EVEREST"
+    },
+    {
+      "descripcion": "F 150"
+    },
+    {
+      "descripcion": "KUGA"
+    },
+    {
+      "descripcion": "MAVERICK"
+    },
+    {
+      "descripcion": "MUSTANG"
+    },
+    {
+      "descripcion": "RANGER"
+    },
+    {
+      "descripcion": "TERRITORY"
+    },
+    {
+      "descripcion": "TRANSIT"
+    }
+  ],
+  "2025|CITROEN": [
+    {
+      "descripcion": "BASALT"
+    },
+    {
+      "descripcion": "BERLINGO"
+    },
+    {
+      "descripcion": "C3"
+    },
+    {
+      "descripcion": "C4"
+    },
+    {
+      "descripcion": "C5"
+    },
+    {
+      "descripcion": "JUMPER"
+    },
+    {
+      "descripcion": "JUMPY"
+    }
+  ],
+  "2022|RENAULT": [
+    {
+      "descripcion": "ALASKAN"
+    },
+    {
+      "descripcion": "CAPTUR"
+    },
+    {
+      "descripcion": "DUSTER"
+    },
+    {
+      "descripcion": "KANGOO"
+    },
+    {
+      "descripcion": "KOLEOS"
+    },
+    {
+      "descripcion": "KWID"
+    },
+    {
+      "descripcion": "LOGAN"
+    },
+    {
+      "descripcion": "MASTER"
+    },
+    {
+      "descripcion": "SANDERO"
+    },
+    {
+      "descripcion": "STEPWAY"
+    }
+  ],
+  "2023|CITROEN": [
+    {
+      "descripcion": "BERLINGO"
+    },
+    {
+      "descripcion": "C3"
+    },
+    {
+      "descripcion": "C4"
+    },
+    {
+      "descripcion": "C5"
+    },
+    {
+      "descripcion": "JUMPER"
+    },
+    {
+      "descripcion": "JUMPY"
+    }
+  ],
+  "2022|TOYOTA": [
+    {
+      "descripcion": "86"
+    },
+    {
+      "descripcion": "CAMRY"
+    },
+    {
+      "descripcion": "CH-R"
+    },
+    {
+      "descripcion": "COROLLA"
+    },
+    {
+      "descripcion": "ETIOS"
+    },
+    {
+      "descripcion": "HIACE"
+    },
+    {
+      "descripcion": "HIGHLANDER"
+    },
+    {
+      "descripcion": "HILUX"
+    },
+    {
+      "descripcion": "INNOVA"
+    },
+    {
+      "descripcion": "LAND CRUISER"
+    },
+    {
+      "descripcion": "PRIUS"
+    },
+    {
+      "descripcion": "RAIZE"
+    },
+    {
+      "descripcion": "RAV 4"
+    },
+    {
+      "descripcion": "SUPRA"
+    },
+    {
+      "descripcion": "YARIS"
+    }
+  ],
+  "2025|NISSAN": [
+    {
+      "descripcion": "FRONTIER"
+    },
+    {
+      "descripcion": "KICKS"
+    },
+    {
+      "descripcion": "LEAF"
+    },
+    {
+      "descripcion": "SENTRA"
+    },
+    {
+      "descripcion": "VERSA"
+    },
+    {
+      "descripcion": "XTRAIL"
+    }
+  ],
+  "2022|CHEVROLET": [
+    {
+      "descripcion": "CAMARO"
+    },
+    {
+      "descripcion": "CASA RODANTE"
+    },
+    {
+      "descripcion": "CRUZE"
+    },
+    {
+      "descripcion": "EQUINOX"
+    },
+    {
+      "descripcion": "ONIX"
+    },
+    {
+      "descripcion": "S 10"
+    },
+    {
+      "descripcion": "SPIN"
+    },
+    {
+      "descripcion": "TRACKER"
+    },
+    {
+      "descripcion": "TRAILBLAZER"
+    }
+  ],
+  "2023|FORD": [
+    {
+      "descripcion": "BRONCO"
+    },
+    {
+      "descripcion": "ECOSPORT"
+    },
+    {
+      "descripcion": "F 150"
+    },
+    {
+      "descripcion": "KUGA"
+    },
+    {
+      "descripcion": "MAVERICK"
+    },
+    {
+      "descripcion": "MUSTANG"
+    },
+    {
+      "descripcion": "RANGER"
+    },
+    {
+      "descripcion": "TERRITORY"
+    },
+    {
+      "descripcion": "TRANSIT"
+    }
+  ],
+  "2022|PEUGEOT": [
+    {
+      "descripcion": "2008"
+    },
+    {
+      "descripcion": "208"
+    },
+    {
+      "descripcion": "3008"
+    },
+    {
+      "descripcion": "308"
+    },
+    {
+      "descripcion": "408"
+    },
+    {
+      "descripcion": "5008"
+    },
+    {
+      "descripcion": "BOXER"
+    },
+    {
+      "descripcion": "EXPERT"
+    },
+    {
+      "descripcion": "PARTNER"
+    }
+  ],
+  "2024|VOLKSWAGEN": [
+    {
+      "descripcion": "17.280"
+    },
+    {
+      "descripcion": "19.330"
+    },
+    {
+      "descripcion": "19.360"
+    },
+    {
+      "descripcion": "26.280"
+    },
+    {
+      "descripcion": "26.420"
+    },
+    {
+      "descripcion": "31.280"
+    },
+    {
+      "descripcion": "AMAROK"
+    },
+    {
+      "descripcion": "NIVUS"
+    },
+    {
+      "descripcion": "POLO"
+    },
+    {
+      "descripcion": "SAVEIRO"
+    },
+    {
+      "descripcion": "T-CROSS"
+    },
+    {
+      "descripcion": "TAOS"
+    },
+    {
+      "descripcion": "TIGUAN"
+    },
+    {
+      "descripcion": "VENTO"
+    },
+    {
+      "descripcion": "VIRTUS"
+    }
+  ],
+  "2017|PEUGEOT": [
+    {
+      "descripcion": "2008"
+    },
+    {
+      "descripcion": "207"
+    },
+    {
+      "descripcion": "208"
+    },
+    {
+      "descripcion": "3008"
+    },
+    {
+      "descripcion": "301"
+    },
+    {
+      "descripcion": "308"
+    },
+    {
+      "descripcion": "408"
+    },
+    {
+      "descripcion": "5008"
+    },
+    {
+      "descripcion": "508"
+    },
+    {
+      "descripcion": "BOXER"
+    },
+    {
+      "descripcion": "EXPERT"
+    },
+    {
+      "descripcion": "PARTNER"
+    },
+    {
+      "descripcion": "TRAVELLER"
+    }
+  ],
+  "2026|FIAT": [
+    {
+      "descripcion": "600"
+    },
+    {
+      "descripcion": "ARGO"
+    },
+    {
+      "descripcion": "CRONOS"
+    },
+    {
+      "descripcion": "FASTBACK"
+    },
+    {
+      "descripcion": "FIORINO"
+    },
+    {
+      "descripcion": "MOBI"
+    },
+    {
+      "descripcion": "PULSE"
+    },
+    {
+      "descripcion": "STRADA"
+    },
+    {
+      "descripcion": "TITANO"
+    },
+    {
+      "descripcion": "TORO"
+    }
+  ],
+  "2026|ALFA ROMEO": [
+    {
+      "descripcion": "GIULIA"
+    },
+    {
+      "descripcion": "STELVIO"
+    },
+    {
+      "descripcion": "TONALE"
+    }
+  ],
+  "2023|RENAULT": [
+    {
+      "descripcion": "ALASKAN"
+    },
+    {
+      "descripcion": "CAPTUR"
+    },
+    {
+      "descripcion": "DUSTER"
+    },
+    {
+      "descripcion": "KANGOO"
+    },
+    {
+      "descripcion": "KOLEOS"
+    },
+    {
+      "descripcion": "LOGAN"
+    },
+    {
+      "descripcion": "MASTER"
+    },
+    {
+      "descripcion": "SANDERO"
+    },
+    {
+      "descripcion": "STEPWAY"
+    }
+  ],
+  "2024|CITROEN": [
+    {
+      "descripcion": "BASALT"
+    },
+    {
+      "descripcion": "BERLINGO"
+    },
+    {
+      "descripcion": "C3"
+    },
+    {
+      "descripcion": "C4"
+    },
+    {
+      "descripcion": "C5"
+    },
+    {
+      "descripcion": "JUMPER"
+    },
+    {
+      "descripcion": "JUMPY"
+    }
+  ],
+  "2026|HONDA": [
+    {
+      "descripcion": "1100"
+    },
+    {
+      "descripcion": "150"
+    },
+    {
+      "descripcion": "160"
+    },
+    {
+      "descripcion": "ACCORD"
+    },
+    {
+      "descripcion": "CB"
+    },
+    {
+      "descripcion": "CB 500"
+    },
+    {
+      "descripcion": "CB 750"
+    },
+    {
+      "descripcion": "CBR"
+    },
+    {
+      "descripcion": "CBR 600"
+    },
+    {
+      "descripcion": "CIVIC"
+    },
+    {
+      "descripcion": "CRF"
+    },
+    {
+      "descripcion": "CRV"
+    },
+    {
+      "descripcion": "ELITE"
+    },
+    {
+      "descripcion": "HRV"
+    },
+    {
+      "descripcion": "NAVI"
+    },
+    {
+      "descripcion": "NC"
+    },
+    {
+      "descripcion": "NX"
+    },
+    {
+      "descripcion": "TRX 420"
+    },
+    {
+      "descripcion": "WAVE"
+    },
+    {
+      "descripcion": "WR-V"
+    },
+    {
+      "descripcion": "XL"
+    },
+    {
+      "descripcion": "XR"
+    },
+    {
+      "descripcion": "XR 250"
+    },
+    {
+      "descripcion": "ZR-V"
+    }
+  ],
+  "2024|NISSAN": [
+    {
+      "descripcion": "FRONTIER"
+    },
+    {
+      "descripcion": "KICKS"
+    },
+    {
+      "descripcion": "LEAF"
+    },
+    {
+      "descripcion": "SENTRA"
+    },
+    {
+      "descripcion": "VERSA"
+    },
+    {
+      "descripcion": "XTRAIL"
+    }
+  ],
+  "2020|FORD": [
+    {
+      "descripcion": "CAMION"
+    },
+    {
+      "descripcion": "CARGO"
+    },
+    {
+      "descripcion": "CASA RODANTE"
+    },
+    {
+      "descripcion": "ECOSPORT"
+    },
+    {
+      "descripcion": "F 150"
+    },
+    {
+      "descripcion": "F 4000"
+    },
+    {
+      "descripcion": "FIESTA"
+    },
+    {
+      "descripcion": "FOCUS"
+    },
+    {
+      "descripcion": "KA"
+    },
+    {
+      "descripcion": "KUGA"
+    },
+    {
+      "descripcion": "MONDEO"
+    },
+    {
+      "descripcion": "MUSTANG"
+    },
+    {
+      "descripcion": "RANGER"
+    },
+    {
+      "descripcion": "TERRITORY"
+    },
+    {
+      "descripcion": "TRANSIT"
+    }
+  ],
+  "2026|NISSAN": [
+    {
+      "descripcion": "FRONTIER"
+    },
+    {
+      "descripcion": "KAIT"
+    },
+    {
+      "descripcion": "KICKS"
+    },
+    {
+      "descripcion": "LEAF"
+    },
+    {
+      "descripcion": "SENTRA"
+    },
+    {
+      "descripcion": "VERSA"
+    },
+    {
+      "descripcion": "XTRAIL"
+    }
+  ],
+  "2026|CHRYSLER": [
+    {
+      "descripcion": "COMMANDER"
+    },
+    {
+      "descripcion": "COMPASS"
+    },
+    {
+      "descripcion": "GRAND CHEROKEE"
+    },
+    {
+      "descripcion": "RAM"
+    },
+    {
+      "descripcion": "RENEGADE"
+    }
+  ],
+  "2026|RENAULT": [
+    {
+      "descripcion": "ALASKAN"
+    },
+    {
+      "descripcion": "ARKANA"
+    },
+    {
+      "descripcion": "BOREAL"
+    },
+    {
+      "descripcion": "DUSTER"
+    },
+    {
+      "descripcion": "KANGOO"
+    },
+    {
+      "descripcion": "KARDIAN"
+    },
+    {
+      "descripcion": "KOLEOS"
+    },
+    {
+      "descripcion": "KWID"
+    },
+    {
+      "descripcion": "LOGAN"
+    },
+    {
+      "descripcion": "MASTER"
+    },
+    {
+      "descripcion": "MEGANE"
+    },
+    {
+      "descripcion": "OROCH"
+    },
+    {
+      "descripcion": "SANDERO"
+    },
+    {
+      "descripcion": "STEPWAY"
+    }
+  ],
+  "2024|RENAULT": [
+    {
+      "descripcion": "ALASKAN"
+    },
+    {
+      "descripcion": "CAPTUR"
+    },
+    {
+      "descripcion": "DUSTER"
+    },
+    {
+      "descripcion": "KANGOO"
+    },
+    {
+      "descripcion": "KARDIAN"
+    },
+    {
+      "descripcion": "KOLEOS"
+    },
+    {
+      "descripcion": "KWID"
+    },
+    {
+      "descripcion": "LOGAN"
+    },
+    {
+      "descripcion": "MASTER"
+    },
+    {
+      "descripcion": "MEGANE"
+    },
+    {
+      "descripcion": "SANDERO"
+    },
+    {
+      "descripcion": "STEPWAY"
+    }
+  ],
+  "2025|CHEVROLET": [
+    {
+      "descripcion": "CRUZE"
+    },
+    {
+      "descripcion": "EQUINOX"
+    },
+    {
+      "descripcion": "MONTANA"
+    },
+    {
+      "descripcion": "ONIX"
+    },
+    {
+      "descripcion": "S 10"
+    },
+    {
+      "descripcion": "SILVERADO"
+    },
+    {
+      "descripcion": "SPARK"
+    },
+    {
+      "descripcion": "SPIN"
+    },
+    {
+      "descripcion": "TRACKER"
+    },
+    {
+      "descripcion": "TRAILBLAZER"
+    }
+  ],
+  "2025|FIAT": [
+    {
+      "descripcion": "600"
+    },
+    {
+      "descripcion": "ARGO"
+    },
+    {
+      "descripcion": "CRONOS"
+    },
+    {
+      "descripcion": "DUCATO"
+    },
+    {
+      "descripcion": "FASTBACK"
+    },
+    {
+      "descripcion": "FIORINO"
+    },
+    {
+      "descripcion": "MOBI"
+    },
+    {
+      "descripcion": "PULSE"
+    },
+    {
+      "descripcion": "STRADA"
+    },
+    {
+      "descripcion": "TITANO"
+    },
+    {
+      "descripcion": "TORO"
+    }
+  ],
+  "2025|CHRYSLER": [
+    {
+      "descripcion": "COMMANDER"
+    },
+    {
+      "descripcion": "COMPASS"
+    },
+    {
+      "descripcion": "GRAND CHEROKEE"
+    },
+    {
+      "descripcion": "RAM"
+    },
+    {
+      "descripcion": "RENEGADE"
+    }
+  ],
+  "2024|PEUGEOT": [
+    {
+      "descripcion": "2008"
+    },
+    {
+      "descripcion": "208"
+    },
+    {
+      "descripcion": "3008"
+    },
+    {
+      "descripcion": "5008"
+    },
+    {
+      "descripcion": "BOXER"
+    },
+    {
+      "descripcion": "EXPERT"
+    },
+    {
+      "descripcion": "PARTNER"
+    }
+  ],
+  "2019|AUDI": [
+    {
+      "descripcion": "A1"
+    },
+    {
+      "descripcion": "A3"
+    },
+    {
+      "descripcion": "A4"
+    },
+    {
+      "descripcion": "A5"
+    },
+    {
+      "descripcion": "A6"
+    },
+    {
+      "descripcion": "A7"
+    },
+    {
+      "descripcion": "A8"
+    },
+    {
+      "descripcion": "Q2"
+    },
+    {
+      "descripcion": "Q3"
+    },
+    {
+      "descripcion": "Q5"
+    },
+    {
+      "descripcion": "Q7"
+    },
+    {
+      "descripcion": "Q8"
+    },
+    {
+      "descripcion": "R8"
+    },
+    {
+      "descripcion": "RS3"
+    },
+    {
+      "descripcion": "RS5"
+    },
+    {
+      "descripcion": "S3"
+    },
+    {
+      "descripcion": "S4"
+    },
+    {
+      "descripcion": "S5"
+    },
+    {
+      "descripcion": "SQ5"
+    },
+    {
+      "descripcion": "TT"
+    },
+    {
+      "descripcion": "TTS"
+    }
+  ],
+  "2016|TOYOTA": [
+    {
+      "descripcion": "4 RUNNER"
+    },
+    {
+      "descripcion": "86"
+    },
+    {
+      "descripcion": "CAMRY"
+    },
+    {
+      "descripcion": "COROLLA"
+    },
+    {
+      "descripcion": "ETIOS"
+    },
+    {
+      "descripcion": "HIACE"
+    },
+    {
+      "descripcion": "HIGHLANDER"
+    },
+    {
+      "descripcion": "HILUX"
+    },
+    {
+      "descripcion": "INNOVA"
+    },
+    {
+      "descripcion": "LAND CRUISER"
+    },
+    {
+      "descripcion": "PRIUS"
+    },
+    {
+      "descripcion": "RAV 4"
+    },
+    {
+      "descripcion": "SEQUOIA"
+    },
+    {
+      "descripcion": "SUPRA"
+    },
+    {
+      "descripcion": "SW4"
+    },
+    {
+      "descripcion": "VENZA"
+    },
+    {
+      "descripcion": "YARIS"
+    }
+  ],
+  "2016|FIAT": [
+    {
+      "descripcion": "500"
+    },
+    {
+      "descripcion": "DOBLO"
+    },
+    {
+      "descripcion": "DUCATO"
+    },
+    {
+      "descripcion": "FIORINO"
+    },
+    {
+      "descripcion": "GRAND SIENA"
+    },
+    {
+      "descripcion": "IDEA"
+    },
+    {
+      "descripcion": "LINEA"
+    },
+    {
+      "descripcion": "MOBI"
+    },
+    {
+      "descripcion": "PALIO"
+    },
+    {
+      "descripcion": "PUNTO"
+    },
+    {
+      "descripcion": "QUBO"
+    },
+    {
+      "descripcion": "SIENA"
+    },
+    {
+      "descripcion": "STRADA"
+    },
+    {
+      "descripcion": "TORO"
+    },
+    {
+      "descripcion": "UNO"
+    }
+  ],
+  "2016|PEUGEOT": [
+    {
+      "descripcion": "2008"
+    },
+    {
+      "descripcion": "207"
+    },
+    {
+      "descripcion": "208"
+    },
+    {
+      "descripcion": "3008"
+    },
+    {
+      "descripcion": "308"
+    },
+    {
+      "descripcion": "4008"
+    },
+    {
+      "descripcion": "408"
+    },
+    {
+      "descripcion": "5008"
+    },
+    {
+      "descripcion": "508"
+    },
+    {
+      "descripcion": "BOXER"
+    },
+    {
+      "descripcion": "EXPERT"
+    },
+    {
+      "descripcion": "PARTNER"
+    },
+    {
+      "descripcion": "RCZ"
+    }
+  ],
+  "2016|VOLKSWAGEN": [
+    {
+      "descripcion": "15.190"
+    },
+    {
+      "descripcion": "17.280"
+    },
+    {
+      "descripcion": "19.330"
+    },
+    {
+      "descripcion": "19.360"
+    },
+    {
+      "descripcion": "26.280"
+    },
+    {
+      "descripcion": "26.420"
+    },
+    {
+      "descripcion": "31.280"
+    },
+    {
+      "descripcion": "31.330"
+    },
+    {
+      "descripcion": "9.160"
+    },
+    {
+      "descripcion": "AMAROK"
+    },
+    {
+      "descripcion": "CROSSFOX"
+    },
+    {
+      "descripcion": "FOX"
+    },
+    {
+      "descripcion": "GOL TREND"
+    },
+    {
+      "descripcion": "GOLF"
+    },
+    {
+      "descripcion": "JETTA"
+    },
+    {
+      "descripcion": "MULTIVAN"
+    },
+    {
+      "descripcion": "NEW BEETLE"
+    },
+    {
+      "descripcion": "PASSAT"
+    },
+    {
+      "descripcion": "POLO"
+    },
+    {
+      "descripcion": "RURAL"
+    },
+    {
+      "descripcion": "SAVEIRO"
+    },
+    {
+      "descripcion": "SCIROCCO"
+    },
+    {
+      "descripcion": "SHARAN"
+    },
+    {
+      "descripcion": "SURAN"
+    },
+    {
+      "descripcion": "TIGUAN"
+    },
+    {
+      "descripcion": "TOUAREG"
+    },
+    {
+      "descripcion": "UP!"
+    },
+    {
+      "descripcion": "VENTO"
+    },
+    {
+      "descripcion": "VOYAGE"
+    }
+  ],
+  "2016|RENAULT": [
+    {
+      "descripcion": "CAPTUR"
+    },
+    {
+      "descripcion": "CLIO"
+    },
+    {
+      "descripcion": "DUSTER"
+    },
+    {
+      "descripcion": "FLUENCE"
+    },
+    {
+      "descripcion": "KANGOO"
+    },
+    {
+      "descripcion": "LOGAN"
+    },
+    {
+      "descripcion": "MASTER"
+    },
+    {
+      "descripcion": "MEGANE"
+    },
+    {
+      "descripcion": "SANDERO"
+    }
+  ],
+  "2016|FORD": [
+    {
+      "descripcion": "CAMION"
+    },
+    {
+      "descripcion": "CARGO"
+    },
+    {
+      "descripcion": "CASA RODANTE"
+    },
+    {
+      "descripcion": "ECOSPORT"
+    },
+    {
+      "descripcion": "ESCAPE"
+    },
+    {
+      "descripcion": "EXPLORER"
+    },
+    {
+      "descripcion": "F 4000"
+    },
+    {
+      "descripcion": "FIESTA"
+    },
+    {
+      "descripcion": "FOCUS"
+    },
+    {
+      "descripcion": "KA"
+    },
+    {
+      "descripcion": "KUGA"
+    },
+    {
+      "descripcion": "MONDEO"
+    },
+    {
+      "descripcion": "MUSTANG"
+    },
+    {
+      "descripcion": "RANGER"
+    },
+    {
+      "descripcion": "S-MAX"
+    },
+    {
+      "descripcion": "STD"
+    },
+    {
+      "descripcion": "TRANSIT"
+    }
+  ],
+  "2016|CHEVROLET": [
+    {
+      "descripcion": "AGILE"
+    },
+    {
+      "descripcion": "CAMARO"
+    },
+    {
+      "descripcion": "CAPTIVA"
+    },
+    {
+      "descripcion": "CASA RODANTE"
+    },
+    {
+      "descripcion": "CELTA"
+    },
+    {
+      "descripcion": "CLASSIC"
+    },
+    {
+      "descripcion": "COBALT"
+    },
+    {
+      "descripcion": "CORVETTE"
+    },
+    {
+      "descripcion": "CRUZE"
+    },
+    {
+      "descripcion": "MALIBU"
+    },
+    {
+      "descripcion": "MONTANA"
+    },
+    {
+      "descripcion": "ONIX"
+    },
+    {
+      "descripcion": "PICK UP"
+    },
+    {
+      "descripcion": "PRISMA"
+    },
+    {
+      "descripcion": "S 10"
+    },
+    {
+      "descripcion": "SONIC"
+    },
+    {
+      "descripcion": "SPARK"
+    },
+    {
+      "descripcion": "SPIN"
+    },
+    {
+      "descripcion": "SUBURBAN"
+    },
+    {
+      "descripcion": "TRACKER"
+    },
+    {
+      "descripcion": "TRAILBLAZER"
+    },
+    {
+      "descripcion": "VAN"
+    }
+  ],
+  "2016|CITROEN": [
+    {
+      "descripcion": "BERLINGO"
+    },
+    {
+      "descripcion": "C-ELYSEE"
+    },
+    {
+      "descripcion": "C3"
+    },
+    {
+      "descripcion": "C4"
+    },
+    {
+      "descripcion": "JUMPER"
+    }
+  ],
+  "2016|NISSAN": [
+    {
+      "descripcion": "ALTIMA"
+    },
+    {
+      "descripcion": "MARCH"
+    },
+    {
+      "descripcion": "MURANO"
+    },
+    {
+      "descripcion": "NOTE"
+    },
+    {
+      "descripcion": "NP 300"
+    },
+    {
+      "descripcion": "PATHFINDER"
+    },
+    {
+      "descripcion": "ROGUE"
+    },
+    {
+      "descripcion": "SENTRA"
+    },
+    {
+      "descripcion": "VERSA"
+    }
+  ],
+  "2016|HONDA": [
+    {
+      "descripcion": "125"
+    },
+    {
+      "descripcion": "150"
+    },
+    {
+      "descripcion": "700"
+    },
+    {
+      "descripcion": "ACCORD"
+    },
+    {
+      "descripcion": "CB"
+    },
+    {
+      "descripcion": "CB 150"
+    },
+    {
+      "descripcion": "CB 250"
+    },
+    {
+      "descripcion": "CB 500"
+    },
+    {
+      "descripcion": "CB1"
+    },
+    {
+      "descripcion": "CBR"
+    },
+    {
+      "descripcion": "CBR 600"
+    },
+    {
+      "descripcion": "CG 150"
+    },
+    {
+      "descripcion": "CITY"
+    },
+    {
+      "descripcion": "CIVIC"
+    },
+    {
+      "descripcion": "CRF"
+    },
+    {
+      "descripcion": "CRV"
+    },
+    {
+      "descripcion": "CUATRICICLO"
+    },
+    {
+      "descripcion": "ELITE"
+    },
+    {
+      "descripcion": "FIT"
+    },
+    {
+      "descripcion": "GOLDWING"
+    },
+    {
+      "descripcion": "HRV"
+    },
+    {
+      "descripcion": "MOTOCICLETA"
+    },
+    {
+      "descripcion": "NX4 FALCON"
+    },
+    {
+      "descripcion": "ODYSSEY"
+    },
+    {
+      "descripcion": "PILOT"
+    },
+    {
+      "descripcion": "PIONEER"
+    },
+    {
+      "descripcion": "TRX"
+    },
+    {
+      "descripcion": "TRX 250"
+    },
+    {
+      "descripcion": "TRX 350 FA"
+    },
+    {
+      "descripcion": "TRX 400"
+    },
+    {
+      "descripcion": "TRX 420"
+    },
+    {
+      "descripcion": "TRX 500"
+    },
+    {
+      "descripcion": "WAVE"
+    },
+    {
+      "descripcion": "XR"
+    },
+    {
+      "descripcion": "XR 250"
+    },
+    {
+      "descripcion": "XRL 250"
+    }
+  ],
+  "2016|CHRYSLER": [
+    {
+      "descripcion": "300"
+    },
+    {
+      "descripcion": "JOURNEY"
+    },
+    {
+      "descripcion": "PACIFICA"
+    },
+    {
+      "descripcion": "TOWN AND COUNTRY"
+    }
+  ],
+  "2016|JEEP": [
+    {
+      "descripcion": "A.F.F."
+    },
+    {
+      "descripcion": "CHEROKEE"
+    },
+    {
+      "descripcion": "COMPASS"
+    },
+    {
+      "descripcion": "GRAND CHEROKEE"
+    },
+    {
+      "descripcion": "PATRIOT"
+    },
+    {
+      "descripcion": "RENEGADE"
+    },
+    {
+      "descripcion": "WRANGLER"
+    }
+  ],
+  "2016|RAM": [
+    {
+      "descripcion": "1500"
+    },
+    {
+      "descripcion": "2500"
+    }
+  ],
+  "2016|DODGE": [
+    {
+      "descripcion": "CHALLENGER"
+    },
+    {
+      "descripcion": "SEDAN"
+    }
+  ],
+  "2016|HYUNDAI": [
+    {
+      "descripcion": "CRETA"
+    },
+    {
+      "descripcion": "ELANTRA"
+    },
+    {
+      "descripcion": "GENESIS"
+    },
+    {
+      "descripcion": "GRAND I 10"
+    },
+    {
+      "descripcion": "GRAND SANTA FE"
+    },
+    {
+      "descripcion": "H 1"
+    },
+    {
+      "descripcion": "HD"
+    },
+    {
+      "descripcion": "I 10"
+    },
+    {
+      "descripcion": "I 30"
+    },
+    {
+      "descripcion": "SANTA FE"
+    },
+    {
+      "descripcion": "SONATA"
+    },
+    {
+      "descripcion": "TUCSON"
+    },
+    {
+      "descripcion": "VELOSTER"
+    }
+  ],
+  "2016|KIA": [
+    {
+      "descripcion": "CARNIVAL"
+    },
+    {
+      "descripcion": "CERATO"
+    },
+    {
+      "descripcion": "K 2500"
+    },
+    {
+      "descripcion": "PICANTO"
+    },
+    {
+      "descripcion": "RIO"
+    },
+    {
+      "descripcion": "SELTOS"
+    },
+    {
+      "descripcion": "SORENTO"
+    },
+    {
+      "descripcion": "SOUL"
+    },
+    {
+      "descripcion": "SPORTAGE"
+    }
+  ],
+  "2017|TOYOTA": [
+    {
+      "descripcion": "4 RUNNER"
+    },
+    {
+      "descripcion": "86"
+    },
+    {
+      "descripcion": "CAMRY"
+    },
+    {
+      "descripcion": "COROLLA"
+    },
+    {
+      "descripcion": "ETIOS"
+    },
+    {
+      "descripcion": "HIACE"
+    },
+    {
+      "descripcion": "HIGHLANDER"
+    },
+    {
+      "descripcion": "HILUX"
+    },
+    {
+      "descripcion": "INNOVA"
+    },
+    {
+      "descripcion": "LAND CRUISER"
+    },
+    {
+      "descripcion": "PRIUS"
+    },
+    {
+      "descripcion": "RAV 4"
+    },
+    {
+      "descripcion": "SEQUOIA"
+    },
+    {
+      "descripcion": "SUPRA"
+    },
+    {
+      "descripcion": "SW4"
+    },
+    {
+      "descripcion": "VENZA"
+    },
+    {
+      "descripcion": "YARIS"
+    }
+  ],
+  "2017|FIAT": [
+    {
+      "descripcion": "500"
+    },
+    {
+      "descripcion": "ARGO"
+    },
+    {
+      "descripcion": "DOBLO"
+    },
+    {
+      "descripcion": "DUCATO"
+    },
+    {
+      "descripcion": "FIORINO"
+    },
+    {
+      "descripcion": "GRAND SIENA"
+    },
+    {
+      "descripcion": "IDEA"
+    },
+    {
+      "descripcion": "LINEA"
+    },
+    {
+      "descripcion": "MOBI"
+    },
+    {
+      "descripcion": "PALIO"
+    },
+    {
+      "descripcion": "PUNTO"
+    },
+    {
+      "descripcion": "SIENA"
+    },
+    {
+      "descripcion": "STRADA"
+    },
+    {
+      "descripcion": "TORO"
+    },
+    {
+      "descripcion": "UNO"
+    }
+  ],
+  "2017|VOLKSWAGEN": [
+    {
+      "descripcion": "15.190"
+    },
+    {
+      "descripcion": "17.230"
+    },
+    {
+      "descripcion": "17.280"
+    },
+    {
+      "descripcion": "19.330"
+    },
+    {
+      "descripcion": "19.360"
+    },
+    {
+      "descripcion": "26.280"
+    },
+    {
+      "descripcion": "26.420"
+    },
+    {
+      "descripcion": "31.280"
+    },
+    {
+      "descripcion": "31.330"
+    },
+    {
+      "descripcion": "9.160"
+    },
+    {
+      "descripcion": "AMAROK"
+    },
+    {
+      "descripcion": "CROSSFOX"
+    },
+    {
+      "descripcion": "FOX"
+    },
+    {
+      "descripcion": "GOL TREND"
+    },
+    {
+      "descripcion": "GOLF"
+    },
+    {
+      "descripcion": "MULTIVAN"
+    },
+    {
+      "descripcion": "NEW BEETLE"
+    },
+    {
+      "descripcion": "PASSAT"
+    },
+    {
+      "descripcion": "POLO"
+    },
+    {
+      "descripcion": "RURAL"
+    },
+    {
+      "descripcion": "SAVEIRO"
+    },
+    {
+      "descripcion": "SCIROCCO"
+    },
+    {
+      "descripcion": "SURAN"
+    },
+    {
+      "descripcion": "TIGUAN"
+    },
+    {
+      "descripcion": "TOUAREG"
+    },
+    {
+      "descripcion": "UP!"
+    },
+    {
+      "descripcion": "VENTO"
+    },
+    {
+      "descripcion": "VOYAGE"
+    }
+  ],
+  "2017|RENAULT": [
+    {
+      "descripcion": "CAPTUR"
+    },
+    {
+      "descripcion": "CLIO"
+    },
+    {
+      "descripcion": "DUSTER"
+    },
+    {
+      "descripcion": "FLUENCE"
+    },
+    {
+      "descripcion": "KANGOO"
+    },
+    {
+      "descripcion": "KWID"
+    },
+    {
+      "descripcion": "LOGAN"
+    },
+    {
+      "descripcion": "MASTER"
+    },
+    {
+      "descripcion": "MEGANE"
+    },
+    {
+      "descripcion": "SANDERO"
+    }
+  ],
+  "2017|FORD": [
+    {
+      "descripcion": "CAMION"
+    },
+    {
+      "descripcion": "CARGO"
+    },
+    {
+      "descripcion": "CASA RODANTE"
+    },
+    {
+      "descripcion": "ECOSPORT"
+    },
+    {
+      "descripcion": "ESCAPE"
+    },
+    {
+      "descripcion": "EXPLORER"
+    },
+    {
+      "descripcion": "F 150"
+    },
+    {
+      "descripcion": "F 4000"
+    },
+    {
+      "descripcion": "FIESTA"
+    },
+    {
+      "descripcion": "FOCUS"
+    },
+    {
+      "descripcion": "KA"
+    },
+    {
+      "descripcion": "KUGA"
+    },
+    {
+      "descripcion": "MONDEO"
+    },
+    {
+      "descripcion": "MUSTANG"
+    },
+    {
+      "descripcion": "RANGER"
+    },
+    {
+      "descripcion": "S-MAX"
+    },
+    {
+      "descripcion": "STD"
+    },
+    {
+      "descripcion": "TRANSIT"
+    }
+  ],
+  "2017|CHEVROLET": [
+    {
+      "descripcion": "AGILE"
+    },
+    {
+      "descripcion": "CAMARO"
+    },
+    {
+      "descripcion": "CAPTIVA"
+    },
+    {
+      "descripcion": "CASA RODANTE"
+    },
+    {
+      "descripcion": "CLASSIC"
+    },
+    {
+      "descripcion": "COBALT"
+    },
+    {
+      "descripcion": "CORVETTE"
+    },
+    {
+      "descripcion": "CRUZE"
+    },
+    {
+      "descripcion": "MALIBU"
+    },
+    {
+      "descripcion": "MONTANA"
+    },
+    {
+      "descripcion": "ONIX"
+    },
+    {
+      "descripcion": "PICK UP"
+    },
+    {
+      "descripcion": "PRISMA"
+    },
+    {
+      "descripcion": "S 10"
+    },
+    {
+      "descripcion": "SONIC"
+    },
+    {
+      "descripcion": "SPARK"
+    },
+    {
+      "descripcion": "SPIN"
+    },
+    {
+      "descripcion": "SUBURBAN"
+    },
+    {
+      "descripcion": "TRACKER"
+    },
+    {
+      "descripcion": "TRAILBLAZER"
+    },
+    {
+      "descripcion": "VAN"
+    }
+  ],
+  "2017|CITROEN": [
+    {
+      "descripcion": "BERLINGO"
+    },
+    {
+      "descripcion": "C-ELYSEE"
+    },
+    {
+      "descripcion": "C3"
+    },
+    {
+      "descripcion": "C4"
+    },
+    {
+      "descripcion": "JUMPER"
+    },
+    {
+      "descripcion": "JUMPY"
+    },
+    {
+      "descripcion": "SPACETOURER"
+    }
+  ],
+  "2017|NISSAN": [
+    {
+      "descripcion": "KICKS"
+    },
+    {
+      "descripcion": "MARCH"
+    },
+    {
+      "descripcion": "MURANO"
+    },
+    {
+      "descripcion": "NOTE"
+    },
+    {
+      "descripcion": "NP 300"
+    },
+    {
+      "descripcion": "ROGUE"
+    },
+    {
+      "descripcion": "SENTRA"
+    },
+    {
+      "descripcion": "VERSA"
+    }
+  ],
+  "2017|HONDA": [
+    {
+      "descripcion": "125"
+    },
+    {
+      "descripcion": "150"
+    },
+    {
+      "descripcion": "700"
+    },
+    {
+      "descripcion": "750"
+    },
+    {
+      "descripcion": "ACCORD"
+    },
+    {
+      "descripcion": "CB"
+    },
+    {
+      "descripcion": "CB 150"
+    },
+    {
+      "descripcion": "CB 250"
+    },
+    {
+      "descripcion": "CB 500"
+    },
+    {
+      "descripcion": "CB1"
+    },
+    {
+      "descripcion": "CBR"
+    },
+    {
+      "descripcion": "CBR 600"
+    },
+    {
+      "descripcion": "CG 150"
+    },
+    {
+      "descripcion": "CIVIC"
+    },
+    {
+      "descripcion": "CRF"
+    },
+    {
+      "descripcion": "CRV"
+    },
+    {
+      "descripcion": "CUATRICICLO"
+    },
+    {
+      "descripcion": "ELITE"
+    },
+    {
+      "descripcion": "FIT"
+    },
+    {
+      "descripcion": "GOLDWING"
+    },
+    {
+      "descripcion": "HRV"
+    },
+    {
+      "descripcion": "MOTOCICLETA"
+    },
+    {
+      "descripcion": "NX4 FALCON"
+    },
+    {
+      "descripcion": "ODYSSEY"
+    },
+    {
+      "descripcion": "PIONEER"
+    },
+    {
+      "descripcion": "TRX"
+    },
+    {
+      "descripcion": "TRX 250"
+    },
+    {
+      "descripcion": "TRX 350 FA"
+    },
+    {
+      "descripcion": "TRX 400"
+    },
+    {
+      "descripcion": "TRX 420"
+    },
+    {
+      "descripcion": "TRX 500"
+    },
+    {
+      "descripcion": "WAVE"
+    },
+    {
+      "descripcion": "XR"
+    },
+    {
+      "descripcion": "XR 250"
+    },
+    {
+      "descripcion": "XRL 250"
+    }
+  ],
+  "2017|CHRYSLER": [
+    {
+      "descripcion": "300"
+    },
+    {
+      "descripcion": "JOURNEY"
+    },
+    {
+      "descripcion": "PACIFICA"
+    },
+    {
+      "descripcion": "TOWN AND COUNTRY"
+    }
+  ],
+  "2017|JEEP": [
+    {
+      "descripcion": "A.F.F."
+    },
+    {
+      "descripcion": "CHEROKEE"
+    },
+    {
+      "descripcion": "COMPASS"
+    },
+    {
+      "descripcion": "GRAND CHEROKEE"
+    },
+    {
+      "descripcion": "PATRIOT"
+    },
+    {
+      "descripcion": "RENEGADE"
+    },
+    {
+      "descripcion": "WRANGLER"
+    }
+  ],
+  "2017|RAM": [
+    {
+      "descripcion": "1500"
+    },
+    {
+      "descripcion": "2500"
+    }
+  ],
+  "2017|DODGE": [
+    {
+      "descripcion": "CHALLENGER"
+    },
+    {
+      "descripcion": "SEDAN"
+    }
+  ],
+  "2017|HYUNDAI": [
+    {
+      "descripcion": "CRETA"
+    },
+    {
+      "descripcion": "GENESIS"
+    },
+    {
+      "descripcion": "GRAND I 10"
+    },
+    {
+      "descripcion": "GRAND SANTA FE"
+    },
+    {
+      "descripcion": "H 1"
+    },
+    {
+      "descripcion": "H 100"
+    },
+    {
+      "descripcion": "I 30"
+    },
+    {
+      "descripcion": "SANTA FE"
+    },
+    {
+      "descripcion": "SONATA"
+    },
+    {
+      "descripcion": "TUCSON"
+    },
+    {
+      "descripcion": "VELOSTER"
+    }
+  ],
+  "2017|KIA": [
+    {
+      "descripcion": "CARNIVAL"
+    },
+    {
+      "descripcion": "CERATO"
+    },
+    {
+      "descripcion": "K 2500"
+    },
+    {
+      "descripcion": "PICANTO"
+    },
+    {
+      "descripcion": "RIO"
+    },
+    {
+      "descripcion": "SELTOS"
+    },
+    {
+      "descripcion": "SORENTO"
+    },
+    {
+      "descripcion": "SOUL"
+    },
+    {
+      "descripcion": "SPORTAGE"
+    }
+  ],
+  "2019|TOYOTA": [
+    {
+      "descripcion": "86"
+    },
+    {
+      "descripcion": "CAMRY"
+    },
+    {
+      "descripcion": "CH-R"
+    },
+    {
+      "descripcion": "COROLLA"
+    },
+    {
+      "descripcion": "ETIOS"
+    },
+    {
+      "descripcion": "HIACE"
+    },
+    {
+      "descripcion": "HIGHLANDER"
+    },
+    {
+      "descripcion": "HILUX"
+    },
+    {
+      "descripcion": "INNOVA"
+    },
+    {
+      "descripcion": "LAND CRUISER"
+    },
+    {
+      "descripcion": "PRIUS"
+    },
+    {
+      "descripcion": "RAV 4"
+    },
+    {
+      "descripcion": "SEQUOIA"
+    },
+    {
+      "descripcion": "SUPRA"
+    },
+    {
+      "descripcion": "SW4"
+    },
+    {
+      "descripcion": "VENZA"
+    },
+    {
+      "descripcion": "YARIS"
+    }
+  ],
+  "2019|FIAT": [
+    {
+      "descripcion": "500"
+    },
+    {
+      "descripcion": "ARGO"
+    },
+    {
+      "descripcion": "CRONOS"
+    },
+    {
+      "descripcion": "DOBLO"
+    },
+    {
+      "descripcion": "DUCATO"
+    },
+    {
+      "descripcion": "FIORINO"
+    },
+    {
+      "descripcion": "GRAND SIENA"
+    },
+    {
+      "descripcion": "MOBI"
+    },
+    {
+      "descripcion": "PALIO"
+    },
+    {
+      "descripcion": "STRADA"
+    },
+    {
+      "descripcion": "TIPO"
+    },
+    {
+      "descripcion": "TORO"
+    },
+    {
+      "descripcion": "UNO"
+    }
+  ],
+  "2019|PEUGEOT": [
+    {
+      "descripcion": "2008"
+    },
+    {
+      "descripcion": "208"
+    },
+    {
+      "descripcion": "3008"
+    },
+    {
+      "descripcion": "301"
+    },
+    {
+      "descripcion": "308"
+    },
+    {
+      "descripcion": "408"
+    },
+    {
+      "descripcion": "5008"
+    },
+    {
+      "descripcion": "BOXER"
+    },
+    {
+      "descripcion": "EXPERT"
+    },
+    {
+      "descripcion": "PARTNER"
+    },
+    {
+      "descripcion": "TRAVELLER"
+    }
+  ],
+  "2019|VOLKSWAGEN": [
+    {
+      "descripcion": "15.190"
+    },
+    {
+      "descripcion": "17.280"
+    },
+    {
+      "descripcion": "19.330"
+    },
+    {
+      "descripcion": "19.360"
+    },
+    {
+      "descripcion": "26.280"
+    },
+    {
+      "descripcion": "26.420"
+    },
+    {
+      "descripcion": "31.280"
+    },
+    {
+      "descripcion": "31.330"
+    },
+    {
+      "descripcion": "9.160"
+    },
+    {
+      "descripcion": "AMAROK"
+    },
+    {
+      "descripcion": "ATLAS"
+    },
+    {
+      "descripcion": "FOX"
+    },
+    {
+      "descripcion": "GOL"
+    },
+    {
+      "descripcion": "GOL TREND"
+    },
+    {
+      "descripcion": "GOLF"
+    },
+    {
+      "descripcion": "NEW BEETLE"
+    },
+    {
+      "descripcion": "PASSAT"
+    },
+    {
+      "descripcion": "POLO"
+    },
+    {
+      "descripcion": "SAVEIRO"
+    },
+    {
+      "descripcion": "SCIROCCO"
+    },
+    {
+      "descripcion": "SURAN"
+    },
+    {
+      "descripcion": "T-CROSS"
+    },
+    {
+      "descripcion": "TIGUAN"
+    },
+    {
+      "descripcion": "TOUAREG"
+    },
+    {
+      "descripcion": "UP!"
+    },
+    {
+      "descripcion": "VENTO"
+    },
+    {
+      "descripcion": "VIRTUS"
+    },
+    {
+      "descripcion": "VOYAGE"
+    }
+  ],
+  "2019|RENAULT": [
+    {
+      "descripcion": "ALASKAN"
+    },
+    {
+      "descripcion": "CAPTUR"
+    },
+    {
+      "descripcion": "DUSTER"
+    },
+    {
+      "descripcion": "FLUENCE"
+    },
+    {
+      "descripcion": "KANGOO"
+    },
+    {
+      "descripcion": "KOLEOS"
+    },
+    {
+      "descripcion": "KWID"
+    },
+    {
+      "descripcion": "LOGAN"
+    },
+    {
+      "descripcion": "MASTER"
+    },
+    {
+      "descripcion": "SANDERO"
+    },
+    {
+      "descripcion": "STEPWAY"
+    }
+  ],
+  "2019|FORD": [
+    {
+      "descripcion": "CAMION"
+    },
+    {
+      "descripcion": "CARGO"
+    },
+    {
+      "descripcion": "CASA RODANTE"
+    },
+    {
+      "descripcion": "ECOSPORT"
+    },
+    {
+      "descripcion": "F 150"
+    },
+    {
+      "descripcion": "F 4000"
+    },
+    {
+      "descripcion": "FIESTA"
+    },
+    {
+      "descripcion": "FOCUS"
+    },
+    {
+      "descripcion": "KA"
+    },
+    {
+      "descripcion": "KUGA"
+    },
+    {
+      "descripcion": "MONDEO"
+    },
+    {
+      "descripcion": "MUSTANG"
+    },
+    {
+      "descripcion": "RANGER"
+    },
+    {
+      "descripcion": "S-MAX"
+    },
+    {
+      "descripcion": "TRANSIT"
+    }
+  ],
+  "2019|CHEVROLET": [
+    {
+      "descripcion": "CAMARO"
+    },
+    {
+      "descripcion": "CASA RODANTE"
+    },
+    {
+      "descripcion": "COBALT"
+    },
+    {
+      "descripcion": "CRUZE"
+    },
+    {
+      "descripcion": "EQUINOX"
+    },
+    {
+      "descripcion": "MALIBU"
+    },
+    {
+      "descripcion": "MONTANA"
+    },
+    {
+      "descripcion": "ONIX"
+    },
+    {
+      "descripcion": "PICK UP"
+    },
+    {
+      "descripcion": "PRISMA"
+    },
+    {
+      "descripcion": "S 10"
+    },
+    {
+      "descripcion": "SPIN"
+    },
+    {
+      "descripcion": "SUBURBAN"
+    },
+    {
+      "descripcion": "TRACKER"
+    },
+    {
+      "descripcion": "TRAILBLAZER"
+    },
+    {
+      "descripcion": "VAN"
+    }
+  ],
+  "2019|CITROEN": [
+    {
+      "descripcion": "BERLINGO"
+    },
+    {
+      "descripcion": "C-ELYSEE"
+    },
+    {
+      "descripcion": "C3"
+    },
+    {
+      "descripcion": "C4"
+    },
+    {
+      "descripcion": "JUMPER"
+    },
+    {
+      "descripcion": "JUMPY"
+    },
+    {
+      "descripcion": "SPACETOURER"
+    }
+  ],
+  "2019|NISSAN": [
+    {
+      "descripcion": "FRONTIER"
+    },
+    {
+      "descripcion": "KICKS"
+    },
+    {
+      "descripcion": "LEAF"
+    },
+    {
+      "descripcion": "MARCH"
+    },
+    {
+      "descripcion": "MURANO"
+    },
+    {
+      "descripcion": "NOTE"
+    },
+    {
+      "descripcion": "NP 300"
+    },
+    {
+      "descripcion": "ROGUE"
+    },
+    {
+      "descripcion": "SENTRA"
+    },
+    {
+      "descripcion": "VERSA"
+    },
+    {
+      "descripcion": "XTRAIL"
+    }
+  ],
+  "2019|HONDA": [
+    {
+      "descripcion": "125"
+    },
+    {
+      "descripcion": "150"
+    },
+    {
+      "descripcion": "750"
+    },
+    {
+      "descripcion": "ACCORD"
+    },
+    {
+      "descripcion": "C 125"
+    },
+    {
+      "descripcion": "CB"
+    },
+    {
+      "descripcion": "CB 250"
+    },
+    {
+      "descripcion": "CB 500"
+    },
+    {
+      "descripcion": "CBR"
+    },
+    {
+      "descripcion": "CBR 600"
+    },
+    {
+      "descripcion": "CG 150"
+    },
+    {
+      "descripcion": "CIVIC"
+    },
+    {
+      "descripcion": "CRF"
+    },
+    {
+      "descripcion": "CRV"
+    },
+    {
+      "descripcion": "CUATRICICLO"
+    },
+    {
+      "descripcion": "ELITE"
+    },
+    {
+      "descripcion": "FIT"
+    },
+    {
+      "descripcion": "HRV"
+    },
+    {
+      "descripcion": "MOTOCICLETA"
+    },
+    {
+      "descripcion": "NX4 FALCON"
+    },
+    {
+      "descripcion": "ODYSSEY"
+    },
+    {
+      "descripcion": "PILOT"
+    },
+    {
+      "descripcion": "TRX"
+    },
+    {
+      "descripcion": "TRX 250"
+    },
+    {
+      "descripcion": "TRX 350 FA"
+    },
+    {
+      "descripcion": "TRX 400"
+    },
+    {
+      "descripcion": "TRX 420"
+    },
+    {
+      "descripcion": "TRX 500"
+    },
+    {
+      "descripcion": "WAVE"
+    },
+    {
+      "descripcion": "WR-V"
+    },
+    {
+      "descripcion": "XR"
+    },
+    {
+      "descripcion": "XR 250"
+    }
+  ],
+  "2019|CHRYSLER": [
+    {
+      "descripcion": "JOURNEY"
+    }
+  ],
+  "2019|JEEP": [
+    {
+      "descripcion": "A.F.F."
+    },
+    {
+      "descripcion": "CHEROKEE"
+    },
+    {
+      "descripcion": "COMPASS"
+    },
+    {
+      "descripcion": "GRAND CHEROKEE"
+    },
+    {
+      "descripcion": "RENEGADE"
+    },
+    {
+      "descripcion": "WRANGLER"
+    }
+  ],
+  "2019|RAM": [
+    {
+      "descripcion": "1500"
+    },
+    {
+      "descripcion": "2500"
+    }
+  ],
+  "2019|DODGE": [
+    {
+      "descripcion": "CHALLENGER"
+    }
+  ],
+  "2019|HYUNDAI": [
+    {
+      "descripcion": "CRETA"
+    },
+    {
+      "descripcion": "GRAND I 10"
+    },
+    {
+      "descripcion": "GRAND SANTA FE"
+    },
+    {
+      "descripcion": "H 1"
+    },
+    {
+      "descripcion": "H 100"
+    },
+    {
+      "descripcion": "H 350"
+    },
+    {
+      "descripcion": "IONIQ"
+    },
+    {
+      "descripcion": "KONA"
+    },
+    {
+      "descripcion": "SANTA FE"
+    },
+    {
+      "descripcion": "TUCSON"
+    },
+    {
+      "descripcion": "VELOSTER"
+    }
+  ],
+  "2019|KIA": [
+    {
+      "descripcion": "CARNIVAL"
+    },
+    {
+      "descripcion": "CERATO"
+    },
+    {
+      "descripcion": "PICANTO"
+    },
+    {
+      "descripcion": "RIO"
+    },
+    {
+      "descripcion": "SELTOS"
+    },
+    {
+      "descripcion": "SORENTO"
+    },
+    {
+      "descripcion": "SOUL"
+    },
+    {
+      "descripcion": "SPORTAGE"
+    }
+  ],
+  "2020|TOYOTA": [
+    {
+      "descripcion": "86"
+    },
+    {
+      "descripcion": "CAMRY"
+    },
+    {
+      "descripcion": "CH-R"
+    },
+    {
+      "descripcion": "COROLLA"
+    },
+    {
+      "descripcion": "ETIOS"
+    },
+    {
+      "descripcion": "HIACE"
+    },
+    {
+      "descripcion": "HIGHLANDER"
+    },
+    {
+      "descripcion": "HILUX"
+    },
+    {
+      "descripcion": "INNOVA"
+    },
+    {
+      "descripcion": "LAND CRUISER"
+    },
+    {
+      "descripcion": "PRIUS"
+    },
+    {
+      "descripcion": "RAV 4"
+    },
+    {
+      "descripcion": "SUPRA"
+    },
+    {
+      "descripcion": "SW4"
+    },
+    {
+      "descripcion": "VENZA"
+    },
+    {
+      "descripcion": "YARIS"
+    }
+  ],
+  "2020|FIAT": [
+    {
+      "descripcion": "500"
+    },
+    {
+      "descripcion": "ARGO"
+    },
+    {
+      "descripcion": "CRONOS"
+    },
+    {
+      "descripcion": "DOBLO"
+    },
+    {
+      "descripcion": "DUCATO"
+    },
+    {
+      "descripcion": "FIORINO"
+    },
+    {
+      "descripcion": "MOBI"
+    },
+    {
+      "descripcion": "STRADA"
+    },
+    {
+      "descripcion": "TIPO"
+    },
+    {
+      "descripcion": "TORO"
+    },
+    {
+      "descripcion": "UNO"
+    }
+  ],
+  "2020|VOLKSWAGEN": [
+    {
+      "descripcion": "11.180"
+    },
+    {
+      "descripcion": "15.190"
+    },
+    {
+      "descripcion": "17.280"
+    },
+    {
+      "descripcion": "19.330"
+    },
+    {
+      "descripcion": "19.360"
+    },
+    {
+      "descripcion": "26.280"
+    },
+    {
+      "descripcion": "26.420"
+    },
+    {
+      "descripcion": "31.280"
+    },
+    {
+      "descripcion": "31.330"
+    },
+    {
+      "descripcion": "AMAROK"
+    },
+    {
+      "descripcion": "ATLAS"
+    },
+    {
+      "descripcion": "FOX"
+    },
+    {
+      "descripcion": "GOL"
+    },
+    {
+      "descripcion": "GOL TREND"
+    },
+    {
+      "descripcion": "GOLF"
+    },
+    {
+      "descripcion": "NEW BEETLE"
+    },
+    {
+      "descripcion": "NIVUS"
+    },
+    {
+      "descripcion": "PASSAT"
+    },
+    {
+      "descripcion": "POLO"
+    },
+    {
+      "descripcion": "SAVEIRO"
+    },
+    {
+      "descripcion": "SCIROCCO"
+    },
+    {
+      "descripcion": "SURAN"
+    },
+    {
+      "descripcion": "T-CROSS"
+    },
+    {
+      "descripcion": "TAREK"
+    },
+    {
+      "descripcion": "TIGUAN"
+    },
+    {
+      "descripcion": "TOUAREG"
+    },
+    {
+      "descripcion": "UP!"
+    },
+    {
+      "descripcion": "VENTO"
+    },
+    {
+      "descripcion": "VIRTUS"
+    },
+    {
+      "descripcion": "VOYAGE"
+    }
+  ],
+  "2020|RENAULT": [
+    {
+      "descripcion": "ALASKAN"
+    },
+    {
+      "descripcion": "CAPTUR"
+    },
+    {
+      "descripcion": "DUSTER"
+    },
+    {
+      "descripcion": "KANGOO"
+    },
+    {
+      "descripcion": "KOLEOS"
+    },
+    {
+      "descripcion": "KWID"
+    },
+    {
+      "descripcion": "LOGAN"
+    },
+    {
+      "descripcion": "MASTER"
+    },
+    {
+      "descripcion": "SANDERO"
+    },
+    {
+      "descripcion": "STEPWAY"
+    }
+  ],
+  "2020|CHEVROLET": [
+    {
+      "descripcion": "CAMARO"
+    },
+    {
+      "descripcion": "CASA RODANTE"
+    },
+    {
+      "descripcion": "COBALT"
+    },
+    {
+      "descripcion": "CRUZE"
+    },
+    {
+      "descripcion": "EQUINOX"
+    },
+    {
+      "descripcion": "MALIBU"
+    },
+    {
+      "descripcion": "MONTANA"
+    },
+    {
+      "descripcion": "ONIX"
+    },
+    {
+      "descripcion": "PICK UP"
+    },
+    {
+      "descripcion": "PRISMA"
+    },
+    {
+      "descripcion": "S 10"
+    },
+    {
+      "descripcion": "SPIN"
+    },
+    {
+      "descripcion": "TRACKER"
+    },
+    {
+      "descripcion": "TRAILBLAZER"
+    },
+    {
+      "descripcion": "VAN"
+    }
+  ],
+  "2020|CITROEN": [
+    {
+      "descripcion": "BERLINGO"
+    },
+    {
+      "descripcion": "C-ELYSEE"
+    },
+    {
+      "descripcion": "C3"
+    },
+    {
+      "descripcion": "C4"
+    },
+    {
+      "descripcion": "C5"
+    },
+    {
+      "descripcion": "JUMPER"
+    },
+    {
+      "descripcion": "JUMPY"
+    },
+    {
+      "descripcion": "SPACETOURER"
+    }
+  ],
+  "2020|NISSAN": [
+    {
+      "descripcion": "FRONTIER"
+    },
+    {
+      "descripcion": "KICKS"
+    },
+    {
+      "descripcion": "LEAF"
+    },
+    {
+      "descripcion": "MARCH"
+    },
+    {
+      "descripcion": "MURANO"
+    },
+    {
+      "descripcion": "NOTE"
+    },
+    {
+      "descripcion": "ROGUE"
+    },
+    {
+      "descripcion": "SENTRA"
+    },
+    {
+      "descripcion": "VERSA"
+    },
+    {
+      "descripcion": "XTRAIL"
+    }
+  ],
+  "2020|HONDA": [
+    {
+      "descripcion": "1100"
+    },
+    {
+      "descripcion": "150"
+    },
+    {
+      "descripcion": "750"
+    },
+    {
+      "descripcion": "ACCORD"
+    },
+    {
+      "descripcion": "C 125"
+    },
+    {
+      "descripcion": "CB"
+    },
+    {
+      "descripcion": "CB 250"
+    },
+    {
+      "descripcion": "CB 500"
+    },
+    {
+      "descripcion": "CBR"
+    },
+    {
+      "descripcion": "CBR 600"
+    },
+    {
+      "descripcion": "CG 150"
+    },
+    {
+      "descripcion": "CIVIC"
+    },
+    {
+      "descripcion": "CRF"
+    },
+    {
+      "descripcion": "CRV"
+    },
+    {
+      "descripcion": "CUATRICICLO"
+    },
+    {
+      "descripcion": "ELITE"
+    },
+    {
+      "descripcion": "FIT"
+    },
+    {
+      "descripcion": "HRV"
+    },
+    {
+      "descripcion": "MOTOCICLETA"
+    },
+    {
+      "descripcion": "ODYSSEY"
+    },
+    {
+      "descripcion": "PILOT"
+    },
+    {
+      "descripcion": "TRX"
+    },
+    {
+      "descripcion": "TRX 250"
+    },
+    {
+      "descripcion": "TRX 400"
+    },
+    {
+      "descripcion": "TRX 420"
+    },
+    {
+      "descripcion": "TRX 500"
+    },
+    {
+      "descripcion": "WAVE"
+    },
+    {
+      "descripcion": "WR-V"
+    },
+    {
+      "descripcion": "XR"
+    },
+    {
+      "descripcion": "XR 250"
+    }
+  ],
+  "2020|CHRYSLER": [
+    {
+      "descripcion": "JOURNEY"
+    }
+  ],
+  "2020|JEEP": [
+    {
+      "descripcion": "A.F.F."
+    },
+    {
+      "descripcion": "CHEROKEE"
+    },
+    {
+      "descripcion": "COMPASS"
+    },
+    {
+      "descripcion": "GRAND CHEROKEE"
+    },
+    {
+      "descripcion": "RENEGADE"
+    },
+    {
+      "descripcion": "WRANGLER"
+    }
+  ],
+  "2020|RAM": [
+    {
+      "descripcion": "1500"
+    },
+    {
+      "descripcion": "2500"
+    }
+  ],
+  "2020|DODGE": [],
+  "2020|HYUNDAI": [
+    {
+      "descripcion": "CRETA"
+    },
+    {
+      "descripcion": "GRAND I 10"
+    },
+    {
+      "descripcion": "GRAND SANTA FE"
+    },
+    {
+      "descripcion": "H 1"
+    },
+    {
+      "descripcion": "H 100"
+    },
+    {
+      "descripcion": "H 350"
+    },
+    {
+      "descripcion": "IONIQ"
+    },
+    {
+      "descripcion": "KONA"
+    },
+    {
+      "descripcion": "SANTA FE"
+    },
+    {
+      "descripcion": "TUCSON"
+    },
+    {
+      "descripcion": "VELOSTER"
+    }
+  ],
+  "2020|KIA": [
+    {
+      "descripcion": "CARNIVAL"
+    },
+    {
+      "descripcion": "CERATO"
+    },
+    {
+      "descripcion": "NIRO"
+    },
+    {
+      "descripcion": "PICANTO"
+    },
+    {
+      "descripcion": "RIO"
+    },
+    {
+      "descripcion": "SELTOS"
+    },
+    {
+      "descripcion": "SORENTO"
+    },
+    {
+      "descripcion": "SOUL"
+    },
+    {
+      "descripcion": "SPORTAGE"
+    }
+  ],
+  "2021|TOYOTA": [
+    {
+      "descripcion": "86"
+    },
+    {
+      "descripcion": "CAMRY"
+    },
+    {
+      "descripcion": "CH-R"
+    },
+    {
+      "descripcion": "COROLLA"
+    },
+    {
+      "descripcion": "COROLLA CROSS"
+    },
+    {
+      "descripcion": "ETIOS"
+    },
+    {
+      "descripcion": "HIACE"
+    },
+    {
+      "descripcion": "HIGHLANDER"
+    },
+    {
+      "descripcion": "HILUX"
+    },
+    {
+      "descripcion": "INNOVA"
+    },
+    {
+      "descripcion": "LAND CRUISER"
+    },
+    {
+      "descripcion": "PRIUS"
+    },
+    {
+      "descripcion": "RAV 4"
+    },
+    {
+      "descripcion": "SUPRA"
+    },
+    {
+      "descripcion": "SW4"
+    },
+    {
+      "descripcion": "VENZA"
+    },
+    {
+      "descripcion": "YARIS"
+    }
+  ],
+  "2021|FIAT": [
+    {
+      "descripcion": "500"
+    },
+    {
+      "descripcion": "ARGO"
+    },
+    {
+      "descripcion": "CRONOS"
+    },
+    {
+      "descripcion": "DUCATO"
+    },
+    {
+      "descripcion": "FIORINO"
+    },
+    {
+      "descripcion": "MOBI"
+    },
+    {
+      "descripcion": "STRADA"
+    },
+    {
+      "descripcion": "TORO"
+    },
+    {
+      "descripcion": "UNO"
+    }
+  ],
+  "2021|PEUGEOT": [
+    {
+      "descripcion": "2008"
+    },
+    {
+      "descripcion": "208"
+    },
+    {
+      "descripcion": "3008"
+    },
+    {
+      "descripcion": "308"
+    },
+    {
+      "descripcion": "408"
+    },
+    {
+      "descripcion": "5008"
+    },
+    {
+      "descripcion": "BOXER"
+    },
+    {
+      "descripcion": "EXPERT"
+    },
+    {
+      "descripcion": "PARTNER"
+    }
+  ],
+  "2021|VOLKSWAGEN": [
+    {
+      "descripcion": "15.190"
+    },
+    {
+      "descripcion": "17.280"
+    },
+    {
+      "descripcion": "19.330"
+    },
+    {
+      "descripcion": "19.360"
+    },
+    {
+      "descripcion": "26.280"
+    },
+    {
+      "descripcion": "26.420"
+    },
+    {
+      "descripcion": "31.280"
+    },
+    {
+      "descripcion": "AMAROK"
+    },
+    {
+      "descripcion": "ATLAS"
+    },
+    {
+      "descripcion": "GOL"
+    },
+    {
+      "descripcion": "GOL TREND"
+    },
+    {
+      "descripcion": "GOLF"
+    },
+    {
+      "descripcion": "NIVUS"
+    },
+    {
+      "descripcion": "POLO"
+    },
+    {
+      "descripcion": "SAVEIRO"
+    },
+    {
+      "descripcion": "T-CROSS"
+    },
+    {
+      "descripcion": "TAOS"
+    },
+    {
+      "descripcion": "TIGUAN"
+    },
+    {
+      "descripcion": "TOUAREG"
+    },
+    {
+      "descripcion": "UP!"
+    },
+    {
+      "descripcion": "VENTO"
+    },
+    {
+      "descripcion": "VIRTUS"
+    },
+    {
+      "descripcion": "VOYAGE"
+    }
+  ],
+  "2021|RENAULT": [
+    {
+      "descripcion": "ALASKAN"
+    },
+    {
+      "descripcion": "CAPTUR"
+    },
+    {
+      "descripcion": "DUSTER"
+    },
+    {
+      "descripcion": "KANGOO"
+    },
+    {
+      "descripcion": "KOLEOS"
+    },
+    {
+      "descripcion": "KWID"
+    },
+    {
+      "descripcion": "LOGAN"
+    },
+    {
+      "descripcion": "MASTER"
+    },
+    {
+      "descripcion": "SANDERO"
+    },
+    {
+      "descripcion": "STEPWAY"
+    }
+  ],
+  "2021|FORD": [
+    {
+      "descripcion": "BRONCO"
+    },
+    {
+      "descripcion": "CAMION"
+    },
+    {
+      "descripcion": "CARGO"
+    },
+    {
+      "descripcion": "ECOSPORT"
+    },
+    {
+      "descripcion": "F 150"
+    },
+    {
+      "descripcion": "F 4000"
+    },
+    {
+      "descripcion": "KA"
+    },
+    {
+      "descripcion": "KUGA"
+    },
+    {
+      "descripcion": "MAVERICK"
+    },
+    {
+      "descripcion": "MONDEO"
+    },
+    {
+      "descripcion": "MUSTANG"
+    },
+    {
+      "descripcion": "RANGER"
+    },
+    {
+      "descripcion": "TERRITORY"
+    },
+    {
+      "descripcion": "TRANSIT"
+    }
+  ],
+  "2021|CHEVROLET": [
+    {
+      "descripcion": "CAMARO"
+    },
+    {
+      "descripcion": "CASA RODANTE"
+    },
+    {
+      "descripcion": "COBALT"
+    },
+    {
+      "descripcion": "CRUZE"
+    },
+    {
+      "descripcion": "EQUINOX"
+    },
+    {
+      "descripcion": "MONTANA"
+    },
+    {
+      "descripcion": "ONIX"
+    },
+    {
+      "descripcion": "S 10"
+    },
+    {
+      "descripcion": "SPIN"
+    },
+    {
+      "descripcion": "TRACKER"
+    },
+    {
+      "descripcion": "TRAILBLAZER"
+    },
+    {
+      "descripcion": "VAN"
+    }
+  ],
+  "2021|CITROEN": [
+    {
+      "descripcion": "BERLINGO"
+    },
+    {
+      "descripcion": "C3"
+    },
+    {
+      "descripcion": "C4"
+    },
+    {
+      "descripcion": "C5"
+    },
+    {
+      "descripcion": "JUMPER"
+    },
+    {
+      "descripcion": "JUMPY"
+    }
+  ],
+  "2021|NISSAN": [
+    {
+      "descripcion": "FRONTIER"
+    },
+    {
+      "descripcion": "KICKS"
+    },
+    {
+      "descripcion": "LEAF"
+    },
+    {
+      "descripcion": "MARCH"
+    },
+    {
+      "descripcion": "MURANO"
+    },
+    {
+      "descripcion": "ROGUE"
+    },
+    {
+      "descripcion": "SENTRA"
+    },
+    {
+      "descripcion": "VERSA"
+    },
+    {
+      "descripcion": "XTRAIL"
+    }
+  ],
+  "2021|HONDA": [
+    {
+      "descripcion": "1100"
+    },
+    {
+      "descripcion": "150"
+    },
+    {
+      "descripcion": "750"
+    },
+    {
+      "descripcion": "ACCORD"
+    },
+    {
+      "descripcion": "C 125"
+    },
+    {
+      "descripcion": "CB"
+    },
+    {
+      "descripcion": "CB 250"
+    },
+    {
+      "descripcion": "CB 500"
+    },
+    {
+      "descripcion": "CBR"
+    },
+    {
+      "descripcion": "CBR 600"
+    },
+    {
+      "descripcion": "CG 150"
+    },
+    {
+      "descripcion": "CIVIC"
+    },
+    {
+      "descripcion": "CRF"
+    },
+    {
+      "descripcion": "CRV"
+    },
+    {
+      "descripcion": "ELITE"
+    },
+    {
+      "descripcion": "FIT"
+    },
+    {
+      "descripcion": "HRV"
+    },
+    {
+      "descripcion": "MOTOCICLETA"
+    },
+    {
+      "descripcion": "ODYSSEY"
+    },
+    {
+      "descripcion": "PILOT"
+    },
+    {
+      "descripcion": "TRX"
+    },
+    {
+      "descripcion": "TRX 250"
+    },
+    {
+      "descripcion": "TRX 400"
+    },
+    {
+      "descripcion": "TRX 420"
+    },
+    {
+      "descripcion": "WAVE"
+    },
+    {
+      "descripcion": "WR-V"
+    },
+    {
+      "descripcion": "XR"
+    },
+    {
+      "descripcion": "XR 250"
+    }
+  ],
+  "2021|CHRYSLER": [
+    {
+      "descripcion": "COMPASS"
+    },
+    {
+      "descripcion": "GRAND CHEROKEE"
+    },
+    {
+      "descripcion": "RAM"
+    },
+    {
+      "descripcion": "RENEGADE"
+    }
+  ],
+  "2021|JEEP": [
+    {
+      "descripcion": "A.F.F."
+    },
+    {
+      "descripcion": "COMPASS"
+    },
+    {
+      "descripcion": "GLADIATOR"
+    },
+    {
+      "descripcion": "GRAND CHEROKEE"
+    },
+    {
+      "descripcion": "RENEGADE"
+    },
+    {
+      "descripcion": "WRANGLER"
+    }
+  ],
+  "2021|RAM": [
+    {
+      "descripcion": "1500"
+    },
+    {
+      "descripcion": "2500"
+    }
+  ],
+  "2021|DODGE": [],
+  "2021|HYUNDAI": [
+    {
+      "descripcion": "CRETA"
+    },
+    {
+      "descripcion": "H 1"
+    },
+    {
+      "descripcion": "H 100"
+    },
+    {
+      "descripcion": "H 350"
+    },
+    {
+      "descripcion": "IONIQ"
+    },
+    {
+      "descripcion": "KONA"
+    },
+    {
+      "descripcion": "SANTA FE"
+    },
+    {
+      "descripcion": "TUCSON"
+    },
+    {
+      "descripcion": "VELOSTER"
+    }
+  ],
+  "2021|KIA": [
+    {
+      "descripcion": "CARNIVAL"
+    },
+    {
+      "descripcion": "CERATO"
+    },
+    {
+      "descripcion": "NIRO"
+    },
+    {
+      "descripcion": "PICANTO"
+    },
+    {
+      "descripcion": "RIO"
+    },
+    {
+      "descripcion": "SELTOS"
+    },
+    {
+      "descripcion": "SORENTO"
+    },
+    {
+      "descripcion": "SOUL"
+    },
+    {
+      "descripcion": "SPORTAGE"
+    }
+  ],
+  "2022|FIAT": [
+    {
+      "descripcion": "500"
+    },
+    {
+      "descripcion": "ARGO"
+    },
+    {
+      "descripcion": "CRONOS"
+    },
+    {
+      "descripcion": "DUCATO"
+    },
+    {
+      "descripcion": "FIORINO"
+    },
+    {
+      "descripcion": "MOBI"
+    },
+    {
+      "descripcion": "PULSE"
+    },
+    {
+      "descripcion": "STRADA"
+    },
+    {
+      "descripcion": "TORO"
+    },
+    {
+      "descripcion": "UNO"
+    }
+  ],
+  "2022|VOLKSWAGEN": [
+    {
+      "descripcion": "17.280"
+    },
+    {
+      "descripcion": "19.330"
+    },
+    {
+      "descripcion": "19.360"
+    },
+    {
+      "descripcion": "26.280"
+    },
+    {
+      "descripcion": "26.420"
+    },
+    {
+      "descripcion": "31.280"
+    },
+    {
+      "descripcion": "AMAROK"
+    },
+    {
+      "descripcion": "ATLAS"
+    },
+    {
+      "descripcion": "GOL"
+    },
+    {
+      "descripcion": "GOLF"
+    },
+    {
+      "descripcion": "ID.3"
+    },
+    {
+      "descripcion": "ID.4"
+    },
+    {
+      "descripcion": "NIVUS"
+    },
+    {
+      "descripcion": "POLO"
+    },
+    {
+      "descripcion": "SAVEIRO"
+    },
+    {
+      "descripcion": "T-CROSS"
+    },
+    {
+      "descripcion": "TAOS"
+    },
+    {
+      "descripcion": "TIGUAN"
+    },
+    {
+      "descripcion": "TOUAREG"
+    },
+    {
+      "descripcion": "VENTO"
+    },
+    {
+      "descripcion": "VIRTUS"
+    },
+    {
+      "descripcion": "VOYAGE"
+    }
+  ],
+  "2022|FORD": [
+    {
+      "descripcion": "BRONCO"
+    },
+    {
+      "descripcion": "ECOSPORT"
+    },
+    {
+      "descripcion": "F 150"
+    },
+    {
+      "descripcion": "KUGA"
+    },
+    {
+      "descripcion": "MAVERICK"
+    },
+    {
+      "descripcion": "MONDEO"
+    },
+    {
+      "descripcion": "MUSTANG"
+    },
+    {
+      "descripcion": "RANGER"
+    },
+    {
+      "descripcion": "TERRITORY"
+    },
+    {
+      "descripcion": "TRANSIT"
+    }
+  ],
+  "2022|CITROEN": [
+    {
+      "descripcion": "BERLINGO"
+    },
+    {
+      "descripcion": "C3"
+    },
+    {
+      "descripcion": "C4"
+    },
+    {
+      "descripcion": "C5"
+    },
+    {
+      "descripcion": "JUMPER"
+    },
+    {
+      "descripcion": "JUMPY"
+    }
+  ],
+  "2022|NISSAN": [
+    {
+      "descripcion": "FRONTIER"
+    },
+    {
+      "descripcion": "KICKS"
+    },
+    {
+      "descripcion": "LEAF"
+    },
+    {
+      "descripcion": "MURANO"
+    },
+    {
+      "descripcion": "SENTRA"
+    },
+    {
+      "descripcion": "VERSA"
+    },
+    {
+      "descripcion": "XTRAIL"
+    }
+  ],
+  "2022|HONDA": [
+    {
+      "descripcion": "1100"
+    },
+    {
+      "descripcion": "150"
+    },
+    {
+      "descripcion": "750"
+    },
+    {
+      "descripcion": "ACCORD"
+    },
+    {
+      "descripcion": "C 125"
+    },
+    {
+      "descripcion": "CB"
+    },
+    {
+      "descripcion": "CB 250"
+    },
+    {
+      "descripcion": "CB 500"
+    },
+    {
+      "descripcion": "CBR"
+    },
+    {
+      "descripcion": "CBR 600"
+    },
+    {
+      "descripcion": "CG 150"
+    },
+    {
+      "descripcion": "CIVIC"
+    },
+    {
+      "descripcion": "CRF"
+    },
+    {
+      "descripcion": "CRV"
+    },
+    {
+      "descripcion": "ELITE"
+    },
+    {
+      "descripcion": "FIT"
+    },
+    {
+      "descripcion": "HRV"
+    },
+    {
+      "descripcion": "MOTOCICLETA"
+    },
+    {
+      "descripcion": "ODYSSEY"
+    },
+    {
+      "descripcion": "PILOT"
+    },
+    {
+      "descripcion": "TRX"
+    },
+    {
+      "descripcion": "TRX 250"
+    },
+    {
+      "descripcion": "TRX 420"
+    },
+    {
+      "descripcion": "WAVE"
+    },
+    {
+      "descripcion": "WR-V"
+    },
+    {
+      "descripcion": "XR"
+    },
+    {
+      "descripcion": "XR 250"
+    }
+  ],
+  "2022|CHRYSLER": [
+    {
+      "descripcion": "COMMANDER"
+    },
+    {
+      "descripcion": "COMPASS"
+    },
+    {
+      "descripcion": "GRAND CHEROKEE"
+    },
+    {
+      "descripcion": "RAM"
+    },
+    {
+      "descripcion": "RENEGADE"
+    }
+  ],
+  "2022|JEEP": [
+    {
+      "descripcion": "COMMANDER"
+    },
+    {
+      "descripcion": "COMPASS"
+    },
+    {
+      "descripcion": "GLADIATOR"
+    },
+    {
+      "descripcion": "GRAND CHEROKEE"
+    },
+    {
+      "descripcion": "RENEGADE"
+    },
+    {
+      "descripcion": "WRANGLER"
+    }
+  ],
+  "2022|RAM": [
+    {
+      "descripcion": "1500"
+    },
+    {
+      "descripcion": "2500"
+    }
+  ],
+  "2022|DODGE": [],
+  "2022|HYUNDAI": [
+    {
+      "descripcion": "CRETA"
+    },
+    {
+      "descripcion": "H 1"
+    },
+    {
+      "descripcion": "H 350"
+    },
+    {
+      "descripcion": "IONIQ"
+    },
+    {
+      "descripcion": "KONA"
+    },
+    {
+      "descripcion": "PALISADE"
+    },
+    {
+      "descripcion": "SANTA FE"
+    },
+    {
+      "descripcion": "STARIA"
+    },
+    {
+      "descripcion": "TUCSON"
+    },
+    {
+      "descripcion": "VELOSTER"
+    }
+  ],
+  "2022|KIA": [
+    {
+      "descripcion": "CARNIVAL"
+    },
+    {
+      "descripcion": "CERATO"
+    },
+    {
+      "descripcion": "NIRO"
+    },
+    {
+      "descripcion": "RIO"
+    },
+    {
+      "descripcion": "SELTOS"
+    },
+    {
+      "descripcion": "SORENTO"
+    },
+    {
+      "descripcion": "SPORTAGE"
+    }
+  ],
+  "2023|FIAT": [
+    {
+      "descripcion": "500"
+    },
+    {
+      "descripcion": "ARGO"
+    },
+    {
+      "descripcion": "CRONOS"
+    },
+    {
+      "descripcion": "DUCATO"
+    },
+    {
+      "descripcion": "FIORINO"
+    },
+    {
+      "descripcion": "MOBI"
+    },
+    {
+      "descripcion": "PULSE"
+    },
+    {
+      "descripcion": "STRADA"
+    },
+    {
+      "descripcion": "TORO"
+    }
+  ],
+  "2023|VOLKSWAGEN": [
+    {
+      "descripcion": "17.280"
+    },
+    {
+      "descripcion": "19.330"
+    },
+    {
+      "descripcion": "19.360"
+    },
+    {
+      "descripcion": "26.280"
+    },
+    {
+      "descripcion": "26.420"
+    },
+    {
+      "descripcion": "31.280"
+    },
+    {
+      "descripcion": "AMAROK"
+    },
+    {
+      "descripcion": "ATLAS"
+    },
+    {
+      "descripcion": "GOL"
+    },
+    {
+      "descripcion": "NIVUS"
+    },
+    {
+      "descripcion": "POLO"
+    },
+    {
+      "descripcion": "SAVEIRO"
+    },
+    {
+      "descripcion": "T-CROSS"
+    },
+    {
+      "descripcion": "TAOS"
+    },
+    {
+      "descripcion": "TIGUAN"
+    },
+    {
+      "descripcion": "VENTO"
+    },
+    {
+      "descripcion": "VIRTUS"
+    }
+  ],
+  "2023|HONDA": [
+    {
+      "descripcion": "1100"
+    },
+    {
+      "descripcion": "150"
+    },
+    {
+      "descripcion": "160"
+    },
+    {
+      "descripcion": "750"
+    },
+    {
+      "descripcion": "CB"
+    },
+    {
+      "descripcion": "CB 250"
+    },
+    {
+      "descripcion": "CB 500"
+    },
+    {
+      "descripcion": "CB 750"
+    },
+    {
+      "descripcion": "CBR"
+    },
+    {
+      "descripcion": "CBR 600"
+    },
+    {
+      "descripcion": "CG 150"
+    },
+    {
+      "descripcion": "CRF"
+    },
+    {
+      "descripcion": "CRV"
+    },
+    {
+      "descripcion": "ELITE"
+    },
+    {
+      "descripcion": "HRV"
+    },
+    {
+      "descripcion": "MOTOCICLETA"
+    },
+    {
+      "descripcion": "PILOT"
+    },
+    {
+      "descripcion": "TRX"
+    },
+    {
+      "descripcion": "TRX 250"
+    },
+    {
+      "descripcion": "TRX 420"
+    },
+    {
+      "descripcion": "WAVE"
+    },
+    {
+      "descripcion": "XR"
+    },
+    {
+      "descripcion": "XR 250"
+    },
+    {
+      "descripcion": "ZR-V"
+    }
+  ],
+  "2023|CHRYSLER": [
+    {
+      "descripcion": "COMMANDER"
+    },
+    {
+      "descripcion": "COMPASS"
+    },
+    {
+      "descripcion": "GRAND CHEROKEE"
+    },
+    {
+      "descripcion": "RAM"
+    },
+    {
+      "descripcion": "RENEGADE"
+    }
+  ],
+  "2023|JEEP": [
+    {
+      "descripcion": "COMMANDER"
+    },
+    {
+      "descripcion": "COMPASS"
+    },
+    {
+      "descripcion": "GLADIATOR"
+    },
+    {
+      "descripcion": "GRAND CHEROKEE"
+    },
+    {
+      "descripcion": "RENEGADE"
+    },
+    {
+      "descripcion": "WRANGLER"
+    }
+  ],
+  "2023|RAM": [
+    {
+      "descripcion": "1500"
+    },
+    {
+      "descripcion": "2500"
+    }
+  ],
+  "2023|DODGE": [],
+  "2023|HYUNDAI": [
+    {
+      "descripcion": "CRETA"
+    },
+    {
+      "descripcion": "IONIQ"
+    },
+    {
+      "descripcion": "KONA"
+    },
+    {
+      "descripcion": "STARIA"
+    },
+    {
+      "descripcion": "TUCSON"
+    },
+    {
+      "descripcion": "VELOSTER"
+    }
+  ],
+  "2023|KIA": [
+    {
+      "descripcion": "CARNIVAL"
+    },
+    {
+      "descripcion": "CERATO"
+    },
+    {
+      "descripcion": "NIRO"
+    },
+    {
+      "descripcion": "RIO"
+    },
+    {
+      "descripcion": "SELTOS"
+    },
+    {
+      "descripcion": "SORENTO"
+    },
+    {
+      "descripcion": "SPORTAGE"
+    }
+  ],
+  "2024|FORD": [
+    {
+      "descripcion": "BRONCO"
+    },
+    {
+      "descripcion": "F 150"
+    },
+    {
+      "descripcion": "KUGA"
+    },
+    {
+      "descripcion": "MAVERICK"
+    },
+    {
+      "descripcion": "MUSTANG"
+    },
+    {
+      "descripcion": "RANGER"
+    },
+    {
+      "descripcion": "TERRITORY"
+    },
+    {
+      "descripcion": "TRANSIT"
+    }
+  ],
+  "2024|CHEVROLET": [
+    {
+      "descripcion": "CAMARO"
+    },
+    {
+      "descripcion": "CASA RODANTE"
+    },
+    {
+      "descripcion": "CRUZE"
+    },
+    {
+      "descripcion": "EQUINOX"
+    },
+    {
+      "descripcion": "MONTANA"
+    },
+    {
+      "descripcion": "ONIX"
+    },
+    {
+      "descripcion": "S 10"
+    },
+    {
+      "descripcion": "SILVERADO"
+    },
+    {
+      "descripcion": "SPIN"
+    },
+    {
+      "descripcion": "TRACKER"
+    },
+    {
+      "descripcion": "TRAILBLAZER"
+    }
+  ],
+  "2024|HONDA": [
+    {
+      "descripcion": "1100"
+    },
+    {
+      "descripcion": "150"
+    },
+    {
+      "descripcion": "160"
+    },
+    {
+      "descripcion": "CB"
+    },
+    {
+      "descripcion": "CB 250"
+    },
+    {
+      "descripcion": "CB 500"
+    },
+    {
+      "descripcion": "CB 750"
+    },
+    {
+      "descripcion": "CBR"
+    },
+    {
+      "descripcion": "CBR 600"
+    },
+    {
+      "descripcion": "CG 150"
+    },
+    {
+      "descripcion": "CIVIC"
+    },
+    {
+      "descripcion": "CRF"
+    },
+    {
+      "descripcion": "CRV"
+    },
+    {
+      "descripcion": "ELITE"
+    },
+    {
+      "descripcion": "HRV"
+    },
+    {
+      "descripcion": "MOTOCICLETA"
+    },
+    {
+      "descripcion": "NAVI"
+    },
+    {
+      "descripcion": "NX"
+    },
+    {
+      "descripcion": "PILOT"
+    },
+    {
+      "descripcion": "TRX"
+    },
+    {
+      "descripcion": "TRX 250"
+    },
+    {
+      "descripcion": "TRX 420"
+    },
+    {
+      "descripcion": "WAVE"
+    },
+    {
+      "descripcion": "XR"
+    },
+    {
+      "descripcion": "XR 250"
+    },
+    {
+      "descripcion": "ZR-V"
+    }
+  ],
+  "2024|CHRYSLER": [
+    {
+      "descripcion": "RAM"
+    }
+  ],
+  "2024|JEEP": [
+    {
+      "descripcion": "COMMANDER"
+    },
+    {
+      "descripcion": "COMPASS"
+    },
+    {
+      "descripcion": "GLADIATOR"
+    },
+    {
+      "descripcion": "GRAND CHEROKEE"
+    },
+    {
+      "descripcion": "RENEGADE"
+    },
+    {
+      "descripcion": "WRANGLER"
+    }
+  ],
+  "2024|RAM": [
+    {
+      "descripcion": "1500"
+    },
+    {
+      "descripcion": "2500"
+    },
+    {
+      "descripcion": "RAMPAGE"
+    }
+  ],
+  "2024|DODGE": [],
+  "2024|HYUNDAI": [
+    {
+      "descripcion": "CRETA"
+    },
+    {
+      "descripcion": "HB20"
+    },
+    {
+      "descripcion": "IONIQ"
+    },
+    {
+      "descripcion": "KONA"
+    },
+    {
+      "descripcion": "STARIA"
+    },
+    {
+      "descripcion": "TUCSON"
+    },
+    {
+      "descripcion": "VELOSTER"
+    }
+  ],
+  "2024|KIA": [
+    {
+      "descripcion": "CARNIVAL"
+    },
+    {
+      "descripcion": "CERATO"
+    },
+    {
+      "descripcion": "K3"
+    },
+    {
+      "descripcion": "NIRO"
+    },
+    {
+      "descripcion": "RIO"
+    },
+    {
+      "descripcion": "SELTOS"
+    },
+    {
+      "descripcion": "SPORTAGE"
+    }
+  ],
+  "2025|PEUGEOT": [
+    {
+      "descripcion": "2008"
+    },
+    {
+      "descripcion": "208"
+    },
+    {
+      "descripcion": "3008"
+    },
+    {
+      "descripcion": "408"
+    },
+    {
+      "descripcion": "5008"
+    },
+    {
+      "descripcion": "BOXER"
+    },
+    {
+      "descripcion": "EXPERT"
+    },
+    {
+      "descripcion": "PARTNER"
+    }
+  ],
+  "2025|RENAULT": [
+    {
+      "descripcion": "ALASKAN"
+    },
+    {
+      "descripcion": "ARKANA"
+    },
+    {
+      "descripcion": "DUSTER"
+    },
+    {
+      "descripcion": "KANGOO"
+    },
+    {
+      "descripcion": "KARDIAN"
+    },
+    {
+      "descripcion": "KOLEOS"
+    },
+    {
+      "descripcion": "KWID"
+    },
+    {
+      "descripcion": "LOGAN"
+    },
+    {
+      "descripcion": "MASTER"
+    },
+    {
+      "descripcion": "MEGANE"
+    },
+    {
+      "descripcion": "SANDERO"
+    },
+    {
+      "descripcion": "STEPWAY"
+    }
+  ],
+  "2025|HONDA": [
+    {
+      "descripcion": "1100"
+    },
+    {
+      "descripcion": "150"
+    },
+    {
+      "descripcion": "160"
+    },
+    {
+      "descripcion": "ACCORD"
+    },
+    {
+      "descripcion": "CB"
+    },
+    {
+      "descripcion": "CB 250"
+    },
+    {
+      "descripcion": "CB 500"
+    },
+    {
+      "descripcion": "CB 750"
+    },
+    {
+      "descripcion": "CBR"
+    },
+    {
+      "descripcion": "CBR 600"
+    },
+    {
+      "descripcion": "CG 150"
+    },
+    {
+      "descripcion": "CIVIC"
+    },
+    {
+      "descripcion": "CRF"
+    },
+    {
+      "descripcion": "CRV"
+    },
+    {
+      "descripcion": "ELITE"
+    },
+    {
+      "descripcion": "HRV"
+    },
+    {
+      "descripcion": "MOTOCICLETA"
+    },
+    {
+      "descripcion": "NAVI"
+    },
+    {
+      "descripcion": "NC"
+    },
+    {
+      "descripcion": "NX"
+    },
+    {
+      "descripcion": "TRX"
+    },
+    {
+      "descripcion": "TRX 250"
+    },
+    {
+      "descripcion": "TRX 420"
+    },
+    {
+      "descripcion": "WAVE"
+    },
+    {
+      "descripcion": "WR-V"
+    },
+    {
+      "descripcion": "XL"
+    },
+    {
+      "descripcion": "XR"
+    },
+    {
+      "descripcion": "XR 250"
+    },
+    {
+      "descripcion": "ZR-V"
+    }
+  ],
+  "2025|JEEP": [
+    {
+      "descripcion": "COMMANDER"
+    },
+    {
+      "descripcion": "COMPASS"
+    },
+    {
+      "descripcion": "GLADIATOR"
+    },
+    {
+      "descripcion": "GRAND CHEROKEE"
+    },
+    {
+      "descripcion": "RENEGADE"
+    },
+    {
+      "descripcion": "WRANGLER"
+    }
+  ],
+  "2025|RAM": [
+    {
+      "descripcion": "1500"
+    },
+    {
+      "descripcion": "2500"
+    },
+    {
+      "descripcion": "DAKOTA"
+    },
+    {
+      "descripcion": "RAMPAGE"
+    }
+  ],
+  "2025|DODGE": [],
+  "2025|HYUNDAI": [
+    {
+      "descripcion": "CRETA"
+    },
+    {
+      "descripcion": "HB20"
+    },
+    {
+      "descripcion": "IONIQ"
+    },
+    {
+      "descripcion": "KONA"
+    },
+    {
+      "descripcion": "SANTA FE"
+    },
+    {
+      "descripcion": "STARIA"
+    },
+    {
+      "descripcion": "TUCSON"
+    }
+  ],
+  "2025|KIA": [
+    {
+      "descripcion": "CARNIVAL"
+    },
+    {
+      "descripcion": "CERATO"
+    },
+    {
+      "descripcion": "K3"
+    },
+    {
+      "descripcion": "SELTOS"
+    },
+    {
+      "descripcion": "SPORTAGE"
+    }
+  ],
+  "2026|TOYOTA": [
+    {
+      "descripcion": "86"
+    },
+    {
+      "descripcion": "BZ4X"
+    },
+    {
+      "descripcion": "COROLLA"
+    },
+    {
+      "descripcion": "COROLLA CROSS"
+    },
+    {
+      "descripcion": "CROWN"
+    },
+    {
+      "descripcion": "HIACE"
+    },
+    {
+      "descripcion": "HILUX"
+    },
+    {
+      "descripcion": "LAND CRUISER"
+    },
+    {
+      "descripcion": "RAV 4"
+    },
+    {
+      "descripcion": "SW4"
+    },
+    {
+      "descripcion": "YARIS"
+    },
+    {
+      "descripcion": "YARIS CROSS"
+    }
+  ],
+  "2026|PEUGEOT": [
+    {
+      "descripcion": "2008"
+    },
+    {
+      "descripcion": "208"
+    },
+    {
+      "descripcion": "3008"
+    },
+    {
+      "descripcion": "408"
+    },
+    {
+      "descripcion": "5008"
+    },
+    {
+      "descripcion": "BOXER"
+    },
+    {
+      "descripcion": "E2008"
+    },
+    {
+      "descripcion": "EXPERT"
+    },
+    {
+      "descripcion": "PARTNER"
+    }
+  ],
+  "2026|VOLKSWAGEN": [
+    {
+      "descripcion": "17.280"
+    },
+    {
+      "descripcion": "19.330"
+    },
+    {
+      "descripcion": "19.360"
+    },
+    {
+      "descripcion": "26.280"
+    },
+    {
+      "descripcion": "26.420"
+    },
+    {
+      "descripcion": "31.280"
+    },
+    {
+      "descripcion": "AMAROK"
+    },
+    {
+      "descripcion": "NIVUS"
+    },
+    {
+      "descripcion": "POLO"
+    },
+    {
+      "descripcion": "SAVEIRO"
+    },
+    {
+      "descripcion": "T-CROSS"
+    },
+    {
+      "descripcion": "TAOS"
+    },
+    {
+      "descripcion": "TERA"
+    },
+    {
+      "descripcion": "TIGUAN"
+    },
+    {
+      "descripcion": "VENTO"
+    },
+    {
+      "descripcion": "VIRTUS"
+    }
+  ],
+  "2026|FORD": [
+    {
+      "descripcion": "BRONCO"
+    },
+    {
+      "descripcion": "EVEREST"
+    },
+    {
+      "descripcion": "F 150"
+    },
+    {
+      "descripcion": "KUGA"
+    },
+    {
+      "descripcion": "MAVERICK"
+    },
+    {
+      "descripcion": "MUSTANG"
+    },
+    {
+      "descripcion": "RANGER"
+    },
+    {
+      "descripcion": "TERRITORY"
+    },
+    {
+      "descripcion": "TRANSIT"
+    }
+  ],
+  "2026|CHEVROLET": [
+    {
+      "descripcion": "CAPTIVA"
+    },
+    {
+      "descripcion": "MONTANA"
+    },
+    {
+      "descripcion": "ONIX"
+    },
+    {
+      "descripcion": "S 10"
+    },
+    {
+      "descripcion": "SILVERADO"
+    },
+    {
+      "descripcion": "SONIC"
+    },
+    {
+      "descripcion": "SPARK"
+    },
+    {
+      "descripcion": "SPIN"
+    },
+    {
+      "descripcion": "TRACKER"
+    },
+    {
+      "descripcion": "TRAILBLAZER"
+    }
+  ],
+  "2026|CITROEN": [
+    {
+      "descripcion": "BASALT"
+    },
+    {
+      "descripcion": "BERLINGO"
+    },
+    {
+      "descripcion": "C3"
+    },
+    {
+      "descripcion": "C4"
+    },
+    {
+      "descripcion": "C5"
+    },
+    {
+      "descripcion": "JUMPER"
+    },
+    {
+      "descripcion": "JUMPY"
+    }
+  ],
+  "2026|JEEP": [
+    {
+      "descripcion": "COMMANDER"
+    },
+    {
+      "descripcion": "COMPASS"
+    },
+    {
+      "descripcion": "GLADIATOR"
+    },
+    {
+      "descripcion": "GRAND CHEROKEE"
+    },
+    {
+      "descripcion": "RENEGADE"
+    },
+    {
+      "descripcion": "WRANGLER"
+    }
+  ],
+  "2026|RAM": [
+    {
+      "descripcion": "1500"
+    },
+    {
+      "descripcion": "2500"
+    },
+    {
+      "descripcion": "DAKOTA"
+    },
+    {
+      "descripcion": "RAMPAGE"
+    }
+  ],
+  "2026|DODGE": [],
+  "2026|HYUNDAI": [
+    {
+      "descripcion": "CRETA"
+    },
+    {
+      "descripcion": "HB20"
+    },
+    {
+      "descripcion": "SANTA FE"
+    },
+    {
+      "descripcion": "STARIA"
+    },
+    {
+      "descripcion": "TUCSON"
+    }
+  ],
+  "2026|KIA": [
+    {
+      "descripcion": "CARNIVAL"
+    },
+    {
+      "descripcion": "K3"
+    },
+    {
+      "descripcion": "K4"
+    },
+    {
+      "descripcion": "SELTOS"
+    },
+    {
+      "descripcion": "SPORTAGE"
+    },
+    {
+      "descripcion": "TASMAN"
+    }
+  ],
+  "2020|PEUGEOT": [
+    {
+      "descripcion": "2008"
+    },
+    {
+      "descripcion": "208"
+    },
+    {
+      "descripcion": "3008"
+    },
+    {
+      "descripcion": "301"
+    },
+    {
+      "descripcion": "308"
+    },
+    {
+      "descripcion": "408"
+    },
+    {
+      "descripcion": "5008"
+    },
+    {
+      "descripcion": "BOXER"
+    },
+    {
+      "descripcion": "EXPERT"
+    },
+    {
+      "descripcion": "PARTNER"
+    }
+  ]
+}

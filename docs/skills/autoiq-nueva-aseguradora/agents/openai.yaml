@@ -1,0 +1,4 @@
+interface:
+  display_name: "AutoIQ Nueva Aseguradora"
+  short_description: "Integra aseguradoras nuevas sin romper AutoIQ"
+  default_prompt: "Use $autoiq-nueva-aseguradora to add or adjust an insurer integration in AutoIQ while preserving the common output contract."

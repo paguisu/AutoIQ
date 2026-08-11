@@ -5,6 +5,12 @@ const { Writable } = require('stream');
 const { execFileSync } = require('child_process');
 const axios = require('axios');
 const ftp = require('basic-ftp');
+const { XMLParser } = require('fast-xml-parser');
+const { fetchMercantilAndinaToken } = require('../mercantil_andina/auth');
+const { buildHeaders: buildMercantilAndinaHeaders } = require('../mercantil_andina/client');
+const { getMercantilAndinaHttpsAgent } = require('../mercantil_andina/tls');
+
+const xmlParser = new XMLParser({ ignoreAttributes: false, trimValues: true, removeNSPrefix: true });
 
 function ensureDir(p) {
   if (!fs.existsSync(p)) fs.mkdirSync(p, { recursive: true });
@@ -55,6 +61,7 @@ function pickPrimaryKey(tableName, rows) {
     ws_au_infoauto: ['tau_codia', 'codigo'],
     ws_au_infoauto_dc: ['tau_codia', 'codigo'],
     ws_au_color: ['descripcion', 'codigo'],
+    vehiculos: ['catalog_key', 'codigo'],
   };
   const preferred = candidatesByTable[tableName] || ['codigo', 'id', 'key'];
   for (const key of preferred) {
@@ -311,6 +318,7 @@ function defaultMapfreTableMap() {
       docsUrl: 'https://devs.mapfre.com.ar/api-docs/documentacion/ws_autos/ws_descripcion_campos.md/tomador_asegurado/',
       docsTableIndex: 5,
     },
+    localidad_aliases: { fileName: 'localidad_aliases.json', endpoint: 'localidad_aliases', remoteName: null },
   };
 }
 
@@ -318,6 +326,8 @@ function defaultAllianzTableMap() {
   return {
     uso: { fileName: 'uso.json', endpoint: 'uso', remoteName: null },
     tipo_vehiculo: { fileName: 'tipo_vehiculo.json', endpoint: 'tipo_vehiculo', remoteName: null },
+    accesorios: { fileName: 'accesorios.json', endpoint: 'accesorios', remoteName: 'ObtenerAccesoriosVehiculo' },
+    codigo_postal_aliases: { fileName: 'codigo_postal_aliases.json', endpoint: 'codigo_postal_aliases', remoteName: null },
   };
 }
 
@@ -326,6 +336,64 @@ function defaultExpertaTableMap() {
     uso: { fileName: 'uso.json', endpoint: 'uso', remoteName: null },
     modalidad: { fileName: 'modalidad.json', endpoint: 'modalidad', remoteName: null },
     iva: { fileName: 'iva.json', endpoint: 'iva', remoteName: null },
+    marcas: { fileName: 'marcas.json', endpoint: 'marcas', remoteName: null },
+    modelos: { fileName: 'modelos.json', endpoint: 'modelos', remoteName: null },
+    versiones: { fileName: 'versiones.json', endpoint: 'versiones', remoteName: null },
+    localidades: { fileName: 'localidades.json', endpoint: 'localidades', remoteName: null },
+  };
+}
+
+function defaultProvinciaTableMap() {
+  return {
+    uso: { fileName: 'uso.json', endpoint: 'uso', remoteName: null },
+    brand_cache: { fileName: 'brand_cache.json', endpoint: 'brand_cache', remoteName: null },
+    model_cache: { fileName: 'model_cache.json', endpoint: 'model_cache', remoteName: null },
+  };
+}
+
+function defaultRivadaviaTableMap() {
+  return {
+    uso: { fileName: 'uso.json', endpoint: 'uso', remoteName: null },
+    tipo_vehiculo: { fileName: 'tipo_vehiculo.json', endpoint: 'tipo_vehiculo', remoteName: null },
+    infoauto_tipo_vehiculo: {
+      fileName: 'infoauto_tipo_vehiculo.json',
+      endpoint: 'infoauto_tipo_vehiculo',
+      remoteName: null,
+    },
+  };
+}
+
+function defaultSancorTableMap() {
+  return {
+    uso: { fileName: 'uso.json', endpoint: 'uso', remoteName: null },
+    tipo_vehiculo: { fileName: 'tipo_vehiculo.json', endpoint: 'tipo_vehiculo', remoteName: null },
+    localidad_aliases: { fileName: 'localidad_aliases.json', endpoint: 'localidad_aliases', remoteName: null },
+  };
+}
+
+function defaultSmgTableMap() {
+  return {
+    uso: { fileName: 'uso.json', endpoint: 'uso', remoteName: null },
+    tipo_vehiculo: { fileName: 'tipo_vehiculo.json', endpoint: 'tipo_vehiculo', remoteName: null },
+  };
+}
+
+function defaultVictoriaTableMap() {
+  return {
+    uso: { fileName: 'uso.json', endpoint: 'uso', remoteName: null },
+  };
+}
+
+function defaultNacionTableMap() {
+  return {
+    uso: { fileName: 'uso.json', endpoint: 'uso', remoteName: null },
+  };
+}
+
+function defaultMercantilAndinaTableMap() {
+  return {
+    marcas: { fileName: 'marcas.json', endpoint: 'marcas', remoteName: '/vehiculos/v1/marcas' },
+    vehiculos: { fileName: 'vehiculos.json', endpoint: 'vehiculos', remoteName: '/vehiculos/v1/' },
   };
 }
 
@@ -334,6 +402,13 @@ function tableMapFor(slug) {
   if (slug === 'mapfre') return defaultMapfreTableMap();
   if (slug === 'allianz') return defaultAllianzTableMap();
   if (slug === 'experta') return defaultExpertaTableMap();
+  if (slug === 'provincia') return defaultProvinciaTableMap();
+  if (slug === 'rivadavia') return defaultRivadaviaTableMap();
+  if (slug === 'sancor') return defaultSancorTableMap();
+  if (slug === 'smg') return defaultSmgTableMap();
+  if (slug === 'victoria') return defaultVictoriaTableMap();
+  if (slug === 'nacion') return defaultNacionTableMap();
+  if (slug === 'mercantil_andina') return defaultMercantilAndinaTableMap();
   return {};
 }
 
@@ -880,6 +955,270 @@ function fetchMapfreDocsHtml(url) {
   );
 }
 
+function escapeXml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+function asArray(value) {
+  if (value == null) return [];
+  return Array.isArray(value) ? value : [value];
+}
+
+function asText(value) {
+  return value == null ? '' : String(value).trim();
+}
+
+function readCompanyConfig(slug) {
+  const cfgPath = path.join(process.cwd(), 'data', slug, 'aseguradora.json');
+  return JSON.parse(fs.readFileSync(cfgPath, 'utf8'));
+}
+
+function buildAllianzAccessoriesEnvelope(cfg = {}, { page = 1, pageSize = 100, codigoAccesorio = '' } = {}) {
+  const username = String(cfg?.usuario || '').trim();
+  const password = String(cfg?.password || '').trim();
+  const application = String(cfg?.application || '').trim();
+  const senderUsername = String(cfg?.sender_username || username).trim();
+  const country = String(cfg?.country || 'ARG').trim();
+  const target = String(cfg?.target || 'Allianz').trim();
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:atr="http://xmlns.allianz.com.ar/Core/EBM/Vehiculo/AtrVehiculo"
+                  xmlns:ebm="http://xmlns.allianz.com.ar/CommonCore/EBM">
+   <soapenv:Header>
+      <user>${escapeXml(username)}</user>
+      <pwd>${escapeXml(password)}</pwd>
+   </soapenv:Header>
+   <soapenv:Body>
+      <atr:ObtenerAccesoriosVehiculoEBM>
+         <ebm:EBMHeader>
+            <ebm:Sender>
+               <ebm:userName>${escapeXml(senderUsername)}</ebm:userName>
+               <ebm:Application>${escapeXml(application)}</ebm:Application>
+               <ebm:Country>${escapeXml(country)}</ebm:Country>
+            </ebm:Sender>
+            <ebm:Target>${escapeXml(target)}</ebm:Target>
+         </ebm:EBMHeader>
+         <atr:DataArea>
+            <atr:ObtenerAccesoriosVehiculo>
+               <atr:codigoAccesorio>${escapeXml(codigoAccesorio)}</atr:codigoAccesorio>
+               <atr:paginacion>
+                  <atr:numeroPagina>${escapeXml(page)}</atr:numeroPagina>
+                  <atr:cantidadRegistros>${escapeXml(pageSize)}</atr:cantidadRegistros>
+               </atr:paginacion>
+            </atr:ObtenerAccesoriosVehiculo>
+         </atr:DataArea>
+      </atr:ObtenerAccesoriosVehiculoEBM>
+   </soapenv:Body>
+</soapenv:Envelope>`.trim();
+}
+
+function parseAllianzAccessoriesResponse(xml) {
+  const parsed = xmlParser.parse(String(xml || ''));
+  const body = parsed?.Envelope?.Body || {};
+  const fault = body?.Fault;
+  if (fault) throw new Error(asText(fault?.faultstring || 'SOAP Fault Allianz accesorios'));
+
+  const response = body?.ObtenerAccesoriosVehiculoResponseEBM;
+  if (!response) throw new Error('Respuesta Allianz accesorios inválida');
+
+  const returnCode = asText(response?.ReturnCode);
+  const returnMessage = asText(response?.ReturnMessage);
+  const errorCode = asText(response?.ErrorCode);
+  if (returnCode && returnCode !== '0') {
+    throw new Error(returnMessage || errorCode || `Allianz accesorios ReturnCode=${returnCode}`);
+  }
+
+  const data = response?.DataArea?.ObtenerAccesoriosVehiculoResponse || {};
+  const rows = asArray(data?.ListaAccesorioVehiculo?.AccesorioVehiculo)
+    .map((item) => ({
+      codigo: asText(item?.codigoAccesorio),
+      descripcion: asText(item?.descripcionAccesorio),
+    }))
+    .filter((item) => item.codigo && item.descripcion);
+
+  return {
+    cantidadPaginas: Number(data?.cantidadPaginas || 1) || 1,
+    cantidadRegistros: Number(data?.cantidadRegistros || rows.length) || rows.length,
+    rows,
+  };
+}
+
+async function fetchAllianzAccessoriesProvider() {
+  const cfg = readCompanyConfig('allianz');
+  const baseUrl = String(cfg?.base_url || '').replace(/\/+$/, '');
+  const soapPath = String(
+    cfg?.parametros_extras?.attributes_soap_path ||
+    cfg?.attributes_soap_path ||
+    '/Vehiculo/Externo/Atributos/AtrVehiculoExtReqABCS'
+  ).trim();
+  if (!baseUrl || !soapPath) throw new Error('Allianz requiere base_url y attributes_soap_path para sincronizar accesorios');
+  if (!String(cfg?.usuario || '').trim() || !String(cfg?.password || '').trim()) {
+    throw new Error('Allianz requiere usuario y password para sincronizar accesorios');
+  }
+
+  const url = `${baseUrl}${soapPath}`;
+  const pageSize = Number(cfg?.parametros_extras?.catalog_page_size || 100) || 100;
+  const timeout = Number(cfg?.parametros_extras?.catalog_timeout_ms || 30000) || 30000;
+  const soapAction = String(
+    cfg?.parametros_extras?.accessories_soap_action ||
+    'http://xmlns.allianz.com.ar/Core/EBS/Vehiculo/ObtenerAccesoriosVehiculo'
+  );
+  const rowsByCode = new Map();
+  let cantidadPaginas = 1;
+
+  for (let page = 1; page <= cantidadPaginas; page += 1) {
+    const envelope = buildAllianzAccessoriesEnvelope(cfg, { page, pageSize });
+    // eslint-disable-next-line no-await-in-loop
+    const resp = await axios.post(url, envelope, {
+      headers: {
+        'Content-Type': 'text/xml; charset=UTF-8',
+        SOAPAction: `"${soapAction}"`,
+      },
+      timeout,
+      validateStatus: () => true,
+    });
+    if (!(resp.status >= 200 && resp.status < 300)) {
+      throw new Error(`Allianz accesorios HTTP ${resp.status}`);
+    }
+    const parsed = parseAllianzAccessoriesResponse(resp.data);
+    cantidadPaginas = Math.max(1, parsed.cantidadPaginas);
+    for (const row of parsed.rows) rowsByCode.set(row.codigo, row);
+  }
+
+  return {
+    sourceRaw: [...rowsByCode.values()].sort((a, b) => Number(a.codigo) - Number(b.codigo)),
+    sourcePath: url,
+    sourceType: 'remote-soap',
+  };
+}
+
+function readMercantilAndinaCatalogConfig() {
+  const cfg = readCompanyConfig('mercantil_andina');
+  const overlays = {
+    base_url: 'MERCANTIL_ANDINA_BASE_URL',
+    auth_url: 'MERCANTIL_ANDINA_AUTH_URL',
+    usuario: 'MERCANTIL_ANDINA_USER',
+    password: 'MERCANTIL_ANDINA_PASS',
+    client_id: 'MERCANTIL_ANDINA_CLIENT_ID',
+    grant_type: 'MERCANTIL_ANDINA_GRANT_TYPE',
+    subscription_key: 'MERCANTIL_ANDINA_SUBSCRIPTION_KEY',
+    access_token: 'MERCANTIL_ANDINA_ACCESS_TOKEN',
+  };
+  for (const [field, envName] of Object.entries(overlays)) {
+    if (String(process.env[envName] || '').trim()) cfg[field] = process.env[envName];
+  }
+  return cfg;
+}
+
+async function mercantilAndinaCatalogGet(cfg, relativePath, params = undefined) {
+  const baseUrl = String(cfg?.parametros_extras?.catalog_base_url || cfg?.base_url || '').trim().replace(/\/+$/, '');
+  if (!baseUrl) throw new Error('Mercantil Andina requiere base_url para sincronizar catálogos');
+  const tokenData = await fetchMercantilAndinaToken(cfg);
+  const timeout = Number(cfg?.parametros_extras?.catalog_timeout_ms || 30000) || 30000;
+  const maxRetries = Math.max(0, Number(cfg?.parametros_extras?.catalog_max_retries || 6) || 6);
+  let response;
+  for (let attempt = 0; attempt <= maxRetries; attempt += 1) {
+    // eslint-disable-next-line no-await-in-loop
+    response = await axios.get(`${baseUrl}${relativePath}`, {
+      params,
+      headers: buildMercantilAndinaHeaders(cfg, tokenData),
+      httpsAgent: getMercantilAndinaHttpsAgent(),
+      timeout,
+      validateStatus: () => true,
+    });
+    if (response.status !== 429 && response.status < 500) break;
+    if (attempt >= maxRetries) break;
+    const retryAfterSeconds = Number(response.headers?.['retry-after']);
+    const retryDelayMs = Number.isFinite(retryAfterSeconds) && retryAfterSeconds > 0
+      ? retryAfterSeconds * 1000
+      : Math.min(30000, 1000 * (2 ** attempt));
+    // eslint-disable-next-line no-await-in-loop
+    await new Promise((resolve) => setTimeout(resolve, retryDelayMs));
+  }
+  if (!(response.status >= 200 && response.status < 300)) {
+    const detail = response.data?.errores?.map((item) => item?.texto).filter(Boolean).join('; ');
+    throw new Error(`Mercantil Andina catálogo HTTP ${response.status}${detail ? `: ${detail}` : ''}`);
+  }
+  return response.data;
+}
+
+async function fetchMercantilAndinaCatalogProvider(table) {
+  const cfg = readMercantilAndinaCatalogConfig();
+  const sourceBase = String(cfg?.parametros_extras?.catalog_base_url || cfg?.base_url || '').trim().replace(/\/+$/, '');
+  if (table === 'marcas') {
+    const data = await mercantilAndinaCatalogGet(cfg, '/vehiculos/v1/marcas');
+    const unique = new Map(asArray(data).map((item) => [String(item?.codigo ?? '').trim(), item]));
+    return {
+      sourceRaw: [...unique.values()].map((item) => ({
+        codigo: String(item?.codigo ?? '').trim(),
+        descripcion: asText(item?.desc || item?.descripcion),
+      })).filter((item) => item.codigo && item.descripcion),
+      sourcePath: `${sourceBase}/vehiculos/v1/marcas`,
+      sourceType: 'remote-api',
+    };
+  }
+
+  if (table === 'vehiculos') {
+    const currentYear = new Date().getFullYear();
+    const fromYear = Number(process.env.MERCANTIL_ANDINA_CATALOG_YEAR_FROM || cfg?.parametros_extras?.catalog_year_from || 1960);
+    const toYear = Number(process.env.MERCANTIL_ANDINA_CATALOG_YEAR_TO || cfg?.parametros_extras?.catalog_year_to || currentYear + 1);
+    const pageSize = Math.min(999, Math.max(20, Number(cfg?.parametros_extras?.catalog_page_size || 999) || 999));
+    const requestIntervalMs = Math.max(0, Number(cfg?.parametros_extras?.catalog_request_interval_ms || 1000) || 1000);
+    if (!Number.isInteger(fromYear) || !Number.isInteger(toYear) || fromYear > toYear) {
+      throw new Error('Rango de años inválido para catálogo de vehículos Mercantil Andina');
+    }
+
+    const rowsByYearAndId = new Map();
+    for (let anio = fromYear; anio <= toYear; anio += 1) {
+      let offset = 0;
+      let total = 0;
+      do {
+        // Un espacio es el criterio documentado por comportamiento de producción para listar todo el año.
+        // eslint-disable-next-line no-await-in-loop
+        const page = await mercantilAndinaCatalogGet(cfg, '/vehiculos/v1/', {
+          q: ' ', anio, tipo: 'AUTO', offset, limit: pageSize,
+        });
+        const datos = asArray(page?.datos);
+        total = Number(page?.total || datos.length) || 0;
+        for (const item of datos) {
+          const codigo = String(item?.codigo ?? item?.id ?? '').trim();
+          if (!codigo) continue;
+          rowsByYearAndId.set(`${anio}:${codigo}`, {
+            catalog_key: `${anio}:${codigo}`,
+            codigo,
+            anio: String(anio),
+            descripcion: asText(item?.nombre || item?.desc),
+            infoauto: String(item?.infoauto ?? '').trim(),
+            propulsion: String(item?.propulsion ?? '').trim(),
+          });
+        }
+        offset += datos.length;
+        if (!datos.length) break;
+        if (requestIntervalMs > 0 && offset < total) {
+          // eslint-disable-next-line no-await-in-loop
+          await new Promise((resolve) => setTimeout(resolve, requestIntervalMs));
+        }
+      } while (offset < total);
+      if (requestIntervalMs > 0 && anio < toYear) {
+        // eslint-disable-next-line no-await-in-loop
+        await new Promise((resolve) => setTimeout(resolve, requestIntervalMs));
+      }
+    }
+    return {
+      sourceRaw: [...rowsByYearAndId.values()],
+      sourcePath: `${sourceBase}/vehiculos/v1/?q=%20&anio={anio}&tipo=AUTO`,
+      sourceType: 'remote-api-paginated',
+    };
+  }
+  throw new Error(`Tabla Mercantil Andina no implementada: ${table}`);
+}
+
 async function fetchFromHttpProvider(meta) {
   const url = buildAtmProviderUrl(meta.endpoint);
   if (!url) throw new Error('Falta ATM_CATALOG_BASE_URL para sync real');
@@ -953,6 +1292,12 @@ async function fetchFromProvider({ slug, table }) {
       sourcePath: meta.docsUrl,
       sourceType: 'remote-docs',
     };
+  }
+  if (slug === 'allianz' && table === 'accesorios') {
+    return fetchAllianzAccessoriesProvider();
+  }
+  if (slug === 'mercantil_andina') {
+    return fetchMercantilAndinaCatalogProvider(table);
   }
   throw new Error(`Proveedor real no implementado para ${slug}`);
 }
@@ -1107,7 +1452,10 @@ module.exports = {
   listTablesForCompany,
   getTableStatus,
   normalizeRecords,
+  buildAllianzAccessoriesEnvelope,
   buildDiff,
+  parseAllianzAccessoriesResponse,
+  fetchMercantilAndinaCatalogProvider,
   syncTable,
   readReport,
 };

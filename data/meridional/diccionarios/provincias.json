@@ -1,0 +1,98 @@
+[
+  {
+    "idProvincia": "1",
+    "descripcion": "CAPITAL FEDERAL"
+  },
+  {
+    "idProvincia": "2",
+    "descripcion": "BUENOS AIRES"
+  },
+  {
+    "idProvincia": "3",
+    "descripcion": "CATAMARCA"
+  },
+  {
+    "idProvincia": "4",
+    "descripcion": "CORDOBA"
+  },
+  {
+    "idProvincia": "5",
+    "descripcion": "CORRIENTES"
+  },
+  {
+    "idProvincia": "6",
+    "descripcion": "ENTRE RIOS"
+  },
+  {
+    "idProvincia": "7",
+    "descripcion": "JUJUY"
+  },
+  {
+    "idProvincia": "8",
+    "descripcion": "LA RIOJA"
+  },
+  {
+    "idProvincia": "9",
+    "descripcion": "MENDOZA"
+  },
+  {
+    "idProvincia": "10",
+    "descripcion": "SALTA"
+  },
+  {
+    "idProvincia": "11",
+    "descripcion": "SAN JUAN"
+  },
+  {
+    "idProvincia": "12",
+    "descripcion": "SAN LUIS"
+  },
+  {
+    "idProvincia": "13",
+    "descripcion": "SANTA FE"
+  },
+  {
+    "idProvincia": "14",
+    "descripcion": "SANTIAGO DEL ESTERO"
+  },
+  {
+    "idProvincia": "15",
+    "descripcion": "TUCUMAN"
+  },
+  {
+    "idProvincia": "16",
+    "descripcion": "CHACO"
+  },
+  {
+    "idProvincia": "17",
+    "descripcion": "CHUBUT"
+  },
+  {
+    "idProvincia": "18",
+    "descripcion": "FORMOSA"
+  },
+  {
+    "idProvincia": "19",
+    "descripcion": "LA PAMPA"
+  },
+  {
+    "idProvincia": "21",
+    "descripcion": "MISIONES"
+  },
+  {
+    "idProvincia": "22",
+    "descripcion": "NEUQUEN"
+  },
+  {
+    "idProvincia": "23",
+    "descripcion": "RIO NEGRO"
+  },
+  {
+    "idProvincia": "24",
+    "descripcion": "SANTA CRUZ"
+  },
+  {
+    "idProvincia": "25",
+    "descripcion": "TIERRA DEL FUEGO"
+  }
+]

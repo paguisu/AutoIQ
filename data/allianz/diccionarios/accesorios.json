@@ -1,0 +1,142 @@
+[
+  {
+    "codigo": "2",
+    "descripcion": "ANTENA"
+  },
+  {
+    "codigo": "3",
+    "descripcion": "STEREO"
+  },
+  {
+    "codigo": "4",
+    "descripcion": "ANT.ELECTRICA"
+  },
+  {
+    "codigo": "6",
+    "descripcion": "CALEFACTOR"
+  },
+  {
+    "codigo": "7",
+    "descripcion": "PARLANTES"
+  },
+  {
+    "codigo": "8",
+    "descripcion": "FAROS DE IODO"
+  },
+  {
+    "codigo": "9",
+    "descripcion": "A.ACONDICIONADO"
+  },
+  {
+    "codigo": "10",
+    "descripcion": "LLANTAS ESPEC."
+  },
+  {
+    "codigo": "11",
+    "descripcion": "RELOJ"
+  },
+  {
+    "codigo": "12",
+    "descripcion": "RUEDA AUXILIO"
+  },
+  {
+    "codigo": "13",
+    "descripcion": "LONAS"
+  },
+  {
+    "codigo": "14",
+    "descripcion": "CUBIERTAS ESP."
+  },
+  {
+    "codigo": "15",
+    "descripcion": "V.TONALIZADOS"
+  },
+  {
+    "codigo": "16",
+    "descripcion": "V.POLAR/ANTIVAN"
+  },
+  {
+    "codigo": "17",
+    "descripcion": "LUNETA TERMICA"
+  },
+  {
+    "codigo": "18",
+    "descripcion": "CUPULA"
+  },
+  {
+    "codigo": "20",
+    "descripcion": "EQUIPO G.N.C"
+  },
+  {
+    "codigo": "21",
+    "descripcion": "EQUIPO DE FRIO"
+  },
+  {
+    "codigo": "22",
+    "descripcion": "CAJA TERMICA"
+  },
+  {
+    "codigo": "23",
+    "descripcion": "VENTANAS"
+  },
+  {
+    "codigo": "24",
+    "descripcion": "ESCOTILLAS"
+  },
+  {
+    "codigo": "25",
+    "descripcion": "ALFOMBRAS"
+  },
+  {
+    "codigo": "26",
+    "descripcion": "FURGON"
+  },
+  {
+    "codigo": "27",
+    "descripcion": "LEV.VIDRIOS ELE"
+  },
+  {
+    "codigo": "28",
+    "descripcion": "SPOILER"
+  },
+  {
+    "codigo": "29",
+    "descripcion": "ALERON"
+  },
+  {
+    "codigo": "30",
+    "descripcion": "CIERRE CENTRALI"
+  },
+  {
+    "codigo": "31",
+    "descripcion": "CONSOLA MULTI"
+  },
+  {
+    "codigo": "32",
+    "descripcion": "BLINDAJE"
+  },
+  {
+    "codigo": "33",
+    "descripcion": "BAUL Y VALIJAS"
+  },
+  {
+    "codigo": "34",
+    "descripcion": "DEFENSA HOMOLO"
+  },
+  {
+    "codigo": "45",
+    "descripcion": "BARRA ANTIVUEL."
+  },
+  {
+    "codigo": "77",
+    "descripcion": "STEREO"
+  },
+  {
+    "codigo": "78",
+    "descripcion": "PACK"
+  },
+  {
+    "codigo": "99",
+    "descripcion": "OTROS"
+  }
+]

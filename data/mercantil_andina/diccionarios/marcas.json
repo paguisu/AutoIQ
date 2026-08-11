@@ -1,0 +1,370 @@
+[
+  {
+    "codigo": "12",
+    "descripcion": "CHEVROLET"
+  },
+  {
+    "codigo": "11",
+    "descripcion": "CITROEN"
+  },
+  {
+    "codigo": "17",
+    "descripcion": "FIAT"
+  },
+  {
+    "codigo": "18",
+    "descripcion": "FORD"
+  },
+  {
+    "codigo": "19",
+    "descripcion": "HONDA"
+  },
+  {
+    "codigo": "30",
+    "descripcion": "NISSAN"
+  },
+  {
+    "codigo": "32",
+    "descripcion": "PEUGEOT"
+  },
+  {
+    "codigo": "36",
+    "descripcion": "RENAULT"
+  },
+  {
+    "codigo": "45",
+    "descripcion": "TOYOTA"
+  },
+  {
+    "codigo": "46",
+    "descripcion": "VOLKSWAGEN"
+  },
+  {
+    "codigo": "0",
+    "descripcion": "---------------"
+  },
+  {
+    "codigo": "1",
+    "descripcion": "ACURA"
+  },
+  {
+    "codigo": "63",
+    "descripcion": "AGRALE"
+  },
+  {
+    "codigo": "2",
+    "descripcion": "ALEKO"
+  },
+  {
+    "codigo": "3",
+    "descripcion": "ALFA ROMEO"
+  },
+  {
+    "codigo": "149",
+    "descripcion": "ARCFOX"
+  },
+  {
+    "codigo": "4",
+    "descripcion": "ARO"
+  },
+  {
+    "codigo": "5",
+    "descripcion": "ASIA"
+  },
+  {
+    "codigo": "6",
+    "descripcion": "AUDI"
+  },
+  {
+    "codigo": "60",
+    "descripcion": "AUSTIN"
+  },
+  {
+    "codigo": "7",
+    "descripcion": "AUTOBIANCHI"
+  },
+  {
+    "codigo": "118",
+    "descripcion": "BAIC"
+  },
+  {
+    "codigo": "61",
+    "descripcion": "BERTONE"
+  },
+  {
+    "codigo": "8",
+    "descripcion": "BMW"
+  },
+  {
+    "codigo": "139",
+    "descripcion": "BYD"
+  },
+  {
+    "codigo": "10",
+    "descripcion": "CADILLAC"
+  },
+  {
+    "codigo": "946",
+    "descripcion": "CAN AM"
+  },
+  {
+    "codigo": "995",
+    "descripcion": "CF MOTO"
+  },
+  {
+    "codigo": "124",
+    "descripcion": "CHANGAN"
+  },
+  {
+    "codigo": "108",
+    "descripcion": "CHERY"
+  },
+  {
+    "codigo": "13",
+    "descripcion": "CHRYSLER"
+  },
+  {
+    "codigo": "129",
+    "descripcion": "CORADIR"
+  },
+  {
+    "codigo": "14",
+    "descripcion": "DACIA"
+  },
+  {
+    "codigo": "15",
+    "descripcion": "DAEWOO"
+  },
+  {
+    "codigo": "16",
+    "descripcion": "DAIHATSU"
+  },
+  {
+    "codigo": "112",
+    "descripcion": "DFM"
+  },
+  {
+    "codigo": "119",
+    "descripcion": "DFSK"
+  },
+  {
+    "codigo": "142",
+    "descripcion": "DOMY"
+  },
+  {
+    "codigo": "135",
+    "descripcion": "DONGFENG CAM"
+  },
+  {
+    "codigo": "117",
+    "descripcion": "DS AUTOMOBILES"
+  },
+  {
+    "codigo": "54",
+    "descripcion": "ENIAK"
+  },
+  {
+    "codigo": "51",
+    "descripcion": "FERRARI"
+  },
+  {
+    "codigo": "143",
+    "descripcion": "FORTHING"
+  },
+  {
+    "codigo": "115",
+    "descripcion": "FOTON"
+  },
+  {
+    "codigo": "79",
+    "descripcion": "G.A.Z."
+  },
+  {
+    "codigo": "141",
+    "descripcion": "GAC"
+  },
+  {
+    "codigo": "839",
+    "descripcion": "GAMMA"
+  },
+  {
+    "codigo": "116",
+    "descripcion": "GEELY"
+  },
+  {
+    "codigo": "121",
+    "descripcion": "GREAT WALL"
+  },
+  {
+    "codigo": "64",
+    "descripcion": "GROSSPAL"
+  },
+  {
+    "codigo": "52",
+    "descripcion": "HAM-JIANG"
+  },
+  {
+    "codigo": "122",
+    "descripcion": "HAVAL"
+  },
+  {
+    "codigo": "99",
+    "descripcion": "HEIBAO"
+  },
+  {
+    "codigo": "80",
+    "descripcion": "HINO"
+  },
+  {
+    "codigo": "881",
+    "descripcion": "HONDA"
+  },
+  {
+    "codigo": "49",
+    "descripcion": "HUMMER"
+  },
+  {
+    "codigo": "20",
+    "descripcion": "HYUNDAI"
+  },
+  {
+    "codigo": "59",
+    "descripcion": "I.K.A. RENAULT"
+  },
+  {
+    "codigo": "22",
+    "descripcion": "ISUZU"
+  },
+  {
+    "codigo": "41",
+    "descripcion": "IVECO"
+  },
+  {
+    "codigo": "98",
+    "descripcion": "JAC MOTORS"
+  },
+  {
+    "codigo": "23",
+    "descripcion": "JAGUAR"
+  },
+  {
+    "codigo": "147",
+    "descripcion": "JETOUR"
+  },
+  {
+    "codigo": "113",
+    "descripcion": "JMC"
+  },
+  {
+    "codigo": "140",
+    "descripcion": "JMEV"
+  },
+  {
+    "codigo": "136",
+    "descripcion": "KAIYI"
+  },
+  {
+    "codigo": "24",
+    "descripcion": "KIA"
+  },
+  {
+    "codigo": "74",
+    "descripcion": "KIA CAMION"
+  },
+  {
+    "codigo": "25",
+    "descripcion": "LADA"
+  },
+  {
+    "codigo": "53",
+    "descripcion": "LANCIA"
+  },
+  {
+    "codigo": "114",
+    "descripcion": "LIFAN"
+  },
+  {
+    "codigo": "152",
+    "descripcion": "LYNK & CO"
+  },
+  {
+    "codigo": "67",
+    "descripcion": "MAESTRO"
+  },
+  {
+    "codigo": "55",
+    "descripcion": "MAHINDRA"
+  },
+  {
+    "codigo": "102",
+    "descripcion": "MASERATI"
+  },
+  {
+    "codigo": "134",
+    "descripcion": "MAXUS"
+  },
+  {
+    "codigo": "26",
+    "descripcion": "MAZDA"
+  },
+  {
+    "codigo": "28",
+    "descripcion": "MERCEDES BENZ"
+  },
+  {
+    "codigo": "75",
+    "descripcion": "MERCEDES BENZ C"
+  },
+  {
+    "codigo": "138",
+    "descripcion": "MG"
+  },
+  {
+    "codigo": "106",
+    "descripcion": "MINI COOPER"
+  },
+  {
+    "codigo": "29",
+    "descripcion": "MITSUBISHI"
+  },
+  {
+    "codigo": "77",
+    "descripcion": "NAKAI (CHANGAN)"
+  },
+  {
+    "codigo": "31",
+    "descripcion": "OPEL"
+  },
+  {
+    "codigo": "94",
+    "descripcion": "PIAGGIO"
+  },
+  {
+    "codigo": "847",
+    "descripcion": "POLARIS"
+  },
+  {
+    "codigo": "33",
+    "descripcion": "POLONEZ"
+  },
+  {
+    "codigo": "34",
+    "descripcion": "PONTIAC"
+  },
+  {
+    "codigo": "35",
+    "descripcion": "PORSCHE"
+  },
+  {
+    "codigo": "48",
+    "descripcion": "PROTON"
+  },
+  {
+    "codigo": "65",
+    "descripcion": "RANQUEL"
+  },
+  {
+    "codigo": "56",
+    "descripcion": "RASTROJERO"
+  }
+]

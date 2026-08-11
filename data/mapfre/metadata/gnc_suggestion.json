@@ -1,0 +1,34 @@
+{
+  "company": "mapfre",
+  "concept": "gnc_suggested_amount",
+  "ok": true,
+  "value": 1000000,
+  "formatted": "1.000.000",
+  "updated_at": "2026-08-04T18:17:29.845Z",
+  "updated_date": "04/08/26",
+  "period_key": "2026-08",
+  "source": "mapfre_quote_probe",
+  "http_status": 200,
+  "probe": {
+    "infoautocod": "450420",
+    "anio": "2023",
+    "cp": "1650",
+    "localidad": "SAN MARTIN",
+    "suma_gnc_probe": "300000"
+  },
+  "request_meta": {
+    "codInfoauto": "450420",
+    "anio": "2023",
+    "codPostal": "1650001",
+    "valorVeh": "25190000.00",
+    "usoVehiculo": "1",
+    "tipoMedioPago": "TC",
+    "codProv": "1",
+    "codPostalMatch": "exacto",
+    "codPostalLocalidad": "SAN MARTIN",
+    "codPostalProvincia": "BUENOS AIRES",
+    "conGNC": "1",
+    "conLocalizador": "0"
+  },
+  "mapfre_message": "LA SUMA ASEGURADA DEL GNC NO ES CORRECTA. EL VALOR SUGERIDO ES DE 1000000 (43-24)"
+}

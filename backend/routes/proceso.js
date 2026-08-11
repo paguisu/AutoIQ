@@ -4,6 +4,9 @@ const router = express.Router();
 const fs = require('fs');
 const fsp = require('fs/promises');
 const path = require('path');
+const os = require('os');
+const readline = require('readline');
+const { execFileSync } = require('child_process');
 const xlsx = require('xlsx');
 const axios = require('axios');
 const { XMLParser } = require('fast-xml-parser');
@@ -39,6 +42,11 @@ const {
   parseAllianzQuoteResponse,
 } = require('../services/allianz/quote');
 const {
+  buildMeridionalPayload,
+  parseMeridionalQuoteResponse,
+  resolveMeridionalLocalidad,
+} = require('../services/meridional/quote');
+const {
   buildExpertaPayload,
   parseExpertaQuoteResponse,
   resolveExpertaPaymentKey,
@@ -57,11 +65,14 @@ const {
 const {
   buildRivadaviaAttemptPlan,
   buildRivadaviaPayload,
+  buildRivadaviaSoapPayload,
+  parseRivadaviaSoapQuoteResponse,
   parseRivadaviaQuoteResponse,
-  upsertRivadaviaTipoVehiculoInferido,
+  persistRivadaviaInferenceBestEffort,
 } = require('../services/rivadavia/quote');
 const {
   rivadaviaPost,
+  rivadaviaSoapPost,
 } = require('../services/rivadavia/client');
 const {
   buildSmgEnvelope,
@@ -85,6 +96,13 @@ const {
   provinciaPostQuote,
 } = require('../services/provincia/client');
 const {
+  buildMercantilAndinaPayload,
+  parseMercantilAndinaQuoteResponse,
+} = require('../services/mercantil_andina/quote');
+const {
+  mercantilAndinaPostQuote,
+} = require('../services/mercantil_andina/client');
+const {
   appendActivity,
   canViewSeguros911,
   getCurrentAccessContext,
@@ -96,6 +114,13 @@ const {
   decorateResumenWithCatalog,
   summarizeProcessCatalog,
 } = require('../utils/seguros911_product_catalog');
+const {
+  startKeepAwake,
+} = require('../utils/keep_awake');
+const {
+  loadStore: loadCommercialConditionsStore,
+  resolveCommercialConditions,
+} = require('../services/commercial_conditions');
 
 const metadataWriteLocks = new Map();
 
@@ -111,6 +136,7 @@ function fmt_ddmmAAAA(d) {
 }
 
 // ===== Testing data (tarjetas / CBU / DNI) =====
+const DATA_ROOT = path.join(__dirname, '..', '..', 'data');
 const TESTING_DIR = path.join(__dirname, '..', '..', 'data', 'testing');
 const _testingCache = { tarjetas: null, cbus: null, dnis: null };
 
@@ -164,6 +190,51 @@ function formatFecha(input, pattern) {
     default:
       return `${dd}${mm}${yyyy}`;
   }
+}
+
+function getCotizacionPeriodo(input = new Date()) {
+  const dt = input instanceof Date ? input : new Date(input);
+  if (Number.isNaN(dt.getTime())) return getCotizacionPeriodo(new Date());
+  return `${dt.getFullYear()}-${pad2(dt.getMonth() + 1)}`;
+}
+
+function endOfMonth(date = new Date()) {
+  const dt = date instanceof Date ? date : new Date(date);
+  if (Number.isNaN(dt.getTime())) return endOfMonth(new Date());
+  return new Date(dt.getFullYear(), dt.getMonth() + 1, 1, 0, 0, 0, 0);
+}
+
+function estimateProcesoDurationMs({ filas = 0, aseguradoras = [], pendingBatchSize = null } = {}) {
+  const rowsPerCompany = Number.isFinite(Number(pendingBatchSize)) && Number(pendingBatchSize) > 0
+    ? Math.min(Number(filas || 0), Number(pendingBatchSize))
+    : Number(filas || 0);
+  const companies = Array.isArray(aseguradoras) ? aseguradoras.length : 0;
+  if (!Number.isFinite(rowsPerCompany) || rowsPerCompany <= 0 || companies <= 0) return 0;
+  const estimatedTaskMs = Number(process.env.AUTOIQ_ESTIMATED_QUOTE_MS || 10000);
+  const perCompanyMs = rowsPerCompany * (Number.isFinite(estimatedTaskMs) && estimatedTaskMs > 0 ? estimatedTaskMs : 10000);
+  return perCompanyMs;
+}
+
+function buildPeriodoCotizacionInfo({ startedAt = new Date(), filas = 0, aseguradoras = [], pendingBatchSize = null } = {}) {
+  const startDate = startedAt instanceof Date ? startedAt : new Date(startedAt);
+  const safeStart = Number.isNaN(startDate.getTime()) ? new Date() : startDate;
+  const estimatedMs = estimateProcesoDurationMs({ filas, aseguradoras, pendingBatchSize });
+  const estimatedEnd = estimatedMs > 0 ? new Date(safeStart.getTime() + estimatedMs) : null;
+  const periodo = getCotizacionPeriodo(safeStart);
+  const estimatedEndPeriod = estimatedEnd ? getCotizacionPeriodo(estimatedEnd) : periodo;
+  const monthEnd = endOfMonth(safeStart);
+  const crossesMonth = Boolean(estimatedEnd && estimatedEnd >= monthEnd);
+  return {
+    periodo,
+    fecha_referencia: safeStart.toISOString(),
+    estimacion_ms: estimatedMs,
+    estimacion_fin: estimatedEnd ? estimatedEnd.toISOString() : null,
+    estimacion_fin_periodo: estimatedEndPeriod,
+    cruza_mes_estimado: crossesMonth,
+    advertencia: crossesMonth
+      ? `La ejecución estimada cruza del período ${periodo} al ${estimatedEndPeriod}. Conviene abrir otro proceso para no mezclar cotizaciones de distintos meses.`
+      : '',
+  };
 }
 
 async function readJsonStrict(abs) {
@@ -336,6 +407,34 @@ function readSmgCredentialsFile() {
   }
 }
 
+function readMeridionalCredentialsFile() {
+  const candidates = [
+    path.join(process.cwd(), 'web_services', 'Meridional', 'Credenciales y acceso.txt'),
+    path.join(path.dirname(process.cwd()), 'AutoIQ', 'web_services', 'Meridional', 'Credenciales y acceso.txt'),
+  ];
+  for (const credPath of candidates) {
+    try {
+      if (!fs.existsSync(credPath)) continue;
+      const raw = fs.readFileSync(credPath, 'utf8');
+      const out = {};
+      for (const line of raw.split(/\r?\n/)) {
+        const idx = line.indexOf(':');
+        if (idx < 0) continue;
+        const key = line.slice(0, idx).trim().toLowerCase();
+        const value = line.slice(idx + 1).trim();
+        if (key === 'usuario') out.usuario = value;
+        if (key === 'clave' || key === 'password' || key === 'pass') out.password = value;
+        if (key === 'userapp' || key === 'user app') out.user_app = value;
+        if (key === 'keyapp' || key === 'key app') out.key_app = value;
+      }
+      return out;
+    } catch {
+      // probar siguiente ubicación
+    }
+  }
+  return {};
+}
+
 function isInt32String(value) {
   const raw = String(value || '').trim();
   if (!/^\d+$/.test(raw)) return false;
@@ -388,6 +487,18 @@ async function loadAsegConfig(slug) {
     j.password = process.env.ALLIANZ_PASS || j.password;
     j.application = process.env.ALLIANZ_APPLICATION || j.application;
     j.producer_code = process.env.ALLIANZ_PRODUCER_CODE || j.producer_code;
+  }
+  if (slug === 'meridional') {
+    const fileCreds = readMeridionalCredentialsFile();
+    j.base_url = process.env.MERIDIONAL_BASE_URL || j.base_url;
+    j.soap_path = process.env.MERIDIONAL_SOAP_PATH || j.soap_path;
+    j.api_path = process.env.MERIDIONAL_API_PATH || j.api_path;
+    j.soap_method = process.env.MERIDIONAL_SOAP_METHOD || j.soap_method;
+    j.soap_action = process.env.MERIDIONAL_SOAP_ACTION || j.soap_action;
+    j.usuario = process.env.MERIDIONAL_USER || j.usuario || fileCreds.user_app || fileCreds.usuario;
+    j.password = process.env.MERIDIONAL_PASS || j.password || fileCreds.key_app || fileCreds.password;
+    j.producer_code = process.env.MERIDIONAL_PRODUCER_CODE || j.producer_code;
+    j.organizer_code = process.env.MERIDIONAL_ORGANIZER_CODE || j.organizer_code || j.producer_code;
   }
   if (slug === 'experta') {
     j.base_url = process.env.EXPERTA_BASE_URL || j.base_url;
@@ -460,9 +571,24 @@ async function loadAsegConfig(slug) {
     j.usuario = process.env.PROVINCIA_USER || j.usuario;
     j.password = process.env.PROVINCIA_PASS || j.password;
   }
+  if (slug === 'mercantil_andina') {
+    j.base_url = process.env.MERCANTIL_ANDINA_BASE_URL || j.base_url;
+    j.soap_path = process.env.MERCANTIL_ANDINA_API_PATH || j.soap_path;
+    j.auth_url = process.env.MERCANTIL_ANDINA_AUTH_URL || j.auth_url;
+    j.usuario = process.env.MERCANTIL_ANDINA_USER || j.usuario;
+    j.password = process.env.MERCANTIL_ANDINA_PASS || j.password;
+    j.client_id = process.env.MERCANTIL_ANDINA_CLIENT_ID || j.client_id;
+    j.grant_type = process.env.MERCANTIL_ANDINA_GRANT_TYPE || j.grant_type;
+    j.subscription_key = process.env.MERCANTIL_ANDINA_SUBSCRIPTION_KEY || j.subscription_key;
+    j.access_token = process.env.MERCANTIL_ANDINA_ACCESS_TOKEN || j.access_token;
+    j.producer_code = process.env.MERCANTIL_ANDINA_PRODUCER_CODE || j.producer_code;
+    j.comision = process.env.MERCANTIL_ANDINA_COMISION || j.comision;
+    j.bonificacion = process.env.MERCANTIL_ANDINA_BONIFICACION || j.bonificacion;
+    j.descuento_comercial = process.env.MERCANTIL_ANDINA_DESCUENTO_COMERCIAL || j.descuento_comercial;
+  }
   if (!j.base_url || !j.soap_path) throw new Error(`Config ${slug}: faltan base_url o soap_path`);
   const method = j.soap_method || j.SOAP_METHOD || 'AUTOS_Cotizar_PHP';
-  let url = `${j.base_url.replace(/\/+$/, '')}${j.soap_path}`;
+  let url = `${j.base_url.replace(/\/+$/, '')}${slug === 'meridional' && j.api_path ? j.api_path : j.soap_path}`;
   const formato =
     (j.parametros_extras && j.parametros_extras.formato_fecha_request) ||
     process.env.ATM_DATE_FMT ||
@@ -521,11 +647,19 @@ const ATM_CP_FALLBACKS = {
   'TIERRA DEL FUEGO': ['9420', '9410'],
 };
 
+const ATM_CP_ALIASES = {
+  'CAPITAL FEDERAL|CAPITAL FEDERAL|1014': '1005',
+};
+
 async function resolveAtmPostalCode(row = {}) {
   const cpRaw = pick([row?.codigo_postal, row?.codpostal, row?.CP, row?.cp, row?.CodigoPostal]);
   const cp = String(cpRaw || '').replace(/\D+/g, '').slice(0, 4);
   const provincia = normalizeComparableText(pick([row?.provincia, row?.Provincia]));
+  const localidad = normalizeComparableText(pick([row?.localidad, row?.Localidad]));
   const catalog = await loadAtmPostalCatalog();
+
+  const aliasCp = ATM_CP_ALIASES[`${provincia}|${localidad}|${cp}`];
+  if (aliasCp) return { cp: aliasCp, source: 'alias_comercial', originalCp: cp };
 
   const byCp = cp ? catalog.filter((item) => String(item?.codpos || '').trim() === cp) : [];
   if (byCp.length > 0) {
@@ -572,6 +706,10 @@ function getCompanyQueueConfig(slug, aseg = {}) {
       minIntervalMs: Number(extra.min_interval_ms ?? 800) || 800,
       retryDelayMs: Number(extra.retry_delay_ms ?? 4000) || 4000,
       maxDeferredRetries: Number(extra.max_deferred_retries ?? 1) || 1,
+      circuitBreakerEnabled: extra.circuit_breaker_enabled !== false,
+      circuitBreakerFailureThreshold: Number(extra.circuit_breaker_failure_threshold ?? 3) || 3,
+      circuitBreakerCooldownMs: Number(extra.circuit_breaker_cooldown_ms ?? 15 * 60 * 1000) || (15 * 60 * 1000),
+      circuitBreakerMaxPauseCycles: Number(extra.circuit_breaker_max_pause_cycles ?? 8) || 8,
     };
   }
   if (slug === 'provincia') {
@@ -580,6 +718,10 @@ function getCompanyQueueConfig(slug, aseg = {}) {
       minIntervalMs: Number(extra.min_interval_ms ?? 1200) || 1200,
       retryDelayMs: Number(extra.retry_delay_ms ?? 5000) || 5000,
       maxDeferredRetries: Number(extra.max_deferred_retries ?? 1) || 1,
+      circuitBreakerEnabled: extra.circuit_breaker_enabled !== false,
+      circuitBreakerFailureThreshold: Number(extra.circuit_breaker_failure_threshold ?? 3) || 3,
+      circuitBreakerCooldownMs: Number(extra.circuit_breaker_cooldown_ms ?? 15 * 60 * 1000) || (15 * 60 * 1000),
+      circuitBreakerMaxPauseCycles: Number(extra.circuit_breaker_max_pause_cycles ?? 8) || 8,
     };
   }
   return {
@@ -587,6 +729,10 @@ function getCompanyQueueConfig(slug, aseg = {}) {
     minIntervalMs: Number(extra.min_interval_ms ?? 1200) || 1200,
     retryDelayMs: Number(extra.retry_delay_ms ?? 0) || 0,
     maxDeferredRetries: Number(extra.max_deferred_retries ?? 0) || 0,
+    circuitBreakerEnabled: extra.circuit_breaker_enabled !== false,
+    circuitBreakerFailureThreshold: Number(extra.circuit_breaker_failure_threshold ?? 3) || 3,
+    circuitBreakerCooldownMs: Number(extra.circuit_breaker_cooldown_ms ?? 15 * 60 * 1000) || (15 * 60 * 1000),
+    circuitBreakerMaxPauseCycles: Number(extra.circuit_breaker_max_pause_cycles ?? 8) || 8,
   };
 }
 
@@ -597,6 +743,96 @@ function isRetryableMapfreError(result = {}) {
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function parsePositiveNumber(value, fallback) {
+  const n = Number(value);
+  return Number.isFinite(n) && n > 0 ? n : fallback;
+}
+
+function resolveCircuitBreakerConfig(queueCfg = {}) {
+  return {
+    enabled: queueCfg.circuitBreakerEnabled !== false,
+    failureThreshold: Math.max(1, parsePositiveNumber(queueCfg.circuitBreakerFailureThreshold, 3)),
+    cooldownMs: Math.max(1000, parsePositiveNumber(queueCfg.circuitBreakerCooldownMs, 15 * 60 * 1000)),
+    maxPauseCycles: Math.max(1, parsePositiveNumber(queueCfg.circuitBreakerMaxPauseCycles, 8)),
+  };
+}
+
+function createProviderCircuitBreaker({ slug, queueCfg = {}, now = () => Date.now() } = {}) {
+  const cfg = resolveCircuitBreakerConfig(queueCfg);
+  const state = {
+    slug: String(slug || ''),
+    enabled: cfg.enabled,
+    consecutiveTechnicalFailures: 0,
+    pauseCycles: 0,
+    pausedUntil: null,
+    lastReason: '',
+  };
+
+  const snapshot = () => ({
+    slug: state.slug,
+    enabled: state.enabled,
+    consecutive_technical_failures: state.consecutiveTechnicalFailures,
+    pause_cycles: state.pauseCycles,
+    paused_until: state.pausedUntil ? new Date(state.pausedUntil).toISOString() : null,
+    last_reason: state.lastReason || '',
+  });
+
+  const recordResult = (result = {}) => {
+    if (!state.enabled) return { action: 'continue', snapshot: snapshot() };
+    const technical = isTechnicalFailure(result);
+    if (!technical) {
+      state.consecutiveTechnicalFailures = 0;
+      state.pausedUntil = null;
+      state.lastReason = '';
+      return { action: 'continue', snapshot: snapshot() };
+    }
+
+    state.consecutiveTechnicalFailures += 1;
+    state.lastReason = String(result.error || result.reason || 'Error tecnico del proveedor');
+
+    if (state.consecutiveTechnicalFailures < cfg.failureThreshold) {
+      return { action: 'continue', snapshot: snapshot() };
+    }
+
+    if (state.pauseCycles >= cfg.maxPauseCycles) {
+      return {
+        action: 'exhausted',
+        reason: state.lastReason,
+        snapshot: snapshot(),
+      };
+    }
+
+    state.pauseCycles += 1;
+    state.consecutiveTechnicalFailures = 0;
+    state.pausedUntil = now() + cfg.cooldownMs;
+    return {
+      action: 'pause',
+      pauseMs: cfg.cooldownMs,
+      pausedUntil: state.pausedUntil,
+      pausedUntilIso: new Date(state.pausedUntil).toISOString(),
+      reason: state.lastReason,
+      snapshot: snapshot(),
+    };
+  };
+
+  return {
+    recordResult,
+    snapshot,
+  };
+}
+
+function addResponseTiming(result = {}, startedMs, finishedMs) {
+  const safeStarted = Number(startedMs);
+  const safeFinished = Number(finishedMs);
+  if (!Number.isFinite(safeStarted) || !Number.isFinite(safeFinished)) return result;
+  return {
+    ...result,
+    started_at: new Date(safeStarted).toISOString(),
+    finished_at: new Date(safeFinished).toISOString(),
+    duration_ms: Math.max(0, safeFinished - safeStarted),
+  };
 }
 
 async function runThrottledTasks(tasks, worker, options = {}) {
@@ -829,11 +1065,9 @@ const EXCEL_CANONICAL_HEADERS = [
   'Cabecera ID',
   'Aseguradora',
   'Fila',
-  'Estado',
   'Fecha Cotizacion',
   'Hora Cotizacion',
   'Operacion/Cotizacion',
-  'Cabecera',
   'Parametro Tipo Persona',
   'Parametro IVA',
   'Parametro Tipo Doc',
@@ -843,17 +1077,27 @@ const EXCEL_CANONICAL_HEADERS = [
   'Parametro Fecha Nacimiento',
   'Edad Cotizada',
   'Parametro Estado Civil',
-  'Parametro Tipo Uso',
+  'Uso',
   'Parametro Rastreo',
-  'Parametro GNC',
-  'Parametro Ajuste',
+  'GNC',
+  'Suma GNC Solicitada',
+  'Suma GNC Reconocida',
+  'Clausula de Ajuste Solicitada',
+  'Clausula de Ajuste Efectiva',
+  'Descuento Comercial Solicitado %',
+  'Descuento Seguro Nuevo %',
+  'Descuento No Siniestralidad %',
+  'Descuento Especial %',
+  'Variacion 32.080 %',
+  'Bonificacion Monetaria Devuelta',
+  'Codigo Promocion',
+  'Descripcion Promocion',
   'Vehiculo Anio',
   'Vehiculo Marca',
   'Vehiculo Modelo',
   'Vehiculo Codigo Infoauto',
   'Vehiculo Tipo',
   'Vehiculo Combustible',
-  'Vehiculo Uso',
   'Vehiculo Provincia',
   'Vehiculo Localidad',
   'Vehiculo CP',
@@ -868,24 +1112,21 @@ const EXCEL_CANONICAL_HEADERS = [
   'Duracion',
   'Cuotas',
   'Importe Cuota',
-  'Prima',
   'Prima Mensual',
-  'Prima Vigencia',
-  'Premio',
   'Premio Mensual',
-  'Premio Vigencia',
   'Suma Asegurada',
-  'IVA',
   'IVA Mensual',
-  'IVA Vigencia',
   'Impuestos Mensuales',
-  'Impuestos Vigencia',
+  'Recargo Financiero Mensual',
   'Franquicia',
   'Franquicia Robo',
   'Recuperador',
   'Inspeccionable',
-  'Comision',
-  '% Comision',
+  'Comision Solicitada %',
+  'Comision Devuelta',
+  'Comision Devuelta %',
+  'Coeficiente RC',
+  'Coeficiente Casco',
   'Error',
   'Observacion',
 ];
@@ -1007,25 +1248,244 @@ function buildCanonicalSheet(rows = []) {
   return xlsx.utils.json_to_sheet(rows, { header: EXCEL_CANONICAL_HEADERS });
 }
 
-function applyCanonicalSheetFormats(ws, rows = []) {
+function createCanonicalWorksheet() {
+  return xlsx.utils.aoa_to_sheet([EXCEL_CANONICAL_HEADERS]);
+}
+
+function appendCanonicalRows(ws, rows = [], startRowIndex = 0) {
+  if (!rows.length) return startRowIndex;
+  xlsx.utils.sheet_add_json(ws, rows, {
+    header: EXCEL_CANONICAL_HEADERS,
+    skipHeader: true,
+    origin: -1,
+  });
+  applyCanonicalSheetBackfills(ws, rows, startRowIndex);
+  applyCanonicalSheetFormats(ws, rows, startRowIndex);
+  return startRowIndex + rows.length;
+}
+
+function escapeXml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+function escapePowerShellSingleQuoted(value) {
+  return String(value).replace(/'/g, "''");
+}
+
+function excelColumnName(index) {
+  let s = '';
+  let n = index + 1;
+  while (n > 0) {
+    const m = (n - 1) % 26;
+    s = String.fromCharCode(65 + m) + s;
+    n = Math.floor((n - 1) / 26);
+  }
+  return s;
+}
+
+function createSharedStrings() {
+  const map = new Map();
+  const values = [];
+  let count = 0;
+  return {
+    getIndex(value) {
+      count += 1;
+      const text = String(value ?? '');
+      if (!map.has(text)) {
+        map.set(text, values.length);
+        values.push(text);
+      }
+      return map.get(text);
+    },
+    get count() {
+      return count;
+    },
+    get uniqueCount() {
+      return values.length;
+    },
+    values,
+  };
+}
+
+function excelCellXml(value, rowNumber, colIndex, sharedStrings = null) {
+  if (value == null || value === '') return '';
+  const ref = `${excelColumnName(colIndex)}${rowNumber}`;
+  if (typeof value === 'number' && Number.isFinite(value)) return `<c r="${ref}"><v>${value}</v></c>`;
+  if (sharedStrings) return `<c r="${ref}" t="s"><v>${sharedStrings.getIndex(value)}</v></c>`;
+  return `<c r="${ref}" t="inlineStr"><is><t>${escapeXml(value)}</t></is></c>`;
+}
+
+async function writeStream(stream, content) {
+  if (stream.write(content)) return;
+  await new Promise((resolve) => stream.once('drain', resolve));
+}
+
+async function writeWorksheetXml(absPath, headers = [], writeRows, sharedStrings = null) {
+  await fsp.mkdir(path.dirname(absPath), { recursive: true });
+  const dataPath = `${absPath}.sheetData`;
+  const stream = fs.createWriteStream(dataPath, { encoding: 'utf8' });
+  let rowNumber = 1;
+
+  const writeRow = async (row = {}) => {
+    const cells = headers.map((header, idx) => excelCellXml(row[header], rowNumber, idx, sharedStrings)).join('');
+    await writeStream(stream, `<row r="${rowNumber}">${cells}</row>`);
+    rowNumber += 1;
+  };
+
+  await writeRow(Object.fromEntries(headers.map((header) => [header, header])));
+  if (typeof writeRows === 'function') await writeRows(writeRow);
+  await new Promise((resolve, reject) => {
+    stream.end(resolve);
+    stream.on('error', reject);
+  });
+  const finalRow = Math.max(1, rowNumber - 1);
+  const finalCol = headers.length ? excelColumnName(headers.length - 1) : 'A';
+  const out = fs.createWriteStream(absPath, { encoding: 'utf8' });
+  await writeStream(out, '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>');
+  await writeStream(out, `<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><dimension ref="A1:${finalCol}${finalRow}"/><sheetData>`);
+  await new Promise((resolve, reject) => {
+    const input = fs.createReadStream(dataPath, { encoding: 'utf8' });
+    input.on('error', reject);
+    out.on('error', reject);
+    input.on('end', resolve);
+    input.pipe(out, { end: false });
+  });
+  await writeStream(out, '</sheetData></worksheet>');
+  await new Promise((resolve, reject) => {
+    out.end(resolve);
+    out.on('error', reject);
+  });
+  await fsp.rm(dataPath, { force: true });
+  return rowNumber - 2;
+}
+
+async function writeRowsWorksheetXml(absPath, headers = [], rows = [], sharedStrings = null) {
+  return writeWorksheetXml(absPath, headers, async (writeRow) => {
+    for (const row of rows) await writeRow(row);
+  }, sharedStrings);
+}
+
+async function writeSharedStringsXml(absPath, sharedStrings) {
+  await fsp.mkdir(path.dirname(absPath), { recursive: true });
+  const stream = fs.createWriteStream(absPath, { encoding: 'utf8' });
+  await writeStream(stream, '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>');
+  await writeStream(stream, `<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="${sharedStrings.count}" uniqueCount="${sharedStrings.uniqueCount}">`);
+  for (const value of sharedStrings.values) {
+    await writeStream(stream, `<si><t>${escapeXml(value)}</t></si>`);
+  }
+  await writeStream(stream, '</sst>');
+  await new Promise((resolve, reject) => {
+    stream.end(resolve);
+    stream.on('error', reject);
+  });
+}
+
+async function writeMinimalXlsxPackage(rootDir, outAbs, sheets = [], sharedStrings = null) {
+  await fsp.mkdir(path.join(rootDir, '_rels'), { recursive: true });
+  await fsp.mkdir(path.join(rootDir, 'xl', '_rels'), { recursive: true });
+  await fsp.mkdir(path.join(rootDir, 'docProps'), { recursive: true });
+
+  const contentTypes = [
+    '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',
+    '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">',
+    '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>',
+    '<Default Extension="xml" ContentType="application/xml"/>',
+    '<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>',
+    '<Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>',
+    '<Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>',
+    sharedStrings ? '<Override PartName="/xl/sharedStrings.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"/>' : '',
+    ...sheets.map((_, idx) => `<Override PartName="/xl/worksheets/sheet${idx + 1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`),
+    '</Types>',
+  ].join('');
+  await fsp.writeFile(path.join(rootDir, '[Content_Types].xml'), contentTypes, 'utf8');
+
+  await fsp.writeFile(path.join(rootDir, '_rels', '.rels'), [
+    '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',
+    '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">',
+    '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>',
+    '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/>',
+    '<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/>',
+    '</Relationships>',
+  ].join(''), 'utf8');
+
+  await fsp.writeFile(path.join(rootDir, 'xl', 'workbook.xml'), [
+    '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',
+    '<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>',
+    ...sheets.map((sheet, idx) => `<sheet name="${escapeXml(sheet.name)}" sheetId="${idx + 1}" r:id="rId${idx + 1}"/>`),
+    '</sheets></workbook>',
+  ].join(''), 'utf8');
+
+  await fsp.writeFile(path.join(rootDir, 'xl', '_rels', 'workbook.xml.rels'), [
+    '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',
+    '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">',
+    ...sheets.map((_, idx) => `<Relationship Id="rId${idx + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${idx + 1}.xml"/>`),
+    sharedStrings ? `<Relationship Id="rId${sheets.length + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings" Target="sharedStrings.xml"/>` : '',
+    '</Relationships>',
+  ].join(''), 'utf8');
+
+  if (sharedStrings) {
+    await writeSharedStringsXml(path.join(rootDir, 'xl', 'sharedStrings.xml'), sharedStrings);
+  }
+
+  const now = new Date().toISOString();
+  await fsp.writeFile(path.join(rootDir, 'docProps', 'core.xml'), [
+    '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',
+    '<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">',
+    '<dc:creator>AutoIQ</dc:creator>',
+    `<dcterms:created xsi:type="dcterms:W3CDTF">${now}</dcterms:created>`,
+    `<dcterms:modified xsi:type="dcterms:W3CDTF">${now}</dcterms:modified>`,
+    '</cp:coreProperties>',
+  ].join(''), 'utf8');
+  await fsp.writeFile(path.join(rootDir, 'docProps', 'app.xml'), [
+    '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',
+    '<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">',
+    '<Application>AutoIQ</Application>',
+    '</Properties>',
+  ].join(''), 'utf8');
+
+  if (fs.existsSync(outAbs)) await fsp.unlink(outAbs);
+  const ps = [
+    `Add-Type -AssemblyName System.IO.Compression.FileSystem`,
+    `[System.IO.Compression.ZipFile]::CreateFromDirectory('${escapePowerShellSingleQuoted(rootDir)}','${escapePowerShellSingleQuoted(outAbs)}')`,
+  ].join('; ');
+  execFileSync('powershell.exe', ['-NoProfile', '-Command', ps], { stdio: 'ignore' });
+}
+
+function applyCanonicalSheetFormats(ws, rows = [], startRowIndex = 0) {
   const headerIndex = new Map(EXCEL_CANONICAL_HEADERS.map((name, idx) => [name, idx]));
   const money2 = new Set([
     'Importe Cuota',
-    'Prima',
     'Prima Mensual',
-    'Prima Vigencia',
-    'Premio',
     'Premio Mensual',
-    'Premio Vigencia',
-    'IVA',
     'IVA Mensual',
-    'IVA Vigencia',
     'Impuestos Mensuales',
-    'Impuestos Vigencia',
-    'Comision',
+    'Recargo Financiero Mensual',
+    'Bonificacion Monetaria Devuelta',
+    'Comision Devuelta',
   ]);
-  const money0 = new Set(['Suma Asegurada', 'Franquicia', 'Franquicia Robo']);
-  const decimals2 = new Set(['% Comision']);
+  const money0 = new Set([
+    'Suma GNC Solicitada',
+    'Suma GNC Reconocida',
+    'Suma Asegurada',
+    'Franquicia',
+    'Franquicia Robo',
+  ]);
+  const decimals2 = new Set([
+    'Descuento Comercial Solicitado %',
+    'Descuento Seguro Nuevo %',
+    'Descuento No Siniestralidad %',
+    'Descuento Especial %',
+    'Variacion 32.080 %',
+    'Comision Solicitada %',
+    'Comision Devuelta %',
+    'Coeficiente RC',
+    'Coeficiente Casco',
+  ]);
 
   const colName = (n) => {
     let s = '';
@@ -1042,7 +1502,7 @@ function applyCanonicalSheetFormats(ws, rows = []) {
     for (const [name, colIndex] of headerIndex.entries()) {
       const value = row?.[name];
       if (typeof value !== 'number' || !Number.isFinite(value)) continue;
-      const ref = `${colName(colIndex)}${rowIndex + 2}`;
+      const ref = `${colName(colIndex)}${startRowIndex + rowIndex + 2}`;
       if (!ws[ref]) continue;
       if (money2.has(name)) ws[ref].z = '#,##0.00';
       else if (money0.has(name)) ws[ref].z = '#,##0';
@@ -1051,7 +1511,7 @@ function applyCanonicalSheetFormats(ws, rows = []) {
   });
 }
 
-function applyCanonicalSheetBackfills(ws, rows = []) {
+function applyCanonicalSheetBackfills(ws, rows = [], startRowIndex = 0) {
   const headerIndex = new Map(EXCEL_CANONICAL_HEADERS.map((name, idx) => [name, idx]));
   const colName = (n) => {
     let s = '';
@@ -1072,8 +1532,8 @@ function applyCanonicalSheetBackfills(ws, rows = []) {
 
   rows.forEach((row, rowIndex) => {
     const group = inferCoverageGroup(row);
-    if (group.code) setCell(rowIndex, 'Grupo Cobertura Codigo', group.code);
-    if (group.description) setCell(rowIndex, 'Grupo Cobertura Descripcion', group.description);
+    if (group.code) setCell(startRowIndex + rowIndex, 'Grupo Cobertura Codigo', group.code);
+    if (group.description) setCell(startRowIndex + rowIndex, 'Grupo Cobertura Descripcion', group.description);
   });
 }
 
@@ -1652,6 +2112,7 @@ function inferCuotas(row = {}, usedMeta = {}) {
 
   const usedCuotas = toNumber(firstNonEmpty(
     usedMeta.cantidadDeCuotas,
+    usedMeta.cantidadCuotas,
     usedMeta.cantidad_cuotas,
     usedMeta.cuotas
   ));
@@ -1715,7 +2176,11 @@ function inferFranquicia(row = {}, sumaAsegurada) {
 function enrichExcelRowCanonicalFields(row = {}) {
   const next = applyVehicleExcelAliases(row);
   const sancorFinancials = deriveSancorExcelFinancials(row);
-  const isSancor = String(row.aseguradora || '').trim().toLowerCase() === 'sancor';
+  const insurerSlug = String(row.aseguradora || '').trim().toLowerCase();
+  const isAtm = insurerSlug === 'atm';
+  const isExperta = insurerSlug === 'experta';
+  const isSancor = insurerSlug === 'sancor';
+  const isVictoria = insurerSlug === 'victoria';
   const coberturaCodigo = firstNonEmpty(
     row.cot_codigo,
     row.cot_codigoDeCobertura,
@@ -1758,13 +2223,28 @@ function enrichExcelRowCanonicalFields(row = {}) {
   );
   next['Forma Pago'] = firstNonEmpty(row.cot_formapago);
   next['Forma Pago Descripcion'] = firstNonEmpty(row.cot_formapago_descripcion);
-  next.Cuotas = firstNonEmpty(row.cot_cuotas, row.cot_cantidadCuotas);
-  next['Importe Cuota'] = firstNonEmpty(row.cot_impcuotas, row.cot_importeCuota, row.cot_montoPrimeraCuota);
+  next.Cuotas = isExperta ? 1 : firstNonEmpty(row.cot_cuotas, row.cot_cantidadCuotas);
+  next['Importe Cuota'] = firstNonEmpty(
+    row.cot_impcuotas,
+    row.cot_importeCuota,
+    row.cot_montoPrimeraCuota,
+    isExperta ? row.cot_importePremio : ''
+  );
+  const atmInstallments = toNumber(firstNonEmpty(row.cot_cuotas, row.cot_cantidadCuotas));
+  const atmPrimaTotal = toNumber(firstNonEmpty(row.cot_prima, row.cot_importePrima));
+  const atmPrimaMensual = isAtm && atmPrimaTotal != null && atmInstallments
+    ? atmPrimaTotal / atmInstallments
+    : '';
   next['Prima Mensual'] = firstNonEmpty(
     row['Prima Mensual'],
+    row.cot_primaMensual,
     row.cot_purePremiumMonthlyTotal,
     row.cot_primaMonthlyTotal,
-    isSancor ? firstNonEmpty(row.cot_prima, row.cot_importePrima, sancorFinancials?.primaMensual) : ''
+    atmPrimaMensual,
+    isSancor ? firstNonEmpty(row.cot_prima, row.cot_importePrima, sancorFinancials?.primaMensual) : '',
+    row.cot_importePrima,
+    row.cot_montoPrimaTotal,
+    isExperta ? row.cot_prima : ''
   );
   next['Prima Vigencia'] = firstNonEmpty(
     row['Prima Vigencia'],
@@ -1781,8 +2261,13 @@ function enrichExcelRowCanonicalFields(row = {}) {
   );
   next['Premio Mensual'] = firstNonEmpty(
     row['Premio Mensual'],
+    row.cot_premioMensual,
     row.cot_premiumMonthly,
-    isSancor ? firstNonEmpty(row.cot_premio, row.cot_importePremio, sancorFinancials?.premioMensual) : ''
+    isAtm ? firstNonEmpty(row.cot_impcuotas, row.cot_importeCuota) : '',
+    isVictoria ? row.cot_importeCuota : '',
+    isSancor ? firstNonEmpty(row.cot_premio, row.cot_importePremio, sancorFinancials?.premioMensual) : '',
+    row.cot_importePremio,
+    row.cot_montoPremio
   );
   next['Premio Vigencia'] = firstNonEmpty(
     row['Premio Vigencia'],
@@ -1827,12 +2312,89 @@ function enrichExcelRowCanonicalFields(row = {}) {
   next.Franquicia = firstNonEmpty(row.cot_franquicia, row.cot_montoFranquicia, row.cot_nombreFranquicia);
   next.Inspeccionable = firstNonEmpty(row.cot_inspeccionable, row.cot_requiereInspeccion, row.cot_outStandard);
   next['Operacion/Cotizacion'] = firstNonEmpty(row.cot_numCotizacion, row.operacion, row.cot_pricingId);
+  if (isExperta) {
+    // Experta usa `duracion` para la vigencia de una promocion, no para facturacion.
+    // Sus importes debito/efectivo y prima ya son mensuales.
+    next.cot_periodoFact = 'M';
+    next.cot_duracion = 1;
+    next.cot_cuotas = 1;
+  }
   return next;
+}
+
+const commercialConditionsExcelCache = new Map();
+
+function loadCommercialConditionsForExcel(row = {}, usedMeta = {}) {
+  const embedded = usedMeta?.commercial_conditions || usedMeta?.commercialConditions;
+  if (embedded && typeof embedded === 'object') {
+    return embedded.values && typeof embedded.values === 'object' ? embedded.values : embedded;
+  }
+
+  const procesoId = Number(row.proceso_id);
+  const index = Number(row.index);
+  const slug = String(row.aseguradora || '').trim().toLowerCase();
+  if (!Number.isFinite(procesoId) || !Number.isFinite(index) || !slug) return {};
+
+  const cacheKey = `${procesoId}:${slug}:${index}`;
+  if (commercialConditionsExcelCache.has(cacheKey)) return commercialConditionsExcelCache.get(cacheKey);
+
+  const evidencePath = path.join(
+    evidenciasDir(procesoId, slug, index),
+    `${slug}-commercial_conditions_effective.json`
+  );
+  const evidence = readJsonFileSafe(evidencePath);
+  const values = evidence?.values && typeof evidence.values === 'object' ? evidence.values : {};
+  commercialConditionsExcelCache.set(cacheKey, values);
+  return values;
+}
+
+function commercialVisibleValue(values = {}, concept = '') {
+  const value = values?.[concept];
+  if (!value || value.applies === false) return '';
+  return firstNonEmpty(value.visible_value, value.numeric_value, value.raw_value);
+}
+
+function commercialNumericValue(values = {}, concept = '') {
+  const value = values?.[concept];
+  if (!value || value.applies === false) return '';
+  const explicit = toNumber(value.numeric_value);
+  if (explicit != null) return Math.round(explicit * 100) / 100;
+  const visible = String(firstNonEmpty(value.visible_value, value.raw_value)).replace(',', '.');
+  const match = visible.trim().match(/^(-?\d+(?:\.\d+)?)\s*%?$/);
+  if (!match) return '';
+  const parsed = Number(match[1]);
+  return Number.isFinite(parsed) ? parsed : '';
+}
+
+function normalizeUsoExcel(row = {}, commercialValues = {}) {
+  const visible = normalizeText(firstNonEmpty(
+    commercialVisibleValue(commercialValues, 'uso'),
+    row.cab_uso_default,
+    row.veh_uso,
+    row.cab_tipo_uso
+  ));
+  if (visible === '2' || visible.includes('COMERCIAL')) return 'Comercial';
+  if (visible === '1' || visible.includes('PARTICULAR')) return 'Particular';
+  return firstNonEmpty(row.veh_uso, commercialVisibleValue(commercialValues, 'uso'), row.cab_tipo_uso);
+}
+
+function normalizeGncExcel(row = {}, commercialValues = {}) {
+  const visible = commercialVisibleValue(commercialValues, 'gnc');
+  if (visible !== '') return commercialTruthy(commercialValues.gnc) ? 'Si' : 'No';
+  return String(row.cab_gnc ?? '').trim() === '1' ? 'Si' : 'No';
+}
+
+function normalizeAjusteExcel(value) {
+  if (value == null || String(value).trim() === '') return '';
+  const text = String(value).trim();
+  if (text.includes('%') || /SIN|NINGUN/i.test(text)) return text;
+  const numeric = toNumber(text);
+  return numeric == null ? text : `${Math.round(numeric * 100) / 100}%`;
 }
 
 function buildCanonicalExcelRow(row = {}, usedMeta = {}) {
   row = applyVehicleExcelAliases(row);
-  const estado = row.skipped ? 'skipped' : (row.ok ? 'ok' : 'error');
+  const commercialValues = loadCommercialConditionsForExcel(row, usedMeta);
   const coberturaDescripcion = firstNonEmpty(row['Cobertura Descripcion'], row['Producto Descripcion']);
   const productoDescripcion = firstNonEmpty(row['Producto Descripcion'], row['Cobertura Descripcion']);
   let grupo = inferCoverageGroup({
@@ -1851,18 +2413,23 @@ function buildCanonicalExcelRow(row = {}, usedMeta = {}) {
   const periodoFacturacion = inferPeriodoFacturacion(row, cuotas);
   const duracion = inferDuracion(row, cuotas);
   const sumaAsegurada = roundMoney(firstNonEmpty(row.cot_sumaAsegurada, row['Suma Asegurada']), 0);
-  const primaMensual = roundMoney(firstNonEmpty(row['Prima Mensual'], row.Prima), 2);
-  const primaVigencia = roundMoney(row['Prima Vigencia'], 2);
-  const premioMensual = roundMoney(firstNonEmpty(row['Premio Mensual'], row.Premio), 2);
-  const premioVigencia = roundMoney(row['Premio Vigencia'], 2);
-  const importeCuota = roundMoney(firstNonEmpty(row['Importe Cuota'], (premioMensual != null && cuotas ? premioMensual / cuotas : '')), 2);
+  const primaMensual = roundMoney(firstNonEmpty(row['Prima Mensual'], row.cot_primaMensual, row.Prima), 2);
+  const premioMensual = roundMoney(firstNonEmpty(row['Premio Mensual'], row.cot_premioMensual, row.Premio), 2);
+  const importeCuota = roundMoney(firstNonEmpty(row['Importe Cuota'], row.cot_importeCuota, premioMensual), 2);
   const ivaMensual = roundMoney(firstNonEmpty(row['IVA Mensual'], row.IVA), 2);
-  const ivaVigencia = roundMoney(row['IVA Vigencia'], 2);
   const impuestosMensuales = roundMoney(row['Impuestos Mensuales'], 2);
-  const impuestosVigencia = roundMoney(row['Impuestos Vigencia'], 2);
-  const prima = primaMensual;
-  const premio = premioMensual;
-  const iva = ivaMensual;
+  const recargoFinancieroMensual = roundMoney(firstNonEmpty(row.cot_importeRecargoFinanciero), 2);
+  const sumaGncSolicitada = roundMoney(firstNonEmpty(row.cab_suma_gnc), 0);
+  const sumaGncReconocida = roundMoney(firstNonEmpty(row.cot_sumaGNC, row.cot_sumaGnc), 0);
+  const ajusteSolicitado = normalizeAjusteExcel(firstNonEmpty(
+    commercialVisibleValue(commercialValues, 'clausula_ajuste'),
+    row.cab_ajuste
+  ));
+  const ajusteEfectivo = normalizeAjusteExcel(firstNonEmpty(
+    row.cot_porcentajeAjuste,
+    row.cot_ajuste,
+    commercialVisibleValue(commercialValues, 'clausula_ajuste')
+  ));
   const franquicia = inferFranquicia(row, sumaAsegurada);
   const franquiciaRobo = (() => {
     const n = roundMoney(row.cot_franquiciaRobo, 0);
@@ -1872,7 +2439,7 @@ function buildCanonicalExcelRow(row = {}, usedMeta = {}) {
   const porcentajeComision = (() => {
     const explicit = toNumber(row.cot_porcentajeComisionPAS);
     if (explicit != null) return Math.round(explicit * 100) / 100;
-    if (comisionValor != null && prima && prima !== 0) return Math.round((comisionValor / prima * 100) * 100) / 100;
+    if (comisionValor != null && primaMensual && primaMensual !== 0) return Math.round((comisionValor / primaMensual * 100) * 100) / 100;
     return '';
   })();
   const medioPagoRequest = firstNonEmpty(row.cab_medio_pago);
@@ -1888,11 +2455,9 @@ function buildCanonicalExcelRow(row = {}, usedMeta = {}) {
     'Cabecera ID': row.cabecera_id ?? '',
     Aseguradora: row.aseguradora ?? '',
     Fila: row.index ?? '',
-    Estado: estado,
     'Fecha Cotizacion': quoteParts.fecha,
     'Hora Cotizacion': quoteParts.hora,
     'Operacion/Cotizacion': firstNonEmpty(row['Operacion/Cotizacion'], row.operacion, row.cot_numCotizacion, row.cot_pricingId),
-    Cabecera: row.cab_nombre ?? '',
     'Parametro Tipo Persona': row.cab_tipopersona ?? '',
     'Parametro IVA': row.cab_iva ?? '',
     'Parametro Tipo Doc': row.cab_tipodoc ?? '',
@@ -1902,17 +2467,27 @@ function buildCanonicalExcelRow(row = {}, usedMeta = {}) {
     'Parametro Fecha Nacimiento': row.cab_fec_nac ?? '',
     'Edad Cotizada': edadCotizada,
     'Parametro Estado Civil': row.cab_est_civil ?? '',
-    'Parametro Tipo Uso': row.cab_tipo_uso ?? '',
+    Uso: normalizeUsoExcel(row, commercialValues),
     'Parametro Rastreo': row.cab_rastreo ?? '',
-    'Parametro GNC': row.cab_gnc ?? '',
-    'Parametro Ajuste': row.cab_ajuste ?? '',
+    GNC: normalizeGncExcel(row, commercialValues),
+    'Suma GNC Solicitada': sumaGncSolicitada ?? '',
+    'Suma GNC Reconocida': sumaGncReconocida ?? '',
+    'Clausula de Ajuste Solicitada': ajusteSolicitado,
+    'Clausula de Ajuste Efectiva': ajusteEfectivo,
+    'Descuento Comercial Solicitado %': commercialNumericValue(commercialValues, 'descuento_comercial'),
+    'Descuento Seguro Nuevo %': commercialNumericValue(commercialValues, 'descuento_seguro_nuevo'),
+    'Descuento No Siniestralidad %': commercialNumericValue(commercialValues, 'descuento_no_siniestralidad'),
+    'Descuento Especial %': commercialNumericValue(commercialValues, 'descuento_especial'),
+    'Variacion 32.080 %': commercialNumericValue(commercialValues, 'variacion_32080'),
+    'Bonificacion Monetaria Devuelta': roundMoney(firstNonEmpty(row.cot_montoBonif), 2) ?? '',
+    'Codigo Promocion': firstNonEmpty(row.cot_codigoPromocion),
+    'Descripcion Promocion': firstNonEmpty(row.cot_descripcionPromocion),
     'Vehiculo Anio': row.veh_anio ?? '',
     'Vehiculo Marca': row.veh_marca ?? '',
     'Vehiculo Modelo': row.veh_modelo ?? '',
     'Vehiculo Codigo Infoauto': row.veh_codigo_infoauto ?? '',
     'Vehiculo Tipo': vehiculoTipo,
     'Vehiculo Combustible': vehiculoCombustible,
-    'Vehiculo Uso': row.veh_uso ?? '',
     'Vehiculo Provincia': row.veh_provincia ?? '',
     'Vehiculo Localidad': row.veh_localidad ?? '',
     'Vehiculo CP': row.veh_CP ?? '',
@@ -1927,37 +2502,44 @@ function buildCanonicalExcelRow(row = {}, usedMeta = {}) {
      Duracion: duracion,
      Cuotas: cuotas ?? '',
      'Importe Cuota': importeCuota ?? '',
-     Prima: prima ?? '',
      'Prima Mensual': primaMensual ?? '',
-     'Prima Vigencia': primaVigencia ?? '',
-     Premio: premio ?? '',
      'Premio Mensual': premioMensual ?? '',
-     'Premio Vigencia': premioVigencia ?? '',
      'Suma Asegurada': sumaAsegurada ?? '',
-     IVA: iva ?? '',
      'IVA Mensual': ivaMensual ?? '',
-     'IVA Vigencia': ivaVigencia ?? '',
      'Impuestos Mensuales': impuestosMensuales ?? '',
-     'Impuestos Vigencia': impuestosVigencia ?? '',
+     'Recargo Financiero Mensual': recargoFinancieroMensual ?? '',
      Franquicia: franquicia,
      'Franquicia Robo': franquiciaRobo,
      Recuperador: parseRecuperador(row),
      Inspeccionable: parseInspeccionable(row),
-     Comision: comisionValor ?? '',
-    '% Comision': porcentajeComision,
+     'Comision Solicitada %': commercialNumericValue(commercialValues, 'comision'),
+     'Comision Devuelta': comisionValor ?? '',
+    'Comision Devuelta %': porcentajeComision,
+    'Coeficiente RC': commercialNumericValue(commercialValues, 'coeficiente_rc'),
+    'Coeficiente Casco': commercialNumericValue(commercialValues, 'coeficiente_casco'),
     Error: firstNonEmpty(row.error),
     Observacion: firstNonEmpty(row.reason),
   };
 }
 
-async function generarExcelProceso(procesoId) {
+async function generarExcelProceso(procesoId, options = {}) {
   const id = Number(procesoId);
+  const includeRaw = options.includeRaw === true;
+  const chunkSize = Math.max(100, Number(options.chunkSize || 1000));
   const meta = await loadMetadata(id);
   if (!meta) throw new Error('No existe el proceso');
 
   const rp = resumenPath(id);
-  if (!fs.existsSync(rp)) throw new Error('El proceso no tiene resumen.json');
-  const resumen = JSON.parse(fs.readFileSync(rp, 'utf8'));
+  const hasResumenFile = fs.existsSync(rp);
+  const resumen = hasResumenFile
+    ? JSON.parse(fs.readFileSync(rp, 'utf8'))
+    : {
+        id,
+        historial_id: meta.historial_id || null,
+        cabecera_id: meta.cabecera_id || null,
+        aseguradoras: meta.aseguradoras || [],
+        resultados: {},
+      };
 
   const cabecera = meta.cabecera_id ? getCabecera(meta.cabecera_id) : null;
 
@@ -1979,15 +2561,202 @@ async function generarExcelProceso(procesoId) {
   }
 
   const filas = await readFilasFromFile(absArchivo);
+  const aseguradorasExcel = Array.isArray(meta.aseguradoras) && meta.aseguradoras.length
+    ? meta.aseguradoras
+    : Object.keys(resumen.resultados || {});
+  const hasJsonlResults = hasJsonlStorage(id, aseguradorasExcel);
+  if (!hasResumenFile && !hasJsonlResults) {
+    throw new Error('El proceso no tiene resultados disponibles para generar el Excel');
+  }
+  const resultadosExcel = hasJsonlResults && !includeRaw
+    ? null
+    : (hasJsonlResults
+        ? loadResultadosFromJsonl(id, aseguradorasExcel, filas.length)
+        : (resumen.resultados || {}));
+  const forEachResultadoExcel = async (callback) => {
+    for (const slug of aseguradorasExcel) {
+      const arr = hasJsonlResults && !includeRaw
+        ? await loadResultadosFromJsonlForExcel(id, slug, filas.length)
+        : (Array.isArray(resultadosExcel?.[slug]) ? resultadosExcel[slug] : []);
+      for (const item of arr) {
+        if (item) await callback(slug, item);
+      }
+    }
+  };
 
-  const rowsCot = [];
-  const rowsCotCanonical = [];
+  const dlDir = path.join(procesoDir(id), 'descargas');
+  ensureDir(dlDir);
+  const suffix = includeRaw ? '-cotizaciones-tecnico.xlsx' : '-cotizaciones.xlsx';
+  const outAbs = path.join(dlDir, `proceso-${id}${suffix}`);
+
+  if (!includeRaw) {
+    const tmpDir = await fsp.mkdtemp(path.join(os.tmpdir(), `autoiq-xlsx-${id}-`));
+    const sheetDir = path.join(tmpDir, 'xl', 'worksheets');
+    const sharedStrings = createSharedStrings();
+    const rowsSkip = [];
+    const rowsErr = [];
+    const cotizacionesSample = [];
+    const unresolvedCoverageGroups = [];
+    let canonicalRowCount = 0;
+
+    const collectManifestRow = (canonicalRow) => {
+      if (cotizacionesSample.length < 8) cotizacionesSample.push(canonicalRow);
+      if (unresolvedCoverageGroups.length < 50) {
+        const inferred = inferCoverageGroup(canonicalRow);
+        if (!firstNonEmpty(canonicalRow['Grupo Cobertura Codigo'], inferred.code)) {
+          unresolvedCoverageGroups.push({
+            aseguradora: canonicalRow.Aseguradora,
+            fila: canonicalRow.Fila,
+            coberturaCodigo: canonicalRow['Cobertura Codigo'],
+            coberturaDescripcion: canonicalRow['Cobertura Descripcion'],
+            productoCodigo: canonicalRow['Producto Codigo'],
+            productoDescripcion: canonicalRow['Producto Descripcion'],
+            plan: canonicalRow.Plan,
+          });
+        }
+      }
+    };
+
+    try {
+      canonicalRowCount = await writeWorksheetXml(
+        path.join(sheetDir, 'sheet1.xml'),
+        EXCEL_CANONICAL_HEADERS,
+        async (writeRow) => {
+          await forEachResultadoExcel(async (slug, item) => {
+              const idx = Number(item.index);
+              const filaIn = filas[idx] || {};
+              const base = {
+                proceso_id: id,
+                historial_id: meta.historial_id || resumen.historial_id || null,
+                cabecera_id: meta.cabecera_id || resumen.cabecera_id || null,
+                aseguradora: slug,
+                index: idx,
+                finished_at: item.finished_at || '',
+                ok: item.ok === true,
+                skipped: item.skipped === true,
+                operacion: item.operacion || '',
+                reason: item.reason || '',
+                error: item.error || '',
+              };
+              const filaFlat = flattenForExcel(filaIn, 'veh_');
+              const cabFlat = cabecera ? flattenForExcel(cabecera, 'cab_') : {};
+
+              if (item.skipped) {
+                rowsSkip.push(enrichExcelRowCanonicalFields({ ...base, ...filaFlat, ...cabFlat, used: JSON.stringify(item.used || {}) }));
+                return;
+              }
+
+              if (!item.ok) {
+                rowsErr.push(enrichExcelRowCanonicalFields({ ...base, ...filaFlat, ...cabFlat, used: JSON.stringify(item.used || {}) }));
+                return;
+              }
+
+              const cobs = Array.isArray(item.coberturas) ? item.coberturas : [];
+              const sumaAsegurada = await resolveSumaAsegurada({
+                row: { ...filaIn, ...item.fila_preview },
+                responseAmount: item.suma_asegurada,
+              });
+              const coberturas = cobs.length ? cobs : [{}];
+              for (const cob of coberturas) {
+                const cobFlat = cobs.length ? flattenForExcel(cob, 'cot_') : {};
+                const row = {
+                  ...base,
+                  ...filaFlat,
+                  ...cabFlat,
+                  ...cobFlat,
+                  used: JSON.stringify(item.used || {}),
+                };
+                const rawRow = enrichExcelRowCanonicalFields(insertFieldBeforePrefix(row, 'Suma Asegurada', sumaAsegurada, 'cot_'));
+                const canonicalRow = buildCanonicalExcelRow(rawRow, item.used || {});
+                collectManifestRow(canonicalRow);
+                await writeRow(canonicalRow);
+              }
+          });
+        }
+      , sharedStrings);
+
+      const errHeaders = buildExcelHeaders(rowsErr);
+      const skipHeaders = buildExcelHeaders(rowsSkip);
+      await writeRowsWorksheetXml(path.join(sheetDir, 'sheet2.xml'), errHeaders, rowsErr, sharedStrings);
+      await writeRowsWorksheetXml(path.join(sheetDir, 'sheet3.xml'), skipHeaders, rowsSkip, sharedStrings);
+      await writeMinimalXlsxPackage(tmpDir, outAbs, [
+        { name: 'Cotizaciones' },
+        { name: 'Errores' },
+        { name: 'Skipped' },
+      ], sharedStrings);
+
+      safeWriteJson(path.join(procesoDir(id), 'excel_manifest.json'), {
+        generated_at: new Date().toISOString(),
+        export_mode: 'normal_sin_raw_streaming',
+        include_raw: false,
+        output_file: outAbs,
+        sheets: ['Cotizaciones', 'Errores', 'Skipped'],
+        cotizaciones_headers: EXCEL_CANONICAL_HEADERS,
+        cotizaciones_rows: canonicalRowCount,
+        raw_rows: 0,
+        errores_rows: rowsErr.length,
+        skipped_rows: rowsSkip.length,
+        cotizaciones_sample: cotizacionesSample,
+        unresolved_coverage_groups: unresolvedCoverageGroups,
+        worksheet_preview: Object.fromEntries(
+          EXCEL_CANONICAL_HEADERS.slice(0, 12).map((header, index) => [`${excelColumnName(index)}1`, header])
+        ),
+        raw_headers: [],
+      });
+      return outAbs;
+    } finally {
+      await fsp.rm(tmpDir, { recursive: true, force: true });
+    }
+  }
+
+  const wb = xlsx.utils.book_new();
+  const wsCot = createCanonicalWorksheet();
+  const rowsCotRaw = [];
   const rowsSkip = [];
   const rowsErr = [];
+  const cotizacionesSample = [];
+  const unresolvedCoverageGroups = [];
+  let canonicalRowCount = 0;
+  let rawRowCount = 0;
+  let chunk = [];
 
-  for (const slug of Object.keys(resumen.resultados || {})) {
-    const arr = Array.isArray(resumen.resultados[slug]) ? resumen.resultados[slug] : [];
+  const flushChunk = () => {
+    if (!chunk.length) return;
+    canonicalRowCount = appendCanonicalRows(wsCot, chunk, canonicalRowCount);
+    chunk = [];
+  };
+
+  const collectManifestRow = (canonicalRow) => {
+    if (cotizacionesSample.length < 8) cotizacionesSample.push(canonicalRow);
+    if (unresolvedCoverageGroups.length < 50) {
+      const inferred = inferCoverageGroup(canonicalRow);
+      if (!firstNonEmpty(canonicalRow['Grupo Cobertura Codigo'], inferred.code)) {
+        unresolvedCoverageGroups.push({
+          aseguradora: canonicalRow.Aseguradora,
+          fila: canonicalRow.Fila,
+          coberturaCodigo: canonicalRow['Cobertura Codigo'],
+          coberturaDescripcion: canonicalRow['Cobertura Descripcion'],
+          productoCodigo: canonicalRow['Producto Codigo'],
+          productoDescripcion: canonicalRow['Producto Descripcion'],
+          plan: canonicalRow.Plan,
+        });
+      }
+    }
+  };
+
+  const appendCotizacionRow = (rawRow, used = {}) => {
+    if (includeRaw) rowsCotRaw.push(rawRow);
+    rawRowCount += 1;
+    const canonicalRow = buildCanonicalExcelRow(rawRow, used);
+    collectManifestRow(canonicalRow);
+    chunk.push(canonicalRow);
+    if (chunk.length >= chunkSize) flushChunk();
+  };
+
+  for (const slug of Object.keys(resultadosExcel || {})) {
+    const arr = Array.isArray(resultadosExcel[slug]) ? resultadosExcel[slug] : [];
     for (const item of arr) {
+      if (!item) continue;
       const idx = Number(item.index);
       const filaIn = filas[idx] || {};
       const base = {
@@ -2033,8 +2802,7 @@ async function generarExcelProceso(procesoId) {
           used: JSON.stringify(item.used || {}),
         };
         const rawRow = enrichExcelRowCanonicalFields(insertFieldBeforePrefix(row, 'Suma Asegurada', sumaAsegurada, 'cot_'));
-        rowsCot.push(rawRow);
-        rowsCotCanonical.push(buildCanonicalExcelRow(rawRow, item.used || {}));
+        appendCotizacionRow(rawRow, item.used || {});
       } else {
         for (const cob of cobs) {
           const cobFlat = flattenForExcel(cob, 'cot_');
@@ -2046,21 +2814,19 @@ async function generarExcelProceso(procesoId) {
             used: JSON.stringify(item.used || {}),
           };
           const rawRow = enrichExcelRowCanonicalFields(insertFieldBeforePrefix(row, 'Suma Asegurada', sumaAsegurada, 'cot_'));
-          rowsCot.push(rawRow);
-          rowsCotCanonical.push(buildCanonicalExcelRow(rawRow, item.used || {}));
+          appendCotizacionRow(rawRow, item.used || {});
         }
       }
     }
   }
 
-  const wb = xlsx.utils.book_new();
-  const wsCot = buildCanonicalSheet(rowsCotCanonical);
-  applyCanonicalSheetBackfills(wsCot, rowsCotCanonical);
-  applyCanonicalSheetFormats(wsCot, rowsCotCanonical);
+  flushChunk();
   xlsx.utils.book_append_sheet(wb, wsCot, 'Cotizaciones');
 
-  const wsCotRaw = buildSheetFromRows(rowsCot);
-  xlsx.utils.book_append_sheet(wb, wsCotRaw, 'Raw');
+  if (includeRaw) {
+    const wsCotRaw = buildSheetFromRows(rowsCotRaw);
+    xlsx.utils.book_append_sheet(wb, wsCotRaw, 'Raw');
+  }
 
   const wsErr = buildSheetFromRows(rowsErr);
   xlsx.utils.book_append_sheet(wb, wsErr, 'Errores');
@@ -2068,28 +2834,19 @@ async function generarExcelProceso(procesoId) {
   const wsSkip = buildSheetFromRows(rowsSkip);
   xlsx.utils.book_append_sheet(wb, wsSkip, 'Skipped');
 
-  const dlDir = path.join(procesoDir(id), 'descargas');
-  ensureDir(dlDir);
-  const outAbs = path.join(dlDir, `proceso-${id}-cotizaciones.xlsx`);
   xlsx.writeFile(wb, outAbs);
-  const unresolvedCoverageGroups = rowsCotCanonical
-    .map((row) => ({ row, inferred: inferCoverageGroup(row) }))
-    .filter(({ row, inferred }) => !firstNonEmpty(row['Grupo Cobertura Codigo'], inferred.code))
-    .slice(0, 50)
-    .map(({ row }) => ({
-      aseguradora: row.Aseguradora,
-      fila: row.Fila,
-      coberturaCodigo: row['Cobertura Codigo'],
-      coberturaDescripcion: row['Cobertura Descripcion'],
-      productoCodigo: row['Producto Codigo'],
-      productoDescripcion: row['Producto Descripcion'],
-      plan: row.Plan,
-    }));
   safeWriteJson(path.join(procesoDir(id), 'excel_manifest.json'), {
     generated_at: new Date().toISOString(),
+    export_mode: includeRaw ? 'tecnico_con_raw' : 'normal_sin_raw',
+    include_raw: includeRaw,
+    output_file: outAbs,
     sheets: wb.SheetNames,
-    cotizaciones_headers: rowsCotCanonical.length ? Object.keys(rowsCotCanonical[0]) : [],
-    cotizaciones_sample: rowsCotCanonical.slice(0, 8),
+    cotizaciones_headers: EXCEL_CANONICAL_HEADERS,
+    cotizaciones_rows: canonicalRowCount,
+    raw_rows: includeRaw ? rawRowCount : 0,
+    errores_rows: rowsErr.length,
+    skipped_rows: rowsSkip.length,
+    cotizaciones_sample: cotizacionesSample,
     unresolved_coverage_groups: unresolvedCoverageGroups,
     worksheet_preview: {
       A1: wsCot.A1?.v ?? null,
@@ -2105,7 +2862,7 @@ async function generarExcelProceso(procesoId) {
       K1: wsCot.K1?.v ?? null,
       L1: wsCot.L1?.v ?? null,
     },
-    raw_headers: rowsCot.length ? Object.keys(rowsCot[0]) : [],
+    raw_headers: includeRaw && rowsCotRaw.length ? Object.keys(rowsCotRaw[0]) : [],
   });
   return outAbs;
 }
@@ -2269,9 +3026,126 @@ function collectPendingIndexes(resultados = {}, slug, tomar) {
   return indexes;
 }
 
-function writeResumenArtifacts(id, resumen) {
-  fs.writeFileSync(resumenPath(id), JSON.stringify(resumen, null, 2), 'utf8');
+function isRetryableErrorResult(item) {
+  if (!item) return false;
+  if (item.pending === true || item.skipped === true || item.ok === true) return false;
+  return true;
+}
 
+function collectResumeIndexes(resultados = {}, slug, tomar, resumeMode = 'pending') {
+  const arr = Array.isArray(resultados?.[slug]) ? resultados[slug] : [];
+  const mode = String(resumeMode || 'pending').toLowerCase();
+  const indexes = [];
+  for (let i = 0; i < tomar; i++) {
+    const item = arr[i];
+    const isPending = !item || item.pending === true;
+    const isError = isRetryableErrorResult(item);
+    if (mode === 'errors') {
+      if (isError) indexes.push(i);
+    } else if (mode === 'pending_or_errors') {
+      if (isPending || isError) indexes.push(i);
+    } else if (isPending) {
+      indexes.push(i);
+    }
+  }
+  return indexes;
+}
+
+function resultadosDir(id) {
+  return path.join(procesoDir(id), 'resultados');
+}
+
+function resultadoJsonlPath(id, slug) {
+  return path.join(resultadosDir(id), `${slug}.jsonl`);
+}
+
+function hasJsonlStorage(id, aseguradoras = []) {
+  return aseguradoras.some((slug) => fs.existsSync(resultadoJsonlPath(id, slug)));
+}
+
+function compactResultForJsonl(result = {}) {
+  return result;
+}
+
+function appendResultadoJsonl(id, slug, result) {
+  ensureDir(resultadosDir(id));
+  fs.appendFileSync(
+    resultadoJsonlPath(id, slug),
+    `${JSON.stringify(compactResultForJsonl(result))}\n`,
+    'utf8'
+  );
+}
+
+function loadResultadosFromJsonl(id, aseguradoras = [], tomar = 0) {
+  const resultados = {};
+  for (const slug of aseguradoras) {
+    const arr = new Array(tomar);
+    const p = resultadoJsonlPath(id, slug);
+    if (fs.existsSync(p)) {
+      const raw = fs.readFileSync(p, 'utf8');
+      for (const line of raw.split(/\r?\n/)) {
+        if (!line.trim()) continue;
+        try {
+          const item = JSON.parse(line);
+          const idx = Number(item?.index);
+          if (Number.isInteger(idx) && idx >= 0 && idx < tomar) arr[idx] = item;
+        } catch {}
+      }
+    }
+    resultados[slug] = arr;
+  }
+  return resultados;
+}
+
+async function loadResultadosFromJsonlForExcel(id, slug, tomar = 0) {
+  const arr = new Array(tomar);
+  const sourcePath = resultadoJsonlPath(id, slug);
+  if (!fs.existsSync(sourcePath)) return arr;
+
+  const input = fs.createReadStream(sourcePath, { encoding: 'utf8' });
+  const lines = readline.createInterface({ input, crlfDelay: Infinity });
+  for await (const line of lines) {
+    if (!line.trim()) continue;
+    try {
+      const item = JSON.parse(line);
+      const idx = Number(item?.index);
+      if (!Number.isInteger(idx) || idx < 0 || idx >= tomar) continue;
+      arr[idx] = {
+        aseguradora: item.aseguradora,
+        index: idx,
+        fila_preview: item.fila_preview,
+        finished_at: item.finished_at,
+        ok: item.ok === true,
+        skipped: item.skipped === true,
+        operacion: item.operacion,
+        suma_asegurada: item.suma_asegurada,
+        coberturas: item.coberturas,
+        used: item.used,
+        reason: item.reason,
+        error: item.error,
+      };
+    } catch {}
+  }
+  return arr;
+}
+
+function writeResultadosJsonlFromResumen(id, resumen = {}, aseguradoras = []) {
+  ensureDir(resultadosDir(id));
+  const written = {};
+  for (const slug of aseguradoras) {
+    const arr = Array.isArray(resumen?.resultados?.[slug]) ? resumen.resultados[slug] : [];
+    const lines = [];
+    for (const item of arr) {
+      if (!item) continue;
+      lines.push(JSON.stringify(compactResultForJsonl(item)));
+    }
+    fs.writeFileSync(resultadoJsonlPath(id, slug), lines.length ? `${lines.join('\n')}\n` : '', 'utf8');
+    written[slug] = lines.length;
+  }
+  return written;
+}
+
+function writeResumenCsvArtifact(id, resumen) {
   const head = 'aseguradora,index,ok,pending,operacion,coberturas,error';
   const lines = [];
   for (const slug of Object.keys(resumen.resultados || {})) {
@@ -2294,6 +3168,21 @@ function writeResumenArtifacts(id, resumen) {
   fs.writeFileSync(path.join(procesoDir(id), 'resumen.csv'), [head, ...lines].join('\n'));
 }
 
+function writeResumenArtifacts(id, resumen) {
+  fs.writeFileSync(resumenPath(id), JSON.stringify(resumen, null, 2), 'utf8');
+  writeResumenCsvArtifact(id, resumen);
+}
+
+function buildIncrementalResumenResponse(id, resumen = {}) {
+  const { resultados: _resultados, ...rest } = resumen || {};
+  return {
+    ...rest,
+    resultados: {},
+    resultados_storage: 'jsonl',
+    resultados_disponibles_en: `data/procesos/proceso-${id}/resultados/*.jsonl`,
+  };
+}
+
 function buildProcesoResumenSnapshot({
   proceso_id,
   historial_id,
@@ -2313,6 +3202,28 @@ function buildProcesoResumenSnapshot({
     aseguradoras,
     resultados: resultadosPorAseg,
   };
+}
+
+function buildResumenFromJsonlMetadata({ proceso_id, meta = {}, relPath = '', tomar = 0, aseguradoras = [] } = {}) {
+  const normalizedAseguradoras = normalizeProcesoAseguradoras(
+    Array.isArray(aseguradoras) && aseguradoras.length ? aseguradoras : (meta.aseguradoras || [])
+  ).aseguradoras;
+  const filasTomar = Math.max(
+    0,
+    Number(tomar || meta.registros_filas || meta.limite || 0) || 0
+  );
+  if (!filasTomar || !normalizedAseguradoras.length || !hasJsonlStorage(proceso_id, normalizedAseguradoras)) {
+    return null;
+  }
+  return buildProcesoResumenSnapshot({
+    proceso_id,
+    historial_id: Number(meta.historial_id),
+    relPath: relPath || meta.archivo || '',
+    tomar: filasTomar,
+    cabecera_id: Number(meta.cabecera_id),
+    aseguradoras: normalizedAseguradoras,
+    resultadosPorAseg: loadResultadosFromJsonl(proceso_id, normalizedAseguradoras, filasTomar),
+  });
 }
 
 async function updateProcesoDbState(proceso_id, estado, counts) {
@@ -2426,6 +3337,277 @@ function safeWriteJson(absPath, obj) {
   }
 }
 
+function clonePlain(value) {
+  if (value == null || typeof value !== 'object') return value;
+  return JSON.parse(JSON.stringify(value));
+}
+
+function commercialTruthy(value = {}) {
+  const text = normalizeText([
+    value.visible_value,
+    value.ws_code,
+    value.raw_value,
+  ].filter((x) => x != null).join(' '));
+  return (
+    text.includes('CON') ||
+    text.includes('SI') ||
+    text.includes('POSEE') ||
+    text === '1' ||
+    text === 'TRUE' ||
+    text.includes('ACCESSORY_GNC')
+  ) && !text.includes('SIN') && !text.includes('NO UTILIZA') && !text.includes('NO POSEE');
+}
+
+function commercialValueForAdapter(value = {}) {
+  if (value.ws_code != null && String(value.ws_code).trim() !== '') return String(value.ws_code).trim();
+  if (value.numeric_value != null && String(value.numeric_value).trim() !== '') return String(value.numeric_value).trim();
+  if (value.visible_value != null && String(value.visible_value).trim() !== '') return String(value.visible_value).trim();
+  return '';
+}
+
+function ensureExtras(cfg) {
+  if (!cfg.parametros_extras || typeof cfg.parametros_extras !== 'object') cfg.parametros_extras = {};
+  return cfg.parametros_extras;
+}
+
+function ensureProvinciaRamoCfg(cfg) {
+  const extras = ensureExtras(cfg);
+  if (!extras.ramos || typeof extras.ramos !== 'object') extras.ramos = {};
+  const ramo = String(extras.ramo_default || cfg.ramo || '4');
+  if (!extras.ramos[ramo] || typeof extras.ramos[ramo] !== 'object') extras.ramos[ramo] = {};
+  return extras.ramos[ramo];
+}
+
+function applyCommercialConditionsToQuoteInputs({ slug, fila, cabecera, mapeos, Aseg, resolved } = {}) {
+  const company = String(slug || '').toLowerCase();
+  const effectiveFila = clonePlain(fila || {}) || {};
+  const effectiveCabecera = clonePlain(cabecera || {}) || {};
+  const effectiveMapeos = clonePlain(mapeos || {}) || {};
+  const effectiveAseg = clonePlain(Aseg || {}) || {};
+  const applied = [];
+  const values = resolved?.values || {};
+
+  const record = (concept, value, appliedTo, note = '') => {
+    applied.push({
+      concept_code: concept,
+      visible_value: value?.visible_value ?? null,
+      ws_code: value?.ws_code ?? null,
+      numeric_value: value?.numeric_value ?? null,
+      source: value?.source || '',
+      mapping: value?.mapping?.ws_field || value?.mapping || null,
+      applied_to: appliedTo,
+      note,
+    });
+  };
+
+  const setExtra = (name, value) => {
+    if (value == null || String(value).trim() === '') return false;
+    ensureExtras(effectiveAseg)[name] = String(value).trim();
+    return true;
+  };
+
+  const setCfg = (name, value) => {
+    if (value == null || String(value).trim() === '') return false;
+    effectiveAseg[name] = String(value).trim();
+    return true;
+  };
+
+  if (values.medio_pago) {
+    const v = values.medio_pago;
+    const code = commercialValueForAdapter(v);
+    effectiveCabecera.medio_pago = v.visible_value || effectiveCabecera.medio_pago;
+    effectiveCabecera.forma_pago = v.visible_value || effectiveCabecera.forma_pago;
+    if (v.ws_code != null) {
+      effectiveCabecera.medio_pago_codigo = String(v.ws_code);
+      effectiveCabecera[`${company}_medio_pago`] = String(v.ws_code);
+    }
+    record('medio_pago', v, ['cabecera.medio_pago', v.ws_code != null ? `cabecera.${company}_medio_pago` : null].filter(Boolean), code ? '' : 'sin codigo WS');
+  }
+
+  if (values.origen_pago) {
+    const v = values.origen_pago;
+    const code = commercialValueForAdapter(v);
+    effectiveCabecera.origen_pago_codigo = code;
+    effectiveCabecera.provincia_origen_pago = code;
+    record('origen_pago', v, ['cabecera.origen_pago_codigo', 'cabecera.provincia_origen_pago']);
+  }
+
+  if (values.uso) {
+    const v = values.uso;
+    const code = commercialValueForAdapter(v);
+    if (code) {
+      effectiveCabecera.tipo_uso = code;
+      effectiveMapeos.uso_codigo = code;
+    }
+    effectiveCabecera.uso_default = v.visible_value || effectiveCabecera.uso_default;
+    record('uso', v, ['cabecera.tipo_uso', 'mapeos.uso_codigo'], 'AutoIQ: uso definido por cabecera cuando viene de cabecera');
+  }
+
+  if (values.rastreador_alarma) {
+    const v = values.rastreador_alarma;
+    const enabled = commercialTruthy(v);
+    effectiveCabecera.rastreo = enabled ? '1' : '0';
+    effectiveCabecera.alarma = enabled ? '1' : '0';
+    if (company === 'meridional' && v.ws_code != null) effectiveCabecera.meridional_rastreo = String(v.ws_code);
+    if (company === 'victoria' && v.ws_code != null) effectiveCabecera.victoria_rastreo = String(v.ws_code);
+    record('rastreador_alarma', v, ['cabecera.rastreo', 'cabecera.alarma']);
+  }
+
+  if (values.gnc) {
+    const v = values.gnc;
+    effectiveCabecera.gnc = commercialTruthy(v) ? '1' : '0';
+    record('gnc', v, ['cabecera.gnc'], 'suma_gnc se conserva desde cabecera/registro; no se inventa monto');
+  }
+
+  if (values.refacturacion) {
+    const v = values.refacturacion;
+    const code = commercialValueForAdapter(v);
+    setCfg('tipoFacturacion', code);
+    setExtra('tipo_facturacion_default', code);
+    if (company === 'smg') setExtra('periodo_default', code);
+    if (company === 'mercantil_andina') setExtra('periodo_default', code);
+    if (company === 'meridional') setExtra('id_periodo_default', code);
+    record('refacturacion', v, ['cfg.tipoFacturacion', 'cfg.parametros_extras.tipo_facturacion_default']);
+  }
+
+  if (values.cuotas) {
+    const v = values.cuotas;
+    const code = commercialValueForAdapter(v);
+    setExtra('cantidad_cuotas_default', code);
+    setExtra('cant_cuotas_default', code);
+    if (company === 'provincia') ensureProvinciaRamoCfg(effectiveAseg).plan_de_pago = code;
+    if (company === 'meridional') setExtra('cantidad_cuotas_default', code);
+    if (company === 'mercantil_andina') setExtra('cuotas_default', code);
+    record('cuotas', v, ['cfg.parametros_extras.cantidad_cuotas_default']);
+  }
+
+  if (values.clausula_ajuste) {
+    const v = values.clausula_ajuste;
+    const code = commercialValueForAdapter(v);
+    setCfg('clausula_ajuste', code);
+    setExtra('clausula_ajuste_default', code);
+    setExtra('porcentaje_ajuste_default', Number(v.numeric_value) === 0 && company === 'mapfre' ? '' : code);
+    if (company === 'provincia') ensureProvinciaRamoCfg(effectiveAseg).clausula_ajuste = code;
+    if (company === 'smg') setExtra('cod_clausula_ajuste_default', code);
+    if (company === 'meridional') setExtra('id_clausula_ajuste_default', code);
+    record('clausula_ajuste', v, ['cfg.clausula_ajuste', 'cfg.parametros_extras.clausula_ajuste_default']);
+  }
+
+  if (values.variacion_32080) {
+    const v = values.variacion_32080;
+    setExtra('variacion_32080_default_id', commercialValueForAdapter(v));
+    record('variacion_32080', v, ['cfg.parametros_extras.variacion_32080_default_id']);
+  }
+
+  if (values.descuento_comercial) {
+    const v = values.descuento_comercial;
+    const code = commercialValueForAdapter(v);
+    setCfg('descuento_comercial', code);
+    setExtra('descuento_comercial_default', code);
+    setExtra('ajuste_prima_default', code);
+    effectiveCabecera.descuento_comercial = code;
+    effectiveCabecera.provincia_bonif_adicional = code;
+    if (company === 'mercantil_andina') setCfg('bonificacion', code);
+    record('descuento_comercial', v, ['cfg.descuento_comercial', 'cabecera.descuento_comercial']);
+  }
+
+  if (values.descuento_seguro_nuevo) {
+    const v = values.descuento_seguro_nuevo;
+    setExtra('descuento_seguro_nuevo_default', commercialValueForAdapter(v));
+    record('descuento_seguro_nuevo', v, ['cfg.parametros_extras.descuento_seguro_nuevo_default']);
+  }
+
+  if (values.descuento_no_siniestralidad) {
+    const v = values.descuento_no_siniestralidad;
+    setExtra('descuento_no_siniestralidad_default', commercialValueForAdapter(v));
+    record('descuento_no_siniestralidad', v, ['cfg.parametros_extras.descuento_no_siniestralidad_default']);
+  }
+
+  if (values.descuento_especial) {
+    const v = values.descuento_especial;
+    setExtra('descuento_especial_default', commercialValueForAdapter(v));
+    record('descuento_especial', v, ['cfg.parametros_extras.descuento_especial_default']);
+  }
+
+  if (values.comision) {
+    const v = values.comision;
+    const code = commercialValueForAdapter(v);
+    setCfg('porcentaje_comision', code);
+    setExtra('porcentaje_comision_default', code);
+    setExtra('modalidad_default', code);
+    effectiveCabecera.provincia_porcentaje_comision = code;
+    if (company === 'provincia') ensureProvinciaRamoCfg(effectiveAseg).porcentaje_comision = code;
+    if (company === 'mercantil_andina') setCfg('comision', code);
+    record('comision', v, ['cfg.parametros_extras.porcentaje_comision_default', 'cabecera.provincia_porcentaje_comision']);
+  }
+
+  if (values.coeficiente_rc) {
+    const v = values.coeficiente_rc;
+    const code = commercialValueForAdapter(v);
+    setCfg('coef_rc', code);
+    setExtra('coef_rc_default', code);
+    effectiveCabecera.coef_rc = code;
+    record('coeficiente_rc', v, ['cfg.coef_rc', 'cabecera.coef_rc']);
+  }
+
+  if (values.coeficiente_casco) {
+    const v = values.coeficiente_casco;
+    const code = commercialValueForAdapter(v);
+    setCfg('coef_casco', code);
+    setExtra('coef_casco_default', code);
+    effectiveCabecera.coef_casco = code;
+    record('coeficiente_casco', v, ['cfg.coef_casco', 'cabecera.coef_casco']);
+  }
+
+  if (values.garage_guardado) {
+    const v = values.garage_guardado;
+    const enabled = commercialTruthy(v);
+    effectiveCabecera.garage = enabled ? 'S' : 'N';
+    setExtra('guarda_gge_default', enabled ? 'true' : 'false');
+    record('garage_guardado', v, ['cabecera.garage', 'cfg.parametros_extras.guarda_gge_default']);
+  }
+
+  if (values.asistencia) {
+    const v = values.asistencia;
+    const enabled = commercialTruthy(v);
+    setExtra('asistencia_mecanica_default', enabled ? '-1' : '0');
+    record('asistencia', v, ['cfg.parametros_extras.asistencia_mecanica_default']);
+  }
+
+  if (values.plan_comercial) {
+    const v = values.plan_comercial;
+    setCfg('cod_tipo_poliza', commercialValueForAdapter(v));
+    setExtra('cod_tipo_poliza_default', commercialValueForAdapter(v));
+    record('plan_comercial', v, ['cfg.cod_tipo_poliza', 'cfg.parametros_extras.cod_tipo_poliza_default']);
+  }
+
+  return {
+    fila: effectiveFila,
+    cabecera: effectiveCabecera,
+    mapeos: effectiveMapeos,
+    Aseg: effectiveAseg,
+    evidence: {
+      enabled: Boolean(resolved),
+      mode: 'effective_bridge',
+      company_slug: company,
+      protected_record_fields: [
+        'CP',
+        'localidad',
+        'provincia',
+        'codigo_infoauto',
+        'anio',
+        'marca',
+        'modelo',
+        'marca_0km',
+        'tipo_vehiculo_inferido',
+      ],
+      values: values,
+      applied,
+      diagnostics: resolved?.diagnostics || [],
+    },
+  };
+}
+
 // ===== Caller SOAP para una fila =====
 async function cotizarFila({
   proceso_id,
@@ -2439,6 +3621,7 @@ async function cotizarFila({
   SOAP_URL,
   SOAP_METHOD,
   usoDicc,
+  commercialConditions,
 }) {
   const codiaRaw = pick([
     fila?.infoautocod,
@@ -2460,9 +3643,68 @@ async function cotizarFila({
     ? evidenciasDir(proceso_id, slug, index)
     : null;
   const evPrefix = String(slug || 'aseguradora');
+  const originalQuoteInput = {
+    fila: clonePlain(fila || {}) || {},
+    cabecera: clonePlain(cabecera || {}) || {},
+    mapeos: clonePlain(mapeos || {}) || {},
+    cabecera_id: cabecera?.id ?? null,
+  };
+  let commercialResolved = null;
+  let commercialEffective = null;
+
+  if (commercialConditions?.store) {
+    try {
+      commercialResolved = resolveCommercialConditions(commercialConditions.store, {
+        context: commercialConditions.context || 'autoiq',
+        profile_id: commercialConditions.profile_id || 'default_seguros911',
+        user_id: commercialConditions.user_id || null,
+        quote_id: commercialConditions.quote_id || null,
+        company_slug: slug,
+        cabecera,
+        fila,
+      });
+      commercialEffective = applyCommercialConditionsToQuoteInputs({
+        slug,
+        fila,
+        cabecera,
+        mapeos,
+        Aseg,
+        resolved: commercialResolved,
+      });
+      fila = commercialEffective.fila;
+      cabecera = commercialEffective.cabecera;
+      mapeos = commercialEffective.mapeos;
+      Aseg = commercialEffective.Aseg;
+    } catch (err) {
+      commercialResolved = {
+        ok: false,
+        error: err?.message || String(err),
+        stack: err?.stack || null,
+      };
+    }
+  }
 
   if (evDir) {
-    safeWriteJson(path.join(evDir, 'fila_input.json'), { fila, mapeos, cabecera_id: cabecera?.id ?? null });
+    safeWriteJson(path.join(evDir, 'fila_input.json'), originalQuoteInput);
+    if (commercialEffective) {
+      safeWriteJson(path.join(evDir, 'fila_effective_input.json'), {
+        fila,
+        cabecera,
+        mapeos,
+        cabecera_id: cabecera?.id ?? null,
+      });
+    }
+    if (commercialConditions?.store) {
+      if (commercialResolved?.error) {
+        safeWriteJson(path.join(evDir, `${evPrefix}-commercial_conditions_shadow_error.json`), {
+          message: commercialResolved.error,
+          stack: commercialResolved.stack || null,
+        });
+      } else {
+        safeWriteJson(path.join(evDir, `${evPrefix}-commercial_conditions_shadow.json`), commercialResolved);
+        safeWriteJson(path.join(evDir, `${evPrefix}-commercial_conditions_effective.json`), commercialEffective?.evidence || null);
+      }
+    }
   }
 
   if (slug === 'mapfre') {
@@ -2474,6 +3716,12 @@ async function cotizarFila({
     }
     if (!isMapfrePostalMatchSafe(postalMatch)) {
       const out = { ok: false, error: `Mapfre requiere un match de domicilio no ambiguo (actual: ${postalMatch?.matchType || 'sin_match'})`, operacion: '0', coberturas: [], raw: '' };
+      if (evDir) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
+      return out;
+    }
+  } else if (slug === 'meridional') {
+    if (!resolveMeridionalLocalidad(fila, cabecera)) {
+      const out = { ok: false, error: 'Meridional requiere una localidad traducible por catálogo (CP, localidad y provincia)', operacion: '0', coberturas: [], raw: '' };
       if (evDir) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
       return out;
     }
@@ -2627,6 +3875,106 @@ async function cotizarFila({
     }
   }
 
+  if (slug === 'meridional') {
+    let payload;
+    let requestMeta;
+    try {
+      const built = buildMeridionalPayload({
+        fila,
+        cabecera,
+        cfg: Aseg,
+        mapeos,
+      });
+      payload = built.payload;
+      requestMeta = built.requestMeta;
+    } catch (e) {
+      const out = { ok: false, error: e.message || String(e), operacion: '0', coberturas: [], raw: '' };
+      if (evDir) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
+      return out;
+    }
+
+    if (evDir) {
+      safeWriteJson(path.join(evDir, `${evPrefix}-json_request.json`), payload);
+      safeWriteJson(path.join(evDir, `${evPrefix}-config-usada.json`), {
+        api_url: SOAP_URL,
+        transport: 'json',
+        request: requestMeta,
+      });
+    }
+
+    try {
+      const auth = Aseg.usuario || Aseg.password
+        ? { username: Aseg.usuario || '', password: Aseg.password || '' }
+        : undefined;
+      const resp = await axios.post(SOAP_URL, payload, {
+        auth,
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+          Accept: 'application/json',
+        },
+        timeout: 25000,
+        validateStatus: () => true,
+      });
+
+      const rawResp = resp.data;
+      if (evDir) {
+        safeWriteJson(path.join(evDir, `${evPrefix}-raw_response.json`), rawResp);
+        safeWriteJson(path.join(evDir, `${evPrefix}-http.json`), { status: resp.status, ok: resp.status >= 200 && resp.status < 300 });
+      }
+
+      if (!(resp.status >= 200 && resp.status < 300)) {
+        const out = {
+          ok: false,
+          error: `HTTP ${resp.status}`,
+          http_status: resp.status,
+          retryable: resp.status === 408 || resp.status === 429 || resp.status >= 500,
+          coberturas: [],
+          raw: rawResp,
+          used: requestMeta,
+        };
+        if (evDir) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
+        return out;
+      }
+
+      const parsed = parseMeridionalQuoteResponse(rawResp);
+      parsed.used = {
+        ...(parsed.used || {}),
+        ...requestMeta,
+      };
+      if (Array.isArray(parsed.coberturas)) {
+        parsed.coberturas = parsed.coberturas.map((cob) => ({
+          ...cob,
+          formapago: requestMeta.idMedioPago,
+          formapago_descripcion: requestMeta.medioPagoDescripcion,
+          cantidadCuotas: cob.cantidadCuotas || requestMeta.cantidadCuotas,
+          porcentajeComisionPAS: cob.porcentajeComisionPAS || requestMeta.porcentajeComision,
+        }));
+      }
+      if (evDir) {
+        safeWriteJson(path.join(evDir, `${evPrefix}-parsed.json`), {
+          ok: parsed.ok,
+          operacion: parsed.operacion || '',
+          coberturas_len: Array.isArray(parsed.coberturas) ? parsed.coberturas.length : 0,
+        });
+        if (Array.isArray(parsed.coberturas) && parsed.coberturas.length) {
+          safeWriteJson(path.join(evDir, `${evPrefix}-coberturas.json`), parsed.coberturas);
+        }
+        if (!parsed.ok) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), parsed);
+      }
+      return parsed;
+    } catch (e) {
+      const out = { ok: false, error: e.message || 'axios error', retryable: true, coberturas: [], raw: '', used: requestMeta };
+      if (evDir) {
+        safeWriteJson(path.join(evDir, `${evPrefix}-exception.json`), {
+          message: e?.message || String(e),
+          stack: e?.stack || null,
+        });
+        safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
+      }
+      return out;
+    }
+  }
+
   if (slug === 'sancor') {
     let tokenData;
     let envelope;
@@ -2747,6 +4095,9 @@ async function cotizarFila({
       { key: 'con_granizo', granizo: true, additional: { codigoDeAdicional: '001', descripcion: 'Granizo' } },
     ];
     const branchResults = [];
+    const allianzRetryAttempts = Math.max(1, parsePositiveNumber(Aseg?.parametros_extras?.retry_attempts, 2));
+    const allianzRetryDelayMs = Math.max(0, parsePositiveNumber(Aseg?.parametros_extras?.retry_delay_ms, 1500));
+    const allianzTimeoutMs = Math.max(1000, parsePositiveNumber(Aseg?.parametros_extras?.request_timeout_ms, 25000));
 
     const runAllianzVariant = async (variant) => {
       let envelope;
@@ -2790,7 +4141,7 @@ async function cotizarFila({
             'Content-Type': 'text/xml; charset=UTF-8',
             SOAPAction: `"${Aseg.soap_action || SOAP_METHOD}"`,
           },
-          timeout: 25000,
+          timeout: allianzTimeoutMs,
           validateStatus: () => true,
         });
 
@@ -2865,7 +4216,13 @@ async function cotizarFila({
     };
 
     for (const variant of variants) {
-      branchResults.push({ variant, result: await runAllianzVariant(variant) });
+      let result;
+      for (let attempt = 1; attempt <= allianzRetryAttempts; attempt++) {
+        result = await runAllianzVariant(variant);
+        if (!isTechnicalFailure(result) || attempt >= allianzRetryAttempts) break;
+        if (allianzRetryDelayMs) await sleep(allianzRetryDelayMs);
+      }
+      branchResults.push({ variant, result });
     }
 
     const successful = branchResults.filter((item) => item.result?.ok);
@@ -3341,10 +4698,11 @@ async function cotizarFila({
       const attempt = attemptPlan.attempts[attemptIndex];
       const suffix = attemptIndex === 0 ? '' : `-attempt-${attemptIndex + 1}`;
       let payload;
+      let envelope;
       let requestMeta;
 
       try {
-        const built = await buildRivadaviaPayload({
+        const built = await buildRivadaviaSoapPayload({
           fila,
           cabecera,
           cfg: Aseg,
@@ -3355,6 +4713,7 @@ async function cotizarFila({
           attemptSource: attempt.source,
         });
         payload = built.payload;
+        envelope = built.envelope;
         requestMeta = built.requestMeta;
       } catch (e) {
         lastOut = { ok: false, error: e.message || String(e), operacion: '0', coberturas: [], raw: '' };
@@ -3364,8 +4723,9 @@ async function cotizarFila({
 
       if (evDir) {
         safeWriteJson(path.join(evDir, `${evPrefix}${suffix}-request.json`), payload);
+        safeWriteFile(path.join(evDir, `${evPrefix}${suffix}-request.xml`), envelope);
         safeWriteJson(path.join(evDir, `${evPrefix}${suffix}-config-usada.json`), {
-          url: SOAP_URL,
+          url: Aseg.parametros_extras?.soap_legacy_url || Aseg.soap_legacy_url || 'https://www.sistemas.segurosrivadavia.com/wsRivadavia/wsEmisionPoliza.php',
           auth_url: Aseg.auth_url,
           request: requestMeta,
           attempt,
@@ -3374,10 +4734,10 @@ async function cotizarFila({
       }
 
       try {
-        const { resp, tokenData } = await rivadaviaPost(Aseg, Aseg.soap_path || '/solicitud/api/emision/v1/solicitud/cotizacion', payload);
+        const { resp, tokenData } = await rivadaviaSoapPost(Aseg, envelope);
         const rawResp = resp.data;
         if (evDir) {
-          safeWriteJson(path.join(evDir, `${evPrefix}${suffix}-raw_response.json`), rawResp);
+          safeWriteFile(path.join(evDir, `${evPrefix}${suffix}-raw_response.xml`), String(rawResp || ''));
           safeWriteJson(path.join(evDir, `${evPrefix}${suffix}-http.json`), { status: resp.status, ok: resp.status >= 200 && resp.status < 300 });
         }
 
@@ -3388,7 +4748,7 @@ async function cotizarFila({
           continue;
         }
 
-        const parsed = await parseRivadaviaQuoteResponse(rawResp, Aseg, requestMeta);
+        const parsed = parseRivadaviaSoapQuoteResponse(rawResp, Aseg, requestMeta);
         parsed.used = {
           ...(parsed.used || {}),
           producerCode: requestMeta.nroProductor,
@@ -3396,6 +4756,8 @@ async function cotizarFila({
           modeloAnio: requestMeta.modeloAnio,
           tokenType: tokenData.tokenType,
           attemptNumber: attemptIndex + 1,
+          coefRC: requestMeta.coefRC,
+          coefCasco: requestMeta.coefCasco,
         };
 
         if (evDir) {
@@ -3412,13 +4774,25 @@ async function cotizarFila({
         }
 
         if (parsed.ok) {
-          await upsertRivadaviaTipoVehiculoInferido({
+          const persistence = await persistRivadaviaInferenceBestEffort({
             codigoInfoAuto: requestMeta.codigoInfoAuto,
             tipoVehiculo: requestMeta.tipoVehiculo,
             descripcionVehiculo: requestMeta.descripcionVehiculo,
             descripcionTipoVehiculo: requestMeta.descripcionTipoVehiculo,
             source: attempt.source === 'learned' ? 'learned_revalidated' : 'quote_success',
           });
+          if (!persistence.ok) {
+            parsed.used = {
+              ...(parsed.used || {}),
+              inferencePersistenceWarning: persistence.error,
+            };
+            if (evDir) {
+              safeWriteJson(path.join(evDir, `${evPrefix}${suffix}-inference-warning.json`), {
+                message: persistence.error,
+                quotePreserved: true,
+              });
+            }
+          }
           return parsed;
         }
 
@@ -3560,6 +4934,79 @@ async function cotizarFila({
         ...(parsed.used || {}),
         ...requestMeta,
         tokenType: tokenData?.tokenType || 'Bearer',
+      };
+
+      if (!(resp.status >= 200 && resp.status < 300) && parsed.ok) {
+        parsed.ok = false;
+        parsed.error = `HTTP ${resp.status}`;
+        parsed.coberturas = [];
+        parsed.operacion = parsed.operacion || '0';
+      }
+      if (!parsed.ok && !parsed.error && !(resp.status >= 200 && resp.status < 300)) {
+        parsed.error = `HTTP ${resp.status}`;
+      }
+
+      if (evDir) {
+        safeWriteJson(path.join(evDir, `${evPrefix}-parsed.json`), {
+          ok: parsed.ok,
+          operacion: parsed.operacion || '',
+          coberturas_len: Array.isArray(parsed.coberturas) ? parsed.coberturas.length : 0,
+          used: parsed.used,
+        });
+        if (Array.isArray(parsed.coberturas) && parsed.coberturas.length) {
+          safeWriteJson(path.join(evDir, `${evPrefix}-coberturas.json`), parsed.coberturas);
+        }
+        if (!parsed.ok) safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), parsed);
+      }
+
+      return parsed;
+    } catch (e) {
+      const out = { ok: false, error: e.message || 'axios error', coberturas: [], raw: '' };
+      if (evDir) {
+        safeWriteJson(path.join(evDir, `${evPrefix}-exception.json`), {
+          message: e?.message || String(e),
+          stack: e?.stack || null,
+        });
+        safeWriteJson(path.join(evDir, `${evPrefix}-error.json`), out);
+      }
+      return out;
+    }
+  }
+
+  if (slug === 'mercantil_andina') {
+    try {
+      const { payload, requestMeta } = buildMercantilAndinaPayload({
+        fila,
+        cabecera,
+        cfg: Aseg,
+        usoDicc,
+      });
+
+      if (evDir) {
+        safeWriteJson(path.join(evDir, `${evPrefix}-payload.json`), payload);
+        safeWriteJson(path.join(evDir, `${evPrefix}-request_meta.json`), {
+          url: SOAP_URL,
+          subscription_key_configurada: Boolean(String(Aseg.subscription_key || Aseg.api_key || '').trim()),
+          request: requestMeta,
+        });
+      }
+
+      const { resp } = await mercantilAndinaPostQuote(Aseg, payload);
+      const rawResp = resp.data;
+
+      if (evDir) {
+        safeWriteJson(path.join(evDir, `${evPrefix}-raw_response.json`), rawResp);
+        safeWriteJson(path.join(evDir, `${evPrefix}-http.json`), {
+          status: resp.status,
+          ok: resp.status >= 200 && resp.status < 300,
+        });
+      }
+
+      const parsed = parseMercantilAndinaQuoteResponse(rawResp);
+      parsed.http_status = resp.status;
+      parsed.used = {
+        ...(parsed.used || {}),
+        ...requestMeta,
       };
 
       if (!(resp.status >= 200 && resp.status < 300) && parsed.ok) {
@@ -3870,14 +5317,27 @@ async function ejecutarProceso({
   absPath,
   aseguradoras,
   limite,
+  pendingBatchSize = null,
   resumeOnlyPending = false,
+  resumeMode = 'pending',
 }) {
   ensureDir(procesoDir(proceso_id));
   ensureDir(path.join(procesoDir(proceso_id), 'evidencias'));
+  const keepAwake = startKeepAwake({
+    procesoId: proceso_id,
+    reason: `AutoIQ proceso ${proceso_id}`,
+  });
+  const finish = (outcome) => {
+    keepAwake.stop();
+    return outcome;
+  };
 
   const normalizedAseguradoras = normalizeProcesoAseguradoras(aseguradoras);
   aseguradoras = normalizedAseguradoras.aseguradoras;
   const aseguradorasIgnoradas = normalizedAseguradoras.ignoradas;
+  const resumenAseguradoras = resumeOnlyPending && Array.isArray(meta?.aseguradoras) && meta.aseguradoras.length
+    ? normalizeProcesoAseguradoras(meta.aseguradoras).aseguradoras
+    : aseguradoras;
 
   if (aseguradorasIgnoradas.length > 0) {
     await saveMetadata(proceso_id, {
@@ -3903,7 +5363,7 @@ async function ejecutarProceso({
       aseguradoras_pendientes: [],
     });
     await updateProcesoDbState(proceso_id, 'con errores', { total: 0, ok: 0, err: 0 });
-    return {
+    return finish({
       ok: false,
       status: 400,
       body: {
@@ -3911,7 +5371,35 @@ async function ejecutarProceso({
         error,
         aseguradoras_ignoradas: aseguradorasIgnoradas,
       },
+    });
+  }
+
+  let commercialConditionsShadow = null;
+  try {
+    const store = loadCommercialConditionsStore({ dataRoot: DATA_ROOT });
+    commercialConditionsShadow = {
+      store,
+      context: 'autoiq',
+      profile_id: 'default_seguros911',
+      user_id: ctx?.currentUser?.id || meta?.created_by_user_id || 'superadmin-local',
     };
+    safeWriteJson(path.join(procesoDir(proceso_id), 'commercial_conditions_shadow_run.json'), {
+      enabled: true,
+      mode: 'shadow',
+      context: commercialConditionsShadow.context,
+      profile_id: commercialConditionsShadow.profile_id,
+      user_id: commercialConditionsShadow.user_id,
+      store_version: store.version || null,
+      generated_at: new Date().toISOString(),
+    });
+  } catch (err) {
+    safeWriteJson(path.join(procesoDir(proceso_id), 'commercial_conditions_shadow_error.json'), {
+      enabled: false,
+      mode: 'shadow',
+      message: err?.message || String(err),
+      stack: err?.stack || null,
+      generated_at: new Date().toISOString(),
+    });
   }
 
   const filas = await readFilasFromFile(absPath);
@@ -3944,7 +5432,7 @@ async function ejecutarProceso({
       aseguradoras_pendientes: [],
     });
 
-    return {
+    return finish({
       ok: false,
       status: 400,
       body: {
@@ -3952,17 +5440,65 @@ async function ejecutarProceso({
         error: 'El archivo combinado no tiene filas parseables (0). Revisá que el XLSX tenga datos.',
         archivo: absPath,
       },
-    };
+    });
   }
 
   const tomar = Math.min(limite || filas.length, filas.length);
-  const totalTasks = tomar * aseguradoras.length;
-  const resumenAnterior = resumeOnlyPending ? (await loadResumen(proceso_id)) : null;
-  const resultadosPorAseg = resumeOnlyPending
-    ? { ...(resumenAnterior?.resultados || {}) }
-    : {};
+  const totalTasks = tomar * resumenAseguradoras.length;
+  const selectedTasks = tomar * aseguradoras.length;
+  const normalizedResumeMode = ['errors', 'pending_or_errors'].includes(String(resumeMode || '').toLowerCase())
+    ? String(resumeMode || '').toLowerCase()
+    : 'pending';
+  const maxPendingPerCompany = resumeOnlyPending && Number.isFinite(Number(pendingBatchSize)) && Number(pendingBatchSize) > 0
+    ? Math.max(1, Number(pendingBatchSize))
+    : null;
+  const nowAtStart = new Date();
+  const currentPeriodo = getCotizacionPeriodo(nowAtStart);
+  const existingPeriodo = String(meta?.cotizacion_periodo || '').trim();
+  const fixedPeriodo = existingPeriodo || getCotizacionPeriodo(meta?.fecha_inicio || nowAtStart);
+  const periodoInfo = buildPeriodoCotizacionInfo({
+    startedAt: nowAtStart,
+    filas: tomar,
+    aseguradoras,
+    pendingBatchSize: maxPendingPerCompany,
+  });
+  periodoInfo.periodo = fixedPeriodo;
 
-  for (const slug of aseguradoras) {
+  if (resumeOnlyPending && existingPeriodo && currentPeriodo !== existingPeriodo) {
+    const message = `El proceso pertenece al período ${existingPeriodo} y hoy corresponde al período ${currentPeriodo}. Abrí un proceso nuevo para no mezclar cotizaciones de distintos meses.`;
+    await saveMetadata(proceso_id, {
+      estado: 'incompleto',
+      fecha_fin: new Date().toISOString(),
+      cotizacion_periodo: existingPeriodo,
+      cotizacion_periodo_actual: currentPeriodo,
+      cotizacion_periodo_bloqueado: true,
+      cotizacion_periodo_mensaje: message,
+    });
+    return finish({
+      ok: false,
+      status: 409,
+      body: {
+        ok: false,
+        error: message,
+        estado: 'incompleto',
+        cotizacion_periodo: existingPeriodo,
+        cotizacion_periodo_actual: currentPeriodo,
+      },
+    });
+  }
+
+  const useIncrementalStorage = true;
+  const resumenAnterior = resumeOnlyPending && !hasJsonlStorage(proceso_id, resumenAseguradoras)
+    ? (await loadResumen(proceso_id))
+    : null;
+  const resultadosPorAseg = resumeOnlyPending && hasJsonlStorage(proceso_id, resumenAseguradoras)
+    ? loadResultadosFromJsonl(proceso_id, resumenAseguradoras, tomar)
+    : (resumeOnlyPending ? { ...(resumenAnterior?.resultados || {}) } : {});
+  if (useIncrementalStorage && resumeOnlyPending && resumenAnterior && !hasJsonlStorage(proceso_id, resumenAseguradoras)) {
+    writeResultadosJsonlFromResumen(proceso_id, resumenAnterior, resumenAseguradoras);
+  }
+
+  for (const slug of resumenAseguradoras) {
     const existing = Array.isArray(resultadosPorAseg[slug]) ? resultadosPorAseg[slug] : [];
     const next = new Array(tomar);
     for (let i = 0; i < tomar; i++) next[i] = existing[i];
@@ -3977,27 +5513,47 @@ async function ejecutarProceso({
     absPath,
     limite: tomar,
     filas_intentadas: tomar,
-    tareas_totales: totalTasks,
+    tareas_totales: selectedTasks,
+    tareas_totales_proceso: totalTasks,
     aseguradoras,
+    aseguradoras_proceso: resumenAseguradoras,
     resume_only_pending: resumeOnlyPending,
+    resume_mode: normalizedResumeMode,
+    pending_batch_size: maxPendingPerCompany,
+    storage_mode: useIncrementalStorage ? 'jsonl' : 'resumen',
+    cotizacion_periodo: fixedPeriodo,
+    cotizacion_periodo_fecha_referencia: periodoInfo.fecha_referencia,
+    cotizacion_periodo_estimacion_fin: periodoInfo.estimacion_fin,
+    cotizacion_periodo_cruza_mes_estimado: periodoInfo.cruza_mes_estimado,
     started_at: new Date().toISOString(),
   });
 
   await saveMetadata(proceso_id, {
+    storage_mode: useIncrementalStorage ? 'jsonl' : 'resumen',
+    cotizacion_periodo: fixedPeriodo,
+    cotizacion_periodo_fecha_referencia: periodoInfo.fecha_referencia,
+    cotizacion_periodo_estimacion_fin: periodoInfo.estimacion_fin,
+    cotizacion_periodo_estimacion_ms: periodoInfo.estimacion_ms,
+    cotizacion_periodo_cruza_mes_estimado: periodoInfo.cruza_mes_estimado,
+    cotizacion_periodo_advertencia: periodoInfo.advertencia,
+    cotizacion_periodo_actual: currentPeriodo,
+    cotizacion_periodo_bloqueado: false,
     registros_total: totalTasks,
     registros_filas: tomar,
-    registros_procesados: summarizeResultados(resultadosPorAseg, aseguradoras).total,
+    registros_procesados: summarizeResultados(resultadosPorAseg, resumenAseguradoras).total,
   });
 
-  writeResumenArtifacts(proceso_id, buildProcesoResumenSnapshot({
-    proceso_id,
-    historial_id,
-    relPath,
-    tomar,
-    cabecera_id,
-    aseguradoras,
-    resultadosPorAseg,
-  }));
+  if (!useIncrementalStorage) {
+    writeResumenArtifacts(proceso_id, buildProcesoResumenSnapshot({
+      proceso_id,
+      historial_id,
+      relPath,
+      tomar,
+      cabecera_id,
+      aseguradoras: resumenAseguradoras,
+      resultadosPorAseg,
+    }));
+  }
 
   const buildFilaPreview = (filaBase = {}, filaPreparada = {}) => ({
     infoautocod: filaPreparada.infoautocod ?? filaPreparada.codigo_infoauto ?? filaBase.infoautocod ?? filaBase.codigo_infoauto ?? filaBase.tau_codia ?? '',
@@ -4016,16 +5572,19 @@ async function ejecutarProceso({
       ...resp,
     });
     resultadosPorAseg[slug][task.index] = normalized;
-
-    writeResumenArtifacts(proceso_id, buildProcesoResumenSnapshot({
-      proceso_id,
-      historial_id,
-      relPath,
-      tomar,
-      cabecera_id,
-      aseguradoras,
-      resultadosPorAseg,
-    }));
+    if (useIncrementalStorage) {
+      appendResultadoJsonl(proceso_id, slug, normalized);
+    } else {
+      writeResumenArtifacts(proceso_id, buildProcesoResumenSnapshot({
+        proceso_id,
+        historial_id,
+        relPath,
+        tomar,
+        cabecera_id,
+        aseguradoras: resumenAseguradoras,
+        resultadosPorAseg,
+      }));
+    }
 
     safeWriteJson(path.join(evidenciasDir(proceso_id, slug, task.index), `${slug}-result.json`), {
       aseguradora: slug,
@@ -4037,7 +5596,7 @@ async function ejecutarProceso({
       used: normalized.used || null,
     });
 
-    const counts = summarizeResultados(resultadosPorAseg, aseguradoras);
+    const counts = summarizeResultados(resultadosPorAseg, resumenAseguradoras);
     await saveMetadata(proceso_id, {
       registros_procesados: counts.total,
       cotizaciones_exitosas: counts.ok,
@@ -4048,20 +5607,33 @@ async function ejecutarProceso({
     });
   };
 
+  const periodControl = {
+    cancelled: false,
+    message: '',
+    detectedAt: null,
+    detectedPeriod: '',
+  };
+
   const processCompany = async (slug) => {
-    const pendingIndexes = resumeOnlyPending ? collectPendingIndexes(resultadosPorAseg, slug, tomar) : null;
-    if (resumeOnlyPending && pendingIndexes.length === 0) return;
+    const resumeIndexesAll = resumeOnlyPending ? collectResumeIndexes(resultadosPorAseg, slug, tomar, normalizedResumeMode) : null;
+    const resumeIndexes = resumeOnlyPending && maxPendingPerCompany
+      ? resumeIndexesAll.slice(0, maxPendingPerCompany)
+      : resumeIndexesAll;
+    if (resumeOnlyPending && resumeIndexes.length === 0) return;
 
     const { cfg: Aseg, SOAP_URL, SOAP_METHOD, fechaFmt } = await loadAsegConfig(slug);
-    const hoy = formatFecha(new Date(), fechaFmt);
     const procesarFila = await initPreprocesador({ slug, cabecera_id });
     const usoDicc = await readUsoDicc(slug);
     const queueCfgRaw = getCompanyQueueConfig(slug, Aseg);
     const queueCfg = { ...queueCfgRaw, maxConcurrency: 1 };
+    const circuitBreaker = createProviderCircuitBreaker({ slug, queueCfg });
+    let companyCircuitExhausted = false;
+    let hasCircuitEvent = false;
+    let lastTaskStartMs = 0;
     const tasks = [];
     const retryQueue = [];
 
-    const indexes = resumeOnlyPending ? pendingIndexes : Array.from({ length: tomar }, (_v, i) => i);
+    const indexes = resumeOnlyPending ? resumeIndexes : Array.from({ length: tomar }, (_v, i) => i);
     for (const i of indexes) {
       const fila = filas[i] || {};
       const { fila_preparada, mapeos } = await procesarFila(fila);
@@ -4079,12 +5651,69 @@ async function ejecutarProceso({
         fila: fila_final,
         mapeos,
         filaPreview: buildFilaPreview(fila, fila_preparada),
-        ctx: { Aseg, SOAP_URL, SOAP_METHOD, usoDicc, hoy_fmt: hoy },
+        ctx: { Aseg, SOAP_URL, SOAP_METHOD, usoDicc, fechaFmt },
       });
     }
 
+    const saveCircuitState = async (event, action = {}) => {
+      const snapshot = {
+        ...circuitBreaker.snapshot(),
+        event,
+        reason: action.reason || '',
+        updated_at: new Date().toISOString(),
+      };
+      safeWriteJson(path.join(procesoDir(proceso_id), 'provider-circuit-breakers', `${slug}.json`), snapshot);
+      try {
+        const currentMeta = await loadMetadata(proceso_id);
+        await saveMetadata(proceso_id, {
+          proveedores_estado: {
+            ...((currentMeta && currentMeta.proveedores_estado) || {}),
+            [slug]: snapshot,
+          },
+        });
+      } catch {}
+    };
+
+    const waitBeforeNextTask = async () => {
+      const wait = Math.max(0, (lastTaskStartMs + queueCfg.minIntervalMs) - Date.now());
+      if (wait > 0) await sleep(wait);
+    };
+
     const worker = async (task) => {
       let resp;
+      if (periodControl.cancelled) return;
+      await waitBeforeNextTask();
+      const quoteDate = new Date();
+      const quotePeriodo = getCotizacionPeriodo(quoteDate);
+      if (periodControl.cancelled || quotePeriodo !== fixedPeriodo) {
+        periodControl.cancelled = true;
+        periodControl.detectedAt = periodControl.detectedAt || quoteDate.toISOString();
+        periodControl.detectedPeriod = periodControl.detectedPeriod || quotePeriodo;
+        periodControl.message = periodControl.message || `El proceso se pausó porque el período cambió de ${fixedPeriodo} a ${quotePeriodo}. Abrí un proceso nuevo para no mezclar cotizaciones de distintos meses.`;
+        await saveMetadata(proceso_id, {
+          estado: 'incompleto',
+          cotizacion_periodo_bloqueado: true,
+          cotizacion_periodo_actual: quotePeriodo,
+          cotizacion_periodo_detectado_en: periodControl.detectedAt,
+          cotizacion_periodo_mensaje: periodControl.message,
+        });
+        await finalizeTaskResult(slug, task, {
+          ok: false,
+          error: periodControl.message,
+          operacion: '0',
+          coberturas: [],
+          raw: '',
+          pending: true,
+          technical_error: true,
+          retryable: true,
+          period_boundary_pause: true,
+          cotizacion_periodo: fixedPeriodo,
+          cotizacion_periodo_actual: quotePeriodo,
+        });
+        return;
+      }
+      const startedMs = Date.now();
+      lastTaskStartMs = startedMs;
       try {
         resp = await cotizarFila({
           proceso_id,
@@ -4092,22 +5721,80 @@ async function ejecutarProceso({
           index: task.index,
           fila: task.fila,
           cabecera,
-          hoy_fmt: task.ctx.hoy_fmt,
+          hoy_fmt: formatFecha(quoteDate, task.ctx.fechaFmt),
           mapeos: task.mapeos,
           Aseg: task.ctx.Aseg,
           SOAP_URL: task.ctx.SOAP_URL,
           SOAP_METHOD: task.ctx.SOAP_METHOD,
           usoDicc: task.ctx.usoDicc,
+          commercialConditions: commercialConditionsShadow,
         });
       } catch (err) {
         resp = buildTechnicalFailureResult(err);
       }
+      const finishedMs = Date.now();
 
-      const normalizedResp = annotateResultStatus(resp);
+      const normalizedResp = annotateResultStatus(addResponseTiming(resp, startedMs, finishedMs));
       const shouldDeferredRetry = (
         (!normalizedResp.ok && normalizedResp.retryable === true) ||
         (slug === 'mapfre' && !normalizedResp.ok && isRetryableMapfreError(normalizedResp))
       ) && task.attempt < queueCfg.maxDeferredRetries;
+
+      const circuitAction = circuitBreaker.recordResult(normalizedResp);
+      if (circuitAction.action === 'pause') {
+        const pausedResp = annotateResultStatus({
+          ...normalizedResp,
+          pending: true,
+          technical_error: true,
+          retryable: true,
+          paused_until: circuitAction.pausedUntilIso,
+          pause_ms: circuitAction.pauseMs,
+          used: {
+            ...(normalizedResp.used || {}),
+            providerCircuitBreaker: circuitAction.snapshot,
+          },
+        });
+        await finalizeTaskResult(slug, task, pausedResp);
+        safeWriteJson(path.join(evidenciasDir(proceso_id, slug, task.index), `${slug}-pause.json`), {
+          scheduled: true,
+          paused_until: circuitAction.pausedUntilIso,
+          pause_ms: circuitAction.pauseMs,
+          reason: circuitAction.reason || normalizedResp.error || 'retryable error',
+        });
+        await saveCircuitState('paused', circuitAction);
+        hasCircuitEvent = true;
+        await sleep(circuitAction.pauseMs);
+        retryQueue.push({
+          ...task,
+          attempt: task.attempt + 1,
+          providerPauseAttempt: Number(task.providerPauseAttempt || 0) + 1,
+        });
+        return;
+      }
+
+      if (circuitAction.action === 'exhausted') {
+        companyCircuitExhausted = true;
+        const exhaustedResp = annotateResultStatus({
+          ...normalizedResp,
+          pending: true,
+          technical_error: true,
+          retryable: true,
+          circuit_breaker_exhausted: true,
+          used: {
+            ...(normalizedResp.used || {}),
+            providerCircuitBreaker: circuitAction.snapshot,
+          },
+        });
+        await finalizeTaskResult(slug, task, exhaustedResp);
+        await saveCircuitState('exhausted', circuitAction);
+        hasCircuitEvent = true;
+        return;
+      }
+
+      if (hasCircuitEvent && (normalizedResp.ok || normalizedResp.technical_error === false)) {
+        await saveCircuitState('healthy', circuitAction);
+        hasCircuitEvent = false;
+      }
 
       if (shouldDeferredRetry) {
         retryQueue.push({ ...task, attempt: task.attempt + 1 });
@@ -4128,10 +5815,18 @@ async function ejecutarProceso({
       await finalizeTaskResult(slug, task, normalizedResp);
     };
 
-    await runThrottledTasks(tasks, worker, queueCfg);
-    if (retryQueue.length > 0) {
+    for (const task of tasks) {
+      if (periodControl.cancelled) break;
+      await worker(task);
+      if (companyCircuitExhausted) break;
+    }
+    if (!companyCircuitExhausted && retryQueue.length > 0) {
       await sleep(queueCfg.retryDelayMs);
-      await runThrottledTasks(retryQueue, worker, queueCfg);
+      while (!companyCircuitExhausted && retryQueue.length > 0) {
+        if (periodControl.cancelled) break;
+        const task = retryQueue.shift();
+        await worker(task);
+      }
     }
   };
 
@@ -4163,14 +5858,18 @@ async function ejecutarProceso({
     relPath,
     tomar,
     cabecera_id,
-    aseguradoras,
+    aseguradoras: resumenAseguradoras,
     resultadosPorAseg,
   });
 
-  writeResumenArtifacts(proceso_id, resumen);
+  if (useIncrementalStorage) {
+    writeResumenCsvArtifact(proceso_id, resumen);
+  } else {
+    writeResumenArtifacts(proceso_id, resumen);
+  }
 
-  const counts = summarizeResultados(resultadosPorAseg, aseguradoras);
-  const estadoFinalMeta = counts.pending > 0 ? 'incompleto' : (counts.err > 0 ? 'con errores' : 'completado');
+  const counts = summarizeResultados(resultadosPorAseg, resumenAseguradoras);
+  const estadoFinalMeta = periodControl.cancelled || counts.pending > 0 ? 'incompleto' : (counts.err > 0 ? 'con errores' : 'completado');
 
   await saveMetadata(proceso_id, {
     estado: estadoFinalMeta,
@@ -4183,7 +5882,12 @@ async function ejecutarProceso({
     cotizaciones_skipped: counts.skipped,
     cotizaciones_pendientes: counts.pending,
     aseguradoras_pendientes: Object.keys(counts.pendingByCompany),
+    cotizacion_periodo_actual: periodControl.detectedPeriod || getCotizacionPeriodo(new Date()),
+    cotizacion_periodo_bloqueado: periodControl.cancelled === true,
+    cotizacion_periodo_detectado_en: periodControl.detectedAt || null,
+    cotizacion_periodo_mensaje: periodControl.message || '',
     ultima_reanudacion: resumeOnlyPending ? new Date().toISOString() : (meta.ultima_reanudacion || null),
+    ultima_reanudacion_modo: resumeOnlyPending ? normalizedResumeMode : (meta.ultima_reanudacion_modo || null),
     reanudaciones: resumeOnlyPending ? Number(meta.reanudaciones || 0) + 1 : Number(meta.reanudaciones || 0),
   });
 
@@ -4194,16 +5898,21 @@ async function ejecutarProceso({
     finished_at: new Date().toISOString(),
     estado: estadoFinalMeta,
     total_filas_intentadas: tomar,
-    total_tareas_intentadas: totalTasks,
+    total_tareas_intentadas: selectedTasks,
+    total_tareas_proceso: totalTasks,
     cotizaciones_exitosas: counts.ok,
     cotizaciones_con_error: counts.err,
     cotizaciones_skipped: counts.skipped,
     cotizaciones_pendientes: counts.pending,
     aseguradoras_pendientes: Object.keys(counts.pendingByCompany),
+    cotizacion_periodo: fixedPeriodo,
+    cotizacion_periodo_bloqueado: periodControl.cancelled === true,
+    cotizacion_periodo_mensaje: periodControl.message || '',
     resume_only_pending: resumeOnlyPending,
+    resume_mode: normalizedResumeMode,
   });
 
-  return {
+  return finish({
     ok: true,
     status: 200,
     body: {
@@ -4212,6 +5921,7 @@ async function ejecutarProceso({
       historial_id,
       cabecera_id,
       aseguradoras,
+      aseguradoras_proceso: resumenAseguradoras,
       total_filas_intentadas: tomar,
       total_tareas_intentadas: totalTasks,
       total_tareas_pendientes: counts.pending,
@@ -4220,10 +5930,14 @@ async function ejecutarProceso({
       cotizaciones_skipped: counts.skipped,
       estado: estadoFinalMeta,
       aseguradoras_pendientes: Object.keys(counts.pendingByCompany),
+      cotizacion_periodo: fixedPeriodo,
+      cotizacion_periodo_bloqueado: periodControl.cancelled === true,
+      cotizacion_periodo_mensaje: periodControl.message || '',
+      cotizacion_periodo_advertencia: periodoInfo.advertencia,
       carpeta: `data/procesos/proceso-${proceso_id}/`,
-      resumen,
+      resumen: useIncrementalStorage ? buildIncrementalResumenResponse(proceso_id, resumen) : resumen,
     },
-  };
+  });
 }
 
 // =============================================================================
@@ -4299,6 +6013,13 @@ router.post('/crear', express.json(), async (req, res) => {
     ensureDir(procesosRoot());
     ensureDir(procesoDir(proceso_id));
 
+      const cantidadFilasEstimada = Number(hist.cantidad_registros || 0) || null;
+      const periodoInfo = buildPeriodoCotizacionInfo({
+        startedAt: new Date(),
+        filas: cantidadFilasEstimada || 0,
+        aseguradoras,
+      });
+
       const meta = {
       id: proceso_id,
       nombre: nombreProceso,
@@ -4311,11 +6032,17 @@ router.post('/crear', express.json(), async (req, res) => {
       fecha_creacion: new Date().toISOString(),
       fecha_inicio: null,
       fecha_fin: null,
-        registros_total: Number(hist.cantidad_registros || 0) || null,
+        registros_total: cantidadFilasEstimada,
         registros_procesados: 0,
         cotizaciones_exitosas: 0,
         cotizaciones_con_error: 0,
         aseguradoras_ignoradas: aseguradorasNormalizadas.ignoradas,
+        cotizacion_periodo: periodoInfo.periodo,
+        cotizacion_periodo_fecha_referencia: periodoInfo.fecha_referencia,
+        cotizacion_periodo_estimacion_fin: periodoInfo.estimacion_fin,
+        cotizacion_periodo_estimacion_ms: periodoInfo.estimacion_ms,
+        cotizacion_periodo_cruza_mes_estimado: periodoInfo.cruza_mes_estimado,
+        cotizacion_periodo_advertencia: periodoInfo.advertencia,
         cabecera_override: cabeceraOverride,
         organization_id: ctx.currentOrganization?.id || 'autoiq',
         created_by_user_id: ctx.currentUser?.id || 'superadmin-local',
@@ -4526,8 +6253,9 @@ router.post('/reanudar/:id', express.json(), async (req, res) => {
       return res.status(403).json({ ok: false, error: 'No tenés acceso a este proceso' });
     }
 
-    const resumen = await loadResumen(proceso_id);
-    if (!resumen) {
+    const metaAseguradoras = normalizeProcesoAseguradoras(meta.aseguradoras || []).aseguradoras;
+    const hasIncrementalResults = hasJsonlStorage(proceso_id, metaAseguradoras);
+    if (!hasIncrementalResults && !(await loadResumen(proceso_id))) {
       return res.status(400).json({ ok: false, error: 'El proceso no tiene resumen para reanudar' });
     }
 
@@ -4551,11 +6279,18 @@ router.post('/reanudar/:id', express.json(), async (req, res) => {
     if (!fs.existsSync(absPath)) {
       return res.status(400).json({ ok: false, error: `No existe el archivo combinado: ${absPath}` });
     }
+    const resumeModeRaw = String(req.body?.resume_mode || req.body?.modo_reproceso || req.body?.modo || '').trim().toLowerCase();
+    const resumeMode = ['errors', 'pending_or_errors'].includes(resumeModeRaw)
+      ? resumeModeRaw
+      : (req.body?.reprocess_errors === true || req.body?.reprocesar_errores === true ? 'errors' : 'pending');
+    const resumeLabel = resumeMode === 'errors'
+      ? 'errores'
+      : (resumeMode === 'pending_or_errors' ? 'pendientes o errores' : 'pendientes');
 
     let aseguradoras = req.body?.aseguradoras;
     if (typeof aseguradoras === 'string') aseguradoras = [aseguradoras];
     if (!Array.isArray(aseguradoras) || aseguradoras.length === 0) {
-      aseguradoras = Array.isArray(meta.aseguradoras_pendientes) && meta.aseguradoras_pendientes.length
+      aseguradoras = resumeMode === 'pending' && Array.isArray(meta.aseguradoras_pendientes) && meta.aseguradoras_pendientes.length
         ? meta.aseguradoras_pendientes
         : (meta.aseguradoras || []);
     }
@@ -4566,11 +6301,15 @@ router.post('/reanudar/:id', express.json(), async (req, res) => {
       aseguradoras = aseguradoras.filter((slug) => allowed.has(slug));
     }
     if (aseguradoras.length === 0) {
-      return res.status(400).json({ ok: false, error: 'No hay aseguradoras pendientes para reanudar' });
+      return res.status(400).json({ ok: false, error: `No hay aseguradoras con ${resumeLabel} para reanudar` });
     }
 
     const limite = Number.isFinite(Number(meta.limite)) && Number(meta.limite) > 0
       ? Math.max(1, Math.min(Number(meta.limite), 100))
+      : null;
+    const pendingBatchRaw = Number(req.body?.limite_pendientes ?? req.body?.pending_batch_size ?? req.body?.max_pendientes);
+    const pendingBatchSize = Number.isFinite(pendingBatchRaw) && pendingBatchRaw > 0
+      ? Math.max(1, Math.min(Math.floor(pendingBatchRaw), 500))
       : null;
 
     await saveMetadata(proceso_id, {
@@ -4587,6 +6326,7 @@ router.post('/reanudar/:id', express.json(), async (req, res) => {
         historial_id,
         cabecera_id,
         aseguradoras,
+        resume_mode: resumeMode,
       },
     });
 
@@ -4601,7 +6341,9 @@ router.post('/reanudar/:id', express.json(), async (req, res) => {
       absPath,
       aseguradoras,
       limite,
+      pendingBatchSize,
       resumeOnlyPending: true,
+      resumeMode,
     });
 
     return res.status(outcome.status).json(outcome.body);
@@ -4658,6 +6400,12 @@ router.get('/listar', async (req, res) => {
         cotizaciones_skipped: meta.cotizaciones_skipped ?? 0,
         cotizaciones_pendientes: meta.cotizaciones_pendientes ?? 0,
         aseguradoras_pendientes: meta.aseguradoras_pendientes || [],
+        cotizacion_periodo: meta.cotizacion_periodo || '',
+        cotizacion_periodo_estimacion_fin: meta.cotizacion_periodo_estimacion_fin || null,
+        cotizacion_periodo_cruza_mes_estimado: meta.cotizacion_periodo_cruza_mes_estimado === true,
+        cotizacion_periodo_advertencia: meta.cotizacion_periodo_advertencia || '',
+        cotizacion_periodo_bloqueado: meta.cotizacion_periodo_bloqueado === true,
+        cotizacion_periodo_mensaje: meta.cotizacion_periodo_mensaje || '',
         carpeta: `data/procesos/proceso-${meta.id}/`,
         organization_id: meta.organization_id || 'autoiq',
         created_by_user_id: meta.created_by_user_id || 'superadmin-local',
@@ -4720,10 +6468,27 @@ router.get('/excel/:id', async (req, res) => {
     if (!isOwnedByContext(meta, ctx)) {
       return res.status(403).json({ ok: false, error: 'No tenés acceso a este proceso' });
     }
-    const dlDir = path.join(procesoDir(id), 'descargas');
-    const outAbs = path.join(dlDir, `proceso-${id}-cotizaciones.xlsx`);
+    const includeRaw = ['1', 'true', 'si', 'sí', 'raw'].includes(String(req.query.raw || '').trim().toLowerCase());
 
-    await generarExcelProceso(id);
+    const cachedOutAbs = path.join(
+      procesoDir(id),
+      'descargas',
+      `proceso-${id}${includeRaw ? '-cotizaciones-tecnico.xlsx' : '-cotizaciones.xlsx'}`
+    );
+    const manifest = readJsonFileSafe(path.join(procesoDir(id), 'excel_manifest.json'));
+    const generatedAt = Date.parse(manifest?.generated_at || '');
+    const finishedAt = Date.parse(meta.fecha_fin || '');
+    const cacheMatchesSchema = JSON.stringify(manifest?.cotizaciones_headers || []) === JSON.stringify(EXCEL_CANONICAL_HEADERS);
+    const canReuseCachedExcel = !includeRaw
+      && fs.existsSync(cachedOutAbs)
+      && manifest?.include_raw === false
+      && cacheMatchesSchema
+      && Number.isFinite(generatedAt)
+      && (!Number.isFinite(finishedAt) || generatedAt >= finishedAt);
+
+    const outAbs = canReuseCachedExcel
+      ? cachedOutAbs
+      : await generarExcelProceso(id, { includeRaw });
 
     if (!fs.existsSync(outAbs)) {
       return res.status(404).json({ ok: false, error: 'No se pudo generar el Excel' });
@@ -4734,9 +6499,12 @@ router.get('/excel/:id', async (req, res) => {
       event: 'process_excel_downloaded',
       entity_type: 'proceso',
       entity_id: String(id),
-      details: {},
+      details: { include_raw: includeRaw },
     });
-    return res.download(outAbs, `proceso-${id}-cotizaciones.xlsx`);
+    const fileName = includeRaw
+      ? `proceso-${id}-cotizaciones-tecnico.xlsx`
+      : `proceso-${id}-cotizaciones.xlsx`;
+    return res.download(outAbs, fileName);
   } catch (err) {
     return res.status(500).json({ ok: false, error: err.message || String(err) });
   }
@@ -4790,3 +6558,17 @@ router.get('/:id', async (req, res) => {
 });
 
 module.exports = router;
+module.exports.__test = {
+  EXCEL_CANONICAL_HEADERS,
+  addResponseTiming,
+  applyCommercialConditionsToQuoteInputs,
+  annotateResultStatus,
+  buildCanonicalExcelRow,
+  enrichExcelRowCanonicalFields,
+  buildPeriodoCotizacionInfo,
+  createProviderCircuitBreaker,
+  generarExcelProceso,
+  getCotizacionPeriodo,
+  getCompanyQueueConfig,
+  resolveCircuitBreakerConfig,
+};

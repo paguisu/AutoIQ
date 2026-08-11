@@ -65,3 +65,30 @@ web_servicies/
 
 # otros
 Vera/
+
+# --- Entorno local de desarrollo / Codex ---
+.codex-preview/
+venv/
+tmp/
+output/
+outputs/
+tools/__pycache__/
+*.cer
+*.pem
+
+# --- Estado operativo local ---
+data/historial_detalle/
+data/commercial_conditions/*.log.jsonl
+data/system/*.log.jsonl
+data/system/session.json
+data/system/historial_ownership.json
+backend/data/system/session.json
+data/tmp-*.json
+
+# --- Diagnosticos y scripts descartables de raiz ---
+tmp-*.json
+tmp-*.js
+tmp-*.ps1
+tmp-*.html
+recognized_codes*.json
+recognized_codes*.txt

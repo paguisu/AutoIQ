@@ -1,4 +1,6 @@
 const { XMLParser } = require('fast-xml-parser');
+const fs = require('fs');
+const path = require('path');
 const { resolveCompanyTracking } = require('../../utils/rastreo');
 const { isVehicleZeroKm } = require('../../utils/zero_km');
 
@@ -34,6 +36,20 @@ const SMG_PROVINCE_CODES = {
   TUCUMAN: '24',
 };
 
+let smgPostalAliasesCache = null;
+
+function loadSmgPostalAliases() {
+  if (smgPostalAliasesCache) return smgPostalAliasesCache;
+  const aliasesPath = path.join(process.cwd(), 'data', 'smg', 'diccionarios', 'codigo_postal_aliases.json');
+  try {
+    const parsed = JSON.parse(fs.readFileSync(aliasesPath, 'utf8'));
+    smgPostalAliasesCache = Array.isArray(parsed) ? parsed : [];
+  } catch {
+    smgPostalAliasesCache = [];
+  }
+  return smgPostalAliasesCache;
+}
+
 function escapeXml(value) {
   return String(value ?? '')
     .replace(/&/g, '&amp;')
@@ -67,6 +83,41 @@ function normalizeText(value) {
     .replace(/[^A-Z0-9 ]/gi, ' ')
     .replace(/\s+/g, ' ')
     .toUpperCase();
+}
+
+function resolveSmgPostalCode(fila = {}, cabecera = {}) {
+  const rawCp = pick([fila?.codigo_postal, fila?.codpostal, fila?.CP, fila?.cp, cabecera?.cp]);
+  const cp = rawCp.replace(/\D+/g, '').slice(0, 4);
+  if (!cp) {
+    return { cp: '', originalCp: '', aliasApplied: false, aliasSource: '' };
+  }
+
+  const localidad = normalizeText(pick([fila?.localidad, fila?.Localidad, cabecera?.localidad]));
+  const provincia = normalizeText(pick([fila?.provincia, fila?.Provincia, cabecera?.provincia]));
+  const aliases = loadSmgPostalAliases();
+  const alias = aliases.find((item) => {
+    const inputCp = String(item?.inputCodPostal || item?.inputCp || '').replace(/\D+/g, '').slice(0, 4);
+    if (inputCp !== cp) return false;
+    const inputLocalidad = normalizeText(item?.inputLocalidad || '');
+    const inputProvincia = normalizeText(item?.inputProvincia || '');
+    if (inputLocalidad && localidad && inputLocalidad !== localidad) return false;
+    if (inputProvincia && provincia && inputProvincia !== provincia) return false;
+    return true;
+  });
+
+  const aliasCp = String(alias?.smgCodPostal || alias?.codPostalSmg || alias?.outputCodPostal || '')
+    .replace(/\D+/g, '')
+    .slice(0, 4);
+  if (aliasCp) {
+    return {
+      cp: aliasCp,
+      originalCp: cp,
+      aliasApplied: aliasCp !== cp,
+      aliasSource: alias?.source || 'codigo_postal_aliases',
+    };
+  }
+
+  return { cp, originalCp: cp, aliasApplied: false, aliasSource: '' };
 }
 
 function normalizeInteger(value, fallback = '0') {
@@ -242,7 +293,8 @@ function buildSmgEnvelope({ fila = {}, cabecera = {}, cfg = {}, mapeos = {}, sum
   const method = String(cfg?.soap_method || 'Cotizar_Autos_fp').trim() || 'Cotizar_Autos_fp';
   const codInfoauto = resolveSmgInfoAuto(fila);
   const anio = resolveSmgAnio(fila);
-  const codigoPostal = pick([fila?.codigo_postal, fila?.codpostal, fila?.CP, fila?.cp, cabecera?.cp]).replace(/\D+/g, '').slice(0, 4);
+  const postal = resolveSmgPostalCode(fila, cabecera);
+  const codigoPostal = postal.cp;
 
   if (!codInfoauto) throw new Error('SMG requiere codigo InfoAuto');
   if (!anio) throw new Error('SMG requiere anio del vehiculo');
@@ -356,6 +408,9 @@ ${tags.join('\n')}
       ...params,
       method,
       sumaAseguradaFuente: String(sumaAseguradaOverride ?? '').trim() ? 'smg_lookup' : 'input',
+      codPostalOriginal: postal.originalCp,
+      codPostalAliasAplicado: postal.aliasApplied,
+      codPostalAliasFuente: postal.aliasSource,
       passwordConfigurada: Boolean(String(cfg?.password || '').trim()),
       rastreoSistema: tracking.system,
       rastreoSistemaEfectivo: tracking.effectiveSystem,
@@ -430,6 +485,7 @@ module.exports = {
   redactSmgEnvelope,
   resolveSmgAnio,
   resolveSmgInfoAuto,
+  resolveSmgPostalCode,
   resolveSmgProvinceCode,
   resolveSmgUseCode,
 };

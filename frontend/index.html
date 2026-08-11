@@ -206,6 +206,240 @@
         grid-column:auto;
       }
     }
+    .company-subtabs{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin:10px 0 18px;
+    }
+    .company-subtab{
+      padding:10px 14px;
+      border:1px solid #c9d2ea;
+      border-radius:999px;
+      background:#f6f8ff;
+      color:#001470;
+      cursor:pointer;
+      font-weight:600;
+    }
+    .company-subtab.active{
+      background:#001470;
+      color:#fff;
+      border-color:#001470;
+    }
+    .company-section{
+      display:none;
+    }
+    .company-section.active{
+      display:block;
+    }
+    .section-subtabs{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin:10px 0 16px;
+    }
+    .section-subtab{
+      padding:10px 14px;
+      border:1px solid #c9d2ea;
+      border-radius:999px;
+      background:#f6f8ff;
+      color:#001470;
+      cursor:pointer;
+      font-weight:600;
+    }
+    .section-subtab.active{
+      background:#001470;
+      color:#fff;
+      border-color:#001470;
+    }
+    .section-panel{
+      display:none;
+    }
+    .section-panel.active{
+      display:block;
+    }
+    .product-alert{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      font-size:13px;
+      padding:2px 10px;
+      border-radius:999px;
+      background:#fff3cd;
+      color:#7a4d00;
+      border:1px solid #f4d58d;
+    }
+    .product-alert.ok{
+      background:#e8f5e9;
+      color:#1b5e20;
+      border-color:#b7dfbb;
+    }
+    .product-table-shell{
+      overflow:auto;
+      max-height:65vh;
+      border:1px solid #b8c4da;
+      border-radius:10px;
+      background:#fff;
+      box-shadow:0 10px 24px rgba(15, 23, 42, 0.08);
+    }
+    .product-table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+    }
+    .product-table th,
+    .product-table td{
+      border-right:1px solid #d4ddec;
+      border-bottom:2px solid #c7d2e5;
+      padding:12px 10px;
+      text-align:left;
+      vertical-align:top;
+      font-size:14px;
+      background-clip:padding-box;
+    }
+    .product-table th:first-child,
+    .product-table td:first-child{
+      border-left:1px solid #d4ddec;
+    }
+    .product-table th{
+      position:sticky;
+      top:0;
+      background:#e9eefb;
+      z-index:1;
+      border-bottom:2px solid #98a7c7;
+      box-shadow:inset 0 -1px 0 #98a7c7;
+    }
+    .product-row.pending{
+      background:#fff8e1;
+    }
+    .product-row.autoupdated{
+      box-shadow:inset 4px 0 0 #2563eb;
+    }
+    .product-row:nth-child(even):not(.pending){
+      background:#f8fafc;
+    }
+    .product-row td{
+      box-shadow:inset 0 1px 0 rgba(255, 255, 255, 0.55);
+    }
+    .product-row td small{
+      color:#6b7280;
+    }
+    .prodcat-stack{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .prodcat-muted{
+      color:#6b7280;
+      font-size:12px;
+    }
+    .prodcat-badges{
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+    }
+    .prodcat-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+      padding:2px 8px;
+      border-radius:999px;
+      font-size:12px;
+      border:1px solid #d0d7e6;
+      background:#f6f8fc;
+      color:#334155;
+    }
+    .prodcat-badge.pending{
+      background:#fff3cd;
+      border-color:#f4d58d;
+      color:#7a4d00;
+    }
+    .prodcat-badge.auto{
+      background:#dbeafe;
+      border-color:#93c5fd;
+      color:#1d4ed8;
+    }
+    .prodcat-badge.manual{
+      background:#e8f5e9;
+      border-color:#b7dfbb;
+      color:#1b5e20;
+    }
+    .prodcat-badge.response{
+      background:#f3f4f6;
+      border-color:#d1d5db;
+      color:#374151;
+    }
+    .prodcat-field-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));
+      gap:10px;
+    }
+    .prodcat-flag{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      padding:8px;
+      border:1px solid #c5d0e4;
+      border-radius:8px;
+      background:#fbfcff;
+      box-shadow:0 1px 2px rgba(15, 23, 42, 0.06);
+    }
+    .prodcat-flag strong{
+      font-size:12px;
+      color:#334155;
+    }
+    .prodcat-flag select{
+      width:100%;
+      min-width:0;
+    }
+    .prodcat-detail-list{
+      margin:0;
+      padding:0;
+      list-style:none;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .prodcat-detail-item{
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+      align-items:center;
+      padding:6px 8px;
+      border:1px solid #d9e1ef;
+      border-radius:8px;
+      background:#f8fbff;
+    }
+    .prodcat-save-cell{
+      min-width:120px;
+    }
+    .process-note{
+      margin-top:6px;
+    }
+    #condiciones { background:#f6f7fb; color:#222; }
+    #condiciones .cc-toolbar{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-bottom:14px}
+    #condiciones .cc-toolbar > div{min-width:220px;flex:1 1 240px}
+    #condiciones .cc-toolbar button{height:34px;border:0;border-radius:8px;padding:0 12px;background:#0f62fe;color:#fff;cursor:pointer}
+    #condiciones .cc-toolbar button.secondary{background:#fff;color:#0f62fe;border:1px solid #0f62fe}
+    #condiciones .cc-shell{overflow:auto;max-height:68vh;border:1px solid #d9dce5;background:#fff}
+    #condiciones table{border-collapse:separate;border-spacing:0;min-width:1180px;width:100%}
+    #condiciones th,#condiciones td{border-bottom:1px solid #edf0f5;border-right:1px solid #edf0f5;padding:7px;font-size:13px;vertical-align:top}
+    #condiciones th{position:sticky;top:0;z-index:2;background:#f3f6ff;text-align:left}
+    #condiciones th:first-child,#condiciones td:first-child{position:sticky;left:0;z-index:1;background:#fff;min-width:220px;box-shadow:8px 0 10px rgba(16,24,40,.06)}
+    #condiciones th:first-child{z-index:3;background:#f3f6ff}
+    #condiciones .cc-group{color:#5b6475;font-size:12px}
+    #condiciones .cc-cell-input{width:130px;box-sizing:border-box;margin:0;font-size:13px;padding:5px}
+    #condiciones .cc-combo-control{display:flex;flex-direction:column;gap:4px;width:130px}
+    #condiciones .cc-combo-control .cc-cell-input{width:100%}
+    #condiciones .cc-amount-input{width:100%;box-sizing:border-box;margin:0;font-size:13px;padding:5px}
+    #condiciones .cc-inherited{color:#6b7280;background:#f7f8fb}
+    #condiciones .cc-inherited input{color:#6b7280;background:#eef1f6}
+    #condiciones .cc-disabled{background:#f0f2f5;color:#8a93a3}
+    #condiciones .cc-disabled .cc-na{display:block;min-height:28px;border:1px dashed #c8ced8;border-radius:4px;background:#e8ebf0}
+    #condiciones .cc-cell-input:disabled{background:#eef1f6;color:#6b7280}
+    #condiciones .cc-company-state{display:flex;align-items:center;gap:6px;white-space:nowrap;font-size:12px;font-weight:normal}
+    #condiciones .cc-company-state input{width:auto;margin:0}
+    #condiciones .cc-meta{margin:8px 0 12px}
   </style>
 </head>
 <body>
@@ -214,8 +448,8 @@
     <button class="tab-button active" data-tab="inputs">Inputs</button>
     <button class="tab-button" data-tab="cabecera">Cabecera</button>
     <button class="tab-button with-indicator" data-tab="historico" id="historicoTabButton">Histórico<span id="historicoInfoautoDot" class="tab-alert-dot"></span></button>
-    <button class="tab-button" data-tab="base">Base Propia</button>
-    <button class="tab-button" data-tab="wsadmin">Compañías WS</button>
+    <button class="tab-button" data-tab="base">Configuraciones de compañía</button>
+    <button class="tab-button" data-tab="condiciones">Condiciones comerciales</button>
     <button class="tab-button" data-tab="accesos">Accesos</button>
     <button class="tab-button" data-tab="procesos">Procesos en curso</button>
   </div>
@@ -235,6 +469,8 @@
   <div id="inputs" class="tab-content active">
     <h2>Carga de archivos</h2>
     <form id="formUpload" action="/upload" method="post" enctype="multipart/form-data">
+      <label>Nombre del input (opcional):</label>
+      <input type="text" name="nombreInput" id="nombreInput" placeholder="Ej: BYD eléctricos / Prueba Cod Pos / Lote abril" />
       <label>Archivo de Vehículos:</label>
       <input type="file" name="archivoVehiculos" />
       <label>Archivo de Códigos Postales:</label>
@@ -343,7 +579,10 @@
       </div>
 
       <div class="form-group" id="gncSumaGroup" style="display:none;">
-        <label>Suma asegurada GNC (ARS, sin decimales)</label>
+        <label>
+          Suma asegurada GNC (ARS, sin decimales)
+          <span id="mapfreGncSuggestionLegend" class="muted" style="font-weight:normal; margin-left:8px;"></span>
+        </label>
         <input type="number" name="gncSuma" id="gncSuma" min="0" step="1" placeholder="Ej: 500000" />
       </div>
 
@@ -353,6 +592,10 @@
       <div class="muted" style="margin-bottom:6px;">
         Se guarda como preferencia para ejecutar procesos (no modifica la cabecera).
       </div>
+      <label id="aseguradorasToggleAllWrap" style="display:none; font-weight:normal; margin:8px 0;">
+        <input type="checkbox" id="aseguradorasToggleAll" style="width:auto; margin-right:8px;" />
+        Seleccionar todas
+      </label>
       <div id="aseguradorasBox" class="form-group"></div>
 
       <input type="submit" value="Guardar / Activar" />
@@ -361,45 +604,112 @@
 
   <!-- ====== TAB: Histórico ====== -->
   <div id="historico" class="tab-content">
-    <h2>Histórico de Combinaciones</h2>
-    <div id="tablaHistorico"></div>
+    <h2>Histórico</h2>
+    <div class="section-subtabs">
+      <button type="button" class="section-subtab active" data-historico-view="masivos">Masivos</button>
+      <button type="button" class="section-subtab" data-historico-view="seguros911" data-seguros911-only="true">Seguros911</button>
+    </div>
+    <div id="historico-panel-masivos" class="section-panel active" data-historico-panel="masivos">
+      <div id="tablaHistorico"></div>
+    </div>
+    <div id="historico-panel-seguros911" class="section-panel" data-historico-panel="seguros911">
+      <div class="muted" style="margin-bottom:10px;">
+        Visible para supervisor y superadministrador. Muestra las cotizaciones que entran por el servicio de la webapp, separadas del historico masivo.
+      </div>
+      <div id="tablaHistoricoSeguros911"></div>
+    </div>
   </div>
 
   <!-- ====== TAB: Base Propia ====== -->
   <div id="base" class="tab-content">
-    <h2>Gestión de Catálogos</h2>
-
-    <div class="form-group">
-      <label>Compañía</label>
-      <select id="cat-compania"></select>
+    <h2>Configuraciones de compañía</h2>
+    <div class="muted" style="margin-bottom:12px;">
+      Administrá bases, parámetros WS y catálogo de productos desde un único lugar.
     </div>
 
-    <div class="form-group">
-      <label>Origen</label>
-      <select id="cat-source">
-        <option value="remote" selected>Remoto</option>
-        <option value="local">Local</option>
-      </select>
+    <div class="company-subtabs">
+      <button type="button" class="company-subtab active" data-company-section="company-section-base" data-superadmin-only="true">Base Propia</button>
+      <button type="button" class="company-subtab" data-company-section="company-section-ws" data-superadmin-only="true">Compañías WS</button>
+      <button type="button" class="company-subtab" data-company-section="company-section-products" data-seguros911-manager-only="true">Productos Seguros911</button>
     </div>
 
-    <div class="form-group">
-      <button type="button" id="cat-refresh">🔄 Refrescar tablas</button>
-      <button type="button" id="cat-sync-all">⚙️ Sync todas</button>
+    <div id="company-section-base" class="company-section active">
+      <h3>Gestión de Catálogos</h3>
+
+      <div class="form-group">
+        <label>Compañía</label>
+        <select id="cat-compania"></select>
+      </div>
+
+      <div class="form-group">
+        <label>Origen</label>
+        <select id="cat-source">
+          <option value="remote" selected>Remoto</option>
+          <option value="local">Local</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <button type="button" id="cat-refresh">🔄 Refrescar tablas</button>
+        <button type="button" id="cat-sync-all">⚙️ Sync todas</button>
+      </div>
+
+      <div id="cat-status" class="muted" style="margin-bottom:10px;"></div>
+
+      <table id="cat-table" border="1" cellpadding="6" cellspacing="0" style="width:100%; border-collapse:collapse;">
+        <thead>
+          <tr>
+            <th>Tabla</th>
+            <th>Fuente local</th>
+            <th>Existe</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
     </div>
 
-    <div id="cat-status" class="muted" style="margin-bottom:10px;"></div>
+    <div id="company-section-ws" class="company-section"></div>
 
-    <table id="cat-table" border="1" cellpadding="6" cellspacing="0" style="width:100%; border-collapse:collapse;">
-      <thead>
-        <tr>
-          <th>Tabla</th>
-          <th>Fuente local</th>
-          <th>Existe</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+    <div id="company-section-products" class="company-section">
+      <h3>Catalogo de Productos Seguros911</h3>
+      <div class="muted" style="margin-bottom:10px;">
+        Muestra los productos y coberturas detectados en procesos Seguros911. Los registros pendientes o autoactualizados se resaltan para revision de supervisor.
+      </div>
+
+      <div class="admin-actions">
+        <div style="min-width:260px; flex:1 1 280px;">
+          <label>Aseguradora</label>
+          <select id="prodcat-company-filter"></select>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end;">
+          <button type="button" id="prodcat-refresh">Refrescar</button>
+          <span id="prodcat-alert" class="product-alert">Cargando…</span>
+        </div>
+      </div>
+
+      <div id="prodcat-status" class="muted" style="margin-bottom:10px;"></div>
+
+      <div class="product-table-shell">
+        <table class="product-table">
+          <thead>
+            <tr>
+              <th>Aseguradora</th>
+              <th>Producto / Cobertura</th>
+              <th>Grupo webapp</th>
+              <th>Resumen</th>
+              <th>Indicadores</th>
+              <th>Detalle detectado</th>
+              <th>Estado</th>
+              <th>Guardar</th>
+            </tr>
+          </thead>
+          <tbody id="prodcat-tbody">
+            <tr><td colspan="8" class="muted">Cargando catalogo…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 
   <!-- ====== TAB: Compañías WS ====== -->
@@ -597,9 +907,43 @@
     </div>
   </div>
 
+  <div id="condiciones" class="tab-content">
+    <h2>Condiciones comerciales</h2>
+    <div class="cc-toolbar">
+      <div>
+        <label>Modo</label>
+        <select id="cc-mode">
+          <option value="default">Default Seguros911</option>
+          <option value="user">Usuario</option>
+        </select>
+      </div>
+      <div>
+        <label>Usuario</label>
+        <select id="cc-user"></select>
+      </div>
+      <div class="row-inline">
+        <button type="button" id="cc-save">Guardar cambios</button>
+        <button type="button" id="cc-export" class="secondary">Exportar Excel</button>
+      </div>
+    </div>
+    <div id="cc-status" class="muted cc-meta">Sin cargar.</div>
+    <div class="cc-shell">
+      <table id="cc-table">
+        <thead></thead>
+        <tbody>
+          <tr><td class="muted">Cargando…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
   <!-- ====== TAB: Procesos (integración de procesos.html) ====== -->
   <div id="procesos" class="tab-content">
     <h2>Procesos de Cotización</h2>
+    <div class="section-subtabs">
+      <button type="button" class="section-subtab active" data-proceso-view="masivos">Masivos</button>
+      <button type="button" class="section-subtab" data-proceso-view="seguros911" data-seguros911-only="true">Seguros911</button>
+    </div>
 
     <div class="card">
       <div class="controls">
@@ -667,8 +1011,8 @@
         if (tabId === "historico") cargarHistorico();
         if (tabId === "procesos") proc_cargar();  // auto-carga al entrar
         if (tabId === "cabecera") initCabeceraTab();
-        if (tabId === "base") initCatalogosTab();
-        if (tabId === "wsadmin") initWsAdminTab();
+        if (tabId === "base") initCompanyConfigTab();
+        if (tabId === "condiciones") initCommercialConditionsTab();
         if (tabId === "accesos") initAccessAdminTab();
       });
     });
@@ -677,8 +1021,8 @@
       { id:'inputs', label:'Inputs' },
       { id:'cabecera', label:'Cabecera' },
       { id:'historico', label:'Histórico' },
-      { id:'base', label:'Base propia' },
-      { id:'wsadmin', label:'Compañías WS' },
+      { id:'base', label:'Configuraciones de compañía' },
+      { id:'condiciones', label:'Condiciones comerciales' },
       { id:'accesos', label:'Accesos' },
       { id:'procesos', label:'Procesos en curso' },
     ];
@@ -688,17 +1032,370 @@
     let accessCompanyChoices = [];
     let accessSelectedOrgId = '';
     let accessSelectedUserId = '';
+    let historialCache = [];
+    let historicoView = 'masivos';
+    let procCache = [];
+    let procView = 'masivos';
+    let ccLoaded = false;
+    let ccMatrix = null;
+    let ccUsers = [];
+    let ccDirty = new Map();
+    let ccLoadedSelection = { mode: 'default', userId: '' };
 
-    function sessionCanAccess(tabId){
+    function sessionCanAccess(tabId, btn = null){
+      if (btn?.dataset?.superadminOnly === 'true') {
+        return Boolean(sessionContext?.is_superadmin);
+      }
+      if (btn?.dataset?.seguros911Only === 'true') {
+        return Boolean(sessionContext?.can_view_seguros911);
+      }
+      if (btn?.dataset?.seguros911ManagerOnly === 'true') {
+        return Boolean(sessionContext?.can_manage_seguros911_catalog);
+      }
       const tabs = Array.isArray(sessionContext?.visible_tabs) ? sessionContext.visible_tabs : ['*'];
       return tabs.includes('*') || tabs.includes(tabId);
+    }
+
+    function setHistoricoView(view = 'masivos'){
+      const canSeeSeguros911 = Boolean(sessionContext?.can_view_seguros911);
+      historicoView = view === 'seguros911' && canSeeSeguros911 ? 'seguros911' : 'masivos';
+
+      document.querySelectorAll('[data-historico-view]').forEach((btn)=>{
+        const allowed = sessionCanAccess('historico', btn);
+        btn.style.display = allowed ? '' : 'none';
+        btn.classList.toggle('active', allowed && btn.dataset.historicoView === historicoView);
+      });
+      document.querySelectorAll('[data-historico-panel]').forEach((panel)=>{
+        const allowed = panel.dataset.historicoPanel !== 'seguros911' || canSeeSeguros911;
+        panel.style.display = allowed ? '' : 'none';
+        panel.classList.toggle('active', allowed && panel.dataset.historicoPanel === historicoView);
+      });
+    }
+
+    function initHistoricoSubtabs(){
+      document.querySelectorAll('[data-historico-view]').forEach((btn)=>{
+        if (btn.dataset.bound === '1') return;
+        btn.addEventListener('click', ()=>{
+          setHistoricoView(btn.dataset.historicoView || 'masivos');
+        });
+        btn.dataset.bound = '1';
+      });
+      setHistoricoView(historicoView);
+    }
+
+    function escapeHtml(value){
+      return String(value == null ? '' : value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
+
+    async function ccFetchJson(url, options = {}){
+      const resp = await fetch(url, options);
+      const text = await resp.text();
+      let data = {};
+      try { data = text ? JSON.parse(text) : {}; } catch { data = { error: text }; }
+      if(!resp.ok) throw new Error(data.error || `HTTP ${resp.status}`);
+      return data;
+    }
+
+    async function initCommercialConditionsTab(){
+      if(ccLoaded) return;
+      ccLoaded = true;
+      document.getElementById('cc-save').addEventListener('click', ccSaveChanges);
+      document.getElementById('cc-export').addEventListener('click', ccExportMatrix);
+      document.getElementById('cc-mode').addEventListener('change', ccReloadAfterSelectionChange);
+      document.getElementById('cc-user').addEventListener('change', ccReloadAfterSelectionChange);
+      try{
+        const users = await ccFetchJson('/commercial-conditions/users');
+        ccUsers = Array.isArray(users.items) ? users.items : [];
+        const select = document.getElementById('cc-user');
+        select.innerHTML = ccUsers.map((user)=>(
+          `<option value="${escapeHtml(user.id)}">${escapeHtml(user.display_name || user.email || user.id)}</option>`
+        )).join('');
+        await ccLoadMatrix();
+      }catch(e){
+        document.getElementById('cc-status').textContent = `Error al cargar condiciones: ${e.message || e}`;
+      }
+    }
+
+    function ccCurrentMode(){
+      return document.getElementById('cc-mode')?.value || 'default';
+    }
+
+    function ccCurrentUserId(){
+      return document.getElementById('cc-user')?.value || '';
+    }
+
+    function ccRestoreLoadedSelection(){
+      const mode = document.getElementById('cc-mode');
+      const user = document.getElementById('cc-user');
+      if(mode) mode.value = ccLoadedSelection.mode || 'default';
+      if(user) user.value = ccLoadedSelection.userId || '';
+    }
+
+    async function ccReloadAfterSelectionChange(){
+      if(ccDirty.size > 0){
+        const proceed = confirm('Hay cambios pendientes sin guardar. Si continuás, se descartan al recargar la matriz. ¿Continuar?');
+        if(!proceed){
+          ccRestoreLoadedSelection();
+          return;
+        }
+      }
+      try{
+        await ccLoadMatrix();
+      }catch(e){
+        ccRestoreLoadedSelection();
+        document.getElementById('cc-status').textContent = `Error al cargar condiciones: ${e.message || e}`;
+      }
+    }
+
+    async function ccLoadMatrix(){
+      const status = document.getElementById('cc-status');
+      status.textContent = 'Cargando matriz...';
+      ccDirty.clear();
+      const mode = ccCurrentMode();
+      const qs = mode === 'user' && ccCurrentUserId()
+        ? `?user_id=${encodeURIComponent(ccCurrentUserId())}`
+        : '';
+      ccMatrix = await ccFetchJson(`/commercial-conditions/matrix${qs}`);
+      ccRenderMatrix();
+      ccLoadedSelection = { mode, userId: ccCurrentUserId() };
+      status.textContent = `Matriz cargada. Cambios pendientes: 0`;
+    }
+
+    function ccRenderMatrix(){
+      const table = document.getElementById('cc-table');
+      const thead = table.querySelector('thead');
+      const tbody = table.querySelector('tbody');
+      if(!ccMatrix){
+        thead.innerHTML = '';
+        tbody.innerHTML = '<tr><td class="muted">Sin datos.</td></tr>';
+        return;
+      }
+      const mode = ccCurrentMode();
+      const userMode = mode === 'user';
+      const companies = Array.isArray(ccMatrix.companies) ? ccMatrix.companies : [];
+      thead.innerHTML = `<tr><th>Concepto</th>${companies.map((company)=>`
+        <th>
+          <div>${escapeHtml(company.label)}</div>
+          ${userMode ? `<label class="cc-company-state"><input type="checkbox" data-cc-inherit="${escapeHtml(company.slug)}"> Hereda default</label>` : ''}
+        </th>`).join('')}</tr>`;
+      tbody.innerHTML = (ccMatrix.rows || []).map((row)=>`
+        <tr>
+          <td><div>${escapeHtml(row.label)}</div><div class="cc-group">${escapeHtml(row.group || '')}</div></td>
+          ${companies.map((company)=>{
+            const cell = row.cells?.[company.slug] || {};
+            const inherited = Boolean(cell.inherited);
+            const applicable = cell.applicable !== false;
+            const value = cell.value?.visible_value || '';
+            const amountValue = cell.value?.numeric_value ?? '';
+            const editable = applicable && (userMode ? !inherited : true);
+            const options = Array.isArray(cell.options) ? cell.options : [];
+            const amountDisabled = row.ui_type === 'selector_plus_amount' && !String(value || '').toLowerCase().includes('con');
+            const classes = [
+              inherited && userMode ? 'cc-inherited' : '',
+              !applicable ? 'cc-disabled' : '',
+            ].filter(Boolean).join(' ');
+            const control = !applicable
+              ? '<span class="cc-na" title="No aplica para esta compañía"></span>'
+              : row.ui_type === 'selector_plus_amount' && options.length
+                ? `<div class="cc-combo-control">
+                    <select class="cc-cell-input" data-company="${escapeHtml(company.slug)}" data-concept="${escapeHtml(row.concept_code)}" data-cc-role="selector" ${editable ? '' : 'disabled'}>
+                      ${options.map((option)=>{
+                        const selected = String(option.visible_label || '') === String(value || '');
+                        return `<option value="${escapeHtml(option.visible_label || '')}" data-ws-code="${escapeHtml(option.ws_code ?? '')}" data-numeric-value="${escapeHtml(option.numeric_value ?? '')}" ${selected ? 'selected' : ''}>${escapeHtml(option.visible_label || '')}</option>`;
+                      }).join('')}
+                    </select>
+                    <input type="number" min="0" step="10000" class="cc-amount-input" data-company="${escapeHtml(company.slug)}" data-concept="${escapeHtml(row.concept_code)}" data-cc-role="amount" value="${escapeHtml(amountDisabled ? 0 : amountValue)}" placeholder="Suma GNC" ${editable && !amountDisabled ? '' : 'disabled'}>
+                  </div>`
+              : options.length
+                ? `<select class="cc-cell-input" data-company="${escapeHtml(company.slug)}" data-concept="${escapeHtml(row.concept_code)}" ${editable ? '' : 'disabled'}>
+                    ${options.map((option)=>{
+                      const selected = String(option.visible_label || '') === String(value || '');
+                      return `<option value="${escapeHtml(option.visible_label || '')}" data-ws-code="${escapeHtml(option.ws_code ?? '')}" data-numeric-value="${escapeHtml(option.numeric_value ?? '')}" ${selected ? 'selected' : ''}>${escapeHtml(option.visible_label || '')}</option>`;
+                    }).join('')}
+                  </select>`
+                : `<input class="cc-cell-input" data-company="${escapeHtml(company.slug)}" data-concept="${escapeHtml(row.concept_code)}" value="${escapeHtml(value)}" ${editable ? '' : 'disabled'}>`;
+            return `<td class="${classes}">
+              ${control}
+            </td>`;
+          }).join('')}
+        </tr>`).join('');
+
+      if(userMode){
+        companies.forEach((company)=>{
+          const firstRow = ccMatrix.rows?.[0];
+          const inherited = firstRow?.cells?.[company.slug]?.inherited !== false;
+          const toggle = thead.querySelector(`[data-cc-inherit="${CSS.escape(company.slug)}"]`);
+          if(toggle){
+            toggle.checked = inherited;
+            toggle.addEventListener('change', ()=>ccSetInheritance(company.slug, toggle.checked));
+          }
+        });
+      }
+      tbody.querySelectorAll('[data-company][data-concept]').forEach((input)=>{
+        input.addEventListener('change', ()=>{
+          const key = `${input.dataset.company}:${input.dataset.concept}`;
+          const container = input.closest('td');
+          const selector = container?.querySelector(`[data-company="${CSS.escape(input.dataset.company)}"][data-concept="${CSS.escape(input.dataset.concept)}"][data-cc-role="selector"]`);
+          const amount = container?.querySelector(`[data-company="${CSS.escape(input.dataset.company)}"][data-concept="${CSS.escape(input.dataset.concept)}"][data-cc-role="amount"]`);
+          ccSyncAmountControl(selector, amount);
+          const sourceInput = selector || input;
+          const selected = sourceInput.tagName === 'SELECT' ? sourceInput.options[sourceInput.selectedIndex] : null;
+          const amountRaw = amount ? amount.value : '';
+          const numericRaw = amount ? amountRaw : (selected?.dataset?.numericValue || '');
+          ccDirty.set(key, {
+            company_slug: input.dataset.company,
+            concept_code: input.dataset.concept,
+            visible_value: sourceInput.value,
+            ws_code: selected?.dataset?.wsCode || undefined,
+            numeric_value: numericRaw === '' ? undefined : Number(numericRaw),
+          });
+          ccSyncLinkedCommercialCells(input);
+          document.getElementById('cc-status').textContent = `Matriz cargada. Cambios pendientes: ${ccDirty.size}`;
+        });
+      });
+      tbody.querySelectorAll('[data-cc-role="selector"]').forEach((selector)=>{
+        const container = selector.closest('td');
+        const amount = container?.querySelector(`[data-company="${CSS.escape(selector.dataset.company)}"][data-concept="${CSS.escape(selector.dataset.concept)}"][data-cc-role="amount"]`);
+        ccSyncAmountControl(selector, amount);
+      });
+    }
+
+    function ccSyncAmountControl(selector, amount){
+      if(!selector || !amount) return;
+      const disabledBySelector = !String(selector.value || '').toLowerCase().includes('con');
+      const companyDoesNotAcceptAmount = selector.dataset.company === 'mercantil_andina';
+      amount.disabled = selector.disabled || disabledBySelector || companyDoesNotAcceptAmount;
+      amount.step = '10000';
+      amount.min = '0';
+      if(disabledBySelector || companyDoesNotAcceptAmount) amount.value = '0';
+      amount.title = companyDoesNotAcceptAmount
+        ? 'Mercantil Andina recibe presencia de GNC, pero no una suma asegurada de GNC en este request.'
+        : '';
+    }
+
+    function ccSyncLinkedCommercialCells(input){
+      if(!input || input.dataset.company !== 'rivadavia') return;
+      const pairs = {
+        coeficiente_rc: 'coeficiente_casco',
+        coeficiente_casco: 'coeficiente_rc',
+      };
+      const pairedConcept = pairs[input.dataset.concept];
+      if(!pairedConcept) return;
+
+      const paired = document.querySelector(`[data-company="rivadavia"][data-concept="${CSS.escape(pairedConcept)}"]`);
+      if(!paired || paired.disabled || paired.value === input.value) return;
+
+      paired.value = input.value;
+      const selected = paired.tagName === 'SELECT' ? paired.options[paired.selectedIndex] : null;
+      ccDirty.set(`rivadavia:${pairedConcept}`, {
+        company_slug: 'rivadavia',
+        concept_code: pairedConcept,
+        visible_value: paired.value,
+        ws_code: selected?.dataset?.wsCode || undefined,
+        numeric_value: selected?.dataset?.numericValue === '' ? undefined : Number(selected?.dataset?.numericValue || paired.value),
+      });
+    }
+
+    async function ccSetInheritance(companySlug, inheritsDefault){
+      const userId = ccCurrentUserId();
+      if(!userId) return;
+      let confirm_overwrite = false;
+      if(inheritsDefault){
+        confirm_overwrite = confirm('Si había parámetros propios para esta compañía, se van a sobrescribir. ¿Continuar?');
+        if(!confirm_overwrite){
+          await ccLoadMatrix();
+          return;
+        }
+      }
+      await ccFetchJson(`/commercial-conditions/users/${encodeURIComponent(userId)}/companies/${encodeURIComponent(companySlug)}/inheritance`, {
+        method:'PUT',
+        headers:{ 'Content-Type':'application/json' },
+        body: JSON.stringify({ inherits_default: inheritsDefault, confirm_overwrite }),
+      });
+      await ccLoadMatrix();
+    }
+
+    async function ccSaveChanges(){
+      if(ccDirty.size === 0){
+        document.getElementById('cc-status').textContent = 'No hay cambios pendientes.';
+        return;
+      }
+      const mode = ccCurrentMode();
+      const payload = {
+        owner_type: mode === 'default' ? 'profile' : 'user',
+        owner_id: mode === 'default' ? 'default_seguros911' : ccCurrentUserId(),
+        changes: Array.from(ccDirty.values()),
+      };
+      await ccFetchJson('/commercial-conditions/values', {
+        method:'PATCH',
+        headers:{ 'Content-Type':'application/json' },
+        body: JSON.stringify(payload),
+      });
+      await ccLoadMatrix();
+    }
+
+    async function ccExportMatrix(){
+      const resp = await fetch('/commercial-conditions/export', {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body: JSON.stringify(ccCurrentMode() === 'user' ? { user_id: ccCurrentUserId() } : {}),
+      });
+      if(!resp.ok){
+        const text = await resp.text();
+        throw new Error(text || `HTTP ${resp.status}`);
+      }
+      const blob = await resp.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'condiciones-comerciales.xlsx';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function setProcesoView(view = 'masivos', options = {}){
+      const canSeeSeguros911 = Boolean(sessionContext?.can_view_seguros911);
+      procView = view === 'seguros911' && canSeeSeguros911 ? 'seguros911' : 'masivos';
+
+      document.querySelectorAll('[data-proceso-view]').forEach((btn)=>{
+        const allowed = sessionCanAccess('procesos', btn);
+        btn.style.display = allowed ? '' : 'none';
+        btn.classList.toggle('active', allowed && btn.dataset.procesoView === procView);
+      });
+
+      if (options.resetOffset) procOffset = 0;
+      if (options.refresh) {
+        if (document.getElementById('procesos')?.classList.contains('active')) {
+          proc_cargar();
+        } else {
+          renderProcesos();
+        }
+      }
+    }
+
+    function initProcesoSubtabs(){
+      document.querySelectorAll('[data-proceso-view]').forEach((btn)=>{
+        if (btn.dataset.bound === '1') return;
+        btn.addEventListener('click', ()=>{
+          setProcesoView(btn.dataset.procesoView || 'masivos', { resetOffset: true, refresh: true });
+        });
+        btn.dataset.bound = '1';
+      });
+      setProcesoView(procView);
     }
 
     function applyTabVisibility(){
       const hiddenTabs = [];
       tabButtons.forEach((btn)=>{
         const tabId = btn.dataset.tab;
-        const allowed = sessionCanAccess(tabId);
+        const allowed = sessionCanAccess(tabId, btn);
         btn.style.display = allowed ? '' : 'none';
         const panel = document.getElementById(tabId);
         if(panel) panel.style.display = allowed ? '' : 'none';
@@ -709,6 +1406,8 @@
         const firstVisible = Array.from(tabButtons).find((btn)=>btn.style.display !== 'none');
         if(firstVisible) firstVisible.click();
       }
+      setHistoricoView(historicoView);
+      setProcesoView(procView);
     }
 
     function renderSessionSummary(){
@@ -722,7 +1421,12 @@
       const org = sessionContext.current_organization || {};
       const role = sessionContext.current_role || {};
       const fullName = [user.nombre, user.apellido].filter(Boolean).join(' ').trim() || user.email || user.id || 'Usuario';
-      el.textContent = `Trabajando como ${fullName} | Organización: ${org.nombre || org.id || '-'} | Rol: ${role.nombre || role.id || '-'}`;
+      const pending = Number(sessionContext?.seguros911_catalog_pending_count || 0);
+      const autoupdated = Number(sessionContext?.seguros911_catalog_autoupdated_count || 0);
+      const attention = sessionContext?.can_manage_seguros911_catalog
+        ? ` | Catálogo Seguros911 a revisar: ${pending} | Autoactualizados: ${autoupdated}`
+        : '';
+      el.textContent = `Trabajando como ${fullName} | Organización: ${org.nombre || org.id || '-'} | Rol: ${role.nombre || role.id || '-'}${attention}`;
     }
 
     function renderSessionUserOptions(){
@@ -746,6 +1450,8 @@
       sessionUsers = Array.isArray(data.users) ? data.users : [];
       renderSessionSummary();
       renderSessionUserOptions();
+      initHistoricoSubtabs();
+      initProcesoSubtabs();
       applyTabVisibility();
       return data;
     }
@@ -765,10 +1471,74 @@
       sessionUsers = Array.isArray(data.users) ? data.users : sessionUsers;
       renderSessionSummary();
       renderSessionUserOptions();
+      initHistoricoSubtabs();
+      initProcesoSubtabs();
       applyTabVisibility();
       await cargarHistorico();
       if(document.getElementById('cabecera')?.classList.contains('active')) await initCabeceraTab();
+      if(document.getElementById('base')?.classList.contains('active')) await initCompanyConfigTab();
+      if(document.getElementById('condiciones')?.classList.contains('active')) await initCommercialConditionsTab();
       if(document.getElementById('procesos')?.classList.contains('active')) await proc_cargar();
+    }
+
+    function isSeguros911HistorialRow(row = {}){
+      const origen = String(row.historial_origen || '').trim().toLowerCase();
+      const archivo = String(row.nombre_archivo || '').trim().toLowerCase();
+      return origen === 'seguros911' || row.es_cotizacion_webapp === true || archivo.startsWith('cotizador-publico-');
+    }
+
+    function renderSeguros911CatalogAttention(meta = {}){
+      const pending = Number(meta.seguros911_catalog_pending_count || 0);
+      const autoupdated = Number(meta.seguros911_catalog_autoupdated_count || 0);
+      if(pending <= 0 && autoupdated <= 0) return '';
+      const badges = [];
+      if(pending > 0) badges.push(`<span class="prodcat-badge pending">${pending} catálogo a revisar</span>`);
+      if(autoupdated > 0) badges.push(`<span class="prodcat-badge auto">${autoupdated} catálogo autoactualizado</span>`);
+      return `<div class="prodcat-badges process-note">${badges.join('')}</div>`;
+    }
+
+    function buildHistoricoTableHtml(rows = [], emptyMessage = 'Sin registros'){
+      if (!Array.isArray(rows) || rows.length === 0) {
+        return `<div class="muted">${escapeHtml(emptyMessage)}</div>`;
+      }
+
+      return `<table border="1">
+        <tr><th>ID</th><th>Archivo</th><th>Inputs</th><th>Fecha</th><th>Acción</th><th>Registros</th></tr>
+        ${rows.map(r =>
+          `<tr>
+            <td>${r.id}</td>
+            <td>
+              <a href="/descargas/${encodeURIComponent(r.nombre_archivo || '')}" download>${escapeHtml(r.nombre_archivo || '')}</a>
+              ${isSeguros911HistorialRow(r) ? renderSeguros911CatalogAttention(r) : ''}
+            </td>
+            <td>${escapeHtml(r.inputs_label || '—')}</td>
+            <td>${escapeHtml(r.fecha || '')}</td>
+            <td><button onclick="ejecutarProceso(${r.id})">▶ Ejecutar</button></td>
+            <td>${escapeHtml(String(r.cantidad_registros ?? ''))}</td>
+          </tr>`).join('')}
+      </table>`;
+    }
+
+    function renderHistoricoTables(){
+      const historicoMasivo = historialCache.filter((row) => !isSeguros911HistorialRow(row));
+      const historicoSeguros911 = historialCache.filter((row) => isSeguros911HistorialRow(row));
+
+      const contenedorMasivo = document.getElementById("tablaHistorico");
+      if (contenedorMasivo) {
+        contenedorMasivo.innerHTML = buildHistoricoTableHtml(
+          historicoMasivo,
+          'No hay cotizaciones masivas para mostrar.'
+        );
+      }
+
+      const contenedorSeguros911 = document.getElementById("tablaHistoricoSeguros911");
+      if (contenedorSeguros911) {
+        contenedorSeguros911.innerHTML = buildHistoricoTableHtml(
+          historicoSeguros911,
+          'No hay cotizaciones de Seguros911 para mostrar.'
+        );
+      }
+      setHistoricoView(historicoView);
     }
 
     /* ====== Histórico (igual que venías usando) ====== */
@@ -776,24 +1546,12 @@
       try {
         const res = await fetch('/historial');
         const data = await res.json();
-
-        const tabla = document.createElement('table');
-        tabla.border = '1';
-        tabla.innerHTML = `<tr><th>ID</th><th>Archivo</th><th>Fecha</th><th>Acción</th><th>Registros</th></tr>` +
-          data.map(r =>
-            `<tr>
-              <td>${r.id}</td>
-              <td><a href="/descargas/${r.nombre_archivo}" download>${r.nombre_archivo}</a></td>
-              <td>${r.fecha}</td>
-              <td><button onclick="ejecutarProceso(${r.id})">▶ Ejecutar</button></td>
-              <td>${r.cantidad_registros}</td>
-            </tr>`).join('');
-
-        const contenedor = document.getElementById("tablaHistorico");
-        contenedor.innerHTML = '';
-        contenedor.appendChild(tabla);
+        historialCache = Array.isArray(data) ? data : [];
+        renderHistoricoTables();
       } catch (err) {
         console.error("Error cargando historial:", err);
+        historialCache = [];
+        renderHistoricoTables();
       }
     }
 
@@ -967,6 +1725,24 @@
       }
     }
 
+    async function loadMapfreGncSuggestion(){
+      const el = document.getElementById('mapfreGncSuggestionLegend');
+      if(!el) return;
+      try{
+        const out = await catFetchJson('/catalogos/mapfre/gnc-sugerido');
+        const s = out.suggestion || {};
+        if(s.ok && s.value){
+          const value = s.formatted || Number(s.value).toLocaleString('es-AR', { maximumFractionDigits: 0 });
+          const date = s.updated_date ? ` | Ult.Ac. ${s.updated_date}` : '';
+          el.textContent = `Valor sugerido por Mapfre: $ ${value}${date}`;
+        } else {
+          el.textContent = 'Valor sugerido por Mapfre: s/d';
+        }
+      }catch(_e){
+        el.textContent = 'Valor sugerido por Mapfre: s/d';
+      }
+    }
+
     async function fetchCabecerasList(){
       const resp = await fetch('/cabeceras/listar');
       const data = await resp.json();
@@ -1072,6 +1848,7 @@
         refreshNombreSugerido();
       }
       showGncSuma();
+      await loadMapfreGncSuggestion();
     }
 
     document.getElementById('btnCargarCabecera').addEventListener('click', ()=>{
@@ -1212,6 +1989,13 @@
 
     async function loadAseguradorasUI(){
       const box = document.getElementById('aseguradorasBox');
+      const toggleWrap = document.getElementById('aseguradorasToggleAllWrap');
+      const toggleAll = document.getElementById('aseguradorasToggleAll');
+      if(toggleWrap) toggleWrap.style.display = 'none';
+      if(toggleAll){
+        toggleAll.checked = false;
+        toggleAll.indeterminate = false;
+      }
       box.innerHTML = 'Cargando aseguradoras…';
       const resp = await fetch('/proceso/aseguradoras-disponibles');
       const data = await resp.json();
@@ -1229,6 +2013,18 @@
         return;
       }
 
+      const persistAseguradorasSelection = ()=>{
+        const ids = Array.from(box.querySelectorAll('.asegChk'))
+          .filter(x => x.checked)
+          .map(x => String(x.value));
+        localStorage.setItem(LS.aseguradorasSel, JSON.stringify(ids));
+        const total = box.querySelectorAll('.asegChk').length;
+        if(toggleAll){
+          toggleAll.checked = total > 0 && ids.length === total;
+          toggleAll.indeterminate = ids.length > 0 && ids.length < total;
+        }
+      };
+
       box.innerHTML = activas.map(a=>{
         const checked = sel.includes(a.slug) ? 'checked' : '';
         return `
@@ -1241,18 +2037,64 @@
 
       box.querySelectorAll('.asegChk').forEach(chk=>{
         chk.addEventListener('change', ()=>{
-          const ids = Array.from(box.querySelectorAll('.asegChk'))
-            .filter(x => x.checked)
-            .map(x => String(x.value));
-          localStorage.setItem(LS.aseguradorasSel, JSON.stringify(ids));
+          persistAseguradorasSelection();
         });
       });
+
+      if(toggleWrap) toggleWrap.style.display = '';
+      if(toggleAll){
+        toggleAll.onchange = ()=>{
+          const checked = Boolean(toggleAll.checked);
+          box.querySelectorAll('.asegChk').forEach((chk)=>{ chk.checked = checked; });
+          persistAseguradorasSelection();
+        };
+      }
+      persistAseguradorasSelection();
     }
 
     // Inicialización
     (function bootCabecera(){
       try { initCabeceraTab(); } catch(e){ console.error(e); }
     })();
+
+    /* ====== CONFIGURACIONES DE COMPAÑÍA ====== */
+    let companyConfigLoadedSections = new Set();
+
+    function companyConfigShowSection(sectionId){
+      const visibleSectionIds = new Set();
+      document.querySelectorAll('.company-subtab').forEach((btn)=>{
+        const allowed = sessionCanAccess('base', btn);
+        btn.style.display = allowed ? '' : 'none';
+        if (allowed) visibleSectionIds.add(btn.dataset.companySection);
+      });
+      const fallbackSectionId = [...visibleSectionIds][0] || '';
+      const resolvedSectionId = visibleSectionIds.has(sectionId) ? sectionId : fallbackSectionId;
+      document.querySelectorAll('.company-subtab').forEach((btn)=>{
+        btn.classList.toggle('active', btn.style.display !== 'none' && btn.dataset.companySection === resolvedSectionId);
+      });
+      document.querySelectorAll('.company-section').forEach((section)=>{
+        const active = resolvedSectionId && section.id === resolvedSectionId;
+        section.classList.toggle('active', Boolean(active));
+      });
+      return resolvedSectionId;
+    }
+
+    function companyConfigMountLegacyWs(){
+      const target = document.getElementById('company-section-ws');
+      const legacy = document.getElementById('wsadmin');
+      if(!target || !legacy || target.dataset.mounted === '1') return;
+      while(legacy.firstChild) target.appendChild(legacy.firstChild);
+      target.dataset.mounted = '1';
+      legacy.style.display = 'none';
+    }
+
+    async function companyConfigEnsureSectionLoaded(sectionId){
+      if(!sectionId || companyConfigLoadedSections.has(sectionId)) return;
+      if(sectionId === 'company-section-base') await initCatalogosTab();
+      if(sectionId === 'company-section-ws') await initWsAdminTab();
+      if(sectionId === 'company-section-products') await initProductCatalogTab();
+      companyConfigLoadedSections.add(sectionId);
+    }
 
     /* ====== CATÁLOGOS (Base Propia) ====== */
     let catCompania = '';
@@ -1298,7 +2140,10 @@
             const slot = document.getElementById(id);
             if(slot && out.runId) slot.innerHTML = catReportLinks(catCompania, out.runId);
             await catLoadTablas();
-            if(catCompania === 'atm' && table === 'ws_au_infoauto') await actualizarIndicadorInfoauto();
+            if(catCompania === 'atm' && table === 'ws_au_infoauto') {
+              await actualizarIndicadorInfoauto();
+              await loadMapfreGncSuggestion();
+            }
             catSetStatus(`OK ${table}: altas=${out.resumen?.altas||0}, bajas=${out.resumen?.bajas||0}, modificados=${out.resumen?.modificados||0}`);
           }catch(e){ catSetStatus(`Error sync ${table}: ${e.message || e}`); }
         });
@@ -1336,7 +2181,10 @@
         const slot = document.getElementById(id);
         if(slot && item.runId) slot.innerHTML = catReportLinks(catCompania, item.runId);
       });
-      if(catCompania === 'atm') await actualizarIndicadorInfoauto();
+      if(catCompania === 'atm') {
+        await actualizarIndicadorInfoauto();
+        await loadMapfreGncSuggestion();
+      }
       catSetStatus(`Sync-all OK: ${out.total || 0} tablas`);
     }
 
@@ -1489,6 +2337,374 @@
       }
     }
 
+    /* ====== CATÁLOGO DE PRODUCTOS ====== */
+    let prodcatItems = [];
+    let prodcatGroups = [];
+    let prodcatCurrentSlug = '';
+    let prodcatSummaryFields = [];
+    let prodcatIndicatorFields = [];
+    const PROD_GROUP_AUTO_VALUE = '__auto__';
+    const PROD_BOOL_AUTO_VALUE = '__auto__';
+    const PROD_SUMMARY_LABELS = {
+      rc: 'RC',
+      robo_total: 'Robo T.',
+      robo_parcial: 'Robo P.',
+      incendio_total: 'Incend T.',
+      incendio_parcial: 'Incend P.',
+      dxaccid_total: 'DxAccid T.',
+      dxaccid_parcial_c_franquicia: 'DxAccid P c/fcia',
+    };
+    const PROD_INDICATOR_LABELS = {
+      granizo: 'Granizo',
+      cristales_laterales: 'Cristales laterales',
+      luneta_parabrisas: 'Luneta / Parabrisas',
+      asistencia_mecanica: 'Asistencia mecanica',
+    };
+
+    function prodcatSetStatus(msg, isError = false){
+      const el = document.getElementById('prodcat-status');
+      if(!el) return;
+      el.textContent = msg || '';
+      el.style.color = isError ? '#b71c1c' : '#6b7280';
+    }
+
+    function prodcatSetAlert(pending, autoupdated, total){
+      const el = document.getElementById('prodcat-alert');
+      if(!el) return;
+      const count = Number(pending || 0);
+      const changed = Number(autoupdated || 0);
+      const totalRows = Number(total || 0);
+      if(count > 0 || changed > 0){
+        el.className = 'product-alert';
+        el.textContent = `${count} catálogo a revisar | ${changed} autoactualizado(s) | ${totalRows} registro(s)`;
+      } else {
+        el.className = 'product-alert ok';
+        el.textContent = `Catalogo completo (${totalRows})`;
+      }
+    }
+
+    function prodcatSourceLabel(source = ''){
+      if(source === 'manual') return 'Manual';
+      if(source === 'response') return 'Response';
+      if(source === 'inference') return 'Inferido';
+      return 'Sin resolver';
+    }
+
+    function prodcatSourceBadge(source = ''){
+      const className = source === 'manual'
+        ? 'manual'
+        : (source === 'response' || source === 'inference' ? 'response' : 'pending');
+      return `<span class="prodcat-badge ${className}">${escapeHtml(prodcatSourceLabel(source))}</span>`;
+    }
+
+    function prodcatBooleanLabel(value){
+      if(value === true) return 'Si';
+      if(value === false) return 'No';
+      return 'Pendiente';
+    }
+
+    function prodcatBuildSummaryPreview(item = {}){
+      const values = item.summary_flags || {};
+      const fields = prodcatSummaryFields.length ? prodcatSummaryFields : Object.keys(PROD_SUMMARY_LABELS);
+      if(fields.some((field)=>values[field] == null)) return '';
+      return fields
+        .filter((field)=>values[field] === true)
+        .map((field)=>PROD_SUMMARY_LABELS[field] || field)
+        .join(' | ');
+    }
+
+    function prodcatBuildDetailItems(item = {}){
+      const details = item.details || {};
+      const detailSources = item.sources?.details || {};
+      const indicators = item.indicators || {};
+      const out = [];
+      if(details.franquicia) out.push({ key:'franquicia', label:'Franquicia', value:details.franquicia, source:detailSources.franquicia });
+      if(details.granizo_suma && indicators.granizo === true) out.push({ key:'granizo_suma', label:'Granizo hasta', value:details.granizo_suma, source:detailSources.granizo_suma });
+      if(details.reposicion_0km) out.push({ key:'reposicion_0km', label:'Reposicion 0km', value:details.reposicion_0km, source:detailSources.reposicion_0km });
+      if(details.ajuste_automatico) out.push({ key:'ajuste_automatico', label:'Ajuste automatico', value:'', source:detailSources.ajuste_automatico });
+      if(details.rastreador) out.push({ key:'rastreador', label:details.rastreador, value:'', source:detailSources.rastreador });
+      if(details.auto_sustituto) out.push({ key:'auto_sustituto', label:'Auto sustituto', value:'', source:detailSources.auto_sustituto });
+      return out;
+    }
+
+    function prodcatMissingLabel(token = ''){
+      if(token === 'display_group_code') return 'Grupo webapp';
+      if(token.startsWith('summary.')){
+        const field = token.slice('summary.'.length);
+        return `Resumen: ${PROD_SUMMARY_LABELS[field] || field}`;
+      }
+      if(token.startsWith('indicator.')){
+        const field = token.slice('indicator.'.length);
+        return `Indicador: ${PROD_INDICATOR_LABELS[field] || field}`;
+      }
+      return token;
+    }
+
+    function prodcatManualBoolValue(source, value){
+      if(source !== 'manual') return PROD_BOOL_AUTO_VALUE;
+      if(value === true) return 'true';
+      if(value === false) return 'false';
+      return PROD_BOOL_AUTO_VALUE;
+    }
+
+    function prodcatManualGroupValue(item = {}){
+      return item.sources?.display_group_code === 'manual' && item.display_group_code
+        ? item.display_group_code
+        : PROD_GROUP_AUTO_VALUE;
+    }
+
+    function prodcatBuildBooleanOptions(selectedValue){
+      return [
+        { value: PROD_BOOL_AUTO_VALUE, label: 'Auto / detectado' },
+        { value: 'true', label: 'Si' },
+        { value: 'false', label: 'No' },
+      ].map((option)=>{
+        const selected = option.value === selectedValue ? 'selected' : '';
+        return `<option value="${option.value}" ${selected}>${escapeHtml(option.label)}</option>`;
+      }).join('');
+    }
+
+    function prodcatBuildGroupOptions(item = {}){
+      const selectedValue = prodcatManualGroupValue(item);
+      return [`<option value="${PROD_GROUP_AUTO_VALUE}" ${selectedValue === PROD_GROUP_AUTO_VALUE ? 'selected' : ''}>Auto / detectado</option>`]
+        .concat(prodcatGroups.map((group)=>{
+          const selected = group.code === selectedValue ? 'selected' : '';
+          return `<option value="${group.code}" ${selected}>${escapeHtml(group.code)} · ${escapeHtml(group.description)}</option>`;
+        }))
+        .join('');
+    }
+
+    function prodcatRenderFlagEditor(kind, rowIndex, field, value, source){
+      const label = kind === 'summary'
+        ? (PROD_SUMMARY_LABELS[field] || field)
+        : (PROD_INDICATOR_LABELS[field] || field);
+      const selectedValue = prodcatManualBoolValue(source, value);
+      const selectAttr = kind === 'summary'
+        ? `data-prodcat-summary-field="${field}"`
+        : `data-prodcat-indicator-field="${field}"`;
+      return `
+        <label class="prodcat-flag">
+          <strong>${escapeHtml(label)}</strong>
+          <div class="prodcat-muted">Actual: ${escapeHtml(prodcatBooleanLabel(value))}</div>
+          <div>${prodcatSourceBadge(source)}</div>
+          <select ${selectAttr} data-prodcat-row="${rowIndex}">
+            ${prodcatBuildBooleanOptions(selectedValue)}
+          </select>
+        </label>
+      `;
+    }
+
+    function prodcatRenderStatusCell(item = {}){
+      const badges = [];
+      if(item.pending_review) badges.push('<span class="prodcat-badge pending">Pendiente</span>');
+      else badges.push('<span class="prodcat-badge manual">Completo</span>');
+      if(item.autoupdated) badges.push('<span class="prodcat-badge auto">Autoactualizado</span>');
+      const missing = Array.isArray(item.missing_fields) ? item.missing_fields : [];
+      const previewMissing = missing.slice(0, 4).map((token)=>`<div class="prodcat-muted">${escapeHtml(prodcatMissingLabel(token))}</div>`).join('');
+      const moreMissing = missing.length > 4
+        ? `<div class="prodcat-muted">+${missing.length - 4} campo(s) mas</div>`
+        : '';
+      const manualMeta = item.last_manual_update_at
+        ? `<div class="prodcat-muted">Ultima revision: ${escapeHtml((item.last_manual_update_by_name || item.last_manual_update_by || 'Supervisor'))} · ${escapeHtml(fmt(item.last_manual_update_at))}</div>`
+        : '<div class="prodcat-muted">Sin revision manual</div>';
+      return `
+        <div class="prodcat-stack">
+          <div class="prodcat-badges">${badges.join('')}</div>
+          ${previewMissing || (item.pending_review ? '<div class="prodcat-muted">Faltan campos por confirmar</div>' : '<div class="prodcat-muted">Listo para mostrar en webapp</div>')}
+          ${moreMissing}
+          ${manualMeta}
+        </div>
+      `;
+    }
+
+    function prodcatRenderTable(){
+      const tbody = document.getElementById('prodcat-tbody');
+      if(!tbody) return;
+      const rows = prodcatCurrentSlug
+        ? prodcatItems.filter((item)=>item.aseguradora === prodcatCurrentSlug)
+        : prodcatItems;
+      const pending = rows.filter((item)=>item.pending_review).length;
+      const autoupdated = rows.filter((item)=>item.autoupdated).length;
+      prodcatSetAlert(pending, autoupdated, rows.length);
+      tbody.innerHTML = '';
+      if(rows.length === 0){
+        tbody.innerHTML = '<tr><td colspan="8" class="muted">No hay productos para mostrar</td></tr>';
+        return;
+      }
+      rows.forEach((item, index)=>{
+        const tr = document.createElement('tr');
+        tr.className = `product-row${item.pending_review ? ' pending' : ''}${item.autoupdated ? ' autoupdated' : ''}`;
+        const summaryPreview = prodcatBuildSummaryPreview(item);
+        const detailItems = prodcatBuildDetailItems(item);
+        tr.innerHTML = `
+          <td>
+            <div class="prodcat-stack">
+              <div><strong>${escapeHtml((item.aseguradora || '').toUpperCase())}</strong></div>
+              <div class="prodcat-muted">Proceso mas reciente: ${escapeHtml(String(item.latest_process_id || '—'))}</div>
+              <div class="prodcat-muted">Apariciones: ${escapeHtml(String(item.occurrences || 0))}</div>
+            </div>
+          </td>
+          <td>
+            <div class="prodcat-stack">
+              <div><strong>${escapeHtml(item.producto_descripcion || 'Sin descripcion')}</strong></div>
+              <div class="prodcat-muted">Producto codigo: ${escapeHtml(item.producto_codigo || 'S/D')}</div>
+              <div>${escapeHtml(item.cobertura_descripcion || 'S/D')}</div>
+              <div class="prodcat-muted">Cobertura codigo: ${escapeHtml(item.cobertura_codigo || 'S/D')}</div>
+            </div>
+          </td>
+          <td>
+            <div class="prodcat-stack">
+              <div><strong>${escapeHtml(item.display_group_code || 'Sin grupo')}</strong></div>
+              <div class="prodcat-muted">${escapeHtml(item.display_group_description || 'Pendiente de clasificacion')}</div>
+              <div>${prodcatSourceBadge(item.sources?.display_group_code || '')}</div>
+              <select data-prodcat-group-select="${index}">
+                ${prodcatBuildGroupOptions(item)}
+              </select>
+            </div>
+          </td>
+          <td>
+            <div class="prodcat-stack">
+              <div>${summaryPreview ? `<strong>${escapeHtml(summaryPreview)}</strong>` : '<span class="prodcat-muted">Oculto en webapp hasta completar el resumen</span>'}</div>
+              <div class="prodcat-field-grid">
+                ${prodcatSummaryFields.map((field)=>prodcatRenderFlagEditor('summary', index, field, item.summary_flags?.[field], item.sources?.summary_flags?.[field] || '')).join('')}
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="prodcat-field-grid">
+              ${prodcatIndicatorFields.map((field)=>prodcatRenderFlagEditor('indicator', index, field, item.indicators?.[field], item.sources?.indicators?.[field] || '')).join('')}
+            </div>
+          </td>
+          <td>
+            <div class="prodcat-stack">
+              ${detailItems.length > 0
+                ? `<div class="prodcat-detail-list">${detailItems.map((detail)=>`
+                    <div class="prodcat-detail-item">
+                      <strong>${escapeHtml(detail.label)}</strong>
+                      ${detail.value ? `<span>${escapeHtml(detail.value)}</span>` : ''}
+                      ${prodcatSourceBadge(detail.source || '')}
+                    </div>
+                  `).join('')}</div>`
+                : '<span class="prodcat-muted">Sin detalle detectable en el response</span>'}
+            </div>
+          </td>
+          <td>
+            ${prodcatRenderStatusCell(item)}
+          </td>
+          <td class="prodcat-save-cell">
+            <button type="button" data-prodcat-save="${index}">Guardar</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      tbody.querySelectorAll('button[data-prodcat-save]').forEach((btn)=>{
+        btn.onclick = async () => {
+          const index = Number(btn.dataset.prodcatSave);
+          const item = rows[index];
+          const tr = btn.closest('tr');
+          if(!item || !tr) return;
+          const groupCodeRaw = String(tr.querySelector(`select[data-prodcat-group-select="${index}"]`)?.value || PROD_GROUP_AUTO_VALUE).trim();
+          const summaryFlags = Object.fromEntries(prodcatSummaryFields.map((field)=>{
+            const raw = tr.querySelector(`[data-prodcat-summary-field="${field}"]`)?.value || PROD_BOOL_AUTO_VALUE;
+            return [field, raw === PROD_BOOL_AUTO_VALUE ? '' : raw];
+          }));
+          const indicators = Object.fromEntries(prodcatIndicatorFields.map((field)=>{
+            const raw = tr.querySelector(`[data-prodcat-indicator-field="${field}"]`)?.value || PROD_BOOL_AUTO_VALUE;
+            return [field, raw === PROD_BOOL_AUTO_VALUE ? '' : raw];
+          }));
+          try{
+            btn.disabled = true;
+            await catFetchJson(`/admin/seguros911-productos/${item.aseguradora}`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                producto_codigo: item.producto_codigo,
+                cobertura_codigo: item.cobertura_codigo,
+                producto_descripcion: item.producto_descripcion,
+                cobertura_descripcion: item.cobertura_descripcion,
+                display_group_code: groupCodeRaw === PROD_GROUP_AUTO_VALUE ? '' : groupCodeRaw,
+                summary_flags: summaryFlags,
+                indicators,
+              }),
+            });
+            prodcatSetStatus(`Registro guardado para ${item.aseguradora.toUpperCase()} · ${item.producto_codigo || item.producto_descripcion}`);
+            await prodcatLoad({ force: true });
+            try{ await loadSessionContext(); }catch(_e){}
+          }catch(e){
+            prodcatSetStatus(`Error guardando registro: ${e.message || e}`, true);
+          }finally{
+            btn.disabled = false;
+          }
+        };
+      });
+    }
+
+    async function prodcatLoad(options = {}){
+      const filter = document.getElementById('prodcat-company-filter');
+      const selected = filter?.value || prodcatCurrentSlug || '';
+      const params = new URLSearchParams();
+      if(selected) params.set('slug', selected);
+      if(options.force === true) params.set('refresh', '1');
+      const qs = params.toString();
+      const out = await catFetchJson(`/admin/seguros911-productos${qs ? `?${qs}` : ''}`);
+      prodcatItems = Array.isArray(out.items) ? out.items : [];
+      prodcatGroups = Array.isArray(out.groups) ? out.groups : [];
+      prodcatSummaryFields = Array.isArray(out.summary_fields) ? out.summary_fields : [];
+      prodcatIndicatorFields = Array.isArray(out.indicator_fields) ? out.indicator_fields : [];
+      const slugs = Array.isArray(out.slugs) ? out.slugs : [];
+      if(filter){
+        const current = selected || '';
+        filter.innerHTML = ['<option value="">Todas</option>']
+          .concat(slugs.map((slug)=>`<option value="${slug}">${escapeHtml(slug.toUpperCase())}</option>`))
+          .join('');
+        filter.value = slugs.includes(current) || current === '' ? current : '';
+        prodcatCurrentSlug = filter.value || '';
+      }
+      prodcatRenderTable();
+      prodcatSetStatus(`Catalogo cargado: ${prodcatItems.length} registro(s) visibles`);
+    }
+
+    async function initProductCatalogTab(){
+      try{
+        const filter = document.getElementById('prodcat-company-filter');
+        const refresh = document.getElementById('prodcat-refresh');
+        if(filter && !filter.dataset.bound){
+          filter.onchange = async ()=>{
+            prodcatCurrentSlug = filter.value || '';
+            await prodcatLoad();
+          };
+          filter.dataset.bound = '1';
+        }
+        if(refresh && !refresh.dataset.bound){
+          refresh.onclick = ()=>prodcatLoad({ force: true });
+          refresh.dataset.bound = '1';
+        }
+        await prodcatLoad();
+      }catch(e){
+        prodcatSetStatus(`Error cargando catalogo: ${e.message || e}`, true);
+      }
+    }
+
+    async function initCompanyConfigTab(){
+      try{
+        companyConfigMountLegacyWs();
+        document.querySelectorAll('.company-subtab').forEach((btn)=>{
+          if(btn.dataset.bound === '1') return;
+          btn.addEventListener('click', async ()=>{
+            const sectionId = companyConfigShowSection(btn.dataset.companySection);
+            await companyConfigEnsureSectionLoaded(sectionId);
+          });
+          btn.dataset.bound = '1';
+        });
+        const preferredSection = document.querySelector('.company-subtab.active')?.dataset.companySection || '';
+        const visibleSection = companyConfigShowSection(preferredSection || 'company-section-products');
+        await companyConfigEnsureSectionLoaded(visibleSection);
+      }catch(e){
+        console.error('Error inicializando configuraciones de compañía', e);
+      }
+    }
+
     /* ====== ADMIN ACCESOS ====== */
     function accessSetStatus(msg, isError = false){
       const el = document.getElementById('access-status');
@@ -1542,11 +2758,17 @@
       `;
     }
 
+    function accessRoleDescription(role = {}){
+      if(role?.is_superadmin) return 'Acceso total a pestañas, configuraciones, catalogos y administracion.';
+      if(role?.id === 'supervisor') return 'Gestiona Seguros911, historico/procesos y el catalogo manual de productos.';
+      return 'Acceso operativo limitado a Inputs, Cabecera, Historico y Procesos.';
+    }
+
     function accessRenderRoleList(){
       const rows = (accessModel.roles || []).map((role)=>`
         <tr>
           <td>${escapeHtml(role.nombre || role.id || '')}</td>
-          <td>${role.is_superadmin ? 'Acceso total al sistema' : 'Acceso operativo limitado a Inputs, Cabecera, Histórico y Procesos'}</td>
+          <td>${escapeHtml(accessRoleDescription(role))}</td>
           <td>${escapeHtml((role.pestañas || []).join(', '))}</td>
         </tr>
       `).join('');
@@ -1562,8 +2784,10 @@
       const roleSel = document.getElementById('access-user-role');
       if(!el || !roleSel) return;
       const text = role?.is_superadmin
-        ? 'Superadministrador: acceso total a pestañas, catálogos, compañías WS y administración de accesos.'
-        : 'Usuario genérico: acceso operativo a Inputs, Cabecera, Histórico y Procesos en curso. No ve Base propia, Compañías WS ni Accesos.';
+        ? 'Superadministrador: acceso total a pestañas, catalogos, companias WS y administracion de accesos.'
+        : (role?.id === 'supervisor'
+          ? 'Supervisor: ve Seguros911, puede revisar el catalogo manual y no necesita acceso a Base propia ni Companias WS.'
+          : 'Usuario generico: acceso operativo a Inputs, Cabecera, Historico y Procesos en curso. No ve Base propia, Companias WS ni Accesos.');
       el.textContent = text;
       roleSel.title = text;
     }
@@ -1785,6 +3009,7 @@
 
     let procOffset = 0;
     let procTotal  = 0;
+    let procLoading = false;
 
     function pill(estado){
       const s = String(estado||'').toLowerCase();
@@ -1809,12 +3034,31 @@
       if(m > 0) return `${m}m ${String(s).padStart(2,'0')}s`;
       return `${s}s`;
     }
-    function renderProgressCell(it){
-      if(it.fecha_fin) return `<span class="nowrap mono">${fmt(it.fecha_fin)}</span>`;
+    function getProcessProgressStats(it = {}){
       const total = Number(it.registros_total ?? 0);
       const done = Number(it.registros_procesados ?? 0);
-      if(!Number.isFinite(total) || total <= 0){
-        return `<span class="muted">En curso…</span>`;
+      const filas = Number(it.registros_filas ?? it.limite ?? 0);
+      const companias = Array.isArray(it.aseguradoras) ? it.aseguradoras.length : 0;
+      const computedTotal = (Number.isFinite(filas) && filas > 0 && companias > 0) ? filas * companias : 0;
+      let effectiveTotal = Number.isFinite(total) && total > 0 ? total : computedTotal;
+      if(computedTotal > 0 && effectiveTotal < computedTotal) effectiveTotal = computedTotal;
+      if(Number.isFinite(done) && done > effectiveTotal) effectiveTotal = done;
+      return {
+        done: Number.isFinite(done) && done >= 0 ? done : 0,
+        total: Number.isFinite(effectiveTotal) && effectiveTotal > 0 ? effectiveTotal : 0
+      };
+    }
+    function renderFinishedAtCell(it){
+      if(!it.fecha_fin) return '<span class="muted">—</span>';
+      return `<span class="nowrap mono">${fmt(it.fecha_fin)}</span>`;
+    }
+    function renderRecordsCell(it){
+      const { done, total } = getProcessProgressStats(it);
+      if(total <= 0){
+        return `<span class="mono">${it.registros_procesados ?? 0}</span>`;
+      }
+      if(it.fecha_fin){
+        return `<span class="mono">${done}/${total}</span>`;
       }
       const pct = Math.max(0, Math.min(100, Math.round((done / total) * 100)));
       let eta = '—';
@@ -1837,80 +3081,255 @@
       `;
     }
 
-    async function proc_cargar(){
-      const limit = Number(procLimitEl.value)||20;
-      const estado = procEstadoEl.value;
-      const params = new URLSearchParams({ limit: String(limit), offset: String(procOffset) });
-      if(estado) params.set('estado', estado);
-      let items = [];
+    function renderCotizacionPeriodoAttention(it = {}){
+      const periodo = String(it.cotizacion_periodo || '').trim();
+      const blocked = it.cotizacion_periodo_bloqueado === true;
+      const warning = String(it.cotizacion_periodo_mensaje || it.cotizacion_periodo_advertencia || '').trim();
+      if(!periodo && !warning) return '';
+      const label = periodo ? `Periodo ${escapeHtml(periodo)}` : 'Periodo sin definir';
+      if(blocked){
+        return `<div class="muted" style="margin-top:4px; color:#b91c1c;">${label}: ${escapeHtml(warning || 'Proceso pausado por cambio de mes.')}</div>`;
+      }
+      if(warning){
+        return `<div class="muted" style="margin-top:4px; color:#92400e;">${label}: ${escapeHtml(warning)}</div>`;
+      }
+      return `<div class="muted" style="margin-top:4px;">${label}</div>`;
+    }
 
-      procBtn.disabled = true;
-      prevBtn.disabled = true;
-      nextBtn.disabled = true;
-      procMeta.textContent = 'Cargando…';
-      procTbody.innerHTML = `<tr><td colspan="10" class="muted">Cargando…</td></tr>`;
+    function getPendingProcessCompanies(it = {}){
+      const pending = Array.isArray(it.aseguradoras_pendientes) ? it.aseguradoras_pendientes : [];
+      if(pending.length > 0) return pending.map((s)=>String(s || '').trim()).filter(Boolean);
+      const estado = String(it.estado || '').toLowerCase();
+      const { done, total } = getProcessProgressStats(it);
+      if((estado.includes('curso') || estado.includes('incompleto')) && total > done && Array.isArray(it.aseguradoras)){
+        return it.aseguradoras.map((s)=>String(s || '').trim()).filter(Boolean);
+      }
+      return [];
+    }
+
+    function getErrorProcessCompanies(it = {}){
+      const errorCount = Number(it.cotizaciones_con_error || 0);
+      if(!Number.isFinite(errorCount) || errorCount <= 0) return [];
+      const companies = Array.isArray(it.aseguradoras) ? it.aseguradoras : [];
+      return companies.map((s)=>String(s || '').trim()).filter(Boolean);
+    }
+
+    function renderResumeControls(it = {}){
+      const pending = getPendingProcessCompanies(it);
+      const errors = getErrorProcessCompanies(it);
+      const processId = Number(it.id);
+      const renderRow = ({ mode, companies, allLabel, buttonLabel }) => {
+        if(companies.length === 0) return '';
+        const selectId = `proc-resume-company-${processId}-${mode}`;
+        const batchId = `proc-resume-batch-${processId}-${mode}`;
+        const opts = [
+          `<option value="__all__" selected>${escapeHtml(allLabel)}</option>`,
+          ...companies.map((slug)=>`<option value="${escapeHtml(slug)}">${escapeHtml(slug.toUpperCase())}</option>`)
+        ].join('');
+        return `
+          <div class="row" style="margin-top:8px; flex-wrap:wrap;">
+            <select id="${selectId}" style="height:32px; min-width:160px;">
+              ${opts}
+            </select>
+            <select id="${batchId}" style="height:32px; min-width:96px;">
+              <option value="25">25</option>
+              <option value="50" selected>50</option>
+              <option value="100">100</option>
+              <option value="">Todas</option>
+            </select>
+            <button type="button" class="secondary" onclick="reanudarProcesoPendientes(${processId}, '${mode}')">${escapeHtml(buttonLabel)}</button>
+          </div>
+        `;
+      };
+      return [
+        renderRow({ mode: 'pending', companies: pending, allLabel: `Todas pendientes (${pending.length})`, buttonLabel: 'Reanudar' }),
+        renderRow({ mode: 'errors', companies: errors, allLabel: `Todas con error (${Number(it.cotizaciones_con_error || 0)})`, buttonLabel: 'Reprocesar errores' }),
+      ].filter(Boolean).join('');
+    }
+
+    function isSeguros911Process(it = {}){
+      const origen = String(it.proceso_origen || '').trim().toLowerCase();
+      const archivo = String(it.archivo || '').trim().toLowerCase();
+      const nombre = String(it.nombre || '').trim().toLowerCase();
+      return origen === 'seguros911'
+        || it.es_proceso_webapp === true
+        || archivo.includes('cotizador-publico-')
+        || nombre.includes('seguros911');
+    }
+
+    function getFilteredProcessItems(){
+      const estado = (procEstadoEl.value || '').trim().toLowerCase();
+      let items = procCache.filter((it) => procView === 'seguros911' ? isSeguros911Process(it) : !isSeguros911Process(it));
+      if (estado) {
+        items = items.filter((it) => String(it.estado || '').toLowerCase().includes(estado));
+      }
+      return items;
+    }
+
+    function renderProcesos(options = {}){
+      const tableShell = document.querySelector('#procesos .table-shell');
+      const previousScrollTop = tableShell ? tableShell.scrollTop : 0;
+      const limit = Number(procLimitEl.value)||20;
+      const filtered = getFilteredProcessItems();
+      procTotal = filtered.length;
+      if(procOffset >= procTotal && procTotal > 0){
+        procOffset = Math.max(0, Math.floor((procTotal - 1) / limit) * limit);
+      }
+      const items = filtered.slice(procOffset, procOffset + limit);
+
+      if(items.length === 0){
+        procTbody.innerHTML = `<tr><td colspan="10" class="muted">Sin resultados</td></tr>`;
+      } else {
+        const frag = document.createDocumentFragment();
+        for(const it of items){
+          const tr = document.createElement('tr');
+          const attentionHtml = isSeguros911Process(it) ? renderSeguros911CatalogAttention(it) : '';
+          const periodHtml = renderCotizacionPeriodoAttention(it);
+          const acc = `
+            <div class="row">
+              <a class="btn" href="/proceso/excel/${it.id}" target="_blank"><button class="secondary">Descargar XLS</button></a>
+              <a class="btn" href="/data/procesos/proceso-${it.id}/" target="_blank"><button>📁 Abrir carpeta</button></a>
+            </div>
+            ${renderResumeControls(it)}
+          `;
+          tr.innerHTML = `
+            <td class="mono">${it.id}</td>
+            <td>
+              <div>${it.nombre || ''}</div>
+              ${attentionHtml}
+              ${periodHtml}
+            </td>
+            <td>${it.nombre_cabecera || (it.cabecera_id != null ? ('Cabecera ' + it.cabecera_id) : '')}</td>
+            <td>${pill(it.estado || '')}</td>
+            <td class="nowrap mono">${fmt(it.fecha_inicio)}</td>
+            <td>${renderFinishedAtCell(it)}</td>
+            <td>${renderRecordsCell(it)}</td>
+            <td class="mono">${it.cotizaciones_exitosas ?? ''}</td>
+            <td class="mono">${it.cotizaciones_con_error ?? ''}</td>
+            <td>${acc}</td>
+          `;
+          frag.appendChild(tr);
+        }
+        procTbody.innerHTML = '';
+        procTbody.appendChild(frag);
+      }
+
+      const desde = Math.min(procTotal, procOffset + 1);
+      const hasta = Math.min(procTotal, procOffset + limit);
+      const attentionCount = filtered.filter((it)=>Boolean(it.seguros911_catalog_needs_attention)).length;
+      const attentionText = procView === 'seguros911' && attentionCount > 0
+        ? ` | ${attentionCount} proceso(s) con atencion de catalogo`
+        : '';
+      procMeta.textContent = `Mostrando ${desde || 0}–${hasta || 0} de ${procTotal}${attentionText}`;
+      pageInfo.textContent = `Página ${Math.floor(procOffset/limit)+1} — ${limit} por página`;
+
+      prevBtn.disabled = (procOffset <= 0);
+      nextBtn.disabled = (procOffset + limit >= procTotal);
+
+      clearTimeout(window.procRefreshTimer);
+      const hasRunning = filtered.some(it => String(it.estado || '').toLowerCase().includes('curso'));
+      if(hasRunning && document.getElementById('procesos')?.classList.contains('active')){
+        window.procRefreshTimer = setTimeout(()=>{
+          const active = document.activeElement;
+          const userIsWorkingInTable = active && Boolean(active.closest?.('#proc-tbody'));
+          if(document.getElementById('procesos')?.classList.contains('active') && !userIsWorkingInTable) {
+            proc_cargar({ silent: true });
+          }
+        }, 30000);
+      }
+
+      if(options.preserveScroll && tableShell){
+        tableShell.scrollTop = previousScrollTop;
+      }
+    }
+
+    window.reanudarProcesoPendientes = async function(id, mode = 'pending'){
+      const processId = Number(id);
+      const resumeMode = String(mode || 'pending').toLowerCase() === 'errors' ? 'errors' : 'pending';
+      const item = (procCache || []).find((it)=>Number(it.id) === processId);
+      if(!item){
+        alert('No encontré el proceso en la grilla actual.');
+        return;
+      }
+      const companies = resumeMode === 'errors' ? getErrorProcessCompanies(item) : getPendingProcessCompanies(item);
+      const noun = resumeMode === 'errors' ? 'errores' : 'pendientes';
+      if(companies.length === 0){
+        alert(`Este proceso no tiene aseguradoras con ${noun} para reanudar.`);
+        return;
+      }
+      const select = document.getElementById(`proc-resume-company-${processId}-${resumeMode}`);
+      const selected = select ? String(select.value || '') : '';
+      if(!selected){
+        alert(`Elegí una compañía con ${noun} para reanudar.`);
+        return;
+      }
+      const aseguradoras = selected === '__all__' ? companies : [selected];
+      const batchSelect = document.getElementById(`proc-resume-batch-${processId}-${resumeMode}`);
+      const batchValue = batchSelect ? String(batchSelect.value || '') : '';
+      const limitePendientes = batchValue ? Number(batchValue) : null;
+      const label = selected === '__all__' ? `todas las compañías con ${noun} (${companies.length})` : selected.toUpperCase();
+      const batchLabel = limitePendientes ? `hasta ${limitePendientes} ${noun} por compañía` : `todos los ${noun}`;
+      const action = resumeMode === 'errors' ? 'Reprocesar errores del' : 'Reanudar';
+      const ok = confirm(`${action} proceso ${processId} para ${label}, ${batchLabel}?`);
+      if(!ok) return;
+
+      try{
+        showStatusToast(`${resumeMode === 'errors' ? 'Reprocesando errores' : 'Reanudando'} proceso ${processId}...`, 1600);
+        const resp = await fetch(`/proceso/reanudar/${processId}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            aseguradoras,
+            resume_mode: resumeMode,
+            reprocess_errors: resumeMode === 'errors',
+            ...(limitePendientes ? { limite_pendientes: limitePendientes } : {}),
+          }),
+        });
+        const data = await resp.json().catch(()=>({}));
+        if(!resp.ok || data.ok === false){
+          throw new Error(data.error || `HTTP ${resp.status}`);
+        }
+        alert(`Proceso ${processId} reanudado. Estado: ${data.estado || 'en curso'}. Pendientes: ${data.total_tareas_pendientes ?? '—'}`);
+        await proc_cargar();
+      }catch(e){
+        console.error('[Procesos] Error reanudando:', e);
+        alert(`No se pudo reanudar el proceso: ${e.message || e}`);
+      }
+    };
+
+    async function proc_cargar(options = {}){
+      if(procLoading) return;
+      procLoading = true;
+      const silent = options.silent === true;
+      if(!silent){
+        procBtn.disabled = true;
+        prevBtn.disabled = true;
+        nextBtn.disabled = true;
+        procMeta.textContent = 'Cargando…';
+        procTbody.innerHTML = `<tr><td colspan="10" class="muted">Cargando…</td></tr>`;
+      }
 
       try {
-        const resp = await fetch(`/cotizacion/listar?${params.toString()}`);
+        const resp = await fetch('/proceso/listar');
         if(!resp.ok){
           const err = await resp.text();
           throw new Error(err || ('HTTP ' + resp.status));
         }
         const data = await resp.json();
-        procTotal = data.total ?? 0;
-        items = Array.isArray(data.items) ? data.items : [];
-
-        if(items.length === 0){
-          procTbody.innerHTML = `<tr><td colspan="10" class="muted">Sin resultados</td></tr>`;
-        } else {
-          const frag = document.createDocumentFragment();
-          for(const it of items){
-            const tr = document.createElement('tr');
-            const acc = `
-              <div class="row">
-                <a class="btn" href="/proceso/excel/${it.id}" target="_blank"><button class="secondary">Descargar XLS</button></a>
-                <a class="btn" href="/data/procesos/proceso-${it.id}/" target="_blank"><button>📁 Abrir carpeta</button></a>
-              </div>
-            `;
-            tr.innerHTML = `
-              <td class="mono">${it.id}</td>
-              <td>${it.nombre || ''}</td>
-              <td>${it.nombre_cabecera || ''}</td>
-              <td>${pill(it.estado || '')}</td>
-              <td class="nowrap mono">${fmt(it.fecha_inicio)}</td>
-              <td>${renderProgressCell(it)}</td>
-              <td class="mono">${it.registros_total != null ? `${it.registros_procesados ?? 0}/${it.registros_total}` : (it.registros_procesados ?? '')}</td>
-              <td class="mono">${it.cotizaciones_exitosas ?? ''}</td>
-              <td class="mono">${it.cotizaciones_con_error ?? ''}</td>
-              <td>${acc}</td>
-            `;
-            frag.appendChild(tr);
-          }
-          procTbody.innerHTML = '';
-          procTbody.appendChild(frag);
-        }
-
-        const desde = Math.min(procTotal, procOffset + 1);
-        const hasta = Math.min(procTotal, procOffset + limit);
-        procMeta.textContent = `Mostrando ${desde || 0}–${hasta || 0} de ${procTotal}`;
-        pageInfo.textContent = `Página ${Math.floor(procOffset/limit)+1} — ${limit} por página`;
-
-        prevBtn.disabled = (procOffset <= 0);
-        nextBtn.disabled = (procOffset + limit >= procTotal);
+        procCache = Array.isArray(data.items) ? data.items : [];
+        renderProcesos({ preserveScroll: silent });
       } catch (e) {
         console.error('[Procesos] Error:', e);
-        procTbody.innerHTML = `<tr><td colspan="10" class="muted">Error al cargar</td></tr>`;
-        procMeta.textContent = 'Error';
+        if(!silent){
+          procCache = [];
+          procTbody.innerHTML = `<tr><td colspan="10" class="muted">Error al cargar</td></tr>`;
+          procMeta.textContent = 'Error';
+        }
       } finally {
-        procBtn.disabled = false;
-      }
-
-      clearTimeout(window.procRefreshTimer);
-      const hasRunning = items.some(it => String(it.estado || '').toLowerCase().includes('curso'));
-      if(hasRunning){
-        window.procRefreshTimer = setTimeout(()=>{
-          if(document.getElementById('procesos')?.classList.contains('active')) proc_cargar();
-        }, 5000);
+        procLoading = false;
+        if(!silent){
+          procBtn.disabled = false;
+        }
       }
     }
 
@@ -1950,6 +3369,7 @@
 
     /* Utilidad */
     function limpiarArchivos() {
+      document.querySelector('input[name="nombreInput"]').value = "";
       document.querySelector('input[name="archivoVehiculos"]').value = "";
       document.querySelector('input[name="archivoCP"]').value = "";
       document.querySelector('input[name="archivoUnico"]').value = "";
@@ -1972,21 +3392,56 @@
         return;
       }
       const cabeceraLabel = cabeceraNom || `ID ${cabeceraId}`;
-      showStatusToast(`Procesando histórico ${id} con cabecera ${cabeceraLabel}...`, 1400);
+      showStatusToast(`Creando proceso para histórico ${id} con cabecera ${cabeceraLabel}...`, 1400);
       try{
-        const resp = await fetch(`/proceso/ejecutar/${id}`, {
+        const createResp = await fetch('/proceso/crear', {
           method:'POST',
           headers:{ 'Content-Type':'application/json' },
-          body: JSON.stringify({ cabecera_id: cabeceraId, aseguradoras })
+          body: JSON.stringify({
+            historial_id: id,
+            cabecera_id: cabeceraId,
+            aseguradoras,
+            nombre: `Proceso histórico ${id}`
+          })
         });
-        const text = await resp.text();
+        const createText = await createResp.text();
+        let createData = {};
+        try { createData = JSON.parse(createText); } catch { throw new Error(createText); }
+        if(!createResp.ok || !createData.ok){ throw new Error(createData.error || `HTTP ${createResp.status}`); }
+
+        const procesoId = createData.proceso_id ?? createData.metadata?.id;
+        if(!procesoId) throw new Error('El backend no devolvió proceso_id');
+        const periodWarning = String(createData.metadata?.cotizacion_periodo_advertencia || '').trim();
+        if(periodWarning){
+          const periodOk = confirm(`${periodWarning}\n\n¿Querés ejecutar igual este proceso?`);
+          if(!periodOk){
+            showStatusToast(`Proceso ${procesoId} creado sin ejecutar.`, 2000);
+            if(document.getElementById('procesos')?.classList.contains('active')) {
+              procOffset = 0;
+              await proc_cargar();
+            }
+            return;
+          }
+        }
+
+        showStatusToast(`Proceso ${procesoId} creado. Ejecutando…`, 1400);
+
+        const execResp = await fetch(`/proceso/ejecutar/${procesoId}`, {
+          method:'POST',
+          headers:{ 'Content-Type':'application/json' },
+          body: JSON.stringify({ aseguradoras })
+        });
+        const execText = await execResp.text();
         let data = {};
-        try { data = JSON.parse(text); } catch { throw new Error(text); }
-        if(!resp.ok || !data.ok){ throw new Error(data.error || `HTTP ${resp.status}`); }
-        const procesoId = data.proceso_id ?? data.historial_id ?? data.id ?? data.proceso;
+        try { data = JSON.parse(execText); } catch { throw new Error(execText); }
+        if(!execResp.ok || !data.ok){ throw new Error(data.error || `HTTP ${execResp.status}`); }
         const intentados = data.total_filas_intentadas ?? data.total_intentadas ?? data.intentados ?? data.total ?? 'todos';
-        const carpeta = data.carpeta ?? (procesoId ? `data/procesos/proceso-${procesoId}/` : '');
+        const carpeta = data.carpeta ?? `data/procesos/proceso-${procesoId}/`;
         alert(`Proceso ${procesoId} OK con cabecera ${data.cabecera_id}. Intentados: ${intentados}. Revisá /${carpeta}`);
+        if(document.getElementById('procesos')?.classList.contains('active')) {
+          procOffset = 0;
+          await proc_cargar();
+        }
       }catch(e){
         alert('Fallo al ejecutar: ' + (e.message || e));
       }
