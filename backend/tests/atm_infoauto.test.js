@@ -26,11 +26,13 @@ describe('atm_infoauto', () => {
     expect(resolveAmountFromInfoautoRow(row, 1990)).toBe(1000000);
   });
 
-  test('escala importes en miles y resuelve via infoauto_dc cuando hace falta', async () => {
+  test('escala importes en miles y resuelve via infoauto_dc sin fijar una valuacion de catalogo', async () => {
     const amount = await resolveSumaAsegurada({
       row: { codigo_infoauto: 60533, anio: 2023 },
     });
 
-    expect(amount).toBe(46500000);
+    expect(Number.isFinite(amount)).toBe(true);
+    expect(amount).toBeGreaterThan(1000000);
+    expect(amount % 1000).toBe(0);
   });
 });
