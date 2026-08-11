@@ -5,6 +5,7 @@ const fs = require('fs');
 const fsp = require('fs/promises');
 const path = require('path');
 const os = require('os');
+const readline = require('readline');
 const { execFileSync } = require('child_process');
 const xlsx = require('xlsx');
 const axios = require('axios');
@@ -67,7 +68,7 @@ const {
   buildRivadaviaSoapPayload,
   parseRivadaviaSoapQuoteResponse,
   parseRivadaviaQuoteResponse,
-  upsertRivadaviaTipoVehiculoInferido,
+  persistRivadaviaInferenceBestEffort,
 } = require('../services/rivadavia/quote');
 const {
   rivadaviaPost,
@@ -646,11 +647,19 @@ const ATM_CP_FALLBACKS = {
   'TIERRA DEL FUEGO': ['9420', '9410'],
 };
 
+const ATM_CP_ALIASES = {
+  'CAPITAL FEDERAL|CAPITAL FEDERAL|1014': '1005',
+};
+
 async function resolveAtmPostalCode(row = {}) {
   const cpRaw = pick([row?.codigo_postal, row?.codpostal, row?.CP, row?.cp, row?.CodigoPostal]);
   const cp = String(cpRaw || '').replace(/\D+/g, '').slice(0, 4);
   const provincia = normalizeComparableText(pick([row?.provincia, row?.Provincia]));
+  const localidad = normalizeComparableText(pick([row?.localidad, row?.Localidad]));
   const catalog = await loadAtmPostalCatalog();
+
+  const aliasCp = ATM_CP_ALIASES[`${provincia}|${localidad}|${cp}`];
+  if (aliasCp) return { cp: aliasCp, source: 'alias_comercial', originalCp: cp };
 
   const byCp = cp ? catalog.filter((item) => String(item?.codpos || '').trim() === cp) : [];
   if (byCp.length > 0) {
@@ -1056,11 +1065,9 @@ const EXCEL_CANONICAL_HEADERS = [
   'Cabecera ID',
   'Aseguradora',
   'Fila',
-  'Estado',
   'Fecha Cotizacion',
   'Hora Cotizacion',
   'Operacion/Cotizacion',
-  'Cabecera',
   'Parametro Tipo Persona',
   'Parametro IVA',
   'Parametro Tipo Doc',
@@ -1070,17 +1077,27 @@ const EXCEL_CANONICAL_HEADERS = [
   'Parametro Fecha Nacimiento',
   'Edad Cotizada',
   'Parametro Estado Civil',
-  'Parametro Tipo Uso',
+  'Uso',
   'Parametro Rastreo',
-  'Parametro GNC',
-  'Parametro Ajuste',
+  'GNC',
+  'Suma GNC Solicitada',
+  'Suma GNC Reconocida',
+  'Clausula de Ajuste Solicitada',
+  'Clausula de Ajuste Efectiva',
+  'Descuento Comercial Solicitado %',
+  'Descuento Seguro Nuevo %',
+  'Descuento No Siniestralidad %',
+  'Descuento Especial %',
+  'Variacion 32.080 %',
+  'Bonificacion Monetaria Devuelta',
+  'Codigo Promocion',
+  'Descripcion Promocion',
   'Vehiculo Anio',
   'Vehiculo Marca',
   'Vehiculo Modelo',
   'Vehiculo Codigo Infoauto',
   'Vehiculo Tipo',
   'Vehiculo Combustible',
-  'Vehiculo Uso',
   'Vehiculo Provincia',
   'Vehiculo Localidad',
   'Vehiculo CP',
@@ -1095,24 +1112,21 @@ const EXCEL_CANONICAL_HEADERS = [
   'Duracion',
   'Cuotas',
   'Importe Cuota',
-  'Prima',
   'Prima Mensual',
-  'Prima Vigencia',
-  'Premio',
   'Premio Mensual',
-  'Premio Vigencia',
   'Suma Asegurada',
-  'IVA',
   'IVA Mensual',
-  'IVA Vigencia',
   'Impuestos Mensuales',
-  'Impuestos Vigencia',
+  'Recargo Financiero Mensual',
   'Franquicia',
   'Franquicia Robo',
   'Recuperador',
   'Inspeccionable',
-  'Comision',
-  '% Comision',
+  'Comision Solicitada %',
+  'Comision Devuelta',
+  'Comision Devuelta %',
+  'Coeficiente RC',
+  'Coeficiente Casco',
   'Error',
   'Observacion',
 ];
@@ -1446,21 +1460,32 @@ function applyCanonicalSheetFormats(ws, rows = [], startRowIndex = 0) {
   const headerIndex = new Map(EXCEL_CANONICAL_HEADERS.map((name, idx) => [name, idx]));
   const money2 = new Set([
     'Importe Cuota',
-    'Prima',
     'Prima Mensual',
-    'Prima Vigencia',
-    'Premio',
     'Premio Mensual',
-    'Premio Vigencia',
-    'IVA',
     'IVA Mensual',
-    'IVA Vigencia',
     'Impuestos Mensuales',
-    'Impuestos Vigencia',
-    'Comision',
+    'Recargo Financiero Mensual',
+    'Bonificacion Monetaria Devuelta',
+    'Comision Devuelta',
   ]);
-  const money0 = new Set(['Suma Asegurada', 'Franquicia', 'Franquicia Robo']);
-  const decimals2 = new Set(['% Comision']);
+  const money0 = new Set([
+    'Suma GNC Solicitada',
+    'Suma GNC Reconocida',
+    'Suma Asegurada',
+    'Franquicia',
+    'Franquicia Robo',
+  ]);
+  const decimals2 = new Set([
+    'Descuento Comercial Solicitado %',
+    'Descuento Seguro Nuevo %',
+    'Descuento No Siniestralidad %',
+    'Descuento Especial %',
+    'Variacion 32.080 %',
+    'Comision Solicitada %',
+    'Comision Devuelta %',
+    'Coeficiente RC',
+    'Coeficiente Casco',
+  ]);
 
   const colName = (n) => {
     let s = '';
@@ -2151,8 +2176,11 @@ function inferFranquicia(row = {}, sumaAsegurada) {
 function enrichExcelRowCanonicalFields(row = {}) {
   const next = applyVehicleExcelAliases(row);
   const sancorFinancials = deriveSancorExcelFinancials(row);
-  const isSancor = String(row.aseguradora || '').trim().toLowerCase() === 'sancor';
-  const isVictoria = String(row.aseguradora || '').trim().toLowerCase() === 'victoria';
+  const insurerSlug = String(row.aseguradora || '').trim().toLowerCase();
+  const isAtm = insurerSlug === 'atm';
+  const isExperta = insurerSlug === 'experta';
+  const isSancor = insurerSlug === 'sancor';
+  const isVictoria = insurerSlug === 'victoria';
   const coberturaCodigo = firstNonEmpty(
     row.cot_codigo,
     row.cot_codigoDeCobertura,
@@ -2195,13 +2223,28 @@ function enrichExcelRowCanonicalFields(row = {}) {
   );
   next['Forma Pago'] = firstNonEmpty(row.cot_formapago);
   next['Forma Pago Descripcion'] = firstNonEmpty(row.cot_formapago_descripcion);
-  next.Cuotas = firstNonEmpty(row.cot_cuotas, row.cot_cantidadCuotas);
-  next['Importe Cuota'] = firstNonEmpty(row.cot_impcuotas, row.cot_importeCuota, row.cot_montoPrimeraCuota);
+  next.Cuotas = isExperta ? 1 : firstNonEmpty(row.cot_cuotas, row.cot_cantidadCuotas);
+  next['Importe Cuota'] = firstNonEmpty(
+    row.cot_impcuotas,
+    row.cot_importeCuota,
+    row.cot_montoPrimeraCuota,
+    isExperta ? row.cot_importePremio : ''
+  );
+  const atmInstallments = toNumber(firstNonEmpty(row.cot_cuotas, row.cot_cantidadCuotas));
+  const atmPrimaTotal = toNumber(firstNonEmpty(row.cot_prima, row.cot_importePrima));
+  const atmPrimaMensual = isAtm && atmPrimaTotal != null && atmInstallments
+    ? atmPrimaTotal / atmInstallments
+    : '';
   next['Prima Mensual'] = firstNonEmpty(
     row['Prima Mensual'],
+    row.cot_primaMensual,
     row.cot_purePremiumMonthlyTotal,
     row.cot_primaMonthlyTotal,
-    isSancor ? firstNonEmpty(row.cot_prima, row.cot_importePrima, sancorFinancials?.primaMensual) : ''
+    atmPrimaMensual,
+    isSancor ? firstNonEmpty(row.cot_prima, row.cot_importePrima, sancorFinancials?.primaMensual) : '',
+    row.cot_importePrima,
+    row.cot_montoPrimaTotal,
+    isExperta ? row.cot_prima : ''
   );
   next['Prima Vigencia'] = firstNonEmpty(
     row['Prima Vigencia'],
@@ -2218,9 +2261,13 @@ function enrichExcelRowCanonicalFields(row = {}) {
   );
   next['Premio Mensual'] = firstNonEmpty(
     row['Premio Mensual'],
+    row.cot_premioMensual,
     row.cot_premiumMonthly,
+    isAtm ? firstNonEmpty(row.cot_impcuotas, row.cot_importeCuota) : '',
     isVictoria ? row.cot_importeCuota : '',
-    isSancor ? firstNonEmpty(row.cot_premio, row.cot_importePremio, sancorFinancials?.premioMensual) : ''
+    isSancor ? firstNonEmpty(row.cot_premio, row.cot_importePremio, sancorFinancials?.premioMensual) : '',
+    row.cot_importePremio,
+    row.cot_montoPremio
   );
   next['Premio Vigencia'] = firstNonEmpty(
     row['Premio Vigencia'],
@@ -2265,12 +2312,89 @@ function enrichExcelRowCanonicalFields(row = {}) {
   next.Franquicia = firstNonEmpty(row.cot_franquicia, row.cot_montoFranquicia, row.cot_nombreFranquicia);
   next.Inspeccionable = firstNonEmpty(row.cot_inspeccionable, row.cot_requiereInspeccion, row.cot_outStandard);
   next['Operacion/Cotizacion'] = firstNonEmpty(row.cot_numCotizacion, row.operacion, row.cot_pricingId);
+  if (isExperta) {
+    // Experta usa `duracion` para la vigencia de una promocion, no para facturacion.
+    // Sus importes debito/efectivo y prima ya son mensuales.
+    next.cot_periodoFact = 'M';
+    next.cot_duracion = 1;
+    next.cot_cuotas = 1;
+  }
   return next;
+}
+
+const commercialConditionsExcelCache = new Map();
+
+function loadCommercialConditionsForExcel(row = {}, usedMeta = {}) {
+  const embedded = usedMeta?.commercial_conditions || usedMeta?.commercialConditions;
+  if (embedded && typeof embedded === 'object') {
+    return embedded.values && typeof embedded.values === 'object' ? embedded.values : embedded;
+  }
+
+  const procesoId = Number(row.proceso_id);
+  const index = Number(row.index);
+  const slug = String(row.aseguradora || '').trim().toLowerCase();
+  if (!Number.isFinite(procesoId) || !Number.isFinite(index) || !slug) return {};
+
+  const cacheKey = `${procesoId}:${slug}:${index}`;
+  if (commercialConditionsExcelCache.has(cacheKey)) return commercialConditionsExcelCache.get(cacheKey);
+
+  const evidencePath = path.join(
+    evidenciasDir(procesoId, slug, index),
+    `${slug}-commercial_conditions_effective.json`
+  );
+  const evidence = readJsonFileSafe(evidencePath);
+  const values = evidence?.values && typeof evidence.values === 'object' ? evidence.values : {};
+  commercialConditionsExcelCache.set(cacheKey, values);
+  return values;
+}
+
+function commercialVisibleValue(values = {}, concept = '') {
+  const value = values?.[concept];
+  if (!value || value.applies === false) return '';
+  return firstNonEmpty(value.visible_value, value.numeric_value, value.raw_value);
+}
+
+function commercialNumericValue(values = {}, concept = '') {
+  const value = values?.[concept];
+  if (!value || value.applies === false) return '';
+  const explicit = toNumber(value.numeric_value);
+  if (explicit != null) return Math.round(explicit * 100) / 100;
+  const visible = String(firstNonEmpty(value.visible_value, value.raw_value)).replace(',', '.');
+  const match = visible.trim().match(/^(-?\d+(?:\.\d+)?)\s*%?$/);
+  if (!match) return '';
+  const parsed = Number(match[1]);
+  return Number.isFinite(parsed) ? parsed : '';
+}
+
+function normalizeUsoExcel(row = {}, commercialValues = {}) {
+  const visible = normalizeText(firstNonEmpty(
+    commercialVisibleValue(commercialValues, 'uso'),
+    row.cab_uso_default,
+    row.veh_uso,
+    row.cab_tipo_uso
+  ));
+  if (visible === '2' || visible.includes('COMERCIAL')) return 'Comercial';
+  if (visible === '1' || visible.includes('PARTICULAR')) return 'Particular';
+  return firstNonEmpty(row.veh_uso, commercialVisibleValue(commercialValues, 'uso'), row.cab_tipo_uso);
+}
+
+function normalizeGncExcel(row = {}, commercialValues = {}) {
+  const visible = commercialVisibleValue(commercialValues, 'gnc');
+  if (visible !== '') return commercialTruthy(commercialValues.gnc) ? 'Si' : 'No';
+  return String(row.cab_gnc ?? '').trim() === '1' ? 'Si' : 'No';
+}
+
+function normalizeAjusteExcel(value) {
+  if (value == null || String(value).trim() === '') return '';
+  const text = String(value).trim();
+  if (text.includes('%') || /SIN|NINGUN/i.test(text)) return text;
+  const numeric = toNumber(text);
+  return numeric == null ? text : `${Math.round(numeric * 100) / 100}%`;
 }
 
 function buildCanonicalExcelRow(row = {}, usedMeta = {}) {
   row = applyVehicleExcelAliases(row);
-  const estado = row.skipped ? 'skipped' : (row.ok ? 'ok' : 'error');
+  const commercialValues = loadCommercialConditionsForExcel(row, usedMeta);
   const coberturaDescripcion = firstNonEmpty(row['Cobertura Descripcion'], row['Producto Descripcion']);
   const productoDescripcion = firstNonEmpty(row['Producto Descripcion'], row['Cobertura Descripcion']);
   let grupo = inferCoverageGroup({
@@ -2289,18 +2413,23 @@ function buildCanonicalExcelRow(row = {}, usedMeta = {}) {
   const periodoFacturacion = inferPeriodoFacturacion(row, cuotas);
   const duracion = inferDuracion(row, cuotas);
   const sumaAsegurada = roundMoney(firstNonEmpty(row.cot_sumaAsegurada, row['Suma Asegurada']), 0);
-  const primaMensual = roundMoney(firstNonEmpty(row['Prima Mensual'], row.Prima), 2);
-  const primaVigencia = roundMoney(row['Prima Vigencia'], 2);
-  const premioMensual = roundMoney(firstNonEmpty(row['Premio Mensual'], row.Premio), 2);
-  const premioVigencia = roundMoney(row['Premio Vigencia'], 2);
-  const importeCuota = roundMoney(firstNonEmpty(row['Importe Cuota'], (premioMensual != null && cuotas ? premioMensual / cuotas : '')), 2);
+  const primaMensual = roundMoney(firstNonEmpty(row['Prima Mensual'], row.cot_primaMensual, row.Prima), 2);
+  const premioMensual = roundMoney(firstNonEmpty(row['Premio Mensual'], row.cot_premioMensual, row.Premio), 2);
+  const importeCuota = roundMoney(firstNonEmpty(row['Importe Cuota'], row.cot_importeCuota, premioMensual), 2);
   const ivaMensual = roundMoney(firstNonEmpty(row['IVA Mensual'], row.IVA), 2);
-  const ivaVigencia = roundMoney(row['IVA Vigencia'], 2);
   const impuestosMensuales = roundMoney(row['Impuestos Mensuales'], 2);
-  const impuestosVigencia = roundMoney(row['Impuestos Vigencia'], 2);
-  const prima = primaMensual;
-  const premio = premioMensual;
-  const iva = ivaMensual;
+  const recargoFinancieroMensual = roundMoney(firstNonEmpty(row.cot_importeRecargoFinanciero), 2);
+  const sumaGncSolicitada = roundMoney(firstNonEmpty(row.cab_suma_gnc), 0);
+  const sumaGncReconocida = roundMoney(firstNonEmpty(row.cot_sumaGNC, row.cot_sumaGnc), 0);
+  const ajusteSolicitado = normalizeAjusteExcel(firstNonEmpty(
+    commercialVisibleValue(commercialValues, 'clausula_ajuste'),
+    row.cab_ajuste
+  ));
+  const ajusteEfectivo = normalizeAjusteExcel(firstNonEmpty(
+    row.cot_porcentajeAjuste,
+    row.cot_ajuste,
+    commercialVisibleValue(commercialValues, 'clausula_ajuste')
+  ));
   const franquicia = inferFranquicia(row, sumaAsegurada);
   const franquiciaRobo = (() => {
     const n = roundMoney(row.cot_franquiciaRobo, 0);
@@ -2310,7 +2439,7 @@ function buildCanonicalExcelRow(row = {}, usedMeta = {}) {
   const porcentajeComision = (() => {
     const explicit = toNumber(row.cot_porcentajeComisionPAS);
     if (explicit != null) return Math.round(explicit * 100) / 100;
-    if (comisionValor != null && prima && prima !== 0) return Math.round((comisionValor / prima * 100) * 100) / 100;
+    if (comisionValor != null && primaMensual && primaMensual !== 0) return Math.round((comisionValor / primaMensual * 100) * 100) / 100;
     return '';
   })();
   const medioPagoRequest = firstNonEmpty(row.cab_medio_pago);
@@ -2326,11 +2455,9 @@ function buildCanonicalExcelRow(row = {}, usedMeta = {}) {
     'Cabecera ID': row.cabecera_id ?? '',
     Aseguradora: row.aseguradora ?? '',
     Fila: row.index ?? '',
-    Estado: estado,
     'Fecha Cotizacion': quoteParts.fecha,
     'Hora Cotizacion': quoteParts.hora,
     'Operacion/Cotizacion': firstNonEmpty(row['Operacion/Cotizacion'], row.operacion, row.cot_numCotizacion, row.cot_pricingId),
-    Cabecera: row.cab_nombre ?? '',
     'Parametro Tipo Persona': row.cab_tipopersona ?? '',
     'Parametro IVA': row.cab_iva ?? '',
     'Parametro Tipo Doc': row.cab_tipodoc ?? '',
@@ -2340,17 +2467,27 @@ function buildCanonicalExcelRow(row = {}, usedMeta = {}) {
     'Parametro Fecha Nacimiento': row.cab_fec_nac ?? '',
     'Edad Cotizada': edadCotizada,
     'Parametro Estado Civil': row.cab_est_civil ?? '',
-    'Parametro Tipo Uso': row.cab_tipo_uso ?? '',
+    Uso: normalizeUsoExcel(row, commercialValues),
     'Parametro Rastreo': row.cab_rastreo ?? '',
-    'Parametro GNC': row.cab_gnc ?? '',
-    'Parametro Ajuste': row.cab_ajuste ?? '',
+    GNC: normalizeGncExcel(row, commercialValues),
+    'Suma GNC Solicitada': sumaGncSolicitada ?? '',
+    'Suma GNC Reconocida': sumaGncReconocida ?? '',
+    'Clausula de Ajuste Solicitada': ajusteSolicitado,
+    'Clausula de Ajuste Efectiva': ajusteEfectivo,
+    'Descuento Comercial Solicitado %': commercialNumericValue(commercialValues, 'descuento_comercial'),
+    'Descuento Seguro Nuevo %': commercialNumericValue(commercialValues, 'descuento_seguro_nuevo'),
+    'Descuento No Siniestralidad %': commercialNumericValue(commercialValues, 'descuento_no_siniestralidad'),
+    'Descuento Especial %': commercialNumericValue(commercialValues, 'descuento_especial'),
+    'Variacion 32.080 %': commercialNumericValue(commercialValues, 'variacion_32080'),
+    'Bonificacion Monetaria Devuelta': roundMoney(firstNonEmpty(row.cot_montoBonif), 2) ?? '',
+    'Codigo Promocion': firstNonEmpty(row.cot_codigoPromocion),
+    'Descripcion Promocion': firstNonEmpty(row.cot_descripcionPromocion),
     'Vehiculo Anio': row.veh_anio ?? '',
     'Vehiculo Marca': row.veh_marca ?? '',
     'Vehiculo Modelo': row.veh_modelo ?? '',
     'Vehiculo Codigo Infoauto': row.veh_codigo_infoauto ?? '',
     'Vehiculo Tipo': vehiculoTipo,
     'Vehiculo Combustible': vehiculoCombustible,
-    'Vehiculo Uso': row.veh_uso ?? '',
     'Vehiculo Provincia': row.veh_provincia ?? '',
     'Vehiculo Localidad': row.veh_localidad ?? '',
     'Vehiculo CP': row.veh_CP ?? '',
@@ -2365,24 +2502,21 @@ function buildCanonicalExcelRow(row = {}, usedMeta = {}) {
      Duracion: duracion,
      Cuotas: cuotas ?? '',
      'Importe Cuota': importeCuota ?? '',
-     Prima: prima ?? '',
      'Prima Mensual': primaMensual ?? '',
-     'Prima Vigencia': primaVigencia ?? '',
-     Premio: premio ?? '',
      'Premio Mensual': premioMensual ?? '',
-     'Premio Vigencia': premioVigencia ?? '',
      'Suma Asegurada': sumaAsegurada ?? '',
-     IVA: iva ?? '',
      'IVA Mensual': ivaMensual ?? '',
-     'IVA Vigencia': ivaVigencia ?? '',
      'Impuestos Mensuales': impuestosMensuales ?? '',
-     'Impuestos Vigencia': impuestosVigencia ?? '',
+     'Recargo Financiero Mensual': recargoFinancieroMensual ?? '',
      Franquicia: franquicia,
      'Franquicia Robo': franquiciaRobo,
      Recuperador: parseRecuperador(row),
      Inspeccionable: parseInspeccionable(row),
-     Comision: comisionValor ?? '',
-    '% Comision': porcentajeComision,
+     'Comision Solicitada %': commercialNumericValue(commercialValues, 'comision'),
+     'Comision Devuelta': comisionValor ?? '',
+    'Comision Devuelta %': porcentajeComision,
+    'Coeficiente RC': commercialNumericValue(commercialValues, 'coeficiente_rc'),
+    'Coeficiente Casco': commercialNumericValue(commercialValues, 'coeficiente_casco'),
     Error: firstNonEmpty(row.error),
     Observacion: firstNonEmpty(row.reason),
   };
@@ -2396,8 +2530,16 @@ async function generarExcelProceso(procesoId, options = {}) {
   if (!meta) throw new Error('No existe el proceso');
 
   const rp = resumenPath(id);
-  if (!fs.existsSync(rp)) throw new Error('El proceso no tiene resumen.json');
-  const resumen = JSON.parse(fs.readFileSync(rp, 'utf8'));
+  const hasResumenFile = fs.existsSync(rp);
+  const resumen = hasResumenFile
+    ? JSON.parse(fs.readFileSync(rp, 'utf8'))
+    : {
+        id,
+        historial_id: meta.historial_id || null,
+        cabecera_id: meta.cabecera_id || null,
+        aseguradoras: meta.aseguradoras || [],
+        resultados: {},
+      };
 
   const cabecera = meta.cabecera_id ? getCabecera(meta.cabecera_id) : null;
 
@@ -2422,9 +2564,25 @@ async function generarExcelProceso(procesoId, options = {}) {
   const aseguradorasExcel = Array.isArray(meta.aseguradoras) && meta.aseguradoras.length
     ? meta.aseguradoras
     : Object.keys(resumen.resultados || {});
-  const resultadosExcel = hasJsonlStorage(id, aseguradorasExcel)
-    ? loadResultadosFromJsonl(id, aseguradorasExcel, filas.length)
-    : (resumen.resultados || {});
+  const hasJsonlResults = hasJsonlStorage(id, aseguradorasExcel);
+  if (!hasResumenFile && !hasJsonlResults) {
+    throw new Error('El proceso no tiene resultados disponibles para generar el Excel');
+  }
+  const resultadosExcel = hasJsonlResults && !includeRaw
+    ? null
+    : (hasJsonlResults
+        ? loadResultadosFromJsonl(id, aseguradorasExcel, filas.length)
+        : (resumen.resultados || {}));
+  const forEachResultadoExcel = async (callback) => {
+    for (const slug of aseguradorasExcel) {
+      const arr = hasJsonlResults && !includeRaw
+        ? await loadResultadosFromJsonlForExcel(id, slug, filas.length)
+        : (Array.isArray(resultadosExcel?.[slug]) ? resultadosExcel[slug] : []);
+      for (const item of arr) {
+        if (item) await callback(slug, item);
+      }
+    }
+  };
 
   const dlDir = path.join(procesoDir(id), 'descargas');
   ensureDir(dlDir);
@@ -2464,10 +2622,7 @@ async function generarExcelProceso(procesoId, options = {}) {
         path.join(sheetDir, 'sheet1.xml'),
         EXCEL_CANONICAL_HEADERS,
         async (writeRow) => {
-          for (const slug of Object.keys(resultadosExcel || {})) {
-            const arr = Array.isArray(resultadosExcel[slug]) ? resultadosExcel[slug] : [];
-            for (const item of arr) {
-              if (!item) continue;
+          await forEachResultadoExcel(async (slug, item) => {
               const idx = Number(item.index);
               const filaIn = filas[idx] || {};
               const base = {
@@ -2488,12 +2643,12 @@ async function generarExcelProceso(procesoId, options = {}) {
 
               if (item.skipped) {
                 rowsSkip.push(enrichExcelRowCanonicalFields({ ...base, ...filaFlat, ...cabFlat, used: JSON.stringify(item.used || {}) }));
-                continue;
+                return;
               }
 
               if (!item.ok) {
                 rowsErr.push(enrichExcelRowCanonicalFields({ ...base, ...filaFlat, ...cabFlat, used: JSON.stringify(item.used || {}) }));
-                continue;
+                return;
               }
 
               const cobs = Array.isArray(item.coberturas) ? item.coberturas : [];
@@ -2516,8 +2671,7 @@ async function generarExcelProceso(procesoId, options = {}) {
                 collectManifestRow(canonicalRow);
                 await writeRow(canonicalRow);
               }
-            }
-          }
+          });
         }
       , sharedStrings);
 
@@ -2544,20 +2698,9 @@ async function generarExcelProceso(procesoId, options = {}) {
         skipped_rows: rowsSkip.length,
         cotizaciones_sample: cotizacionesSample,
         unresolved_coverage_groups: unresolvedCoverageGroups,
-        worksheet_preview: {
-          A1: 'Proceso ID',
-          B1: 'Historial ID',
-          C1: 'Cabecera ID',
-          D1: 'Aseguradora',
-          E1: 'Fila',
-          F1: 'Estado',
-          G1: 'Fecha Cotizacion',
-          H1: 'Hora Cotizacion',
-          I1: 'Operacion/Cotizacion',
-          J1: 'Cabecera',
-          K1: 'Parametro Tipo Persona',
-          L1: 'Parametro IVA',
-        },
+        worksheet_preview: Object.fromEntries(
+          EXCEL_CANONICAL_HEADERS.slice(0, 12).map((header, index) => [`${excelColumnName(index)}1`, header])
+        ),
         raw_headers: [],
       });
       return outAbs;
@@ -2954,6 +3097,38 @@ function loadResultadosFromJsonl(id, aseguradoras = [], tomar = 0) {
   return resultados;
 }
 
+async function loadResultadosFromJsonlForExcel(id, slug, tomar = 0) {
+  const arr = new Array(tomar);
+  const sourcePath = resultadoJsonlPath(id, slug);
+  if (!fs.existsSync(sourcePath)) return arr;
+
+  const input = fs.createReadStream(sourcePath, { encoding: 'utf8' });
+  const lines = readline.createInterface({ input, crlfDelay: Infinity });
+  for await (const line of lines) {
+    if (!line.trim()) continue;
+    try {
+      const item = JSON.parse(line);
+      const idx = Number(item?.index);
+      if (!Number.isInteger(idx) || idx < 0 || idx >= tomar) continue;
+      arr[idx] = {
+        aseguradora: item.aseguradora,
+        index: idx,
+        fila_preview: item.fila_preview,
+        finished_at: item.finished_at,
+        ok: item.ok === true,
+        skipped: item.skipped === true,
+        operacion: item.operacion,
+        suma_asegurada: item.suma_asegurada,
+        coberturas: item.coberturas,
+        used: item.used,
+        reason: item.reason,
+        error: item.error,
+      };
+    } catch {}
+  }
+  return arr;
+}
+
 function writeResultadosJsonlFromResumen(id, resumen = {}, aseguradoras = []) {
   ensureDir(resultadosDir(id));
   const written = {};
@@ -2970,9 +3145,7 @@ function writeResultadosJsonlFromResumen(id, resumen = {}, aseguradoras = []) {
   return written;
 }
 
-function writeResumenArtifacts(id, resumen) {
-  fs.writeFileSync(resumenPath(id), JSON.stringify(resumen, null, 2), 'utf8');
-
+function writeResumenCsvArtifact(id, resumen) {
   const head = 'aseguradora,index,ok,pending,operacion,coberturas,error';
   const lines = [];
   for (const slug of Object.keys(resumen.resultados || {})) {
@@ -2995,6 +3168,21 @@ function writeResumenArtifacts(id, resumen) {
   fs.writeFileSync(path.join(procesoDir(id), 'resumen.csv'), [head, ...lines].join('\n'));
 }
 
+function writeResumenArtifacts(id, resumen) {
+  fs.writeFileSync(resumenPath(id), JSON.stringify(resumen, null, 2), 'utf8');
+  writeResumenCsvArtifact(id, resumen);
+}
+
+function buildIncrementalResumenResponse(id, resumen = {}) {
+  const { resultados: _resultados, ...rest } = resumen || {};
+  return {
+    ...rest,
+    resultados: {},
+    resultados_storage: 'jsonl',
+    resultados_disponibles_en: `data/procesos/proceso-${id}/resultados/*.jsonl`,
+  };
+}
+
 function buildProcesoResumenSnapshot({
   proceso_id,
   historial_id,
@@ -3014,6 +3202,28 @@ function buildProcesoResumenSnapshot({
     aseguradoras,
     resultados: resultadosPorAseg,
   };
+}
+
+function buildResumenFromJsonlMetadata({ proceso_id, meta = {}, relPath = '', tomar = 0, aseguradoras = [] } = {}) {
+  const normalizedAseguradoras = normalizeProcesoAseguradoras(
+    Array.isArray(aseguradoras) && aseguradoras.length ? aseguradoras : (meta.aseguradoras || [])
+  ).aseguradoras;
+  const filasTomar = Math.max(
+    0,
+    Number(tomar || meta.registros_filas || meta.limite || 0) || 0
+  );
+  if (!filasTomar || !normalizedAseguradoras.length || !hasJsonlStorage(proceso_id, normalizedAseguradoras)) {
+    return null;
+  }
+  return buildProcesoResumenSnapshot({
+    proceso_id,
+    historial_id: Number(meta.historial_id),
+    relPath: relPath || meta.archivo || '',
+    tomar: filasTomar,
+    cabecera_id: Number(meta.cabecera_id),
+    aseguradoras: normalizedAseguradoras,
+    resultadosPorAseg: loadResultadosFromJsonl(proceso_id, normalizedAseguradoras, filasTomar),
+  });
 }
 
 async function updateProcesoDbState(proceso_id, estado, counts) {
@@ -3255,6 +3465,7 @@ function applyCommercialConditionsToQuoteInputs({ slug, fila, cabecera, mapeos, 
     setCfg('tipoFacturacion', code);
     setExtra('tipo_facturacion_default', code);
     if (company === 'smg') setExtra('periodo_default', code);
+    if (company === 'mercantil_andina') setExtra('periodo_default', code);
     if (company === 'meridional') setExtra('id_periodo_default', code);
     record('refacturacion', v, ['cfg.tipoFacturacion', 'cfg.parametros_extras.tipo_facturacion_default']);
   }
@@ -3266,6 +3477,7 @@ function applyCommercialConditionsToQuoteInputs({ slug, fila, cabecera, mapeos, 
     setExtra('cant_cuotas_default', code);
     if (company === 'provincia') ensureProvinciaRamoCfg(effectiveAseg).plan_de_pago = code;
     if (company === 'meridional') setExtra('cantidad_cuotas_default', code);
+    if (company === 'mercantil_andina') setExtra('cuotas_default', code);
     record('cuotas', v, ['cfg.parametros_extras.cantidad_cuotas_default']);
   }
 
@@ -3295,6 +3507,7 @@ function applyCommercialConditionsToQuoteInputs({ slug, fila, cabecera, mapeos, 
     setExtra('ajuste_prima_default', code);
     effectiveCabecera.descuento_comercial = code;
     effectiveCabecera.provincia_bonif_adicional = code;
+    if (company === 'mercantil_andina') setCfg('bonificacion', code);
     record('descuento_comercial', v, ['cfg.descuento_comercial', 'cabecera.descuento_comercial']);
   }
 
@@ -3324,6 +3537,7 @@ function applyCommercialConditionsToQuoteInputs({ slug, fila, cabecera, mapeos, 
     setExtra('modalidad_default', code);
     effectiveCabecera.provincia_porcentaje_comision = code;
     if (company === 'provincia') ensureProvinciaRamoCfg(effectiveAseg).porcentaje_comision = code;
+    if (company === 'mercantil_andina') setCfg('comision', code);
     record('comision', v, ['cfg.parametros_extras.porcentaje_comision_default', 'cabecera.provincia_porcentaje_comision']);
   }
 
@@ -4560,13 +4774,25 @@ async function cotizarFila({
         }
 
         if (parsed.ok) {
-          await upsertRivadaviaTipoVehiculoInferido({
+          const persistence = await persistRivadaviaInferenceBestEffort({
             codigoInfoAuto: requestMeta.codigoInfoAuto,
             tipoVehiculo: requestMeta.tipoVehiculo,
             descripcionVehiculo: requestMeta.descripcionVehiculo,
             descripcionTipoVehiculo: requestMeta.descripcionTipoVehiculo,
             source: attempt.source === 'learned' ? 'learned_revalidated' : 'quote_success',
           });
+          if (!persistence.ok) {
+            parsed.used = {
+              ...(parsed.used || {}),
+              inferencePersistenceWarning: persistence.error,
+            };
+            if (evDir) {
+              safeWriteJson(path.join(evDir, `${evPrefix}${suffix}-inference-warning.json`), {
+                message: persistence.error,
+                quotePreserved: true,
+              });
+            }
+          }
           return parsed;
         }
 
@@ -5636,7 +5862,11 @@ async function ejecutarProceso({
     resultadosPorAseg,
   });
 
-  writeResumenArtifacts(proceso_id, resumen);
+  if (useIncrementalStorage) {
+    writeResumenCsvArtifact(proceso_id, resumen);
+  } else {
+    writeResumenArtifacts(proceso_id, resumen);
+  }
 
   const counts = summarizeResultados(resultadosPorAseg, resumenAseguradoras);
   const estadoFinalMeta = periodControl.cancelled || counts.pending > 0 ? 'incompleto' : (counts.err > 0 ? 'con errores' : 'completado');
@@ -5705,7 +5935,7 @@ async function ejecutarProceso({
       cotizacion_periodo_mensaje: periodControl.message || '',
       cotizacion_periodo_advertencia: periodoInfo.advertencia,
       carpeta: `data/procesos/proceso-${proceso_id}/`,
-      resumen,
+      resumen: useIncrementalStorage ? buildIncrementalResumenResponse(proceso_id, resumen) : resumen,
     },
   });
 }
@@ -6023,8 +6253,9 @@ router.post('/reanudar/:id', express.json(), async (req, res) => {
       return res.status(403).json({ ok: false, error: 'No tenés acceso a este proceso' });
     }
 
-    const resumen = await loadResumen(proceso_id);
-    if (!resumen) {
+    const metaAseguradoras = normalizeProcesoAseguradoras(meta.aseguradoras || []).aseguradoras;
+    const hasIncrementalResults = hasJsonlStorage(proceso_id, metaAseguradoras);
+    if (!hasIncrementalResults && !(await loadResumen(proceso_id))) {
       return res.status(400).json({ ok: false, error: 'El proceso no tiene resumen para reanudar' });
     }
 
@@ -6048,7 +6279,6 @@ router.post('/reanudar/:id', express.json(), async (req, res) => {
     if (!fs.existsSync(absPath)) {
       return res.status(400).json({ ok: false, error: `No existe el archivo combinado: ${absPath}` });
     }
-
     const resumeModeRaw = String(req.body?.resume_mode || req.body?.modo_reproceso || req.body?.modo || '').trim().toLowerCase();
     const resumeMode = ['errors', 'pending_or_errors'].includes(resumeModeRaw)
       ? resumeModeRaw
@@ -6240,7 +6470,25 @@ router.get('/excel/:id', async (req, res) => {
     }
     const includeRaw = ['1', 'true', 'si', 'sí', 'raw'].includes(String(req.query.raw || '').trim().toLowerCase());
 
-    const outAbs = await generarExcelProceso(id, { includeRaw });
+    const cachedOutAbs = path.join(
+      procesoDir(id),
+      'descargas',
+      `proceso-${id}${includeRaw ? '-cotizaciones-tecnico.xlsx' : '-cotizaciones.xlsx'}`
+    );
+    const manifest = readJsonFileSafe(path.join(procesoDir(id), 'excel_manifest.json'));
+    const generatedAt = Date.parse(manifest?.generated_at || '');
+    const finishedAt = Date.parse(meta.fecha_fin || '');
+    const cacheMatchesSchema = JSON.stringify(manifest?.cotizaciones_headers || []) === JSON.stringify(EXCEL_CANONICAL_HEADERS);
+    const canReuseCachedExcel = !includeRaw
+      && fs.existsSync(cachedOutAbs)
+      && manifest?.include_raw === false
+      && cacheMatchesSchema
+      && Number.isFinite(generatedAt)
+      && (!Number.isFinite(finishedAt) || generatedAt >= finishedAt);
+
+    const outAbs = canReuseCachedExcel
+      ? cachedOutAbs
+      : await generarExcelProceso(id, { includeRaw });
 
     if (!fs.existsSync(outAbs)) {
       return res.status(404).json({ ok: false, error: 'No se pudo generar el Excel' });
@@ -6311,8 +6559,12 @@ router.get('/:id', async (req, res) => {
 
 module.exports = router;
 module.exports.__test = {
+  EXCEL_CANONICAL_HEADERS,
   addResponseTiming,
+  applyCommercialConditionsToQuoteInputs,
   annotateResultStatus,
+  buildCanonicalExcelRow,
+  enrichExcelRowCanonicalFields,
   buildPeriodoCotizacionInfo,
   createProviderCircuitBreaker,
   generarExcelProceso,
