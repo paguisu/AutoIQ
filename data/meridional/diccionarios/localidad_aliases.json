@@ -1,5 +1,15 @@
 [
   {
+    "inputCodPostal": "1014",
+    "inputLocalidad": "CAPITAL FEDERAL",
+    "inputProvincia": "Capital Federal",
+    "codPostal": "1005",
+    "idLocalidad": "22814",
+    "descripcion": "CAPITAL FEDERAL",
+    "idProvincia": "1",
+    "provincia": "CAPITAL FEDERAL"
+  },
+  {
     "inputCodPostal": "1846",
     "inputLocalidad": "ADROGUE",
     "inputProvincia": "Buenos Aires",

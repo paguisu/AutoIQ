@@ -3,6 +3,7 @@ const {
   fetchMercantilAndinaToken,
   getSubscriptionKey,
 } = require('./auth');
+const { getMercantilAndinaHttpsAgent } = require('./tls');
 
 function trimText(value) {
   return String(value || '').trim();
@@ -46,12 +47,20 @@ async function mercantilAndinaPostQuote(cfg = {}, payload = {}) {
   if (!getSubscriptionKey(cfg)) throw new Error('Mercantil Andina requiere subscription_key configurado');
 
   const timeout = Number(cfg?.parametros_extras?.request_timeout_ms || 30000);
-  const tokenData = await fetchMercantilAndinaToken(cfg);
-  const resp = await axios.post(getQuoteUrl(cfg), payload, {
-    headers: buildHeaders(cfg, tokenData),
+  const requestQuote = (currentToken) => axios.post(getQuoteUrl(cfg), payload, {
+    headers: buildHeaders(cfg, currentToken),
+    httpsAgent: getMercantilAndinaHttpsAgent(),
     timeout: Number.isFinite(timeout) && timeout > 0 ? timeout : 30000,
     validateStatus: () => true,
   });
+
+  let tokenData = await fetchMercantilAndinaToken(cfg);
+  let resp = await requestQuote(tokenData);
+  const tokenInvalid = resp.status === 401 || /tokeninvalido|token inv[aá]lido/i.test(JSON.stringify(resp.data || ''));
+  if (tokenInvalid) {
+    tokenData = await fetchMercantilAndinaToken(cfg, { forceRefresh: true });
+    resp = await requestQuote(tokenData);
+  }
 
   return { resp, tokenData };
 }

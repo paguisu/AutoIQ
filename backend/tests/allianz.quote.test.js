@@ -10,6 +10,16 @@ const {
 } = require('../services/allianz/quote');
 
 describe('Allianz quote adapter', () => {
+  test('aplica la equivalencia comercial de CABA validada para CP 1014', () => {
+    expect(resolveAllianzPostalCode({
+      fila: { CP: '1014', localidad: 'CAPITAL FEDERAL', provincia: 'Capital Federal' },
+      postalAliases: [{
+        inputCodPostal: '1014', inputLocalidad: 'CAPITAL FEDERAL', inputProvincia: 'Capital Federal',
+        codPostal: '1005', codigoProvincia: '2',
+      }],
+    })).toMatchObject({ codigoPostal: '1005', codigoProvincia: '2', aliasApplied: true });
+  });
+
   test('resuelve forma de pago Allianz desde la cabecera', () => {
     expect(resolveAllianzPayment({
       cabecera: { medio_pago: 'Tarjeta de crédito' },

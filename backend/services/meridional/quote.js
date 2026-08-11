@@ -219,6 +219,25 @@ function resolveMeridionalLocalidad(row = {}, cabecera = {}, options = {}) {
     cabecera?.provincia,
   ]));
 
+  const alias = aliases.find((item) => {
+    if (item._inputLoc && item._inputLoc !== localidadNorm) return false;
+    if (item._inputProv && item._inputProv !== provinciaNorm) return false;
+    if (item._inputCp && item._inputCp !== cp) return false;
+    return true;
+  });
+  if (alias) {
+    return {
+      idLocalidad: alias.idLocalidad,
+      descripcion: alias.descripcion,
+      idProvincia: alias.idProvincia,
+      provincia: alias.provincia,
+      codPostal: alias.codPostal || cp,
+      _loc: alias._loc,
+      _prov: alias._prov,
+      matchType: alias.matchType || 'alias',
+    };
+  }
+
   let candidates = cp ? catalog.filter((item) => item.codPostales.includes(cp)) : [];
   if (provinciaNorm) {
     const byProvince = candidates.filter((item) => (
@@ -238,24 +257,6 @@ function resolveMeridionalLocalidad(row = {}, cabecera = {}, options = {}) {
     && isGenericCabaLocality(localidadNorm)
   ) {
     return { ...candidates[0], codPostal: cp, matchType: 'cp_ambiguo_caba_fallback' };
-  }
-  const alias = aliases.find((item) => {
-    if (item._inputLoc && item._inputLoc !== localidadNorm) return false;
-    if (item._inputProv && item._inputProv !== provinciaNorm) return false;
-    if (item._inputCp && item._inputCp !== cp) return false;
-    return true;
-  });
-  if (alias) {
-    return {
-      idLocalidad: alias.idLocalidad,
-      descripcion: alias.descripcion,
-      idProvincia: alias.idProvincia,
-      provincia: alias.provincia,
-      codPostal: alias.codPostal || cp,
-      _loc: alias._loc,
-      _prov: alias._prov,
-      matchType: alias.matchType || 'alias',
-    };
   }
   return null;
 }
@@ -408,7 +409,7 @@ function buildMeridionalPayload({ fila = {}, cabecera = {}, cfg = {}, mapeos = {
     IdMedioPago: asNumberOrString(idMedioPago),
     CantidadCuotas: asNumberOrString(cantidadCuotas),
     UNeg: {
-      IdUNeg: asNumberOrString(extra.id_uneg_default || '2'),
+      IdUNeg: asNumberOrString(extra.id_uneg_default || '88'),
       Subproducto: String(extra.subproducto_default || '0201001'),
     },
     Vehiculos: [{
@@ -498,6 +499,14 @@ function parseMeridionalQuoteResponse(raw) {
         plan: asText(cobertura?.Descripcion),
         cantidadCuotas: asText(cobertura?.CanCuotas),
         importeCuota: asText(cobertura?.Cuota),
+        primaMensual: (() => {
+          const total = Number(cobertura?.PrimaTotal);
+          const cuotas = Number(cobertura?.CanCuotas);
+          return Number.isFinite(total) && Number.isFinite(cuotas) && cuotas > 0
+            ? String(Math.round((total / cuotas) * 100) / 100)
+            : '';
+        })(),
+        premioMensual: asText(cobertura?.Cuota),
         importePrima: asText(cobertura?.PrimaTotal),
         importePremio: asText(cobertura?.PremioTotal),
         importeIVA: asText(cobertura?.IVA),

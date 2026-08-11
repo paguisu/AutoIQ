@@ -3,6 +3,7 @@ const {
   buildRivadaviaSoapEnvelope,
   mapRivadaviaSoapProvincia,
   parseRivadaviaSoapQuoteResponse,
+  persistRivadaviaInferenceBestEffort,
   resolveRivadaviaCoeficients,
   resolveRivadaviaAlarmaSatelital,
 } = require('../services/rivadavia/quote');
@@ -82,10 +83,25 @@ describe('Rivadavia quote adapter', () => {
     expect(mapRivadaviaSoapProvincia({ provincia: 'Capital Federal' })).toBe('2');
     expect(mapRivadaviaSoapProvincia({ provincia: 'CABA' })).toBe('2');
     expect(mapRivadaviaSoapProvincia({ provincia: 'Buenos Aires' })).toBe('1');
+    expect(mapRivadaviaSoapProvincia({ provincia: 'Santa Fe' })).toBe('22');
+    expect(mapRivadaviaSoapProvincia({ provincia: 'San Juan' })).toBe('19');
+    expect(mapRivadaviaSoapProvincia({ provincia: 'Mendoza' })).toBe('14');
+    expect(mapRivadaviaSoapProvincia({ provincia: 'La Pampa' })).toBe('12');
+    expect(mapRivadaviaSoapProvincia({ provincia: 'Neuquen' })).toBe('16');
+    expect(mapRivadaviaSoapProvincia({ provincia: 'Rio Negro' })).toBe('17');
+    expect(mapRivadaviaSoapProvincia({ provincia: 'Tierra del Fuego' })).toBe('10');
     expect(mapRivadaviaSoapProvincia({ CP: '1650', Localidad: 'SAN MARTIN', Provincia: 'Capital Federal' })).toBe('1');
     expect(mapRivadaviaSoapProvincia({ CP: '1406', Localidad: 'CAPITAL FEDERAL', Provincia: 'Buenos Aires' })).toBe('2');
     expect(mapRivadaviaSoapProvincia({ CP: '1183', Localidad: 'CAPITAL FEDERAL', Provincia: 'Capital Federal' })).toBe('2');
     expect(mapRivadaviaSoapProvincia({ CP: '1708', Localidad: 'MORON', Provincia: 'Buenos Aires' })).toBe('1');
+    expect(mapRivadaviaSoapProvincia({ CP: '2000', Localidad: 'ROSARIO', Provincia: 'Santa Fe' })).toBe('22');
+    expect(mapRivadaviaSoapProvincia({ CP: '2300', Localidad: 'RAFAELA', Provincia: 'Santa Fe' })).toBe('22');
+    expect(mapRivadaviaSoapProvincia({ CP: '5400', Localidad: 'SAN JUAN', Provincia: 'San Juan' })).toBe('19');
+    expect(mapRivadaviaSoapProvincia({ CP: '5500', Localidad: 'MENDOZA', Provincia: 'Mendoza' })).toBe('14');
+    expect(mapRivadaviaSoapProvincia({ CP: '6300', Localidad: 'SANTA ROSA', Provincia: 'La Pampa' })).toBe('12');
+    expect(mapRivadaviaSoapProvincia({ CP: '8300', Localidad: 'NEUQUEN', Provincia: 'Neuquen' })).toBe('16');
+    expect(mapRivadaviaSoapProvincia({ CP: '8500', Localidad: 'VIEDMA', Provincia: 'Rio Negro' })).toBe('17');
+    expect(mapRivadaviaSoapProvincia({ CP: '9410', Localidad: 'USHUAIA', Provincia: 'Tierra del Fuego' })).toBe('10');
 
     const built = await buildRivadaviaSoapPayload({
       fila: {
@@ -174,7 +190,20 @@ describe('Rivadavia quote adapter', () => {
       codigoDeCobertura: 'A',
       importePremio: '194305.43',
       importeCuota: '64768.47',
+      premioMensual: '64768.47',
     });
     expect(parsed.used).toMatchObject({ coefRC: '0.9', coefCasco: '0.9' });
+  });
+
+  test('preserva una cotizacion exitosa aunque falle la persistencia de la inferencia', async () => {
+    const persistence = await persistRivadaviaInferenceBestEffort(
+      { codigoInfoAuto: '460836', tipoVehiculo: '1' },
+      async () => { throw new Error('archivo temporalmente bloqueado'); }
+    );
+
+    expect(persistence).toEqual({
+      ok: false,
+      error: 'archivo temporalmente bloqueado',
+    });
   });
 });

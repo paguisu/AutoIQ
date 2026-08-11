@@ -51,6 +51,7 @@ function normalizeAllianzPostalAliases(rows) {
         inputLocalidad: normalizeText(item?.inputLocalidad || ''),
         inputProvincia: normalizeText(item?.inputProvincia || ''),
         codPostal: String(item?.codPostal || '').trim(),
+        codigoProvincia: String(item?.codigoProvincia || '').trim(),
         reason: String(item?.reason || '').trim(),
       })).filter((item) => item.codPostal)
     : [];
@@ -116,6 +117,7 @@ function resolveAllianzPostalCode({ fila = {}, cabecera = {}, postalAliases } = 
       originalCodigoPostal: '',
       aliasApplied: false,
       aliasReason: '',
+      codigoProvincia: '',
     };
   }
 
@@ -144,6 +146,7 @@ function resolveAllianzPostalCode({ fila = {}, cabecera = {}, postalAliases } = 
     originalCodigoPostal,
     aliasApplied: Boolean(alias?.codPostal && alias.codPostal !== originalCodigoPostal),
     aliasReason: alias?.reason || '',
+    codigoProvincia: alias?.codigoProvincia || '',
   };
 }
 
@@ -432,7 +435,7 @@ ${accessoryXml ? `                  ${accessoryXml}` : ''}
 ${additionalXml ? `               ${additionalXml}` : ''}
                <cot:UbicacionDelRiesgo>
                   <cot:codigoPostal>${escapeXml(codigoPostal)}</cot:codigoPostal>
-                  <cot:codigoProvincia>${escapeXml(cfg?.parametros_extras?.codigo_provincia_default || '0')}</cot:codigoProvincia>
+                  <cot:codigoProvincia>${escapeXml(postal.codigoProvincia || cfg?.parametros_extras?.codigo_provincia_default || '0')}</cot:codigoProvincia>
                   ${cfg?.parametros_extras?.codigo_zona_riesgo_default ? `<cot:codigoZonaDeRiesgo>${escapeXml(cfg.parametros_extras.codigo_zona_riesgo_default)}</cot:codigoZonaDeRiesgo>` : '<cot:codigoZonaDeRiesgo/>'}
                </cot:UbicacionDelRiesgo>
 ${discountXml ? `               ${discountXml}` : ''}
@@ -456,7 +459,7 @@ ${discountXml ? `               ${discountXml}` : ''}
       codigoPostalOriginal: postal.originalCodigoPostal,
       codigoPostalAliasApplied: postal.aliasApplied,
       codigoPostalAliasReason: postal.aliasReason,
-      codigoProvincia: String(cfg?.parametros_extras?.codigo_provincia_default || '0'),
+      codigoProvincia: String(postal.codigoProvincia || cfg?.parametros_extras?.codigo_provincia_default || '0'),
       codigoDeProductor: String(cfg?.producer_code || ''),
       clausulaDeAjuste: clausula,
       fechaDesde,

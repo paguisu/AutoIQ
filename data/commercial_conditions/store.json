@@ -1,6 +1,6 @@
 {
-  "version": 24,
-  "updated_at": "2026-08-05T18:14:29.983Z",
+  "version": 26,
+  "updated_at": "2026-08-07T19:47:03.920Z",
   "companies": [
     {
       "id": "allianz",
@@ -29,6 +29,13 @@
       "label": "Mapfre",
       "active": true,
       "display_order": 40
+    },
+    {
+      "id": "mercantil_andina",
+      "slug": "mercantil_andina",
+      "label": "Mercantil Andina",
+      "active": true,
+      "display_order": 45
     },
     {
       "id": "meridional",
@@ -459,24 +466,24 @@
       "owner_id": "default_seguros911",
       "company_slug": "atm",
       "concept_code": "clausula_ajuste",
-      "visible_value": "Sin ajuste",
-      "ws_code": "0",
-      "numeric_value": 0,
+      "visible_value": "20%",
+      "ws_code": "020",
+      "numeric_value": 20,
       "source": "api",
       "updated_by": "superadmin-local",
-      "updated_at": "2026-08-05T18:01:36.926Z"
+      "updated_at": "2026-08-07T19:47:03.919Z"
     },
     {
       "owner_type": "profile",
       "owner_id": "default_seguros911",
       "company_slug": "atm",
       "concept_code": "descuento_comercial",
-      "visible_value": "30%",
-      "ws_code": "30",
-      "numeric_value": 30,
+      "visible_value": "20%",
+      "ws_code": "20",
+      "numeric_value": 20,
       "source": "api",
       "updated_by": "superadmin-local",
-      "updated_at": "2026-08-05T18:14:29.982Z"
+      "updated_at": "2026-08-07T19:47:03.919Z"
     },
     {
       "owner_type": "profile",
@@ -677,8 +684,8 @@
       "owner_id": "default_seguros911",
       "company_slug": "mapfre",
       "concept_code": "garage_guardado",
-      "visible_value": "Sí",
-      "ws_code": "true",
+      "visible_value": "No",
+      "ws_code": "false",
       "numeric_value": null,
       "source": "matriz_funcional_v2"
     },
@@ -690,6 +697,96 @@
       "visible_value": "Sin ajuste",
       "ws_code": null,
       "numeric_value": 0,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "mercantil_andina",
+      "concept_code": "medio_pago",
+      "visible_value": "Débito automático",
+      "ws_code": "D",
+      "numeric_value": null,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "mercantil_andina",
+      "concept_code": "refacturacion",
+      "visible_value": "Mensual",
+      "ws_code": "1",
+      "numeric_value": 1,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "mercantil_andina",
+      "concept_code": "cuotas",
+      "visible_value": "1",
+      "ws_code": "1",
+      "numeric_value": 1,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "mercantil_andina",
+      "concept_code": "rastreador_alarma",
+      "visible_value": "Sin Rastreador/Alarma",
+      "ws_code": "0",
+      "numeric_value": 0,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "mercantil_andina",
+      "concept_code": "uso",
+      "visible_value": "Particular",
+      "ws_code": "1",
+      "numeric_value": 1,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "mercantil_andina",
+      "concept_code": "gnc",
+      "visible_value": "Sin GNC",
+      "ws_code": "false",
+      "numeric_value": 0,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "mercantil_andina",
+      "concept_code": "clausula_ajuste",
+      "visible_value": "Sin ajuste",
+      "ws_code": "0",
+      "numeric_value": 0,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "mercantil_andina",
+      "concept_code": "descuento_comercial",
+      "visible_value": "20%",
+      "ws_code": "20",
+      "numeric_value": 20,
+      "source": "matriz_funcional_v2"
+    },
+    {
+      "owner_type": "profile",
+      "owner_id": "default_seguros911",
+      "company_slug": "mercantil_andina",
+      "concept_code": "comision",
+      "visible_value": "20%",
+      "ws_code": "20",
+      "numeric_value": 20,
       "source": "matriz_funcional_v2"
     },
     {
@@ -1251,8 +1348,8 @@
       "owner_id": "default_seguros911",
       "company_slug": "meridional",
       "concept_code": "refacturacion",
-      "visible_value": "Cuatrimestral",
-      "ws_code": "4",
+      "visible_value": "Mensual",
+      "ws_code": "3",
       "numeric_value": null,
       "source": "matriz_funcional_v2"
     },
@@ -1261,9 +1358,9 @@
       "owner_id": "default_seguros911",
       "company_slug": "meridional",
       "concept_code": "cuotas",
-      "visible_value": "4",
-      "ws_code": "4",
-      "numeric_value": 4,
+      "visible_value": "1",
+      "ws_code": "1",
+      "numeric_value": 1,
       "source": "matriz_funcional_v2"
     },
     {
@@ -1301,9 +1398,9 @@
       "owner_id": "default_seguros911",
       "company_slug": "meridional",
       "concept_code": "clausula_ajuste",
-      "visible_value": "50%",
-      "ws_code": "5",
-      "numeric_value": 50,
+      "visible_value": "Sin ajuste",
+      "ws_code": "1",
+      "numeric_value": 0,
       "source": "api",
       "updated_by": "superadmin-local",
       "updated_at": "2026-08-05T18:01:36.926Z"
@@ -2078,6 +2175,142 @@
       "visible_label": "Sin ajuste",
       "ws_code": null,
       "numeric_value": 0,
+      "active": true
+    },
+    {
+      "company_slug": "mercantil_andina",
+      "concept_code": "medio_pago",
+      "visible_label": "Débito automático",
+      "ws_code": "D",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "mercantil_andina",
+      "concept_code": "medio_pago",
+      "visible_label": "Convenio / tarjeta",
+      "ws_code": "C",
+      "numeric_value": null,
+      "active": true
+    },
+    {
+      "company_slug": "mercantil_andina",
+      "concept_code": "refacturacion",
+      "visible_label": "Mensual",
+      "ws_code": "1",
+      "numeric_value": 1,
+      "active": true
+    },
+    {
+      "company_slug": "mercantil_andina",
+      "concept_code": "cuotas",
+      "visible_label": "1",
+      "ws_code": "1",
+      "numeric_value": 1,
+      "active": true
+    },
+    {
+      "company_slug": "mercantil_andina",
+      "concept_code": "rastreador_alarma",
+      "visible_label": "Sin Rastreador/Alarma",
+      "ws_code": "0",
+      "numeric_value": 0,
+      "active": true
+    },
+    {
+      "company_slug": "mercantil_andina",
+      "concept_code": "rastreador_alarma",
+      "visible_label": "Con Rastreador/Alarma",
+      "ws_code": "1",
+      "numeric_value": 1,
+      "active": true
+    },
+    {
+      "company_slug": "mercantil_andina",
+      "concept_code": "uso",
+      "visible_label": "Particular",
+      "ws_code": "1",
+      "numeric_value": 1,
+      "active": true
+    },
+    {
+      "company_slug": "mercantil_andina",
+      "concept_code": "gnc",
+      "visible_label": "Sin GNC",
+      "ws_code": "false",
+      "numeric_value": 0,
+      "active": true
+    },
+    {
+      "company_slug": "mercantil_andina",
+      "concept_code": "gnc",
+      "visible_label": "Con GNC",
+      "ws_code": "true",
+      "numeric_value": 1,
+      "active": true
+    },
+    {
+      "company_slug": "mercantil_andina",
+      "concept_code": "descuento_comercial",
+      "visible_label": "0%",
+      "ws_code": "0",
+      "numeric_value": 0,
+      "active": true
+    },
+    {
+      "company_slug": "mercantil_andina",
+      "concept_code": "descuento_comercial",
+      "visible_label": "5%",
+      "ws_code": "5",
+      "numeric_value": 5,
+      "active": true
+    },
+    {
+      "company_slug": "mercantil_andina",
+      "concept_code": "descuento_comercial",
+      "visible_label": "10%",
+      "ws_code": "10",
+      "numeric_value": 10,
+      "active": true
+    },
+    {
+      "company_slug": "mercantil_andina",
+      "concept_code": "descuento_comercial",
+      "visible_label": "15%",
+      "ws_code": "15",
+      "numeric_value": 15,
+      "active": true
+    },
+    {
+      "company_slug": "mercantil_andina",
+      "concept_code": "descuento_comercial",
+      "visible_label": "20%",
+      "ws_code": "20",
+      "numeric_value": 20,
+      "active": true
+    },
+    {
+      "company_slug": "mercantil_andina",
+      "concept_code": "comision",
+      "visible_label": "10%",
+      "ws_code": "10",
+      "numeric_value": 10,
+      "active": true
+    },
+    {
+      "company_slug": "mercantil_andina",
+      "concept_code": "comision",
+      "visible_label": "15%",
+      "ws_code": "15",
+      "numeric_value": 15,
+      "active": true
+    },
+    {
+      "company_slug": "mercantil_andina",
+      "concept_code": "comision",
+      "visible_label": "20%",
+      "ws_code": "20",
+      "numeric_value": 20,
       "active": true
     },
     {
@@ -3267,17 +3500,17 @@
     {
       "company_slug": "meridional",
       "concept_code": "refacturacion",
-      "visible_label": "Cuatrimestral",
-      "ws_code": "4",
+      "visible_label": "Mensual",
+      "ws_code": "3",
       "numeric_value": null,
       "active": true
     },
     {
       "company_slug": "meridional",
       "concept_code": "cuotas",
-      "visible_label": "4",
-      "ws_code": "4",
-      "numeric_value": 4,
+      "visible_label": "1",
+      "ws_code": "1",
+      "numeric_value": 1,
       "active": true
     },
     {
@@ -3419,6 +3652,14 @@
     {
       "company_slug": "meridional",
       "concept_code": "clausula_ajuste",
+      "visible_label": "Sin ajuste",
+      "ws_code": "1",
+      "numeric_value": 0,
+      "active": true
+    },
+    {
+      "company_slug": "meridional",
+      "concept_code": "clausula_ajuste",
       "visible_label": "20%",
       "ws_code": "2",
       "numeric_value": 20,
@@ -3454,6 +3695,14 @@
       "visible_label": "18%",
       "ws_code": "18",
       "numeric_value": 18,
+      "active": true
+    },
+    {
+      "company_slug": "mercantil_andina",
+      "concept_code": "clausula_ajuste",
+      "visible_label": "Sin ajuste",
+      "ws_code": "0",
+      "numeric_value": 0,
       "active": true
     }
   ],
@@ -3511,6 +3760,24 @@
       "min": 0,
       "max": 0,
       "notes": "Request SOAP expone porcentajeAjuste; ejemplos locales lo envían vacío."
+    },
+    {
+      "company_slug": "mercantil_andina",
+      "concept_code": "descuento_comercial",
+      "min_role": "vendedor",
+      "allowed": true,
+      "min": 0,
+      "max": 20,
+      "notes": "Campo bonificacion. Valores probados en vivo: 0, 5, 10, 15 y 20."
+    },
+    {
+      "company_slug": "mercantil_andina",
+      "concept_code": "comision",
+      "min_role": "supervisor",
+      "allowed": true,
+      "min": 10,
+      "max": 20,
+      "notes": "Valores probados en vivo: 10, 15 y 20."
     },
     {
       "company_slug": "meridional",
@@ -3682,6 +3949,15 @@
       "min": null,
       "max": null,
       "notes": "AsistMecanica: -1 con asistencia, 0 sin asistencia."
+    },
+    {
+      "company_slug": "mercantil_andina",
+      "concept_code": "clausula_ajuste",
+      "min_role": "supervisor",
+      "allowed": true,
+      "min": 0,
+      "max": 0,
+      "notes": "La API acepta otros números pero los normaliza a 0 sin modificar suma ni premio. Sólo se habilita Sin ajuste."
     }
   ],
   "ws_mappings": [
@@ -3859,6 +4135,62 @@
       "ws_field": "porcentajeAjuste",
       "ws_code": "vacío/sin ajuste",
       "source": "Mapfre request SOAP ejemplos"
+    },
+    {
+      "company_slug": "mercantil_andina",
+      "concept_code": "medio_pago",
+      "ws_field": "pago.tipo_pago",
+      "ws_code": "D/C",
+      "source": "Mercantil Andina API validada en vivo"
+    },
+    {
+      "company_slug": "mercantil_andina",
+      "concept_code": "refacturacion",
+      "ws_field": "periodo",
+      "ws_code": "1=Mensual",
+      "source": "Mercantil Andina API validada en vivo"
+    },
+    {
+      "company_slug": "mercantil_andina",
+      "concept_code": "cuotas",
+      "ws_field": "cuotas",
+      "ws_code": "1",
+      "source": "Mercantil Andina API validada en vivo"
+    },
+    {
+      "company_slug": "mercantil_andina",
+      "concept_code": "rastreador_alarma",
+      "ws_field": "vehiculo.rastreo",
+      "ws_code": "0/1",
+      "source": "Mercantil Andina API validada en vivo"
+    },
+    {
+      "company_slug": "mercantil_andina",
+      "concept_code": "uso",
+      "ws_field": "vehiculo.uso",
+      "ws_code": "1=Particular",
+      "source": "Mercantil Andina API validada para automóvil particular"
+    },
+    {
+      "company_slug": "mercantil_andina",
+      "concept_code": "gnc",
+      "ws_field": "vehiculo.gnc",
+      "ws_code": "false/true",
+      "source": "Mercantil Andina API validada en vivo; el request no expone suma GNC"
+    },
+    {
+      "company_slug": "mercantil_andina",
+      "concept_code": "descuento_comercial",
+      "ws_field": "bonificacion",
+      "ws_code": "0/5/10/15/20",
+      "source": "Mercantil Andina API validada en vivo"
+    },
+    {
+      "company_slug": "mercantil_andina",
+      "concept_code": "comision",
+      "ws_field": "comision",
+      "ws_code": "10/15/20",
+      "source": "Mercantil Andina API validada en vivo"
     },
     {
       "company_slug": "provincia",
@@ -4181,6 +4513,13 @@
       "ws_field": "PorcComision",
       "ws_code": "18",
       "source": "Meridional WSCAR cotización: PorcComision"
+    },
+    {
+      "company_slug": "mercantil_andina",
+      "concept_code": "clausula_ajuste",
+      "ws_field": "ajuste_suma",
+      "ws_code": "0=Sin ajuste",
+      "source": "Mercantil Andina API validada en vivo: otros valores fueron ignorados"
     }
   ],
   "quote_overrides": []

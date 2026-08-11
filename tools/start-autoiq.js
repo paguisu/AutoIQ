@@ -3,7 +3,10 @@ const path = require('path');
 const { spawn } = require('child_process');
 
 const repoRoot = path.resolve(__dirname, '..');
-const defaultCaPath = path.join(repoRoot, 'tools', 'avast-root.cer');
+const defaultCaPath = [
+  path.join(repoRoot, 'tools', 'avast-root-current.pem'),
+  path.join(repoRoot, 'tools', 'avast-root.cer'),
+].find((candidate) => fs.existsSync(candidate)) || path.join(repoRoot, 'tools', 'avast-root-current.pem');
 const configuredCaPath = process.env.AUTOIQ_EXTRA_CA_CERTS || process.env.NODE_EXTRA_CA_CERTS || defaultCaPath;
 
 const env = { ...process.env };

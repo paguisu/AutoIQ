@@ -1268,10 +1268,14 @@
     function ccSyncAmountControl(selector, amount){
       if(!selector || !amount) return;
       const disabledBySelector = !String(selector.value || '').toLowerCase().includes('con');
-      amount.disabled = selector.disabled || disabledBySelector;
+      const companyDoesNotAcceptAmount = selector.dataset.company === 'mercantil_andina';
+      amount.disabled = selector.disabled || disabledBySelector || companyDoesNotAcceptAmount;
       amount.step = '10000';
       amount.min = '0';
-      if(disabledBySelector) amount.value = '0';
+      if(disabledBySelector || companyDoesNotAcceptAmount) amount.value = '0';
+      amount.title = companyDoesNotAcceptAmount
+        ? 'Mercantil Andina recibe presencia de GNC, pero no una suma asegurada de GNC en este request.'
+        : '';
     }
 
     function ccSyncLinkedCommercialCells(input){

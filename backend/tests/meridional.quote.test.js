@@ -1,9 +1,32 @@
 const {
   buildMeridionalPayload,
+  parseMeridionalQuoteResponse,
   resolveMeridionalLocalidad,
 } = require('../services/meridional/quote');
 
 describe('Meridional locality resolver', () => {
+  test('prioriza la equivalencia comercial de CP 1014 sobre el catalogo', () => {
+    expect(resolveMeridionalLocalidad(
+      { CP: '1014', provincia: 'Capital Federal', localidad: 'CAPITAL FEDERAL' },
+      {},
+      {
+        localityCatalog: [{ idLocalidad: '22835', descripcion: 'RETIRO', idProvincia: '1', provincia: 'CAPITAL FEDERAL', codPostales: ['1014'] }],
+        localityAliases: [{ inputCodPostal: '1014', inputLocalidad: 'CAPITAL FEDERAL', inputProvincia: 'Capital Federal', codPostal: '1005', idLocalidad: '22814', descripcion: 'CAPITAL FEDERAL', idProvincia: '1', provincia: 'CAPITAL FEDERAL' }],
+      }
+    )).toMatchObject({ codPostal: '1005', idLocalidad: '22814', matchType: 'alias' });
+  });
+
+  test('separa importes de vigencia e importes mensuales', () => {
+    const parsed = parseMeridionalQuoteResponse({ Items: [{ Coberturas: [{
+      CodCobertura: '01', Descripcion: 'RC', CanCuotas: 4, Cuota: 51410.14,
+      PrimaTotal: 154677.44, PremioTotal: 205640.57,
+    }] }] });
+    expect(parsed.coberturas[0]).toMatchObject({
+      importePrima: '154677.44', importePremio: '205640.57', importeCuota: '51410.14',
+      primaMensual: '38669.36', premioMensual: '51410.14',
+    });
+  });
+
   test('aplica fallback deterministico para CP ambiguo de CABA con localidad generica', () => {
     const localityCatalog = [
       {
@@ -142,5 +165,6 @@ describe('Meridional locality resolver', () => {
     expect(payload.Vehiculos[0].Accesorios).toEqual([
       { IdAccesorio: 13, SumaAseguradaAccesorio: 300000 },
     ]);
+    expect(payload.UNeg.IdUNeg).toBe(88);
   });
 });

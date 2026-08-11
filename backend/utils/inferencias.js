@@ -13,6 +13,37 @@ const RIVADAVIA_INFERENCE_FILE = path.join(
 let rivadaviaInferenceCache = null;
 let rivadaviaInferenceWriteQueue = Promise.resolve();
 
+function isRetryableFileError(err) {
+  return ['UNKNOWN', 'EBUSY', 'EPERM', 'EACCES', 'EMFILE', 'ENFILE'].includes(String(err?.code || '').toUpperCase());
+}
+
+async function writeJsonAtomicWithRetry(absPath, value, { maxAttempts = 6, baseDelayMs = 25 } = {}) {
+  const dir = path.dirname(absPath);
+  await fs.mkdir(dir, { recursive: true });
+  const tempPath = path.join(
+    dir,
+    `.${path.basename(absPath)}.${process.pid}.${Date.now()}.${Math.random().toString(16).slice(2)}.tmp`
+  );
+  const payload = JSON.stringify(value, null, 2);
+
+  try {
+    await fs.writeFile(tempPath, payload, 'utf8');
+    for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+      try {
+        await fs.rename(tempPath, absPath);
+        return;
+      } catch (err) {
+        if (!isRetryableFileError(err) || attempt >= maxAttempts) throw err;
+        await new Promise((resolve) => setTimeout(resolve, baseDelayMs * (2 ** (attempt - 1))));
+      }
+    }
+  } finally {
+    await fs.unlink(tempPath).catch((err) => {
+      if (err?.code !== 'ENOENT') throw err;
+    });
+  }
+}
+
 async function buscarEnBasePropia(infoautocod) {
   const [rows] = await db.execute(
     'SELECT tipo_vehiculo FROM datos_vehiculos_propios WHERE infoautocod = ? LIMIT 1',
@@ -99,7 +130,7 @@ async function upsertRivadaviaTipoVehiculoInferido({
   const tipo = String(tipoVehiculo || '').trim();
   if (!code || !tipo) return;
 
-  rivadaviaInferenceWriteQueue = rivadaviaInferenceWriteQueue.then(async () => {
+  const writeOperation = rivadaviaInferenceWriteQueue.catch(() => {}).then(async () => {
     const current = await readJsonOptional(RIVADAVIA_INFERENCE_FILE, {});
     current[code] = {
       codigoInfoAuto: code,
@@ -109,15 +140,17 @@ async function upsertRivadaviaTipoVehiculoInferido({
       source: String(source || 'quote_success'),
       updatedAt: new Date().toISOString(),
     };
-    await fs.mkdir(path.dirname(RIVADAVIA_INFERENCE_FILE), { recursive: true });
-    await fs.writeFile(RIVADAVIA_INFERENCE_FILE, JSON.stringify(current, null, 2), 'utf8');
+    await writeJsonAtomicWithRetry(RIVADAVIA_INFERENCE_FILE, current);
     rivadaviaInferenceCache = current;
     if (descripcionTipoVehiculo) {
       await guardarEnBase(code, '', descripcionVehiculo || '', descripcionTipoVehiculo);
     }
   });
 
-  await rivadaviaInferenceWriteQueue;
+  // Mantener la cola utilizable aun si una escritura puntual falla.
+  rivadaviaInferenceWriteQueue = writeOperation.catch(() => {});
+
+  await writeOperation;
 }
 
 module.exports = {
@@ -129,4 +162,5 @@ module.exports = {
   inferirHeuristicamente,
   loadRivadaviaInferenceMap,
   upsertRivadaviaTipoVehiculoInferido,
+  writeJsonAtomicWithRetry,
 };

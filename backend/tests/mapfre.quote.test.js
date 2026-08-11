@@ -120,6 +120,16 @@ describe('Mapfre quote adapter', () => {
     expect(isMapfrePostalMatchSafe(match)).toBe(true);
   });
 
+  test('permite equivalencia comercial de CP 1014 al codigo 1005', () => {
+    expect(resolveMapfrePostalMatch(
+      { CP: '1014', localidad: 'CAPITAL FEDERAL', provincia: 'Capital Federal' },
+      {},
+      { postalCatalog: [], postalAliases: [{
+        codigo_postal: '1014', localidad: 'CAPITAL FEDERAL', provincia: 'Capital Federal', codigo_mapfre: '1005',
+      }] }
+    )).toMatchObject({ codigo_mapfre: '1005', matchType: 'alias' });
+  });
+
   test('arma el request SOAP con datos principales de Mapfre', async () => {
     const { envelope, requestMeta } = await buildMapfreEnvelope({
       fila: {

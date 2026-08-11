@@ -9,7 +9,8 @@
         "atm",
         "mapfre",
         "sancor",
-        "allianz"
+        "allianz",
+        "provincia"
       ]
     },
     {
@@ -30,7 +31,8 @@
       "companias_habilitadas": [
         "atm",
         "sancor",
-        "allianz"
+        "allianz",
+        "provincia"
       ]
     }
   ],
@@ -45,6 +47,23 @@
       ]
     },
     {
+      "id": "supervisor",
+      "nombre": "Supervisor",
+      "activa": true,
+      "is_superadmin": false,
+      "pestañas": [
+        "inputs",
+        "cabecera",
+        "historico",
+        "base",
+        "procesos"
+      ],
+      "capabilities": [
+        "seguros911_view",
+        "seguros911_catalog_manage"
+      ]
+    },
+    {
       "id": "usuario_generico",
       "nombre": "Usuario genérico",
       "activa": true,
@@ -54,7 +73,8 @@
         "cabecera",
         "historico",
         "procesos"
-      ]
+      ],
+      "capabilities": []
     }
   ],
   "usuarios": [
@@ -65,6 +85,16 @@
       "email": "superadmin@autoiq.local",
       "organizacion_id": "autoiq",
       "role_id": "superadmin",
+      "activo": true,
+      "pestañas_override": []
+    },
+    {
+      "id": "supervisor-local",
+      "nombre": "Supervisor",
+      "apellido": "Seguros911",
+      "email": "supervisor@autoiq.local",
+      "organizacion_id": "autoiq",
+      "role_id": "supervisor",
       "activo": true,
       "pestañas_override": []
     },

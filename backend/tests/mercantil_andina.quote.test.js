@@ -14,7 +14,10 @@ const {
   buildAuthHeaders,
   buildAuthBody,
   clearMercantilAndinaTokenCache,
+  isTokenUsable,
   parseToken,
+  parseJwtExpiryMs,
+  resolveTokenExpiresAt,
 } = require('../services/mercantil_andina/auth');
 
 describe('Mercantil Andina quote adapter', () => {
@@ -278,6 +281,17 @@ describe('Mercantil Andina quote adapter', () => {
     expect(parseToken({ access_token: 'Bearer abc.def' })).toBe('abc.def');
   });
 
+  test('calcula vencimiento del token y aplica margen de renovacion preventiva', () => {
+    const now = Date.parse('2026-08-09T12:00:00Z');
+    const expiresAt = resolveTokenExpiresAt({ expires_in: 3600 }, 'opaque-token', cfg, now);
+    expect(expiresAt).toBe(now + 3600 * 1000);
+    expect(isTokenUsable({ accessToken: 'opaque-token', expiresAt }, cfg, now + 3500 * 1000)).toBe(true);
+    expect(isTokenUsable({ accessToken: 'opaque-token', expiresAt }, cfg, now + 3541 * 1000)).toBe(false);
+
+    const jwtPayload = Buffer.from(JSON.stringify({ exp: 1800000000 })).toString('base64url');
+    expect(parseJwtExpiryMs(`header.${jwtPayload}.signature`)).toBe(1800000000 * 1000);
+  });
+
   test('hace login y cotiza con Bearer token', async () => {
     nock('https://auth.example.test', {
       reqheaders: {
@@ -299,5 +313,25 @@ describe('Mercantil Andina quote adapter', () => {
     const { resp, tokenData } = await mercantilAndinaPostQuote(cfg, { canal: 78 });
     expect(tokenData.accessToken).toBe('jwt-test');
     expect(resp.status).toBe(201);
+  });
+
+  test('renueva token y reintenta una vez cuando la cotizacion responde 401', async () => {
+    nock('https://auth.example.test')
+      .post('/credenciales/v2/')
+      .reply(200, { access_token: 'jwt-vencido', expires_in: 3600 })
+      .post('/credenciales/v2/')
+      .reply(200, { access_token: 'jwt-renovado', expires_in: 3600 });
+
+    nock('https://api.example.test', { reqheaders: { authorization: 'Bearer jwt-vencido' } })
+      .post('/cotizaciones/v2/auto', { canal: 78 })
+      .reply(401, { error: 'No disponible - TokenInvalido' });
+    nock('https://api.example.test', { reqheaders: { authorization: 'Bearer jwt-renovado' } })
+      .post('/cotizaciones/v2/auto', { canal: 78 })
+      .reply(201, { id: 456, resultado: [] });
+
+    const { resp, tokenData } = await mercantilAndinaPostQuote(cfg, { canal: 78 });
+    expect(resp.status).toBe(201);
+    expect(tokenData.accessToken).toBe('jwt-renovado');
+    expect(nock.isDone()).toBe(true);
   });
 });

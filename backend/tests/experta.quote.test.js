@@ -68,6 +68,30 @@ describe('Experta quote adapter', () => {
     });
   });
 
+  test('omite porcentajeAjuste cuando no fue configurado, sin inventar cero', async () => {
+    const { payload, requestMeta } = await buildExpertaPayload({
+      fila: { infoautocod: '60450', anio: '2019', CP: '1014', cerokm: '0' },
+      cabecera: { uso: 'Particular', iva: 'CF', rastreo: '0' },
+      cfg: {
+        producer_code: '3507',
+        parametros_extras: {
+          modalidad_default: 'EX0',
+          iva_default: '5',
+          gnc_default: 'N',
+          marca_default: 'unespecified',
+          modelo_default: 'unespecified',
+          version_default: 'unespecified',
+          con_recuperador_default: 'N',
+        },
+      },
+      usoDicc: { particular: '1', comercial: '10' },
+      today: new Date('2026-08-07T12:00:00Z'),
+    });
+
+    expect(payload).not.toHaveProperty('porcentajeAjuste');
+    expect(requestMeta.porcentajeAjuste).toBe('');
+  });
+
   test('parsea respuesta exitosa de Experta', () => {
     const data = {
       nroPresupuesto: '98444955',

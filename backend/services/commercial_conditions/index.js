@@ -340,6 +340,11 @@ function normalizeStore(raw) {
     options = migrateSeededConcept(options, seed.options || [], 'rastreador_alarma');
     wsMappings = migrateSeededConcept(wsMappings, seed.ws_mappings || [], 'rastreador_alarma');
   }
+  if (Number(store.version || 0) < 26) {
+    options = migrateSeededCompanyConcept(options, seed.options || [], 'mercantil_andina', 'clausula_ajuste');
+    overrideRules = migrateSeededCompanyConcept(overrideRules, seed.override_rules || [], 'mercantil_andina', 'clausula_ajuste');
+    wsMappings = migrateSeededCompanyConcept(wsMappings, seed.ws_mappings || [], 'mercantil_andina', 'clausula_ajuste');
+  }
   return {
     version: Math.max(Number(store.version || 0), Number(seed.version || 1)),
     updated_at: store.updated_at || new Date().toISOString(),
@@ -372,6 +377,19 @@ function migrateSeededConceptPreservingUserValues(currentItems, seedItems, conce
       item.owner_type === 'user'
     )),
     ...seedItems.filter((item) => normalizeCode(item.concept_code) === normalizedConcept),
+  ];
+}
+
+function migrateSeededCompanyConcept(currentItems, seedItems, companySlug, conceptCode) {
+  const normalizedCompany = normalizeCode(companySlug);
+  const normalizedConcept = normalizeCode(conceptCode);
+  const matches = (item) => (
+    normalizeCode(item.company_slug) === normalizedCompany &&
+    normalizeCode(item.concept_code) === normalizedConcept
+  );
+  return [
+    ...currentItems.filter((item) => !matches(item)),
+    ...seedItems.filter(matches),
   ];
 }
 

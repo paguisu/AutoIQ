@@ -1,5 +1,13 @@
 [
   {
+    "codigo_postal": "1014",
+    "provincia": "Capital Federal",
+    "localidad": "CAPITAL FEDERAL",
+    "codigo_mapfre": "1005",
+    "descripcion_mapfre": "CAPITAL FEDERAL",
+    "motivo": "Equivalencia comercial validada contra la cotizacion de referencia para CP 1014."
+  },
+  {
     "codigo_postal": "1650",
     "provincia": "Buenos Aires",
     "localidad": "GENERAL SAN MARTIN",

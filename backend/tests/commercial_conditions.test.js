@@ -46,6 +46,23 @@ describe('commercial conditions service', () => {
     const commercialPlanRow = matrix.rows.find((row) => row.concept_code === 'plan_comercial');
 
     expect(matrix.profile.code).toBe('DEFAULT_SEGUROS911');
+    expect(matrix.companies.some((company) => company.slug === 'mercantil_andina')).toBe(true);
+    expect(discountRow.cells.mercantil_andina.value.visible_value).toBe('20%');
+    expect(discountRow.cells.mercantil_andina.options.map((option) => option.visible_label)).toEqual([
+      '0%',
+      '5%',
+      '10%',
+      '15%',
+      '20%',
+    ]);
+    expect(commissionRow.cells.mercantil_andina.options.map((option) => option.visible_label)).toEqual([
+      '10%',
+      '15%',
+      '20%',
+    ]);
+    expect(adjustmentClauseRow.cells.mercantil_andina.options.map((option) => option.visible_label)).toEqual([
+      'Sin ajuste',
+    ]);
     expect(discountRow.cells.atm.value.visible_value).toBe('30%');
     expect(discountRow.cells.atm.options.map((option) => option.visible_label)).toEqual([
       '0%',
@@ -99,6 +116,7 @@ describe('commercial conditions service', () => {
       'ATM',
       'Experta',
       'Mapfre',
+      'Mercantil Andina',
       'Meridional',
       'Provincia',
       'Rivadavia',
@@ -207,8 +225,8 @@ describe('commercial conditions service', () => {
     expect(installmentsRow.cells.sancor.value.ws_code).toBe('0');
     expect(rebillingRow.cells.victoria.options.map((option) => option.visible_label)).toEqual(['Mensual']);
     expect(installmentsRow.cells.victoria.options.map((option) => option.visible_label)).toEqual(['Contado']);
-    expect(rebillingRow.cells.meridional.options.map((option) => option.visible_label)).toEqual(['Cuatrimestral']);
-    expect(installmentsRow.cells.meridional.options.map((option) => option.visible_label)).toEqual(['4']);
+    expect(rebillingRow.cells.meridional.options.map((option) => option.visible_label)).toEqual(['Mensual']);
+    expect(installmentsRow.cells.meridional.options.map((option) => option.visible_label)).toEqual(['1']);
     expect(useRow.cells.allianz.options.map((option) => option.visible_label)).toEqual([
       'Particular',
       'Comercial',
@@ -265,7 +283,7 @@ describe('commercial conditions service', () => {
     ]);
     expect(vehicleTypeRow.cells.sancor.applicable).toBe(false);
     expect(vehicleTypeRow.cells.provincia.applicable).toBe(false);
-    expect(garageRow.cells.mapfre.value.visible_value).toBe('Sí');
+    expect(garageRow.cells.mapfre.value.visible_value).toBe('No');
     expect(garageRow.cells.mapfre.options.map((option) => option.visible_label)).toEqual(['Sí', 'No']);
     expect(garageRow.cells.mapfre.mapping.ws_field).toBe('guardaGGe');
     expect(garageRow.cells.sancor.value.visible_value).toBe('Sí');
@@ -299,7 +317,7 @@ describe('commercial conditions service', () => {
     expect(adjustmentClauseRow.cells.atm.value.visible_value).toBe('20%');
     expect(adjustmentClauseRow.cells.experta.value.visible_value).toBe('5%');
     expect(adjustmentClauseRow.cells.mapfre.value.visible_value).toBe('Sin ajuste');
-    expect(adjustmentClauseRow.cells.meridional.value.visible_value).toBe('50%');
+    expect(adjustmentClauseRow.cells.meridional.value.visible_value).toBe('Sin ajuste');
     expect(adjustmentClauseRow.cells.provincia.value.visible_value).toBe('Sin ajuste');
     expect(adjustmentClauseRow.cells.rivadavia.value.visible_value).toBe('30%');
     expect(adjustmentClauseRow.cells.smg.value.visible_value).toBe('Sin cláusula');
@@ -322,6 +340,7 @@ describe('commercial conditions service', () => {
       '20%',
     ]);
     expect(adjustmentClauseRow.cells.meridional.options.map((option) => option.visible_label)).toEqual([
+      'Sin ajuste',
       '20%',
       '30%',
       '40%',
@@ -610,6 +629,7 @@ describe('commercial conditions API', () => {
     expect(res.statusCode).toBe(200);
     expect(res.body.companies.some((company) => company.slug === 'victoria')).toBe(true);
     expect(res.body.companies.some((company) => company.slug === 'meridional')).toBe(true);
+    expect(res.body.companies.some((company) => company.slug === 'mercantil_andina')).toBe(true);
     expect(res.body.rows.some((row) => row.concept_code === 'descuento_comercial')).toBe(true);
   });
 

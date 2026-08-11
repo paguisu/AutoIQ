@@ -72,6 +72,23 @@ function onlyDigits(value) {
 
 let postalCatalogCache = null;
 
+function resolveRivadaviaPostalCode(fila = {}, cabecera = {}) {
+  const input = pick([fila?.codigo_postal, fila?.codpostal, fila?.CP, fila?.cp, cabecera?.cp]).replace(/\D+/g, '').slice(0, 4);
+  const localidad = normalizeText(pick([fila?.localidad, fila?.Localidad, cabecera?.localidad]));
+  const provincia = normalizeText(pick([fila?.provincia, fila?.Provincia, cabecera?.provincia]));
+  try {
+    const aliases = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../../data/rivadavia/diccionarios/codigo_postal_aliases.json'), 'utf8'));
+    const match = aliases.find((item) => (
+      (!item.inputCodPostal || String(item.inputCodPostal) === input)
+      && (!item.inputLocalidad || normalizeText(item.inputLocalidad) === localidad)
+      && (!item.inputProvincia || normalizeText(item.inputProvincia) === provincia)
+    ));
+    return String(match?.codPostal || input);
+  } catch (_err) {
+    return input;
+  }
+}
+
 function getPostalCatalog() {
   if (postalCatalogCache) return postalCatalogCache;
   try {
@@ -87,6 +104,28 @@ function mapPostalCatalogProvinciaToRivadaviaSoap(provinciaId) {
   const map = {
     '1': '2', // Capital Federal en Experta -> CodigoProvincia Rivadavia SOAP.
     '2': '1', // Buenos Aires en Experta -> CodigoProvincia Rivadavia SOAP.
+    '3': '3',
+    '4': '4',
+    '5': '5',
+    '6': '6',
+    '7': '7',
+    '8': '8',
+    '9': '9',
+    '10': '11',
+    '11': '12',
+    '12': '13',
+    '13': '14',
+    '14': '15',
+    '15': '16',
+    '16': '17',
+    '17': '18',
+    '18': '19',
+    '19': '20',
+    '20': '21',
+    '21': '22',
+    '22': '23',
+    '23': '24',
+    '24': '10',
   };
   return map[String(provinciaId || '').trim()] || '';
 }
@@ -125,20 +164,20 @@ function resolveRivadaviaSoapProvincia(row = {}, cabecera = {}, cfg = {}) {
     CHUBUT: '7',
     'ENTRE RIOS': '8',
     FORMOSA: '9',
-    JUJUY: '10',
-    'LA PAMPA': '11',
-    'LA RIOJA': '12',
-    MENDOZA: '13',
-    MISIONES: '14',
-    NEUQUEN: '15',
-    'RIO NEGRO': '16',
-    SALTA: '17',
-    'SAN JUAN': '18',
-    'SAN LUIS': '19',
-    'SANTA CRUZ': '20',
-    'SANTA FE': '21',
-    'SANTIAGO DEL ESTERO': '22',
-    'TIERRA DEL FUEGO': '23',
+    'TIERRA DEL FUEGO': '10',
+    JUJUY: '11',
+    'LA PAMPA': '12',
+    'LA RIOJA': '13',
+    MENDOZA: '14',
+    MISIONES: '15',
+    NEUQUEN: '16',
+    'RIO NEGRO': '17',
+    SALTA: '18',
+    'SAN JUAN': '19',
+    'SAN LUIS': '20',
+    'SANTA CRUZ': '21',
+    'SANTA FE': '22',
+    'SANTIAGO DEL ESTERO': '23',
     TUCUMAN: '24',
   };
   const rowCode = map[rawProvincia] || '';
@@ -511,7 +550,7 @@ async function buildRivadaviaPayload({
 } = {}) {
   const codigoInfoAuto = getCodigoInfoAuto(fila);
   const modeloAnio = pick([fila?.anio, fila?.anofab, fila?.ANO, fila?.Anio, fila?.ano]);
-  const codigoPostal = pick([fila?.codigo_postal, fila?.codpostal, fila?.CP, fila?.cp, cabecera?.cp]).replace(/\D+/g, '').slice(0, 4);
+  const codigoPostal = resolveRivadaviaPostalCode(fila, cabecera);
 
   if (!codigoInfoAuto || codigoInfoAuto === '0') throw new Error('Rivadavia requiere codigoInfoAuto');
   if (!modeloAnio) throw new Error('Rivadavia requiere modeloAnio');
@@ -757,6 +796,15 @@ function parseSoapMoney(value) {
   return text || '0';
 }
 
+async function persistRivadaviaInferenceBestEffort(params, persistFn = upsertRivadaviaTipoVehiculoInferido) {
+  try {
+    await persistFn(params);
+    return { ok: true, error: '' };
+  } catch (error) {
+    return { ok: false, error: error?.message || String(error) };
+  }
+}
+
 function parseRivadaviaSoapQuoteResponse(data, _cfg = {}, requestMeta = {}) {
   const xml = String(data || '');
   const errors = [...xml.matchAll(/<item[^>]*xsi:type="xsd:string"[^>]*>([^<]+)<\/item>/g)].map((match) => match[1]);
@@ -769,6 +817,7 @@ function parseRivadaviaSoapQuoteResponse(data, _cfg = {}, requestMeta = {}) {
       importePremio: parseSoapMoney(match[3]),
       importePremioContado: parseSoapMoney(match[4]),
       importeCuota: parseSoapMoney(match[5]),
+      premioMensual: parseSoapMoney(match[5]),
       plan: String(match[2] || '').trim(),
       nroPresupuesto: String(match[1] || '').trim(),
     }));
@@ -822,6 +871,7 @@ async function parseRivadaviaQuoteResponse(data, cfg = {}, requestMeta = {}) {
           importePremio: String(item?.premioTotal ?? ''),
           importePremioContado: String(item?.contado ?? ''),
           importeCuota: String(item?.cuotaMensual ?? ''),
+          premioMensual: String(item?.cuotaMensual ?? ''),
           plan: planRaw,
         };
       })
@@ -855,6 +905,7 @@ module.exports = {
   mapRivadaviaSoapProvincia,
   parseRivadaviaSoapQuoteResponse,
   parseRivadaviaQuoteResponse,
+  persistRivadaviaInferenceBestEffort,
   resolveRivadaviaCoeficients,
   resolveRivadaviaAlarmaSatelital,
   resolveCodigoVehiculo,
