@@ -674,6 +674,7 @@ function buildDefaultStore(now = new Date().toISOString()) {
         profile_type: 'default',
       },
     ],
+    producers: [],
     users: [
       {
         id: 'superadmin-local',

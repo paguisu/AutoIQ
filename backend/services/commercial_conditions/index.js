@@ -351,6 +351,7 @@ function normalizeStore(raw) {
     companies,
     concepts,
     profiles,
+    producers: Array.isArray(store.producers) ? store.producers : [],
     users: Array.isArray(store.users) ? store.users : seed.users,
     user_company_settings: Array.isArray(store.user_company_settings) ? store.user_company_settings : [],
     values,
@@ -639,6 +640,7 @@ function setInheritance(store, params = {}, actor = {}, options = {}) {
   const userId = String(params.user_id || params.userId || '').trim();
   const companySlug = normalizeCode(params.company_slug || params.companySlug);
   const inheritsDefault = normalizeBool(params.inherits_default ?? params.inheritsDefault);
+  const previousSetting = getCompanySetting(store, userId, companySlug);
   if (!userId) {
     const err = new Error('user_id requerido');
     err.statusCode = 400;
@@ -683,7 +685,10 @@ function setInheritance(store, params = {}, actor = {}, options = {}) {
     actor_role: actor.role,
     entity_type: 'user_company_setting',
     entity_id: `${userId}:${companySlug}`,
-    details: { inherits_default: inheritsDefault },
+    details: {
+      previous: { inherits_default: previousSetting ? previousSetting.inherits_default !== false : true },
+      current: { inherits_default: inheritsDefault },
+    },
   }, options);
 
   return store;
@@ -761,6 +766,9 @@ function saveValues(store, params = {}, actor = {}, options = {}) {
   }
 
   const normalizedChanges = changes.map(normalizeValueChange);
+  const previousValues = normalizedChanges.map((change) => findValue(store, {
+    ownerType, ownerId, companySlug: change.company_slug, conceptCode: change.concept_code,
+  }));
   for (const change of normalizedChanges) {
     if (!getCompany(store, change.company_slug)) {
       const err = new Error(`Compañía inválida: ${change.company_slug}`);
@@ -809,7 +817,14 @@ function saveValues(store, params = {}, actor = {}, options = {}) {
     actor_role: actor.role,
     entity_type: ownerType,
     entity_id: ownerId,
-    details: { changes: normalizedChanges },
+    details: {
+      changes: normalizedChanges.map((change, index) => ({
+        company_slug: change.company_slug,
+        concept_code: change.concept_code,
+        previous: previousValues[index] || null,
+        current: change,
+      })),
+    },
   }, options);
   return store;
 }
