@@ -5379,9 +5379,9 @@ async function ejecutarProceso({
     const store = loadCommercialConditionsStore({ dataRoot: DATA_ROOT });
     commercialConditionsShadow = {
       store,
-      context: 'autoiq',
+      context: meta?.commercial_context === 'seguros911' ? 'seguros911' : 'autoiq',
       profile_id: 'default_seguros911',
-      user_id: ctx?.currentUser?.id || meta?.created_by_user_id || 'superadmin-local',
+      user_id: meta?.commercial_user_id || ctx?.currentUser?.id || meta?.created_by_user_id || 'superadmin-local',
     };
     safeWriteJson(path.join(procesoDir(proceso_id), 'commercial_conditions_shadow_run.json'), {
       enabled: true,
@@ -6044,6 +6044,8 @@ router.post('/crear', express.json(), async (req, res) => {
         cotizacion_periodo_cruza_mes_estimado: periodoInfo.cruza_mes_estimado,
         cotizacion_periodo_advertencia: periodoInfo.advertencia,
         cabecera_override: cabeceraOverride,
+        commercial_context: req.body?.commercial_context === 'seguros911' ? 'seguros911' : 'autoiq',
+        commercial_user_id: String(req.body?.commercial_user_id || '').trim() || null,
         organization_id: ctx.currentOrganization?.id || 'autoiq',
         created_by_user_id: ctx.currentUser?.id || 'superadmin-local',
         created_by_name: getUserDisplayName(ctx.currentUser),

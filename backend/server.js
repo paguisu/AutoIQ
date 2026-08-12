@@ -39,6 +39,7 @@ const cotizacionRouter = require('./routes/cotizacion');
 const procesoRouter = require('./routes/proceso');
 const cabecerasRouter = require('./routes/cabeceras'); // <— NUEVO
 const commercialConditionsRouter = require('./routes/commercial_conditions');
+const seguros911IntegrationRouter = require('./routes/seguros911_integration');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -434,6 +435,7 @@ app.use('/cotizacion', cotizacionRouter);
 app.use('/proceso', procesoRouter);
 app.use('/cabeceras', cabecerasRouter);
 app.use('/commercial-conditions', commercialConditionsRouter);
+app.use('/integration/seguros911', seguros911IntegrationRouter);
 
 // ✅ Dejar una sola fuente de /aseguradoras (evita doble mount)
 // app.use('/aseguradoras', require('./routes/aseguradoras'));

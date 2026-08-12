@@ -1,6 +1,7 @@
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
+const crypto = require('crypto');
 const request = require('supertest');
 const app = require('../server');
 const {
@@ -623,6 +624,37 @@ describe('commercial conditions service', () => {
 });
 
 describe('commercial conditions API', () => {
+  test('Seguros911 integration rejects unsigned requests', async () => {
+    const previous = process.env.SEGUROS911_SERVICE_SECRET;
+    process.env.SEGUROS911_SERVICE_SECRET = 'test-service-secret';
+    const res = await request(app).get('/integration/seguros911/commercial-conditions/bootstrap');
+    if (previous === undefined) delete process.env.SEGUROS911_SERVICE_SECRET;
+    else process.env.SEGUROS911_SERVICE_SECRET = previous;
+    expect(res.statusCode).toBe(401);
+    expect(res.body.code).toBe('INVALID_SERVICE_SIGNATURE');
+  });
+
+  test('Seguros911 integration accepts a correctly signed bootstrap request', async () => {
+    const previous = process.env.SEGUROS911_SERVICE_SECRET;
+    const secret = 'test-service-secret';
+    process.env.SEGUROS911_SERVICE_SECRET = secret;
+    const timestamp = String(Date.now());
+    const nonce = crypto.randomUUID();
+    const url = '/integration/seguros911/commercial-conditions/bootstrap';
+    const bodyHash = crypto.createHash('sha256').update('').digest('hex');
+    const signature = crypto.createHmac('sha256', secret)
+      .update(['GET', url, timestamp, nonce, bodyHash].join('\n')).digest('hex');
+    const res = await request(app).get(url)
+      .set('x-autoiq-timestamp', timestamp)
+      .set('x-autoiq-nonce', nonce)
+      .set('x-autoiq-signature', signature)
+      .set('x-autoiq-actor-role', 'supervisor');
+    if (previous === undefined) delete process.env.SEGUROS911_SERVICE_SECRET;
+    else process.env.SEGUROS911_SERVICE_SECRET = previous;
+    expect(res.statusCode).toBe(200);
+    expect(res.body.companies.some((company) => company.slug === 'mercantil_andina')).toBe(true);
+    expect(res.body.companies.some((company) => company.slug === 'meridional')).toBe(true);
+  });
   test('GET /commercial-conditions/matrix exposes active companies and rows', async () => {
     const res = await request(app).get('/commercial-conditions/matrix');
 
