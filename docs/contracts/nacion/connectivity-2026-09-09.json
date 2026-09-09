@@ -1,0 +1,31 @@
+{
+  "checked_at": "2026-09-09T13:40:06.910Z",
+  "environment": "production",
+  "login": {
+    "status": 200,
+    "access_token_received": true,
+    "refresh_token_received": true,
+    "expiry_from_jwt": true,
+    "cache_reused": true
+  },
+  "renew": {
+    "status": 200,
+    "validated": "separate initial JSON probe"
+  },
+  "wsdl": {
+    "status": 200,
+    "authentication": "Basic with assigned token-service credential",
+    "sha256": "142a6981789766025a65a3e2f564c489754045b7b254fd6d34bed2a0993fcef6",
+    "source": "https://autogestion2.nacion-seguros.com.ar:4443/servcomercial/servlet/servicioscom.ser_cotizador?wsdl",
+    "soap_action": "NacionSegurosaction/ASER_COTIZADOR.ENVIAR_COBERTURAS",
+    "date_type": "xsd:date",
+    "gnc_amount_type": "xsd:double",
+    "assistance_type": "xsd:string"
+  },
+  "tls": {
+    "certificate_validation": true,
+    "additional_root": "Avast root already installed in Windows; used only for this probe"
+  },
+  "quotation_executed": false,
+  "producer_code_available": false
+}

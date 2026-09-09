@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions name="SER_Cotizador" targetNamespace="NacionSeguros" xmlns:wsdlns="NacionSeguros" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="NacionSeguros">
+	<types>
+		<schema targetNamespace="NacionSeguros" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" elementFormDefault="qualified">
+			<complexType name="SER_CotizadorEnviarCoberturasEntrada">
+				<sequence>
+					<element name="PEDIDO_ID" type="xsd:long">
+					</element>
+					<element name="TOKEN_ACCESO" type="xsd:string">
+					</element>
+					<element name="COTIZADOR_ID" type="xsd:int">
+					</element>
+					<element name="TOMADOR" type="xsd:string">
+					</element>
+					<element name="CODIGO_POSTAL" type="xsd:string">
+					</element>
+					<element name="CORREO_ELECTRONICO" type="xsd:string">
+					</element>
+					<element name="FECHA_VIGENCIA_DESDE" type="xsd:date" nillable="true">
+					</element>
+					<element name="CODIGO_INFOAUTO" type="xsd:int">
+					</element>
+					<element name="ANIO_FABRICACION" type="xsd:short">
+					</element>
+					<element name="ES_0KM" type="xsd:string">
+					</element>
+					<element name="USO_VEHICULO" type="xsd:short">
+					</element>
+					<element name="EQUIPO_GNC" type="xsd:string">
+					</element>
+					<element name="EQUIPO_GNC_SUMA" type="xsd:double">
+					</element>
+					<element name="USUARIO_APLICACION" type="xsd:string">
+					</element>
+					<element name="CODIGO_PRODUCTOR" type="xsd:int">
+					</element>
+					<element name="SERVICIO" type="xsd:string">
+					</element>
+				</sequence>
+			</complexType>
+			<complexType name="SER_CotizadorEnviarCoberturasRespuesta">
+				<sequence>
+					<element name="ENVIO_GENERADO" type="xsd:boolean">
+					</element>
+					<element name="CONTROL_DE_RESPUESTA" type="tns:SER_ServicioControlDeRespuesta">
+					</element>
+					<element name="CONSULTA_ORIGEN" type="tns:SER_CotizadorEnviarCoberturasRespuesta.CONSULTA_ORIGEN">
+					</element>
+					<element name="RESPUESTA_PROCESO" type="tns:SER_CotizadorEnviarCoberturasRespuesta.RESPUESTA_PROCESO">
+					</element>
+				</sequence>
+			</complexType>
+			<complexType name="SER_ServicioControlDeRespuesta">
+				<sequence>
+					<element name="PEDIDO_ID" type="xsd:long">
+					</element>
+					<element name="RESPUESTA_ID" type="xsd:long">
+					</element>
+					<element name="CODIGO_RESPUESTA" type="xsd:short">
+					</element>
+					<element name="MENSAJE_RESPUESTA" type="xsd:string">
+					</element>
+					<element name="TOKEN_ID" type="xsd:string">
+					</element>
+				</sequence>
+			</complexType>
+			<complexType name="SER_CotizadorEnviarCoberturasRespuesta.CONSULTA_ORIGEN">
+				<sequence>
+					<element name="PEDIDO_ID" type="xsd:long">
+					</element>
+					<element name="COTIZADOR_ID" type="xsd:int">
+					</element>
+					<element name="TOMADOR" type="xsd:string">
+					</element>
+					<element name="CODIGO_POSTAL" type="xsd:string">
+					</element>
+					<element name="CORREO_ELECTRONICO" type="xsd:string">
+					</element>
+					<element name="FECHA_VIGENCIA_DESDE" type="xsd:date" nillable="true">
+					</element>
+					<element name="CODIGO_INFOAUTO" type="xsd:int">
+					</element>
+					<element name="ANIO_FABRICACION" type="xsd:short">
+					</element>
+					<element name="ES_0KM" type="xsd:string">
+					</element>
+					<element name="USO_VEHICULO" type="xsd:short">
+					</element>
+					<element name="EQUIPO_GNC" type="xsd:string">
+					</element>
+					<element name="EQUIPO_GNC_SUMA" type="xsd:double">
+					</element>
+					<element name="USUARIO_APLICACION" type="xsd:string">
+					</element>
+					<element name="CODIGO_PRODUCTOR" type="xsd:int">
+					</element>
+				</sequence>
+			</complexType>
+			<complexType name="SER_CotizadorEnviarCoberturasRespuesta.RESPUESTA_PROCESO">
+				<sequence>
+					<element name="EMPRESA" type="xsd:byte">
+					</element>
+					<element name="RAMA" type="xsd:byte">
+					</element>
+					<element name="DISTRI" type="xsd:short">
+					</element>
+					<element name="SOLICITUD" type="xsd:int">
+					</element>
+					<element name="VIGENCIA_DESDE" type="xsd:date" nillable="true">
+					</element>
+					<element name="VIGENCIA_HASTA" type="xsd:date" nillable="true">
+					</element>
+					<element name="FACTURACION_CODIGO" type="xsd:string">
+					</element>
+					<element name="FACTURACION_TEXTO" type="xsd:string">
+					</element>
+					<element name="FACTURACION_MESES" type="xsd:short">
+					</element>
+					<element name="PLAN_CODIGO" type="xsd:string">
+					</element>
+					<element name="PLAN_TEXTO" type="xsd:string">
+					</element>
+					<element name="TIPO_PERSONA" type="xsd:string">
+					</element>
+					<element name="CATEGORIA_IVA" type="xsd:string">
+					</element>
+					<element name="CATEGORIA_IIBB" type="xsd:string">
+					</element>
+					<element name="FORMA_PAGO" type="xsd:byte">
+					</element>
+					<element name="PRODUCTOR_COMISION" type="xsd:double">
+					</element>
+					<element name="MENSAJES">
+						<complexType>
+							<sequence>
+								<element minOccurs="0" maxOccurs="unbounded" name="MENSAJE" type="tns:SER_CotizadorEnviarCoberturasRespuesta.RESPUESTA_PROCESO.MENSAJE">
+								</element>
+							</sequence>
+						</complexType>
+					</element>
+					<element name="LISTA_COBERTURAS">
+						<complexType>
+							<sequence>
+								<element minOccurs="0" maxOccurs="unbounded" name="COBERTURA" type="tns:SER_CotizadorEnviarCoberturasRespuesta.RESPUESTA_PROCESO.COBERTURA">
+								</element>
+							</sequence>
+						</complexType>
+					</element>
+				</sequence>
+			</complexType>
+			<complexType name="ArrayOfSER_CotizadorEnviarCoberturasRespuesta.RESPUESTA_PROCESO.MENSAJE">
+				<sequence>
+					<element minOccurs="0" maxOccurs="unbounded" name="SER_CotizadorEnviarCoberturasRespuesta.RESPUESTA_PROCESO.MENSAJE" type="tns:SER_CotizadorEnviarCoberturasRespuesta.RESPUESTA_PROCESO.MENSAJE">
+					</element>
+				</sequence>
+			</complexType>
+			<complexType name="SER_CotizadorEnviarCoberturasRespuesta.RESPUESTA_PROCESO.MENSAJE">
+				<sequence>
+					<element name="TEXTO" type="xsd:string">
+					</element>
+				</sequence>
+			</complexType>
+			<complexType name="ArrayOfSER_CotizadorEnviarCoberturasRespuesta.RESPUESTA_PROCESO.COBERTURA">
+				<sequence>
+					<element minOccurs="0" maxOccurs="unbounded" name="SER_CotizadorEnviarCoberturasRespuesta.RESPUESTA_PROCESO.COBERTURA" type="tns:SER_CotizadorEnviarCoberturasRespuesta.RESPUESTA_PROCESO.COBERTURA">
+					</element>
+				</sequence>
+			</complexType>
+			<complexType name="SER_CotizadorEnviarCoberturasRespuesta.RESPUESTA_PROCESO.COBERTURA">
+				<sequence>
+					<element name="ITEM" type="xsd:long">
+					</element>
+					<element name="CODIGO" type="xsd:string">
+					</element>
+					<element name="DESCRIPCION" type="xsd:string">
+					</element>
+					<element name="MONEDA" type="xsd:string">
+					</element>
+					<element name="CLAUSULA_AJUSTE" type="xsd:string">
+					</element>
+					<element name="TIPO_ASISTENCIA" type="xsd:string">
+					</element>
+					<element name="TIPO_ASISTENCIA_TEXTO" type="xsd:string">
+					</element>
+					<element name="SUMA_ASEGURADA" type="xsd:double">
+					</element>
+					<element name="PRIMA" type="xsd:double">
+					</element>
+					<element name="PREMIO" type="xsd:double">
+					</element>
+					<element name="CUOTAS" type="xsd:short">
+					</element>
+					<element name="CUOTA1" type="xsd:double">
+					</element>
+					<element name="PREMIO_TEXTO" type="xsd:string">
+					</element>
+					<element name="CUOTA1_TEXTO" type="xsd:string">
+					</element>
+					<element name="RESTO_CUOTAS" type="xsd:string">
+					</element>
+					<element name="RESTO_CUOTAS_IMPORTE" type="xsd:string">
+					</element>
+					<element name="MODO_TEXTO" type="xsd:string">
+					</element>
+				</sequence>
+			</complexType>
+			<element name="SER_Cotizador.ENVIAR_COBERTURAS">
+				<complexType>
+					<sequence>
+						<element minOccurs="1" maxOccurs="1" name="Consulta" type="tns:SER_CotizadorEnviarCoberturasEntrada"/>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="SER_Cotizador.ENVIAR_COBERTURASResponse">
+				<complexType>
+					<sequence>
+						<element minOccurs="1" maxOccurs="1" name="Respuesta" type="tns:SER_CotizadorEnviarCoberturasRespuesta"/>
+					</sequence>
+				</complexType>
+			</element>
+		</schema>
+	</types>
+	<message name="SER_Cotizador.ENVIAR_COBERTURASSoapIn">
+		<part name="parameters" element="tns:SER_Cotizador.ENVIAR_COBERTURAS"/>
+	</message>
+	<message name="SER_Cotizador.ENVIAR_COBERTURASSoapOut">
+		<part name="parameters" element="tns:SER_Cotizador.ENVIAR_COBERTURASResponse"/>
+	</message>
+	<portType name="SER_CotizadorSoapPort">
+		<operation name="ENVIAR_COBERTURAS">
+			<input message="wsdlns:SER_Cotizador.ENVIAR_COBERTURASSoapIn"/>
+			<output message="wsdlns:SER_Cotizador.ENVIAR_COBERTURASSoapOut"/>
+		</operation>
+	</portType>
+	<binding name="SER_CotizadorSoapBinding" type="wsdlns:SER_CotizadorSoapPort">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<operation name="ENVIAR_COBERTURAS">
+			<soap:operation soapAction="NacionSegurosaction/ASER_COTIZADOR.ENVIAR_COBERTURAS"/>
+			<input>
+				<soap:body use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+			</output>
+		</operation>
+	</binding>
+	<service name="SER_Cotizador">
+		<port name="SER_CotizadorSoapPort" binding="wsdlns:SER_CotizadorSoapBinding">
+			<soap:address location="https://weblogicautog2/servcomercial/servlet/servicioscom.ser_cotizador"/>
+		</port>
+	</service>
+</definitions>

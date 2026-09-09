@@ -1,0 +1,41 @@
+{
+  "scope": "Funciones reales con dependencias externas sustituidas; sin HTTP, DB ni credenciales",
+  "schema": {
+    "gncWithoutAmountAccepted": true,
+    "recotizeWithoutAmountAccepted": false,
+    "stringFalseBecomes": {
+      "gnc": true,
+      "esCeroKm": true
+    }
+  },
+  "nacionPremium": [
+    {
+      "monthlyPremium": 1200,
+      "billingPeriodMonths": 1,
+      "annualPremium": 3000
+    }
+  ],
+  "usageOverride": {
+    "input": "Comercial/2",
+    "profile": "Particular/1",
+    "effectiveCode": "1",
+    "effectiveHeader": "1"
+  },
+  "hmacEmptyObject": {
+    "clientHash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "serverHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "zeroValuation": {
+    "error": "valuation is not defined",
+    "remoteCallsSimulatedBeforeError": [
+      {
+        "method": "POST",
+        "url": "/integration/seguros911/quote-inputs"
+      },
+      {
+        "method": "POST",
+        "url": "/proceso/crear"
+      }
+    ]
+  }
+}

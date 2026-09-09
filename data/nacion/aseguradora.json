@@ -5,7 +5,7 @@
   "base_url": "https://capacitacionws.nacion-seguros.com.ar:4445",
   "soap_path": "/servcomercial_pru/servlet/servicioscom.ser_cotizador",
   "soap_method": "ENVIAR_COBERTURAS",
-  "soap_action": "ENVIAR_COBERTURAS",
+  "soap_action": "NacionSegurosaction/ASER_COTIZADOR.ENVIAR_COBERTURAS",
   "auth_url": "https://capacitacionws.nacion-seguros.com.ar:4445/token_pru/auth",
   "auth_method": "login",
   "auth_user": "",
