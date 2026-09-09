@@ -8,13 +8,20 @@ function bodyDigest(body) {
   return crypto.createHash('sha256').update(serialized).digest('hex');
 }
 
+// express.json verify hook: retain the bytes before parsing changes their form.
+function captureServiceBody(req, _res, buffer) {
+  req.serviceBodyBytes = Buffer.from(buffer);
+}
+
 function canonicalRequest(req, timestamp, nonce) {
   return [
     String(req.method || '').toUpperCase(),
     req.originalUrl || req.url || '/',
     String(timestamp),
     String(nonce),
-    bodyDigest(req.body),
+    Buffer.isBuffer(req.serviceBodyBytes)
+      ? crypto.createHash('sha256').update(req.serviceBodyBytes).digest('hex')
+      : bodyDigest(req.body),
   ].join('\n');
 }
 
@@ -66,4 +73,4 @@ function requireSeguros911Service(req, res, next) {
   next();
 }
 
-module.exports = { bodyDigest, canonicalRequest, requireSeguros911Service, __test: { seenNonces } };
+module.exports = { bodyDigest, captureServiceBody, canonicalRequest, requireSeguros911Service, __test: { seenNonces } };

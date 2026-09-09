@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 const express = require('express');
 const request = require('supertest');
-const { bodyDigest, canonicalRequest, requireSeguros911Service, __test } = require('../middleware/service_auth');
+const { bodyDigest, canonicalRequest, captureServiceBody, requireSeguros911Service, __test } = require('../middleware/service_auth');
 
 function signature(secret, method, url, timestamp, nonce, body) {
   const fake = { method, originalUrl: url, body: body || {} };
@@ -17,7 +17,7 @@ describe('Seguros911 HMAC contract', () => {
     process.env.SEGUROS911_SERVICE_SECRET = secret;
     __test.seenNonces.clear();
     app = express();
-    app.use(express.json());
+    app.use(express.json({ verify: captureServiceBody }));
     app.all('/private', requireSeguros911Service, (req, res) => res.json({ ok: true }));
   });
   afterEach(() => { if (previous === undefined) delete process.env.SEGUROS911_SERVICE_SECRET; else process.env.SEGUROS911_SERVICE_SECRET = previous; });
@@ -45,5 +45,29 @@ describe('Seguros911 HMAC contract', () => {
     const staleNonce = crypto.randomUUID();
     expect((await request(app).get('/private').set('x-autoiq-timestamp', stale).set('x-autoiq-nonce', staleNonce).set('x-autoiq-signature', signature(secret, 'GET', '/private', stale, staleNonce))).status).toBe(401);
   });
-});
 
+  test.each(['{}', '{ "gnc": 1, "suma_gnc": 800000 }', '{"nombre":"José","valor":1.00}'])('acepta bytes exactos del cliente: %s', async (body) => {
+    const timestamp = String(Date.now());
+    const nonce = crypto.randomUUID();
+    const url = '/private?company=atm&context=seguros911';
+    // Independent sender: never invoke the server canonicalizer to sign.
+    const digest = crypto.createHash('sha256').update(body, 'utf8').digest('hex');
+    const signed = crypto.createHmac('sha256', secret)
+      .update(['POST', url, timestamp, nonce, digest].join('\n')).digest('hex');
+    const response = await request(app).post(url).type('json').send(body)
+      .set('x-autoiq-timestamp', timestamp).set('x-autoiq-nonce', nonce).set('x-autoiq-signature', signed);
+    expect(response.status).toBe(200);
+  });
+
+  test('rechaza un cuerpo cambiado aunque represente el mismo JSON', async () => {
+    const timestamp = String(Date.now());
+    const nonce = crypto.randomUUID();
+    const digest = crypto.createHash('sha256').update('{}').digest('hex');
+    const signed = crypto.createHmac('sha256', secret)
+      .update(['POST', '/private', timestamp, nonce, digest].join('\n')).digest('hex');
+    const response = await request(app).post('/private').type('json').send('{ }')
+      .set('x-autoiq-timestamp', timestamp).set('x-autoiq-nonce', nonce).set('x-autoiq-signature', signed);
+    expect(response.status).toBe(401);
+    expect(response.body.code).toBe('INVALID_SERVICE_SIGNATURE');
+  });
+});
