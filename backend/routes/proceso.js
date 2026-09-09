@@ -293,7 +293,38 @@ function sanitizeCabeceraOverride(value) {
 function mergeCabecera(baseCabecera, override) {
   const sanitizedOverride = sanitizeCabeceraOverride(override);
   if (!sanitizedOverride) return baseCabecera;
-  return { ...(baseCabecera || {}), ...sanitizedOverride };
+  const merged = { ...(baseCabecera || {}), ...sanitizedOverride };
+  if (sanitizedOverride.gnc === '0') merged.suma_gnc = '';
+  return merged;
+}
+
+function pickExplicitGncValue(source) {
+  if (!source || typeof source !== 'object') return null;
+  for (const key of ['gnc', 'GNC']) {
+    if (source[key] === undefined || source[key] === null || String(source[key]).trim() === '') continue;
+    const raw = String(source[key]).trim().toLowerCase();
+    if (['1', 'true', 'si', 'sí', 's', 'yes'].includes(raw)) return '1';
+    if (['0', 'false', 'no', 'n'].includes(raw)) return '0';
+  }
+  return null;
+}
+
+function resolveRiskGnc({ fila = {}, cabecera = {}, cabeceraOverride = null } = {}) {
+  const flag = pickExplicitGncValue(cabeceraOverride)
+    ?? pickExplicitGncValue(fila)
+    ?? pickExplicitGncValue(cabecera)
+    ?? '0';
+  const amount = String(
+    cabeceraOverride?.suma_gnc
+      ?? fila?.suma_gnc
+      ?? fila?.sumaGnc
+      ?? cabecera?.suma_gnc
+      ?? ''
+  ).trim();
+  const warnings = [];
+  if (flag === '1' && !amount) warnings.push('GNC_WITHOUT_AMOUNT');
+  if (flag === '0' && Number(String(amount).replace(/[^0-9.-]/g, '')) > 0) warnings.push('GNC_AMOUNT_WITHOUT_GNC');
+  return { gnc: flag, suma_gnc: flag === '1' ? amount : '', warnings };
 }
 
 function getRequestContext(req) {
@@ -2541,7 +2572,8 @@ async function generarExcelProceso(procesoId, options = {}) {
         resultados: {},
       };
 
-  const cabecera = meta.cabecera_id ? getCabecera(meta.cabecera_id) : null;
+  const cabeceraPersistida = meta.cabecera_id ? getCabecera(meta.cabecera_id) : null;
+  const cabecera = mergeCabecera(cabeceraPersistida, meta.cabecera_override);
 
   // Resolver archivo combinado desde metadata (fallback: DB historial)
   let relArchivo = meta.archivo || null;
@@ -3378,7 +3410,7 @@ function ensureProvinciaRamoCfg(cfg) {
   return extras.ramos[ramo];
 }
 
-function applyCommercialConditionsToQuoteInputs({ slug, fila, cabecera, mapeos, Aseg, resolved } = {}) {
+function applyCommercialConditionsToQuoteInputs({ slug, fila, cabecera, cabeceraOverride, mapeos, Aseg, resolved } = {}) {
   const company = String(slug || '').toLowerCase();
   const effectiveFila = clonePlain(fila || {}) || {};
   const effectiveCabecera = clonePlain(cabecera || {}) || {};
@@ -3455,8 +3487,26 @@ function applyCommercialConditionsToQuoteInputs({ slug, fila, cabecera, mapeos, 
 
   if (values.gnc) {
     const v = values.gnc;
-    effectiveCabecera.gnc = commercialTruthy(v) ? '1' : '0';
-    record('gnc', v, ['cabecera.gnc'], 'suma_gnc se conserva desde cabecera/registro; no se inventa monto');
+    const riskGnc = resolveRiskGnc({ fila: effectiveFila, cabecera: effectiveCabecera, cabeceraOverride });
+    effectiveCabecera.gnc = riskGnc.gnc;
+    effectiveCabecera.suma_gnc = riskGnc.suma_gnc;
+    if (riskGnc.warnings.length) effectiveCabecera.gnc_warnings = riskGnc.warnings;
+    record(
+      'gnc',
+      v,
+      ['cabecera.gnc', 'cabecera.suma_gnc'],
+      'GNC es dato del riesgo; el perfil sólo aporta el mapeo del adaptador'
+    );
+  }
+
+  // La cabecera de la corrida es la autoridad para un override explícito. Esto
+  // también cubre compañías/perfiles donde el concepto GNC no esté configurado.
+  if (cabeceraOverride?.gnc !== undefined && cabeceraOverride?.gnc !== null
+    && String(cabeceraOverride.gnc).trim() !== '') {
+    effectiveCabecera.gnc = String(cabeceraOverride.gnc).trim() === '1' ? '1' : '0';
+    effectiveCabecera.suma_gnc = effectiveCabecera.gnc === '1'
+      ? String(cabeceraOverride.suma_gnc ?? effectiveCabecera.suma_gnc ?? '').trim()
+      : '';
   }
 
   if (values.refacturacion) {
@@ -3667,6 +3717,7 @@ async function cotizarFila({
         slug,
         fila,
         cabecera,
+        cabeceraOverride: commercialConditions.cabecera_override,
         mapeos,
         Aseg,
         resolved: commercialResolved,
@@ -5382,6 +5433,7 @@ async function ejecutarProceso({
       context: meta?.commercial_context === 'seguros911' ? 'seguros911' : 'autoiq',
       profile_id: 'default_seguros911',
       user_id: meta?.commercial_user_id || ctx?.currentUser?.id || meta?.created_by_user_id || 'superadmin-local',
+      cabecera_override: sanitizeCabeceraOverride(meta?.cabecera_override),
     };
     safeWriteJson(path.join(procesoDir(proceso_id), 'commercial_conditions_shadow_run.json'), {
       enabled: true,
@@ -6572,5 +6624,7 @@ module.exports.__test = {
   generarExcelProceso,
   getCotizacionPeriodo,
   getCompanyQueueConfig,
+  mergeCabecera,
+  resolveRiskGnc,
   resolveCircuitBreakerConfig,
 };

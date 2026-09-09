@@ -66,4 +66,4 @@ function requireSeguros911Service(req, res, next) {
   next();
 }
 
-module.exports = { canonicalRequest, requireSeguros911Service };
+module.exports = { bodyDigest, canonicalRequest, requireSeguros911Service, __test: { seenNonces } };

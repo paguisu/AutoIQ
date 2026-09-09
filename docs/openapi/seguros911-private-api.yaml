@@ -1,0 +1,173 @@
+openapi: 3.1.0
+info:
+  title: AutoIQ Private API for Seguros911
+  version: 1.0.0
+  description: Contrato privado para productores, condiciones, catálogos y preparación de cotizaciones.
+servers:
+  - url: '{scheme}://{host}{basePath}'
+    variables:
+      scheme: { default: https, enum: [https, http] }
+      host: { default: autoiq.example.internal }
+      basePath: { default: /integration/seguros911 }
+security: [{ hmacService: [] }]
+tags:
+  - { name: CommercialConditions }
+  - { name: Producers }
+  - { name: Catalogs }
+  - { name: Quotes }
+paths:
+  /commercial-conditions/bootstrap:
+    get:
+      tags: [CommercialConditions]
+      operationId: getCommercialConditionsBootstrap
+      responses:
+        '200': { description: Catálogo inicial, content: { application/json: { schema: { $ref: '#/components/schemas/Bootstrap' } } } }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '503': { $ref: '#/components/responses/NotConfigured' }
+  /producers/{producerId}:
+    put:
+      tags: [Producers]
+      operationId: upsertProducer
+      parameters: [{ $ref: '#/components/parameters/ProducerId' }]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/ProducerInput' } } } }
+      responses:
+        '200': { description: Productor sincronizado, content: { application/json: { schema: { type: object, required: [ok, producer], properties: { ok: { const: true }, producer: { $ref: '#/components/schemas/Producer' } } } } } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /producers/{producerId}/commercial-conditions:
+    get:
+      tags: [CommercialConditions]
+      operationId: getProducerCommercialConditions
+      parameters: [{ $ref: '#/components/parameters/ProducerId' }]
+      responses:
+        '200': { description: Matriz; shape extensible preservada por el servicio, content: { application/json: { schema: { type: object, additionalProperties: true } } } }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    patch:
+      tags: [CommercialConditions]
+      operationId: patchProducerCommercialConditions
+      parameters: [{ $ref: '#/components/parameters/ProducerId' }]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/CommercialChanges' } } } }
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /producers/{producerId}/commercial-conditions/effective:
+    get:
+      tags: [CommercialConditions]
+      operationId: getEffectiveCommercialConditions
+      parameters:
+        - { $ref: '#/components/parameters/ProducerId' }
+        - { name: company_slug, in: query, schema: { type: string, minLength: 1 } }
+      responses:
+        '200': { description: Valores efectivos y su origen, content: { application/json: { schema: { type: object, additionalProperties: true } } } }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /producers/{producerId}/companies/{companySlug}/inheritance:
+    put:
+      tags: [CommercialConditions]
+      operationId: setProducerInheritance
+      parameters:
+        - { $ref: '#/components/parameters/ProducerId' }
+        - { name: companySlug, in: path, required: true, schema: { type: string, minLength: 1 } }
+      requestBody: { required: true, content: { application/json: { schema: { type: object, required: [inherits_default], properties: { inherits_default: { type: boolean } }, additionalProperties: false }, examples: { inherited: { value: { inherits_default: true } }, own: { value: { inherits_default: false } } } } } }
+      responses:
+        '200': { $ref: '#/components/responses/Ok' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /commercial-conditions/export:
+    post:
+      tags: [CommercialConditions]
+      operationId: exportCommercialConditions
+      requestBody: { content: { application/json: { schema: { type: object, properties: { producer_id: { type: string } }, additionalProperties: false } } } }
+      responses:
+        '200': { description: Workbook XLSX, content: { application/vnd.openxmlformats-officedocument.spreadsheetml.sheet: { schema: { type: string, contentEncoding: binary } } } }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /catalogs/vehicle-snapshot:
+    post:
+      tags: [Catalogs]
+      operationId: createVehicleSnapshot
+      requestBody: { content: { application/json: { schema: { type: object, properties: { refresh: { type: boolean, default: true } }, additionalProperties: false } } } }
+      responses:
+        '200': { description: Snapshot, content: { application/json: { schema: { $ref: '#/components/schemas/VehicleSnapshot' } } } }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /quote-inputs:
+    post:
+      tags: [Quotes]
+      operationId: createQuoteInput
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/QuoteInputRequest' }, examples: { withGnc: { externalValue: ./examples/quote-with-gnc.json }, withoutGnc: { externalValue: ./examples/quote-without-gnc.json } } } } }
+      responses:
+        '201': { description: Input persistido, content: { application/json: { schema: { type: object, required: [historial_id, file_name], properties: { historial_id: { type: integer, minimum: 1 }, file_name: { type: string, pattern: '^cotizador-publico-.+\\.xlsx$' } } } } } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+components:
+  securitySchemes:
+    hmacService:
+      type: apiKey
+      in: header
+      name: x-autoiq-signature
+      description: HMAC-SHA-256; requiere además x-autoiq-timestamp y x-autoiq-nonce.
+  parameters:
+    ProducerId: { name: producerId, in: path, required: true, schema: { type: string, minLength: 1, maxLength: 128 } }
+  schemas:
+    Error:
+      type: object
+      required: [error]
+      properties: { error: { type: string }, code: { type: [string, 'null'] }, validation: { type: [object, 'null'], additionalProperties: true } }
+      additionalProperties: true
+    ProducerInput:
+      type: object
+      properties: { code: { type: string, maxLength: 100 }, display_name: { type: string, maxLength: 255 }, nombre: { type: string, deprecated: true }, active: { type: boolean, default: true }, is_seguros911: { type: boolean } }
+      additionalProperties: false
+    Producer:
+      allOf:
+        - { $ref: '#/components/schemas/ProducerInput' }
+        - { type: object, required: [id, public_uuid, source_system], properties: { id: { type: string }, public_uuid: { type: string }, source_system: { const: seguros911 }, updated_at: { type: string, format: date-time } } }
+    Bootstrap:
+      type: object
+      required: [producers, companies, concepts]
+      properties: { producers: { type: array, items: { $ref: '#/components/schemas/Producer' } }, companies: { type: array, items: { type: object, additionalProperties: true } }, concepts: { type: array, items: { type: object, additionalProperties: true } } }
+    CommercialChanges:
+      type: object
+      required: [changes]
+      properties: { changes: { type: array, minItems: 1, items: { type: object, required: [company_slug, concept_code], properties: { company_slug: { type: string }, concept_code: { type: string }, visible_value: {}, ws_code: {}, numeric_value: { type: [number, 'null'] } }, additionalProperties: true } } }
+    VehicleSnapshot:
+      type: object
+      required: [generated_at, source, sync, data]
+      properties: { generated_at: { type: string, format: date-time }, source: { const: autoiq }, sync: { type: array, items: { type: object, additionalProperties: true } }, data: { type: object, required: [brands, infoauto, infoautoDc, localities], properties: { brands: { type: array }, infoauto: { type: array }, infoautoDc: { type: array }, localities: { type: array } } } }
+    CanonicalRisk:
+      type: object
+      required: [anio, marca, modelo, codigo_infoauto, cp, gnc]
+      properties:
+        anio: { type: integer, minimum: 1900, maximum: 2100 }
+        marca: { type: string, minLength: 1 }
+        modelo: { type: string, minLength: 1 }
+        codigo_infoauto: { oneOf: [{ type: integer, minimum: 1 }, { type: string, minLength: 1 }] }
+        suma_asegurada: { type: [number, 'null'], minimum: 0 }
+        cerokm: { oneOf: [{ type: boolean }, { type: integer, enum: [0, 1] }, { type: string, enum: ['0', '1'] }] }
+        tipo_vehiculo: { type: [string, 'null'] }
+        cp: { type: string, minLength: 1, maxLength: 16 }
+        provincia: { type: [string, 'null'] }
+        localidad: { type: [string, 'null'] }
+        uso: { type: [string, 'null'] }
+        rastreo: { oneOf: [{ type: boolean }, { type: integer, enum: [0, 1] }, { type: string, enum: ['0', '1'] }] }
+        rastreo_sistema: { type: [string, 'null'] }
+        gnc: { oneOf: [{ type: boolean }, { type: integer, enum: [0, 1] }, { type: string, enum: ['0', '1', si, no, 'sí'] }] }
+        suma_gnc: { type: [number, string, 'null'], description: ARS; obligatorio semánticamente cuando gnc es verdadero y debe ser cero/ausente cuando es falso. }
+      additionalProperties: true
+    QuoteInputRequest:
+      type: object
+      required: [row]
+      properties: { producer_public_uuid: { type: [string, 'null'], maxLength: 128 }, row: { $ref: '#/components/schemas/CanonicalRisk' } }
+      additionalProperties: false
+  responses:
+    Ok: { description: Operación aplicada, content: { application/json: { schema: { type: object, required: [ok], properties: { ok: { const: true } } } } } }
+    BadRequest: { description: Validación, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+    Unauthorized: { description: Firma ausente, inválida, vencida o replay, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+    Forbidden: { description: Rol insuficiente, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+    NotConfigured: { description: Secreto no configurado, content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } } }
+
