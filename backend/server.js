@@ -40,12 +40,13 @@ const procesoRouter = require('./routes/proceso');
 const cabecerasRouter = require('./routes/cabeceras'); // <— NUEVO
 const commercialConditionsRouter = require('./routes/commercial_conditions');
 const seguros911IntegrationRouter = require('./routes/seguros911_integration');
+const { captureServiceBody } = require('./middleware/service_auth');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middlewares básicos
-app.use(express.json({ limit: '2mb' }));
+app.use(express.json({ limit: '2mb', verify: captureServiceBody }));
 app.use(express.urlencoded({ extended: true }));
 app.use((req, _res, next) => {
   req.accessContext = getCurrentAccessContext();
